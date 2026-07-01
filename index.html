@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoneyMeta — финансовая аналитика игровых экономик</title>
+<meta name="description" content="Money Meta Index: ROI, окупаемость и риск для бизнесов и активов в GTA Online, Dota 2 и других играх с внутренней экономикой. Без гайдов на глаз — с методологией.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "MoneyMeta",
+  "url": "https://themoneymeta.com",
+  "description": "Неофициальная аналитическая платформа, оценивающая внутриигровые экономики (GTA Online, Dota 2 и другие) методами реальных финансов. Не связана с издателями перечисленных игр."
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          base:    '#121212',
+          panel:   '#1E1E1E',
+          panel2:  '#262626',
+          line:    '#2E2E2E',
+          magenta: '#FF2E88',
+          teal:    '#00E6CA',
+          gold:    '#FFC857',
+        },
+        fontFamily: {
+          display: ['"Saira Condensed"', 'sans-serif'],
+          mono:    ['"JetBrains Mono"', 'monospace'],
+          sans:    ['"Inter"', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body{background:
+      radial-gradient(1100px 550px at 85% -10%, rgba(255,46,136,0.08), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(0,230,202,0.05), transparent 55%),
+      #121212;}
+  .card-hover{transition:border-color .15s ease, transform .15s ease;}
+  .card-hover:hover{border-color:#FF2E88;transform:translateY(-2px);}
+  ::selection{background:rgba(255,46,136,0.3);}
+</style>
+</head>
+<body class="text-gray-100 font-sans min-h-screen">
+
+  <div class="max-w-6xl mx-auto px-5 pt-8 pb-20">
+
+    <!-- Top bar -->
+    <div class="flex items-center justify-between mb-16">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-md bg-gradient-to-br from-magenta to-[#B5167F] grid place-items-center shadow-[0_0_20px_rgba(255,46,136,0.35)]">
+          <span class="font-display font-bold text-white text-lg">$</span>
+        </div>
+        <span class="font-display font-bold text-xl tracking-wide uppercase">Money<span class="text-magenta">Meta</span></span>
+      </div>
+      <div class="font-mono text-[11px] tracking-widest uppercase text-gray-500">Beta · v0.2</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="mb-16 max-w-3xl">
+      <div class="font-mono text-xs tracking-[0.2em] uppercase text-teal mb-4">Money Meta Index</div>
+      <h1 class="font-display font-bold text-[clamp(32px,5.5vw,54px)] leading-[1.05] mb-5">
+        Гайды считают доход в час.<br>Мы считаем <span class="text-magenta">во сколько тебе обходится</span> час.
+      </h1>
+      <p class="text-gray-400 text-[15px] leading-relaxed max-w-xl">
+        Каждая внутриигровая экономика — рынок с ужасным аналитическим покрытием: сплошные "топ-5 бизнесов" на глаз и ни одной цифры про окупаемость или риск. Money Meta считает так, как считал бы аналитик — чистую прибыль, срок окупаемости, во что реально обходится грайндовый час — и не прячет методологию.
+      </p>
+    </div>
+
+    <!-- Search -->
+    <div class="mb-8">
+      <div class="relative max-w-md">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 font-mono text-sm">→</span>
+        <input id="game-search" type="text" placeholder="Найти игру или актив…"
+          class="w-full bg-panel border border-line rounded-lg pl-10 pr-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-teal transition-colors">
+      </div>
+    </div>
+
+    <!-- Games grid -->
+    <div class="mb-20">
+      <div class="flex items-baseline justify-between mb-4">
+        <h2 class="font-display font-semibold text-lg uppercase tracking-wide">Экономики</h2>
+        <span class="font-mono text-[11px] text-gray-600">2 картированы · 1 активна</span>
+      </div>
+      <div id="games-grid" class="grid sm:grid-cols-2 gap-4">
+
+        <a href="/gta-online/" data-name="gta online grand theft auto" class="game-card card-hover block bg-panel border border-line rounded-xl p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <div class="font-mono text-[10px] tracking-widest uppercase text-teal mb-1">Live</div>
+              <h3 class="font-display font-semibold text-2xl">GTA Online</h3>
+            </div>
+            <div class="font-mono text-[10px] px-2 py-1 rounded bg-teal/10 border border-teal/30 text-teal">7 активов</div>
+          </div>
+          <p class="text-gray-500 text-sm mb-5 leading-relaxed">Многосекторный конгломерат: бункеры, лаборатории, найтклаб-холдинги. Капитальные вложения, операционные расходы, окупаемость по каждому активу.</p>
+          <div class="flex items-center gap-2 font-mono text-xs text-magenta">
+            Открыть хаб <span aria-hidden="true">→</span>
+          </div>
+        </a>
+
+        <div data-name="dota 2 midas buyback" class="game-card block bg-panel/50 border border-line border-dashed rounded-xl p-6 opacity-60">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <div class="font-mono text-[10px] tracking-widest uppercase text-gray-600 mb-1">Скоро</div>
+              <h3 class="font-display font-semibold text-2xl text-gray-400">Dota 2</h3>
+            </div>
+          </div>
+          <p class="text-gray-600 text-sm mb-5 leading-relaxed">Высокочастотный сессионный рынок: IRR Мидаса, buyback как пут-опцион, надёжное золото против ненадёжного.</p>
+          <div class="flex items-center gap-2 font-mono text-xs text-gray-600">
+            В разработке
+          </div>
+        </div>
+
+      </div>
+      <p id="no-results" class="hidden text-sm text-gray-600 mt-4">Ничего не нашлось — экономик пока только две.</p>
+    </div>
+
+    <!-- MMI explainer -->
+    <div class="mb-16">
+      <div class="flex items-baseline justify-between mb-4">
+        <h2 class="font-display font-semibold text-lg uppercase tracking-wide">Как считаем</h2>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div class="bg-panel border border-line rounded-xl p-5">
+          <div class="font-mono text-[10px] tracking-widest uppercase text-teal mb-2">Считается</div>
+          <div class="font-display font-semibold mb-1.5">vROI и окупаемость</div>
+          <p class="text-gray-500 text-[13px] leading-relaxed">Чистая прибыль за вычетом расходников, делённая на вложения. Срок окупаемости — вложения делить на прибыль в час. Прямые формулы, никаких допущений.</p>
+        </div>
+        <div class="bg-panel border border-line rounded-xl p-5">
+          <div class="font-mono text-[10px] tracking-widest uppercase text-gold mb-2">Оценивается вручную</div>
+          <div class="font-display font-semibold mb-1.5">Friction Index</div>
+          <p class="text-gray-500 text-[13px] leading-relaxed">Насколько актив требует ручной возни — оценка 1–10 по опыту игры, не из формулы. Помечено честно, а не выдано за посчитанное.</p>
+        </div>
+        <div class="bg-panel border border-line rounded-xl p-5">
+          <div class="font-mono text-[10px] tracking-widest uppercase text-gray-600 mb-2">Пока не считается</div>
+          <div class="font-display font-semibold mb-1.5">Sharpe Ratio, Liquidity</div>
+          <p class="text-gray-500 text-[13px] leading-relaxed">В индексе они есть по методологии, но честно посчитать волатильность дохода или спред рынка пока не на чем — нет данных. Появятся, когда появятся данные, а не раньше.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="pt-8 border-t border-line">
+      <p class="text-gray-600 text-xs leading-relaxed max-w-2xl">
+        MoneyMeta — независимый аналитический проект. Не связан с Rockstar Games, Take-Two Interactive, Valve или другими издателями перечисленных игр, не содержит их официальных данных. Все цифры — оценка на основе открытой информации об игровых механиках, редактируются вручную.
+      </p>
+    </div>
+
+  </div>
+
+<script>
+  var input = document.getElementById('game-search');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.game-card'));
+  var noResults = document.getElementById('no-results');
+  input.addEventListener('input', function(){
+    var q = input.value.trim().toLowerCase();
+    var visible = 0;
+    cards.forEach(function(c){
+      var match = c.getAttribute('data-name').indexOf(q) !== -1;
+      c.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    noResults.classList.toggle('hidden', visible !== 0);
+  });
+</script>
+</body>
+</html>

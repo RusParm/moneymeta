@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTA Online — Money Meta Economy Hub</title>
+<meta name="description" content="GTA Online как многосекторный конгломерат: Money Meta Score по бизнесам, трекер еженедельных бонусов, калькулятор окупаемости и портфельный оптимизатор.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "GTA Online Economy Hub — MoneyMeta",
+  "about": { "@type": "VideoGame", "name": "Grand Theft Auto Online", "publisher": "Rockstar Games" },
+  "description": "Неофициальный аналитический хаб по экономике GTA Online. Не связан с Rockstar Games/Take-Two, не содержит официальных данных."
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { base:'#121212', panel:'#1E1E1E', panel2:'#262626', line:'#2E2E2E', magenta:'#FF2E88', teal:'#00E6CA', gold:'#FFC857', coral:'#FF5C6C' },
+    fontFamily: { display:['"Saira Condensed"','sans-serif'], mono:['"JetBrains Mono"','monospace'], sans:['"Inter"','sans-serif'] }
+  } } }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  body{background:radial-gradient(1100px 550px at 85% -10%, rgba(255,46,136,0.08), transparent 60%), radial-gradient(900px 500px at 0% 0%, rgba(0,230,202,0.05), transparent 55%), #121212;}
+  ::selection{background:rgba(255,46,136,0.3);}
+  summary{cursor:pointer;}
+  summary::-webkit-details-marker{display:none;}
+  .grade{font-family:"JetBrains Mono";font-weight:700;}
+</style>
+</head>
+<body class="text-gray-100 font-sans min-h-screen">
+
+  <div class="max-w-6xl mx-auto px-5 pt-8 pb-20">
+
+    <!-- Top bar -->
+    <div class="flex items-center justify-between mb-10">
+      <a href="/" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-md bg-gradient-to-br from-magenta to-[#B5167F] grid place-items-center shadow-[0_0_20px_rgba(255,46,136,0.35)]">
+          <span class="font-display font-bold text-white text-lg">$</span>
+        </div>
+        <span class="font-display font-bold text-xl tracking-wide uppercase">Money<span class="text-magenta">Meta</span></span>
+      </a>
+      <a href="/" class="font-mono text-[11px] tracking-widest uppercase text-gray-500 hover:text-teal transition-colors">← Все экономики</a>
+    </div>
+
+    <!-- Hub hero -->
+    <div class="mb-12 max-w-3xl">
+      <div class="font-mono text-xs tracking-[0.2em] uppercase text-teal mb-3">GTA Online · Economy Hub</div>
+      <h1 class="font-display font-bold text-[clamp(28px,4.8vw,44px)] leading-[1.05] mb-4">Многосекторный конгломерат на минималках</h1>
+      <p class="text-gray-400 text-[15px] leading-relaxed">GTA Online устроена как холдинг: фиксированные активы (бункеры, лаборатории), капитальные вложения, операционка. Ниже — статус текущей недели и оценка ключевых активов по <a href="#methodology" class="text-teal underline decoration-dotted">Money Meta Score</a>.</p>
+    </div>
+
+    <!-- Bonus Week Tracker -->
+    <div class="mb-10 bg-panel border border-line rounded-xl p-6">
+      <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+        <div>
+          <div class="font-mono text-[10px] tracking-widest uppercase text-magenta mb-1">Bonus Week Tracker</div>
+          <div class="font-display font-semibold text-xl">Что действует прямо сейчас</div>
+        </div>
+        <div class="text-right">
+          <div class="font-mono text-[10px] tracking-widest uppercase text-gray-500">Обновление через</div>
+          <div id="bwt-countdown" class="font-mono font-bold text-2xl text-teal">—</div>
+        </div>
+      </div>
+
+      <ul id="bwt-list" class="space-y-2.5 mb-4"></ul>
+
+      <div class="flex items-center justify-between border-t border-line pt-4 mt-4">
+        <span class="font-mono text-[11px] text-gray-600" id="bwt-updated">—</span>
+        <span class="font-mono text-[11px] text-gray-600">Обновляется по четвергам, ~09:00 GMT</span>
+      </div>
+    </div>
+
+    <!-- Money Meta Score -->
+    <div class="mb-4">
+      <div class="flex items-baseline justify-between mb-1">
+        <h2 class="font-display font-semibold text-lg uppercase tracking-wide">Money Meta Score</h2>
+        <span class="font-mono text-[11px] text-gray-600">3 актива в сравнении</span>
+      </div>
+      <p class="text-gray-500 text-[13px] mb-4">Оценка относительно этих трёх активов — грейды сдвинутся, когда добавим остальные четыре.</p>
+    </div>
+
+    <div class="mb-4 bg-panel border border-line rounded-xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[640px]">
+          <thead>
+            <tr class="border-b border-line">
+              <th class="text-left font-mono text-[10px] uppercase tracking-wider text-gray-500 px-5 py-3">Актив</th>
+              <th class="text-right font-mono text-[10px] uppercase tracking-wider text-gray-500 px-5 py-3">vROI</th>
+              <th class="text-right font-mono text-[10px] uppercase tracking-wider text-gray-500 px-5 py-3">Окупаемость</th>
+              <th class="text-right font-mono text-[10px] uppercase tracking-wider text-gray-500 px-5 py-3">Friction</th>
+              <th class="text-right font-mono text-[10px] uppercase tracking-wider text-gray-500 px-5 py-3">Score</th>
+              <th class="text-center font-mono text-[10px] uppercase tracking-wider text-gray-500 px-5 py-3">Грейд</th>
+            </tr>
+          </thead>
+          <tbody id="mms-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <details id="methodology" class="mb-14 bg-panel/50 border border-line rounded-xl px-6 py-4">
+      <summary class="font-mono text-xs uppercase tracking-widest text-gray-400 hover:text-teal transition-colors">Methodology &amp; Assumptions ↓</summary>
+      <div class="mt-4 text-[13px] text-gray-500 leading-relaxed space-y-3 max-w-2xl">
+        <p><b class="text-gray-300">vROI</b> — чистая прибыль за цикл (продажа минус поставки) делённая на стартовые вложения. Реальная формула, не эвристика. Депрециация активов не учитывается — в GTA Online бизнесы физически не изнашиваются.</p>
+        <p><b class="text-gray-300">Окупаемость</b> — вложения делить на чистую прибыль в час. Тоже прямой расчёт.</p>
+        <p><b class="text-gray-300">Friction</b> — оценка 1–10 вручную, по опыту игры (сколько ручной возни требует актив), не из формулы. Помечаем честно как экспертную оценку, а не измерение.</p>
+        <p><b class="text-gray-300">Score и грейд</b> — vROI и окупаемость нормализуются относительно текущего набора активов (мин-макс) и берутся с весом 40/40%, Friction — 20%. Результат переводится в грейд A+…F. Это значит: грейд относительный, а не абсолютный — актив с грейдом F не обязательно плохой, он просто хуже трёх остальных в выборке по капитальной эффективности.</p>
+        <p><b class="text-coral">Что не считается и почему.</b> Полная методология Money Meta Index описывает ещё vSharpe Ratio (риск-скорректированная доходность) и Liquidity Score. Мы их не считаем: vSharpe Ratio требует стандартного отклонения почасового дохода, а такого датасета по бизнесам GTA Online просто не существует — считать его значило бы подставлять выдуманное число. Liquidity Score в исходной методологии описан через спред и глубину ордербука биржи — у GTA Online нет открытого рынка со стаканом заявок для этих товаров, метрика в этом виде не применима. Появятся оба, когда появится честный способ их посчитать, а не раньше.</p>
+        <p><b class="text-gray-300">Про Найтклаб отдельно.</b> Его реальная доходность строится на товаре, который поставляют другие принадлежащие тебе бизнесы — этого в упрощённой модели пока нет, здесь посчитан только базовый доход склада. Считай его Score нижней границей, не полной картиной.</p>
+      </div>
+    </details>
+
+    <!-- Calculator CTA -->
+    <a href="/gta-online/calculators/business-roi.html" class="block mb-14 bg-gradient-to-br from-panel to-panel2 border border-line hover:border-magenta rounded-xl p-6 transition-colors group">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="font-mono text-[10px] tracking-widest uppercase text-teal mb-1">Corporate Capital Budgeting Engine</div>
+          <div class="font-display font-semibold text-xl mb-1">Калькулятор окупаемости + портфельный оптимизатор</div>
+          <p class="text-gray-500 text-sm max-w-lg">Полный расчёт по всем 7 активам, свои цифры под патч, и сборка портфеля под твой бюджет и часы в неделю.</p>
+        </div>
+        <div class="font-mono text-sm text-magenta whitespace-nowrap">Открыть →</div>
+      </div>
+    </a>
+
+    <div class="pt-8 border-t border-line">
+      <p class="text-gray-600 text-xs leading-relaxed max-w-2xl">Раздел не связан с Rockstar Games или Take-Two Interactive, не содержит официальных данных издателя. Бонусы недели собраны из открытых источников по состоянию на дату обновления ниже и могут устареть до следующего четверга.</p>
+    </div>
+
+  </div>
+
+<script>
+  // ---- BONUS WEEK TRACKER ----
+  // ОБНОВЛЯТЬ КАЖДЫЙ ЧЕТВЕРГ вручную: живого публичного API бонусов Rockstar не существует,
+  // единственный надёжный источник — Newswire и профильные сайты (gtabase, gtaboom и т.д.) в день выхода патча.
+  var BONUS_UPDATED = "1 июля 2026";
+  var BONUSES = [
+    "Acid Lab: продажи x2 GTA$/RP",
+    "Бесплатный апгрейд Acid Lab Installation при покупке Brickade 6×6 (-40%)",
+    "Darnell Bros. Garment Factory — скидка 40%",
+    "FIB Priority File (Fine Art File): x4 GTA$, ~$1 200 000",
+    "Fine Art Collector: вход = $500k + тачка, любой хайст = $1M + прикид (до 13 июля)"
+  ];
+
+  var listEl = document.getElementById('bwt-list');
+  BONUSES.forEach(function(text){
+    var li = document.createElement('li');
+    li.className = 'flex items-start gap-2.5 text-sm text-gray-300';
+    li.innerHTML = '<span class="text-teal mt-0.5">▸</span><span>' + text + '</span>';
+    listEl.appendChild(li);
+  });
+  document.getElementById('bwt-updated').textContent = 'Обновлено: ' + BONUS_UPDATED;
+
+  function nextThursday9amUTC(){
+    var now = new Date();
+    var target = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 9, 0, 0));
+    var day = target.getUTCDay();
+    var diff = (4 - day + 7) % 7;
+    target.setUTCDate(target.getUTCDate() + diff);
+    if (target <= now) target.setUTCDate(target.getUTCDate() + 7);
+    return target;
+  }
+  function renderCountdown(){
+    var ms = nextThursday9amUTC() - new Date();
+    var totalMin = Math.max(0, Math.floor(ms / 60000));
+    var d = Math.floor(totalMin / 1440);
+    var h = Math.floor((totalMin % 1440) / 60);
+    var m = totalMin % 60;
+    document.getElementById('bwt-countdown').textContent = d + 'д ' + h + 'ч ' + m + 'м';
+  }
+  renderCountdown();
+  setInterval(renderCountdown, 30000);
+
+  // ---- MONEY META SCORE ----
+  var ASSETS = [
+    { id:'acid',   name:'Кислотная лаборатория', setup:1000000, net:275000, cycle:4.6, friction:4 },
+    { id:'bunker', name:'Бункер',                 setup:2375000, net:175000, cycle:3.0, friction:5 },
+    { id:'club',   name:'Найтклаб',                setup:2000000, net:50000,  cycle:1.0, friction:2 }
+  ];
+
+  function norm(arr, invert){
+    var min = Math.min.apply(null, arr), max = Math.max.apply(null, arr);
+    var range = (max - min) || 1;
+    return arr.map(function(v){ var s = (v - min) / range; return invert ? (1 - s) : s; });
+  }
+  function gradeFor(score){
+    if (score >= 90) return 'A+';
+    if (score >= 80) return 'A';
+    if (score >= 65) return 'B';
+    if (score >= 50) return 'C';
+    if (score >= 35) return 'D';
+    return 'F';
+  }
+  function gradeColor(g){
+    if (g === 'A+' || g === 'A') return 'text-teal';
+    if (g === 'B') return 'text-gold';
+    if (g === 'C') return 'text-gray-400';
+    return 'text-coral';
+  }
+  function money(n){ return '$' + Math.round(n).toLocaleString('ru-RU'); }
+
+  function computeScores(assets){
+    var roi  = assets.map(function(a){ return (a.net / a.setup) * 100; });
+    var pay  = assets.map(function(a){ return a.setup / (a.net / a.cycle); });
+    var fric = assets.map(function(a){ return a.friction; });
+    var roiN = norm(roi, false);
+    var payN = norm(pay, true);
+    var fricN = norm(fric, true);
+    return assets.map(function(a, i){
+      var composite = roiN[i]*40 + payN[i]*40 + fricN[i]*20;
+      return {
+        name: a.name, roi: roi[i], payback: pay[i], friction: a.friction,
+        composite: composite, grade: gradeFor(composite)
+      };
+    });
+  }
+
+  var body = document.getElementById('mms-body');
+  computeScores(ASSETS).forEach(function(r){
+    var tr = document.createElement('tr');
+    tr.className = 'border-b border-line last:border-0';
+    tr.innerHTML =
+      '<td class="px-5 py-3.5 font-medium">' + r.name + '</td>' +
+      '<td class="px-5 py-3.5 text-right font-mono text-teal">' + r.roi.toFixed(1) + '%</td>' +
+      '<td class="px-5 py-3.5 text-right font-mono">' + Math.round(r.payback) + ' ч</td>' +
+      '<td class="px-5 py-3.5 text-right font-mono text-gray-500">' + r.friction + '/10</td>' +
+      '<td class="px-5 py-3.5 text-right font-mono">' + r.composite.toFixed(0) + '</td>' +
+      '<td class="px-5 py-3.5 text-center grade text-base ' + gradeColor(r.grade) + '">' + r.grade + '</td>';
+    body.appendChild(tr);
+  });
+</script>
+</body>
+</html>
