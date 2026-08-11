@@ -1,0 +1,12 @@
+---
+import InsightPage from "../../../components/InsightPage.astro";
+import { insights, type Insight } from "../../../data/insights";
+
+export function getStaticPaths() {
+  return insights.map((insight) => ({ params: { slug: insight.slug }, props: { insight } }));
+}
+
+interface Props { insight: Insight; }
+const { insight } = Astro.props;
+---
+<InsightPage lang="en" insight={insight} />

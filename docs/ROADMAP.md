@@ -31,6 +31,14 @@
 - Local scenario persistence, one-click reset and shareable parameterized URLs.
 - Responsive and accessible interaction polish.
 
+## P1.25 — v1.1 resource and acquisition layer
+
+- Value-first homepage with concrete baseline decisions above the fold.
+- Direct routing from player questions to the relevant decision engine.
+- RU/EN Field Notes for GTA Online, Dota 2 and WoW Retail.
+- Article-to-tool loops and search-ready landing pages.
+- Game-specific visual identity without publisher artwork or personal branding.
+
 ## P1.5 — recurring utility
 
 - Goal Planner.

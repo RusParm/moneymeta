@@ -2,12 +2,21 @@
 import { buybackBaseline, dotaPatchContext, midasBaseline } from "../data/dota-economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
+import DecisionShortcuts from "./DecisionShortcuts.astro";
+import FeaturedInsight from "./FeaturedInsight.astro";
 import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const root = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
+const shortcuts = lang === "ru" ? [
+  { eyebrow: "Greed check", title: "Окупится ли Midas?", text: "Поставь минуту покупки и ожидаемый конец — увидишь break-even и realized ROI.", href: "#midas-irr", meta: "7 inputs" },
+  { eyebrow: "Fight readiness", title: "Хватит ли на buyback?", text: "Проверь reserve сейчас и к следующему Roshan, high ground или другой objective.", href: "#buyback-reserve", meta: "5 inputs" }
+] : [
+  { eyebrow: "Greed check", title: "Will Midas pay back?", text: "Set purchase time and expected finish to see break-even and realized ROI.", href: "#midas-irr", meta: "7 inputs" },
+  { eyebrow: "Fight readiness", title: "Can I fund buyback?", text: "Check the reserve now and by the next Roshan, high ground or objective.", href: "#buyback-reserve", meta: "5 inputs" }
+];
 
 const copy = lang === "ru" ? {
   title: "Dota 2 Economy Lab — Money Meta",
@@ -18,7 +27,7 @@ const copy = lang === "ru" ? {
   lede: "Dota — не просто GPM. Покупка Midas похожа на capex, buyback — на резерв ликвидности, а timing определяет, успеет ли инвестиция вообще окупиться.",
   midasCta: "Рассчитать Midas ROI",
   buybackCta: "Проверить buyback reserve",
-  heroProof: [["2", "decision models"], ["7.41", "patch context"], ["0", "скрытых допущений"], ["Live", "scenario updates"]],
+  heroProof: [["Payback", "минута окупаемости"], ["ROI", "к концу матча"], ["Reserve", "gap до buyback"], ["Share", "сценарий ссылкой"]],
   patch: "Patch context",
   patchText: `Модель проверена в контексте ${dotaPatchContext.patch} на ${dotaPatchContext.checkedAt}. Defaults редактируются и не заменяют цифры в клиенте игры.`,
   modelKicker: "Match Economy Model 01",
@@ -79,7 +88,7 @@ const copy = lang === "ru" ? {
   lede: "Dota is more than GPM. Buying Midas resembles capex, buyback is a liquidity reserve, and timing decides whether an investment can pay back at all.",
   midasCta: "Calculate Midas ROI",
   buybackCta: "Check buyback reserve",
-  heroProof: [["2", "decision models"], ["7.41", "patch context"], ["0", "hidden assumptions"], ["Live", "scenario updates"]],
+  heroProof: [["Payback", "break-even minute"], ["ROI", "by match end"], ["Reserve", "buyback gap"], ["Share", "scenario by link"]],
   patch: "Patch context",
   patchText: `The model was checked in ${dotaPatchContext.patch} context on ${dotaPatchContext.checkedAt}. Defaults are editable and never override the numbers in your game client.`,
   modelKicker: "Match Economy Model 01",
@@ -151,11 +160,11 @@ const copy = lang === "ru" ? {
     about: { "@type": "VideoGame", name: "Dota 2", publisher: "Valve" }
   }}
 >
-  <main class="page" id="dota-economy-lab" data-lang={lang}>
+  <main class="page game-page game-dota" id="dota-economy-lab" data-lang={lang}>
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/dota-2/" enPath="/en/dota-2/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <section class="hero">
+      <section class="hero vertical-hero" data-visual="MIDAS" data-icon="M">
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1 style="font-size:clamp(40px,6vw,66px)">{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
@@ -167,6 +176,17 @@ const copy = lang === "ru" ? {
           {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
       </section>
+
+      <DecisionShortcuts lang={lang} game="dota" items={shortcuts} />
+
+      <FeaturedInsight
+        lang={lang}
+        game="dota"
+        title={lang === "ru" ? "Почему 160 gold Midas вводят в заблуждение" : "Why 160 Midas gold is misleading"}
+        summary={lang === "ru" ? "Incremental value, break-even около 39-й и сценарий, где тот же предмет не успевает окупиться." : "Incremental value, break-even near minute 39 and the scenario where the same item fails to pay back."}
+        href={`${lang === "ru" ? "" : "/en"}/insights/dota-2-hand-of-midas-real-payback/`}
+        readTime={lang === "ru" ? "5 мин" : "5 min"}
+      />
 
       <div class="callout warning">
         <p><strong>{copy.patch}: {dotaPatchContext.patch}.</strong> {copy.patchText}</p>

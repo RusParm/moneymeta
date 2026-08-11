@@ -19,7 +19,7 @@ const copy = lang === "ru" ? {
   lede: "Сначала получи персональную рекомендацию под свой капитал и время. Затем раскрой модель, измени допущения и собери портфель — без магических tier list и скрытых цифр.",
   start: "Подобрать следующий ход",
   inspect: "Открыть Model Lab",
-  heroProof: [["1", "персональный next move"], ["7", "сравнимых активов"], ["2", "optimizers"], ["Share", "сценарные ссылки"]]
+  heroProof: [["30 сек", "до рекомендации"], ["Net", "после расходов"], ["Fit", "бюджет + время"], ["Share", "сценарий ссылкой"]]
 } : {
   title: "GTA Online Business Calculator — Money Meta",
   description: "Get a personal recommendation, ROI, payback, comparison and GTA Online business portfolio optimization.",
@@ -29,7 +29,7 @@ const copy = lang === "ru" ? {
   lede: "Start with a personal recommendation for your capital and time. Then inspect the model, edit assumptions and build a portfolio without magic tier lists or hidden numbers.",
   start: "Find my next move",
   inspect: "Open Model Lab",
-  heroProof: [["1", "personal next move"], ["7", "comparable assets"], ["2", "optimizers"], ["Share", "scenario links"]]
+  heroProof: [["30 sec", "to a recommendation"], ["Net", "after costs"], ["Fit", "budget + time"], ["Share", "scenario by link"]]
 };
 ---
 
@@ -50,11 +50,11 @@ const copy = lang === "ru" ? {
     about: { "@type": "VideoGame", name: "Grand Theft Auto Online" }
   }}
 >
-  <main class="page">
+  <main class="page game-page game-gta">
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/gta-online/calculators/business-roi/" enPath="/en/gta-online/calculators/business-roi/" backPath={root} backLabel={copy.back} />
 
-      <section class="hero">
+      <section class="hero vertical-hero" data-visual="MODEL LAB" data-icon="∑">
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1 style="font-size:clamp(40px,6vw,66px)">{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>

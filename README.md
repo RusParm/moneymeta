@@ -2,7 +2,7 @@
 
 Money Meta превращает внутриигровые экономики в понятные решения: что купить следующим, как быстро окупится актив и какой результат можно получить при ограниченном времени.
 
-Текущая версия `v1.0` — единая decision-платформа для трёх игровых экономик: GTA Online, Dota 2 и World of Warcraft Retail на русском и английском языках.
+Текущая версия `v1.1` — decision-платформа и контентный ресурс для трёх игровых экономик: GTA Online, Dota 2 и World of Warcraft Retail на русском и английском языках.
 
 ## Что уже работает
 
@@ -19,6 +19,8 @@ Money Meta превращает внутриигровые экономики в
 - Автоматические тесты расчётного ядра.
 - Единая навигация между экономиками, локальное сохранение и shareable URL для сценариев.
 - Локально подключённые variable fonts, адаптивный интерфейс и reduced-motion режим.
+- Decision-first главная с тремя интерактивными baseline-кейсами и семью входами от вопросов игрока.
+- Money Meta Field Notes: три flagship-разбора в RU/EN, каждый ведёт в пересчитываемую модель.
 
 ## Локальный запуск
 
@@ -47,6 +49,7 @@ npm run build
 | Decision Toolkit | `/gta-online/calculators/business-roi/` | `/en/gta-online/calculators/business-roi/` |
 | Dota 2 Economy Lab | `/dota-2/` | `/en/dota-2/` |
 | WoW Economy Lab | `/wow/` | `/en/wow/` |
+| Field Notes | `/insights/` | `/en/insights/` |
 
 ## Где менять данные
 

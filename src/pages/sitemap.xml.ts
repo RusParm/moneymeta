@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
+import { insights } from "../data/insights";
 
-const paths = [
+const corePaths = [
   "/",
   "/en/",
   "/dota-2/",
@@ -10,7 +11,14 @@ const paths = [
   "/gta-online/",
   "/en/gta-online/",
   "/gta-online/calculators/business-roi/",
-  "/en/gta-online/calculators/business-roi/"
+  "/en/gta-online/calculators/business-roi/",
+  "/insights/",
+  "/en/insights/"
+];
+
+const paths = [
+  ...corePaths,
+  ...insights.flatMap((insight) => [`/insights/${insight.slug}/`, `/en/insights/${insight.slug}/`])
 ];
 
 export const GET: APIRoute = ({ site }) => {

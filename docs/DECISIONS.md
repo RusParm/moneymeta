@@ -23,3 +23,7 @@ WoW Retail is the third Money Meta economy. Retail and Classic will use separate
 ## 2026-08-11 — v1.0 unified decision system
 
 All verticals share one product shell, interaction grammar and trust model. Scenario inputs persist locally and can be represented in the URL without accounts or backend state. This preserves the static-first architecture while creating repeat use and shareable utility.
+
+## 2026-08-12 — content must complete a decision loop
+
+Money Meta Field Notes are not a generic blog. Every flagship analysis begins with one player question, exposes the relevant calculation and ends in a tool where the reader can replace the baseline with personal inputs. Homepage proof points prioritize player outcomes over implementation metrics.

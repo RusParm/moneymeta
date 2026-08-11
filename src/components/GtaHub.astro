@@ -3,6 +3,8 @@ import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
 import { gradeForScore, isSnapshotStale, scoreBusinesses } from "../lib/economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
+import DecisionShortcuts from "./DecisionShortcuts.astro";
+import FeaturedInsight from "./FeaturedInsight.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -20,7 +22,7 @@ const copy = lang === "ru" ? {
   heading: "Не вспоминай всю мету. Получи следующий лучший ход.",
   lede: "Укажи капитал, доступное время и приоритет — Money Meta отсеет неподходящие активы и объяснит, что делать сейчас. Ниже можно проверить модель и изменить каждое допущение.",
   cta: "Запустить Next Best Move",
-  heroProof: [["7", "активов в модели"], ["3", "профиля игрока"], ["2", "decision engines"], ["100%", "редактируемые inputs"]],
+  heroProof: [["30 сек", "до next move"], ["7", "сравнимых активов"], ["Solo", "фильтр по стилю"], ["Share", "сценарий ссылкой"]],
   staleTitle: "Weekly Meta пока не подтверждена",
   staleText: "Старая бонусная неделя автоматически снята со статуса «актуально». До повторной проверки Money Meta не показывает архивные бонусы как действующие.",
   currentTitle: "Проверенная Weekly Meta",
@@ -44,7 +46,7 @@ const copy = lang === "ru" ? {
   heading: "Do not relearn the whole meta. Get your next best move.",
   lede: "Enter your capital, available time and priority. Money Meta filters unsuitable assets and explains what to do now. Then inspect the model and edit every assumption.",
   cta: "Launch Next Best Move",
-  heroProof: [["7", "modeled assets"], ["3", "player profiles"], ["2", "decision engines"], ["100%", "editable inputs"]],
+  heroProof: [["30 sec", "to a next move"], ["7", "comparable assets"], ["Solo", "play-style filter"], ["Share", "scenario by link"]],
   staleTitle: "Weekly Meta is awaiting verification",
   staleText: "The old bonus week was automatically removed from current status. Archived bonuses are never presented as active before revalidation.",
   currentTitle: "Verified Weekly Meta",
@@ -63,6 +65,15 @@ const copy = lang === "ru" ? {
 };
 
 const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 }).format(value);
+const shortcuts = lang === "ru" ? [
+  { eyebrow: "Returner", title: "Что купить следующим?", text: "Укажи бюджет, часы и допустимую возню — получи один конкретный action и альтернативы.", href: `${calculator}#next-move`, meta: "≈ 30 секунд" },
+  { eyebrow: "Compare", title: "Какой бизнес окупится быстрее?", text: "Сравни чистую прибыль, production payback, friction и пригодность для solo.", href: "#production-score", meta: "7 активов" },
+  { eyebrow: "Optimize", title: "Что поместится в мой бюджет?", text: "Собери набор активов под ограничение по капиталу и активному времени.", href: `${calculator}#portfolio`, meta: "Portfolio tool" }
+] : [
+  { eyebrow: "Returner", title: "What should I buy next?", text: "Enter budget, hours and friction tolerance to get one action plus alternatives.", href: `${calculator}#next-move`, meta: "≈ 30 seconds" },
+  { eyebrow: "Compare", title: "Which business pays back faster?", text: "Compare net profit, production payback, friction and solo fit.", href: "#production-score", meta: "7 assets" },
+  { eyebrow: "Optimize", title: "What fits my budget?", text: "Build a set of assets under capital and active-time constraints.", href: `${calculator}#portfolio`, meta: "Portfolio tool" }
+];
 ---
 
 <BaseLayout
@@ -79,11 +90,11 @@ const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" :
     description: copy.description
   }}
 >
-  <main class="page">
+  <main class="page game-page game-gta">
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/gta-online/" enPath="/en/gta-online/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <section class="hero">
+      <section class="hero vertical-hero" data-visual="GTA$" data-icon="$">
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1 style="font-size:clamp(38px,6vw,62px)">{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
@@ -96,6 +107,17 @@ const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" :
         </div>
       </section>
 
+      <DecisionShortcuts lang={lang} game="gta" items={shortcuts} />
+
+      <FeaturedInsight
+        lang={lang}
+        game="gta"
+        title={lang === "ru" ? "Что купить с GTA$2,5 млн после долгого перерыва" : "What to buy with GTA$2.5m after a long break"}
+        summary={lang === "ru" ? "Конкретный returner-кейс: чистая прибыль, production payback и условия, при которых рекомендация меняется." : "A concrete returner case: net profit, production payback and the conditions that change the recommendation."}
+        href={`${lang === "ru" ? "" : "/en"}/insights/gta-online-what-to-buy-with-2-5m/`}
+        readTime={lang === "ru" ? "6 мин" : "6 min"}
+      />
+
       <section class={`callout ${staleWeekly ? "warning" : ""}`}>
         <p>
           <strong>{staleWeekly ? copy.staleTitle : copy.currentTitle}.</strong>{" "}
@@ -104,7 +126,7 @@ const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" :
         {!staleWeekly && <a class="source-link" href={weeklyMeta.sourceUrl} rel="noopener noreferrer" target="_blank">{weeklyMeta.sourceLabel} ↗</a>}
       </section>
 
-      <section class="section">
+      <section id="production-score" class="section">
         <div class="section-head">
           <div>
             <span class="section-kicker">Money Meta model 01</span>

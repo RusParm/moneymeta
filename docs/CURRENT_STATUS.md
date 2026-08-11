@@ -43,7 +43,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Midnight / Curse of Ula’tek context, editable assumptions and source disclosures.
 - Home, sitemap, version and documentation updated for three active economies.
 
-## Active release candidate — `product/v1.0`
+## Production release — `product/v1.0`
 
 - Unified premium product shell and cross-economy navigation.
 - Decision-first homepage with visible model coverage and trust signals.
@@ -51,6 +51,16 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Persistent, resettable and shareable scenarios across GTA, Dota 2 and WoW calculators.
 - Positive, caution and negative result states for faster interpretation.
 - Bundled variable typography, keyboard focus treatment and reduced-motion support.
+
+## Active release candidate — `product/v1.1`
+
+- Rebuilt homepage around a concrete promise: stop grinding blind and get a decision in roughly 30 seconds.
+- Interactive GTA, Dota 2 and WoW baseline cases above the fold.
+- Seven direct question-to-tool entry points instead of architecture-first navigation.
+- Game-specific quick-start decks, visual accents and featured analysis links across every vertical.
+- Money Meta Field Notes with three flagship analyses in complete RU/EN parity.
+- Article-to-tool loops, Article schema and expanded sitemap coverage.
+- Nineteen static pages pass desktop/mobile overflow and interaction QA.
 
 ## Release policy
 

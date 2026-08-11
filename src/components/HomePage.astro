@@ -1,4 +1,11 @@
 ---
+import { midasBaseline } from "../data/dota-economy";
+import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
+import { insights } from "../data/insights";
+import { craftingBaseline, wowPatchContext } from "../data/wow-economy";
+import { calculateMidasMetrics } from "../lib/dota-economy";
+import { calculateBusinessMetrics } from "../lib/economy";
+import { calculateCraftingMetrics } from "../lib/wow-economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
@@ -6,89 +13,161 @@ import SiteFooter from "./SiteFooter.astro";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
-const copy = lang === "ru" ? {
-  title: "Money Meta — аналитика игровых экономик и решения для игроков",
-  description: "Пойми экономику любимой игры и выбери следующий лучший шаг: окупаемость, чистая прибыль, стоимость времени и прозрачные допущения.",
-  eyebrow: "Decision intelligence for game economies",
-  headingA: "Пойми экономику.",
-  headingB: "Сделай более умный ход.",
-  lede: "Money Meta переводит игровые механики в решения: что купить, куда направить ограниченный капитал и как получить больше результата за доступное время — с формулами, источниками и честными ограничениями модели.",
-  primary: "Получить следующий ход",
-  secondary: "Открыть Dota Economy Lab",
-  tertiary: "Открыть WoW Economy Lab",
-  consoleTitle: "Decision coverage · live",
-  consoleRows: [
-    ["GTA Online", "Капитал → актив → денежный поток", "Production"],
-    ["Dota 2", "Timing → opportunity cost → tempo", "Match"],
-    ["WoW Retail", "Цена → ликвидность → realised gold", "Market"]
-  ],
-  proof: [["3", "игровые экономики"], ["6+", "decision models"], ["16", "unit tests"], ["RU / EN", "полная локализация"]],
-  section: "Экономики",
-  sectionCopy: "Три работающие вертикали: production economy GTA, поминутная match economy Dota 2 и рыночная экономика WoW.",
-  live: "Работает",
-  gta: "GTA Online",
-  gtaText: "Вернись после перерыва, укажи бюджет и часы — получи персональный Next Best Move, сравнение активов и прозрачную окупаемость.",
-  gtaLink: "Открыть хаб",
-  dota: "Dota 2",
-  dotaText: "Матчевая экономика: Midas ROI, стоимость buyback, timing cost и надёжное золото как разные классы капитала.",
-  dotaLink: "Открыть лабораторию",
-  wow: "World of Warcraft",
-  wowText: "Рыночная экономика: crafting margin, effective gold/hour, Auction House liquidity и стоимость непроданного инвентаря.",
-  wowLink: "Открыть лабораторию",
-  method: "Один язык для разных экономик",
-  methodCopy: "Не пытаемся выдать один универсальный рейтинг за точную науку. Используем семейства моделей под конкретный тип решения.",
-  cards: [
-    ["Production Economy", "Чистая прибыль, окупаемость, capital efficiency, friction и solo viability."],
-    ["Match Economy", "Expected value, timing, opportunity cost, comeback risk и сложность исполнения."],
-    ["Market Economy", "Спред после комиссий, ликвидность, объём, волатильность и вероятность исполнения."]
-  ],
-  trust: "Independent game-economy analysis. No influencer theatre.",
-  trustText: "Здесь нет выдуманной точности. Каждая цифра получает дату проверки и статус: verified, estimated или community-reported."
-} : {
-  title: "Money Meta — game economy analytics and smarter player decisions",
-  description: "Understand your favorite game's economy and choose the next best move with payback, net profit, time cost and transparent assumptions.",
-  eyebrow: "Decision intelligence for game economies",
-  headingA: "Understand the economy.",
-  headingB: "Make the smarter move.",
-  lede: "Money Meta turns game mechanics into decisions: what to buy, where to allocate limited capital and how to get more from limited playtime — with formulas, sources and honest model limits.",
-  primary: "Get your next move",
-  secondary: "Open Dota Economy Lab",
-  tertiary: "Open WoW Economy Lab",
-  consoleTitle: "Decision coverage · live",
-  consoleRows: [
-    ["GTA Online", "Capital → asset → cash flow", "Production"],
-    ["Dota 2", "Timing → opportunity cost → tempo", "Match"],
-    ["WoW Retail", "Price → liquidity → realised gold", "Market"]
-  ],
-  proof: [["3", "game economies"], ["6+", "decision models"], ["16", "unit tests"], ["RU / EN", "full product parity"]],
-  section: "Economies",
-  sectionCopy: "Three live verticals: GTA's production economy, Dota 2's minute-by-minute match economy and WoW's player-driven market economy.",
-  live: "Live",
-  gta: "GTA Online",
-  gtaText: "Returning after a break? Enter your budget and available hours to get a personal Next Best Move, asset comparison and transparent payback.",
-  gtaLink: "Open hub",
-  dota: "Dota 2",
-  dotaText: "Match economy: Midas ROI, buyback value, timing cost and reliable gold as distinct classes of capital.",
-  dotaLink: "Open lab",
-  wow: "World of Warcraft",
-  wowText: "Market economy: crafting margin, effective gold/hour, Auction House liquidity and the cost of unsold inventory.",
-  wowLink: "Open lab",
-  method: "One language for different economies",
-  methodCopy: "We do not pretend one universal score is precise science. Each decision type gets a model designed for its actual economy.",
-  cards: [
-    ["Production Economy", "Net profit, payback, capital efficiency, friction and solo viability."],
-    ["Match Economy", "Expected value, timing, opportunity cost, comeback risk and execution difficulty."],
-    ["Market Economy", "Net spread after fees, liquidity, volume, volatility and fill probability."]
-  ],
-  trust: "Independent game-economy analysis. No influencer theatre.",
-  trustText: "No invented precision. Every material number gets a check date and a status: verified, estimated or community-reported."
-};
-
 const homePath = lang === "ru" ? "/" : "/en/";
 const gtaPath = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
 const dotaPath = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
 const wowPath = lang === "ru" ? "/wow/" : "/en/wow/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
+
+const acidLab = gtaBusinesses.find((business) => business.id === "acid")!;
+const gtaExample = calculateBusinessMetrics(acidLab);
+const dotaExample = calculateMidasMetrics(midasBaseline);
+const wowExample = calculateCraftingMetrics(craftingBaseline);
+const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
+
+const copy = lang === "ru" ? {
+  title: "Money Meta — что делать дальше в экономике любимой игры",
+  description: "Персональные решения для GTA Online, Dota 2 и WoW: что купить, когда окупится и сколько игровой валюты ты реально получишь.",
+  kicker: "Инструменты для игроков, которые ценят своё время",
+  headingA: "Не гринди",
+  headingB: "вслепую.",
+  lede: "Скажи, во что играешь и чего хочешь добиться. Money Meta покажет лучший следующий ход, реальную окупаемость и цену ошибки — без десяти роликов и советов «на глаз».",
+  start: "Найти мой следующий ход",
+  explore: "Открыть GTA Online Hub",
+  promises: ["Ответ за 30 секунд", "Все допущения можно изменить", "Сценарий сохраняется и отправляется ссылкой"],
+  demoLabel: "Пример решения · измени inputs внутри инструмента",
+  demoQuestion: "Что говорит модель?",
+  gtaVerdict: "Сначала — Кислотная лаборатория",
+  gtaReason: "Для solo-returner с GTA$2,5 млн и ограниченным временем baseline-модель ставит её выше более тяжёлых бизнесов.",
+  dotaVerdict: "Midas успевает окупиться",
+  dotaReason: "Покупка на 12-й минуте при ожидаемом конце на 42-й проходит break-even до завершения матча.",
+  wowVerdict: "Крафт имеет положительный edge",
+  wowReason: "Но часть прибыли остаётся в непроданном inventory — headline margin завышает доступное золото.",
+  openCase: "Открыть и пересчитать",
+  metricSetup: "Вложения",
+  metricNet: "Чистыми / цикл",
+  metricPayback: "Окупаемость",
+  metricRoi: "Realized ROI",
+  metricUses: "Transmute uses",
+  metricMinute: "Break-even",
+  metricBatch: "Прибыль batch",
+  metricRisk: "Inventory at risk",
+  metricExpectedRoi: "Expected ROI",
+  valueRail: [["30 сек", "от вопроса до action"], ["3 игры", "три разных типа экономики"], ["100%", "редактируемые inputs"], ["0", "скрытых допущений"]],
+  chooseKicker: "Начни с реального вопроса",
+  chooseTitle: "Что ты хочешь решить прямо сейчас?",
+  chooseText: "Не изучай структуру сайта. Выбери игру — и сразу переходи к нужному решению.",
+  active: "Доступно сейчас",
+  gtaTag: "Production economy",
+  gtaTitle: "GTA Online",
+  gtaText: "Покупки на миллионы должны окупаться, а не просто красиво выглядеть в гараже.",
+  gtaQuestions: [["Что купить следующим?", `${calculatorPath}#next-move`], ["Какой бизнес быстрее окупится?", gtaPath], ["Как собрать портфель под мой бюджет?", `${calculatorPath}#portfolio`]],
+  dotaTag: "Match economy",
+  dotaTitle: "Dota 2",
+  dotaText: "Каждая покупка обменивает tempo сейчас на ценность позже. Посчитай этот trade-off.",
+  dotaQuestions: [["Окупится ли Hand of Midas?", `${dotaPath}#midas-irr`], ["Хватит ли золота на buyback?", `${dotaPath}#buyback-reserve`]],
+  wowTag: "Market economy",
+  wowTitle: "WoW Retail",
+  wowText: "Цена в Auction House ещё не прибыль. Комиссия, sell-through и inventory меняют ответ.",
+  wowQuestions: [["Этот крафт реально прибыльный?", `${wowPath}#crafting-margin`], ["Сколько золота фарм приносит на деле?", `${wowPath}#farm-liquidity`]],
+  featuredKicker: "Flagship analysis",
+  featuredTitle: "Цифры, которые меняют решение.",
+  featuredText: "Короткие разборы ведут от популярного совета к проверяемому выводу и инструменту.",
+  allNotes: "Все разборы",
+  readNote: "Читать",
+  signalKicker: "Money Meta pulse",
+  signalTitle: "Контекст меняется. Модели это показывают.",
+  signalText: "Каждый инструмент отделяет проверенный контекст от редактируемых baseline-оценок.",
+  validThrough: "Действует до",
+  checked: "Проверено",
+  sourceState: "Статус данных",
+  weekly: "GTA Weekly Meta",
+  dota: "Dota patch context",
+  wow: "WoW Retail context",
+  compareKicker: "Почему не обычный гайд",
+  compareTitle: "Гайд даёт мнение. Money Meta даёт решение.",
+  generic: "Обычный гайд",
+  moneyMeta: "Money Meta",
+  compareRows: [
+    ["Показывает теоретический доход", "Считает чистый результат после расходов"],
+    ["Один tier list для всех", "Учитывает бюджет, время и стиль игры"],
+    ["Скрытые или устаревшие допущения", "Inputs, дата и статус видны и редактируются"],
+    ["Посмотрел и забыл", "Сохранил сценарий, сравнил и отправил ссылкой"]
+  ],
+  trustTitle: "Никакой выдуманной точности.",
+  trustText: "Verified, estimated и community-reported никогда не смешиваются. Если данные устарели, Money Meta скажет это раньше, чем даст совет."
+} : {
+  title: "Money Meta — know what to do next in your game's economy",
+  description: "Personal decisions for GTA Online, Dota 2 and WoW: what to buy, when it pays back and how much game currency you can actually realize.",
+  kicker: "Tools for players who value their time",
+  headingA: "Stop grinding",
+  headingB: "blind.",
+  lede: "Tell us what you play and what you want to achieve. Money Meta shows the next best move, real payback and the cost of a bad decision — without ten videos or guesswork.",
+  start: "Find my next move",
+  explore: "Open GTA Online Hub",
+  promises: ["An answer in 30 seconds", "Edit every assumption", "Save and share any scenario"],
+  demoLabel: "Example decision · edit the inputs inside the tool",
+  demoQuestion: "What does the model say?",
+  gtaVerdict: "Start with the Acid Lab",
+  gtaReason: "For a solo returner with GTA$2.5m and limited time, the baseline model ranks it above heavier businesses.",
+  dotaVerdict: "Midas pays back in time",
+  dotaReason: "A minute-12 purchase with a minute-42 expected finish reaches break-even before the match ends.",
+  wowVerdict: "The craft has a positive edge",
+  wowReason: "But part of the profit remains in unsold inventory — headline margin overstates available gold.",
+  openCase: "Open and recalculate",
+  metricSetup: "Investment",
+  metricNet: "Net / cycle",
+  metricPayback: "Payback",
+  metricRoi: "Realized ROI",
+  metricUses: "Transmute uses",
+  metricMinute: "Break-even",
+  metricBatch: "Batch profit",
+  metricRisk: "Inventory at risk",
+  metricExpectedRoi: "Expected ROI",
+  valueRail: [["30 sec", "from question to action"], ["3 games", "three distinct economies"], ["100%", "editable inputs"], ["0", "hidden assumptions"]],
+  chooseKicker: "Start with a real question",
+  chooseTitle: "What do you want to solve right now?",
+  chooseText: "Do not learn the site structure. Pick your game and jump straight to the decision.",
+  active: "Available now",
+  gtaTag: "Production economy",
+  gtaTitle: "GTA Online",
+  gtaText: "A multi-million-dollar purchase should pay back — not just look good in a garage.",
+  gtaQuestions: [["What should I buy next?", `${calculatorPath}#next-move`], ["Which business pays back fastest?", gtaPath], ["Build a portfolio for my budget", `${calculatorPath}#portfolio`]],
+  dotaTag: "Match economy",
+  dotaTitle: "Dota 2",
+  dotaText: "Every purchase trades tempo now for value later. Put a number on that trade-off.",
+  dotaQuestions: [["Will Hand of Midas pay back?", `${dotaPath}#midas-irr`], ["Can I fund buyback in time?", `${dotaPath}#buyback-reserve`]],
+  wowTag: "Market economy",
+  wowTitle: "WoW Retail",
+  wowText: "An Auction House price is not profit. Fees, sell-through and inventory change the answer.",
+  wowQuestions: [["Is this craft actually profitable?", `${wowPath}#crafting-margin`], ["What does this farm really earn?", `${wowPath}#farm-liquidity`]],
+  featuredKicker: "Flagship analysis",
+  featuredTitle: "Numbers that change the decision.",
+  featuredText: "Focused field notes move from a popular claim to a testable conclusion and a tool.",
+  allNotes: "All field notes",
+  readNote: "Read",
+  signalKicker: "Money Meta pulse",
+  signalTitle: "Context moves. The models show it.",
+  signalText: "Every tool separates verified context from editable baseline estimates.",
+  validThrough: "Valid through",
+  checked: "Checked",
+  sourceState: "Data status",
+  weekly: "GTA Weekly Meta",
+  dota: "Dota patch context",
+  wow: "WoW Retail context",
+  compareKicker: "Why this is not another guide",
+  compareTitle: "A guide gives an opinion. Money Meta gives a decision.",
+  generic: "Typical guide",
+  moneyMeta: "Money Meta",
+  compareRows: [
+    ["Shows theoretical income", "Calculates net outcome after costs"],
+    ["One tier list for everyone", "Uses your budget, time and play style"],
+    ["Hidden or stale assumptions", "Inputs, date and status stay visible"],
+    ["Watch once and forget", "Save, compare and share the scenario"]
+  ],
+  trustTitle: "No invented precision.",
+  trustText: "Verified, estimated and community-reported data never blur together. If a number is stale, Money Meta says so before giving advice."
+};
 ---
 
 <BaseLayout
@@ -106,102 +185,196 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
     inLanguage: ["ru", "en"]
   }}
 >
-  <main class="page">
+  <main class="page home-v2" data-home-demo>
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/" enPath="/en/" />
 
-      <section class="hero hero-dashboard">
-        <div class="hero-copy">
-          <p class="eyebrow">{copy.eyebrow}</p>
+      <section class="home-hero">
+        <div class="home-hero-copy">
+          <p class="eyebrow">{copy.kicker}</p>
           <h1>{copy.headingA}<br /><span class="magenta">{copy.headingB}</span></h1>
           <p class="lede">{copy.lede}</p>
           <div class="hero-actions">
-            <a class="button primary" href={`${calculatorPath}#next-move`}>{copy.primary} →</a>
-            <a class="button ghost" href={dotaPath}>{copy.secondary}</a>
-            <a class="button ghost" href={wowPath}>{copy.tertiary}</a>
+            <a class="button primary button-large" href="#choose-game">{copy.start} →</a>
+            <a class="button ghost button-large" href={gtaPath}>{copy.explore}</a>
           </div>
+          <ul class="promise-list">
+            {copy.promises.map((promise) => <li><span>✓</span>{promise}</li>)}
+          </ul>
         </div>
-        <aside class="hero-console" aria-label={copy.consoleTitle}>
-          <div class="console-head"><span class="console-title">{copy.consoleTitle}</span><span class="console-signal">Online</span></div>
-          {copy.consoleRows.map(([name, description, model], index) => (
-            <a class="console-row" href={[gtaPath, dotaPath, wowPath][index]}>
-              <div><strong>{name}</strong><p>{description}</p></div>
-              <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>{model}</span>
-            </a>
-          ))}
+
+        <aside class="decision-demo" aria-label={copy.demoLabel}>
+          <div class="demo-topline"><span>{copy.demoLabel}</span><span class="live-dot">Live calculation</span></div>
+          <div class="demo-tabs" role="tablist" aria-label="Games">
+            <button class="demo-tab is-active" type="button" role="tab" aria-selected="true" data-demo-tab="gta">GTA Online</button>
+            <button class="demo-tab" type="button" role="tab" aria-selected="false" data-demo-tab="dota">Dota 2</button>
+            <button class="demo-tab" type="button" role="tab" aria-selected="false" data-demo-tab="wow">WoW</button>
+          </div>
+
+          <div class="demo-panel is-active" data-demo-panel="gta">
+            <div class="demo-game-mark game-mark-gta">GTA$</div>
+            <span class="result-label">{copy.demoQuestion}</span>
+            <h2>{copy.gtaVerdict}</h2>
+            <p>{copy.gtaReason}</p>
+            <div class="demo-metrics">
+              <div><span>{copy.metricSetup}</span><strong>GTA$ {number.format(acidLab.setupCost)}</strong></div>
+              <div><span>{copy.metricNet}</span><strong>GTA$ {number.format(gtaExample.netPerCycle)}</strong></div>
+              <div><span>{copy.metricPayback}</span><strong>≈ {number.format(gtaExample.paybackProductionHours)} h</strong></div>
+            </div>
+            <a class="demo-link" href={`${calculatorPath}#next-move`}>{copy.openCase} →</a>
+          </div>
+
+          <div class="demo-panel" data-demo-panel="dota" hidden>
+            <div class="demo-game-mark game-mark-dota">M</div>
+            <span class="result-label">{copy.demoQuestion}</span>
+            <h2>{copy.dotaVerdict}</h2>
+            <p>{copy.dotaReason}</p>
+            <div class="demo-metrics">
+              <div><span>{copy.metricRoi}</span><strong>+{dotaExample.realizedRoi.toFixed(1)}%</strong></div>
+              <div><span>{copy.metricUses}</span><strong>{dotaExample.usesRemaining}</strong></div>
+              <div><span>{copy.metricMinute}</span><strong>{dotaExample.paybackMatchMinute.toFixed(0)} min</strong></div>
+            </div>
+            <a class="demo-link" href={`${dotaPath}#midas-irr`}>{copy.openCase} →</a>
+          </div>
+
+          <div class="demo-panel" data-demo-panel="wow" hidden>
+            <div class="demo-game-mark game-mark-wow">AH</div>
+            <span class="result-label">{copy.demoQuestion}</span>
+            <h2>{copy.wowVerdict}</h2>
+            <p>{copy.wowReason}</p>
+            <div class="demo-metrics">
+              <div><span>{copy.metricBatch}</span><strong>+{number.format(wowExample.expectedBatchProfit)} g</strong></div>
+              <div><span>{copy.metricRisk}</span><strong>{number.format(wowExample.inventoryCapitalAtRisk)} g</strong></div>
+              <div><span>{copy.metricExpectedRoi}</span><strong>{wowExample.expectedRoiPercent.toFixed(1)}%</strong></div>
+            </div>
+            <a class="demo-link" href={`${wowPath}#crafting-margin`}>{copy.openCase} →</a>
+          </div>
         </aside>
       </section>
 
-      <div class="proof-strip" aria-label="Money Meta product coverage">
-        {copy.proof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+      <div class="value-rail" aria-label="Money Meta product value">
+        {copy.valueRail.map(([value, label]) => <div><strong>{value}</strong><span>{label}</span></div>)}
       </div>
 
-      <section class="section">
+      <section id="choose-game" class="section section-roomy">
         <div class="section-head">
           <div>
-            <span class="section-kicker">Money Meta coverage</span>
-            <h2>{copy.section}</h2>
-            <p class="section-copy">{copy.sectionCopy}</p>
+            <span class="section-kicker">{copy.chooseKicker}</span>
+            <h2>{copy.chooseTitle}</h2>
+            <p class="section-copy">{copy.chooseText}</p>
           </div>
-          <span class="count">3 economies · 3 active</span>
+          <span class="count">3 games · 7 decisions</span>
         </div>
 
-        <div class="grid-3">
-          <a class="card interactive" href={gtaPath}>
-            <div class="card-top">
-              <div><span class="pill teal">{copy.live}</span><h3 style="margin-top:12px">{copy.gta}</h3></div>
-              <span class="pill muted">7 assets</span>
-            </div>
-            <p>{copy.gtaText}</p>
-            <span class="card-link">{copy.gtaLink} →</span>
-          </a>
-
-          <a class="card interactive" href={dotaPath}>
-            <div class="card-top">
-              <div><span class="pill gold">{copy.live}</span><h3 style="margin-top:12px">{copy.dota}</h3></div>
-              <span class="pill muted">2 models</span>
-            </div>
-            <p>{copy.dotaText}</p>
-            <span class="card-link">{copy.dotaLink} →</span>
-          </a>
-
-          <a class="card interactive" href={wowPath}>
-            <div class="card-top">
-              <div><span class="pill teal">{copy.live}</span><h3 style="margin-top:12px">{copy.wow}</h3></div>
-              <span class="pill muted">2 models</span>
-            </div>
-            <p>{copy.wowText}</p>
-            <span class="card-link">{copy.wowLink} →</span>
-          </a>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">Money Meta methodology</span>
-            <h2>{copy.method}</h2>
-            <p class="section-copy">{copy.methodCopy}</p>
-          </div>
-        </div>
-        <div class="grid-3">
-          {copy.cards.map(([title, body], index) => (
-            <article class="card">
-              <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>Model 0{index + 1}</span>
-              <h3 style="margin:15px 0 8px">{title}</h3>
-              <p>{body}</p>
+        <div class="game-entry-grid">
+          {[
+            { key: "gta", tag: copy.gtaTag, title: copy.gtaTitle, text: copy.gtaText, questions: copy.gtaQuestions, mark: "GTA$" },
+            { key: "dota", tag: copy.dotaTag, title: copy.dotaTitle, text: copy.dotaText, questions: copy.dotaQuestions, mark: "M" },
+            { key: "wow", tag: copy.wowTag, title: copy.wowTitle, text: copy.wowText, questions: copy.wowQuestions, mark: "AH" }
+          ].map((game) => (
+            <article class={`game-entry game-entry-${game.key}`}>
+              <div class="game-entry-head">
+                <span class={`game-sigil game-sigil-${game.key}`}>{game.mark}</span>
+                <span class="availability"><i></i>{copy.active}</span>
+              </div>
+              <span class="game-tag">{game.tag}</span>
+              <h3>{game.title}</h3>
+              <p>{game.text}</p>
+              <nav class="question-list" aria-label={`${game.title} decisions`}>
+                {game.questions.map(([label, href]) => <a href={href}><span>{label}</span><strong>↗</strong></a>)}
+              </nav>
             </article>
           ))}
         </div>
       </section>
 
-      <section class="section">
-        <div class="callout">
-          <p><strong>{copy.trust}</strong> {copy.trustText}</p>
+      <section class="section section-roomy home-insights">
+        <div class="section-head">
+          <div><span class="section-kicker">{copy.featuredKicker}</span><h2>{copy.featuredTitle}</h2><p class="section-copy">{copy.featuredText}</p></div>
+          <a class="count count-link" href={lang === "ru" ? "/insights/" : "/en/insights/"}>{copy.allNotes} →</a>
         </div>
+        <div class="home-insight-grid">
+          {insights.map((insight, index) => {
+            const content = insight.content[lang];
+            const game = insight.game === "gta" ? "GTA Online" : insight.game === "dota" ? "Dota 2" : "WoW Retail";
+            const href = `${lang === "ru" ? "" : "/en"}/insights/${insight.slug}/`;
+            return <a class={`home-insight-card home-insight-${insight.game}`} href={href}>
+              <div class="home-insight-meta"><span>{game}</span><b>0{index + 1}</b></div>
+              <h3>{content.title}</h3>
+              <p>{content.description}</p>
+              <strong>{copy.readNote} · {content.readTime} ↗</strong>
+            </a>;
+          })}
+        </div>
+      </section>
+
+      <section id="money-meta-pulse" class="section section-roomy pulse-section">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">{copy.signalKicker}</span>
+            <h2>{copy.signalTitle}</h2>
+            <p class="section-copy">{copy.signalText}</p>
+          </div>
+        </div>
+        <div class="pulse-grid">
+          <a class="pulse-card pulse-gta" href={gtaPath}>
+            <div class="pulse-head"><span>{copy.weekly}</span><span class="pulse-state">{weeklyMeta.status}</span></div>
+            <strong>{weeklyMeta.items[lang][0]}</strong>
+            <div class="pulse-meta"><span>{copy.validThrough}</span><b>{weeklyMeta.validThrough}</b></div>
+          </a>
+          <a class="pulse-card pulse-dota" href={dotaPath}>
+            <div class="pulse-head"><span>{copy.dota}</span><span class="pulse-state">community-reported</span></div>
+            <strong>Patch 7.41 · Midas + buyback models</strong>
+            <div class="pulse-meta"><span>{copy.checked}</span><b>2026-08-11</b></div>
+          </a>
+          <a class="pulse-card pulse-wow" href={wowPath}>
+            <div class="pulse-head"><span>{copy.wow}</span><span class="pulse-state">{wowPatchContext.status}</span></div>
+            <strong>{wowPatchContext.release}</strong>
+            <div class="pulse-meta"><span>{copy.checked}</span><b>{wowPatchContext.checkedAt}</b></div>
+          </a>
+        </div>
+      </section>
+
+      <section class="section section-roomy comparison-section">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">{copy.compareKicker}</span>
+            <h2>{copy.compareTitle}</h2>
+          </div>
+        </div>
+        <div class="comparison-table">
+          <div class="comparison-head"><span>{copy.generic}</span><strong>{copy.moneyMeta}</strong></div>
+          {copy.compareRows.map(([generic, product]) => <div class="comparison-row"><span><i>×</i>{generic}</span><strong><i>✓</i>{product}</strong></div>)}
+        </div>
+      </section>
+
+      <section class="trust-banner">
+        <span class="trust-icon">✓</span>
+        <div><strong>{copy.trustTitle}</strong><p>{copy.trustText}</p></div>
       </section>
 
       <SiteFooter lang={lang} />
     </div>
   </main>
 </BaseLayout>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-home-demo]");
+  if (root) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-demo-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-demo-panel]")];
+    tabs.forEach((tab) => tab.addEventListener("click", () => {
+      const target = tab.dataset.demoTab;
+      tabs.forEach((item) => {
+        const active = item === tab;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-selected", String(active));
+      });
+      panels.forEach((panel) => {
+        const active = panel.dataset.demoPanel === target;
+        panel.classList.toggle("is-active", active);
+        panel.hidden = !active;
+      });
+    }));
+  }
+</script>

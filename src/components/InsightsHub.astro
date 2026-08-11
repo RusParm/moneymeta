@@ -1,0 +1,58 @@
+---
+import { insights, type InsightLocale } from "../data/insights";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { lang: InsightLocale; }
+const { lang } = Astro.props;
+const prefix = lang === "ru" ? "" : "/en";
+const path = `${prefix}/insights/`;
+const copy = lang === "ru" ? {
+  title: "Money Meta Field Notes — разборы игровых экономик",
+  description: "Практические разборы GTA Online, Dota 2 и WoW с цифрами, моделями и конкретным следующим действием.",
+  back: "← Главная",
+  kicker: "Field Notes · решения, а не новости",
+  heading: "Разбираем экономику игры до конкретного действия.",
+  lede: "Каждый материал отвечает на один вопрос игрока, показывает расчёт и заканчивается моделью, которую можно пересчитать под себя.",
+  featured: "Flagship analysis",
+  read: "Читать разбор"
+} : {
+  title: "Money Meta Field Notes — game economy analysis",
+  description: "Practical GTA Online, Dota 2 and WoW analysis with numbers, models and a concrete next action.",
+  back: "← Home",
+  kicker: "Field Notes · decisions, not news",
+  heading: "Take a game economy all the way to an action.",
+  lede: "Every note answers one player question, shows the calculation and ends with a model you can rerun for your own case.",
+  featured: "Flagship analysis",
+  read: "Read the analysis"
+};
+---
+
+<BaseLayout title={copy.title} description={copy.description} lang={lang} canonicalPath={path} alternatePath={lang === "ru" ? "/en/insights/" : "/insights/"}>
+  <main class="page insights-hub">
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/insights/" enPath="/en/insights/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
+      <section class="insights-hero">
+        <p class="eyebrow">{copy.kicker}</p>
+        <h1>{copy.heading}</h1>
+        <p class="lede">{copy.lede}</p>
+      </section>
+      <section class="section">
+        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01—03</h2></div><span class="count">3 games · RU/EN</span></div>
+        <div class="insight-card-grid">
+          {insights.map((insight, index) => {
+            const content = insight.content[lang];
+            const game = insight.game === "gta" ? "GTA Online" : insight.game === "dota" ? "Dota 2" : "WoW Retail";
+            return <a class={`insight-card insight-card-${insight.game}`} href={`${prefix}/insights/${insight.slug}/`}>
+              <div class="insight-card-top"><span>{game}</span><b>0{index + 1}</b></div>
+              <div><span class="game-tag">{content.kicker}</span><h2>{content.title}</h2><p>{content.description}</p></div>
+              <div class="insight-card-foot"><span>{content.readTime} · {insight.updatedAt}</span><strong>{copy.read} ↗</strong></div>
+            </a>;
+          })}
+        </div>
+      </section>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
