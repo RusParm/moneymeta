@@ -34,6 +34,6 @@ Primary promise: **Understand the economy. Make the smarter move.**
 
 ## Current priority
 
-Build the GTA Online Returner Toolkit and Next Best Move flow, then establish weekly data freshness and analytics.
+Validate the World of Warcraft Retail market-economy wedge, then establish analytics, saved scenarios and recurring data freshness across all three active verticals.
 
 Read `docs/PROJECT_CONTEXT.md`, `docs/ROADMAP.md`, `docs/DECISIONS.md` and `docs/CURRENT_STATUS.md` before changing product direction.

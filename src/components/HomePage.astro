@@ -15,8 +15,9 @@ const copy = lang === "ru" ? {
   lede: "Money Meta переводит игровые механики в решения: что купить, куда направить ограниченный капитал и как получить больше результата за доступное время — с формулами, источниками и честными ограничениями модели.",
   primary: "Получить следующий ход",
   secondary: "Открыть Dota Economy Lab",
+  tertiary: "Открыть WoW Economy Lab",
   section: "Экономики",
-  sectionCopy: "Две работающие модели: долгосрочная production economy GTA и поминутная match economy Dota 2.",
+  sectionCopy: "Три работающие вертикали: production economy GTA, поминутная match economy Dota 2 и рыночная экономика WoW.",
   live: "Работает",
   gta: "GTA Online",
   gtaText: "Вернись после перерыва, укажи бюджет и часы — получи персональный Next Best Move, сравнение активов и прозрачную окупаемость.",
@@ -24,6 +25,9 @@ const copy = lang === "ru" ? {
   dota: "Dota 2",
   dotaText: "Матчевая экономика: Midas ROI, стоимость buyback, timing cost и надёжное золото как разные классы капитала.",
   dotaLink: "Открыть лабораторию",
+  wow: "World of Warcraft",
+  wowText: "Рыночная экономика: crafting margin, effective gold/hour, Auction House liquidity и стоимость непроданного инвентаря.",
+  wowLink: "Открыть лабораторию",
   method: "Один язык для разных экономик",
   methodCopy: "Не пытаемся выдать один универсальный рейтинг за точную науку. Используем семейства моделей под конкретный тип решения.",
   cards: [
@@ -42,8 +46,9 @@ const copy = lang === "ru" ? {
   lede: "Money Meta turns game mechanics into decisions: what to buy, where to allocate limited capital and how to get more from limited playtime — with formulas, sources and honest model limits.",
   primary: "Get your next move",
   secondary: "Open Dota Economy Lab",
+  tertiary: "Open WoW Economy Lab",
   section: "Economies",
-  sectionCopy: "Two working models: GTA's long-horizon production economy and Dota 2's minute-by-minute match economy.",
+  sectionCopy: "Three live verticals: GTA's production economy, Dota 2's minute-by-minute match economy and WoW's player-driven market economy.",
   live: "Live",
   gta: "GTA Online",
   gtaText: "Returning after a break? Enter your budget and available hours to get a personal Next Best Move, asset comparison and transparent payback.",
@@ -51,6 +56,9 @@ const copy = lang === "ru" ? {
   dota: "Dota 2",
   dotaText: "Match economy: Midas ROI, buyback value, timing cost and reliable gold as distinct classes of capital.",
   dotaLink: "Open lab",
+  wow: "World of Warcraft",
+  wowText: "Market economy: crafting margin, effective gold/hour, Auction House liquidity and the cost of unsold inventory.",
+  wowLink: "Open lab",
   method: "One language for different economies",
   methodCopy: "We do not pretend one universal score is precise science. Each decision type gets a model designed for its actual economy.",
   cards: [
@@ -65,6 +73,7 @@ const copy = lang === "ru" ? {
 const homePath = lang === "ru" ? "/" : "/en/";
 const gtaPath = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
 const dotaPath = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
+const wowPath = lang === "ru" ? "/wow/" : "/en/wow/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
 ---
 
@@ -94,6 +103,7 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
         <div class="hero-actions">
           <a class="button primary" href={`${calculatorPath}#next-move`}>{copy.primary} →</a>
           <a class="button ghost" href={dotaPath}>{copy.secondary}</a>
+          <a class="button ghost" href={wowPath}>{copy.tertiary}</a>
         </div>
       </section>
 
@@ -104,10 +114,10 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
             <h2>{copy.section}</h2>
             <p class="section-copy">{copy.sectionCopy}</p>
           </div>
-          <span class="count">2 economies · 2 active</span>
+          <span class="count">3 economies · 3 active</span>
         </div>
 
-        <div class="grid-2">
+        <div class="grid-3">
           <a class="card interactive" href={gtaPath}>
             <div class="card-top">
               <div><span class="pill teal">{copy.live}</span><h3 style="margin-top:12px">{copy.gta}</h3></div>
@@ -124,6 +134,15 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
             </div>
             <p>{copy.dotaText}</p>
             <span class="card-link">{copy.dotaLink} →</span>
+          </a>
+
+          <a class="card interactive" href={wowPath}>
+            <div class="card-top">
+              <div><span class="pill teal">{copy.live}</span><h3 style="margin-top:12px">{copy.wow}</h3></div>
+              <span class="pill muted">2 models</span>
+            </div>
+            <p>{copy.wowText}</p>
+            <span class="card-link">{copy.wowLink} →</span>
           </a>
         </div>
       </section>

@@ -21,18 +21,26 @@ The production repository contained three standalone HTML files with CDN Tailwin
 
 ## Validation
 
-- `npm test`: 11 tests passing across the GTA and Dota economy models.
+- `npm test`: 16 tests passing across the GTA, Dota and WoW economy models.
 - `npm run build`: type check and static build pass with zero diagnostics.
-- All nine public pages plus robots.txt and sitemap build successfully.
-- Desktop and mobile browser QA passed for both Dota calculators and the RU/EN routes.
+- All eleven public pages plus robots.txt and sitemap build successfully.
+- Desktop and mobile browser QA passed for the WoW calculators, three-economy home and RU/EN routes.
 
-## Active release — `product/v0.4`
+## Production release — `product/v0.4`
 
 - Dota 2 RU/EN Economy Lab.
 - Hand of Midas incremental ROI and payback model.
 - Buyback Reserve model with objective timing.
 - Patch 7.41 context, editable baselines and source disclosures.
 - Home, sitemap, version and documentation updated for two active economies.
+
+## Active release candidate — `product/v0.5`
+
+- World of Warcraft Retail Economy Lab in RU/EN.
+- Crafting Margin model with Auction House cut, sell-through and inventory risk.
+- Farm Liquidity model separating listed GPH from effective GPH.
+- Midnight / Curse of Ula’tek context, editable assumptions and source disclosures.
+- Home, sitemap, version and documentation updated for three active economies.
 
 ## Release policy
 

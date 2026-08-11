@@ -17,6 +17,13 @@
 - Buyback liquidity reserve model.
 - Production release of the Astro/TypeScript platform.
 
+## P0.75 — v0.5 market-economy release
+
+- World of Warcraft Retail Economy Lab in RU/EN.
+- Crafting margin after Auction House cut, sell-through and failed-listing costs.
+- Farm liquidity and effective gold/hour model.
+- Third active economy and first true player-driven market vertical.
+
 ## P1 — recurring utility
 
 - Goal Planner.
@@ -32,5 +39,7 @@
 - Payments and Money Meta Pro.
 - Creator dashboard and embeds.
 - Public data API.
+- Live WoW Token and regional price data through Blizzard's supported APIs.
+- WoW profession portfolio, recipe comparison and saved market profiles.
 - Expanded Dota 2 match-economy tools: reliable/unreliable gold, death cost and item timing comparisons.
 - Minecraft/Hypixel market tools after the data workflow is proven.

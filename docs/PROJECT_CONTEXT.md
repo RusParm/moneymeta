@@ -12,6 +12,14 @@ Money Meta is built by a professional portfolio manager and lifelong gamer. The 
 
 GTA Online is the proving ground for the methodology and product. It also creates a credible audience and data workflow before the GTA VI release window. Money Meta must not promise an unconfirmed GTA VI Online product.
 
+## Active verticals
+
+- GTA Online: long-horizon production economy and asset allocation.
+- Dota 2: match economy, timing and liquidity reserves.
+- World of Warcraft Retail: player-driven markets, crafting margins and inventory liquidity.
+
+WoW Classic is a future separate product surface, not a data toggle inside the Retail model.
+
 ## Core product loop
 
 1. A player arrives through a useful article, comparison or search query.

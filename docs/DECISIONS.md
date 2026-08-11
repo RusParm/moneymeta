@@ -15,3 +15,7 @@ Every material metric carries a verification status and check date. Stale weekly
 ## 2026-08-11 — routes
 
 Russian lives at the root; English lives under `/en/`. Existing `.html` calculator traffic receives an explicit permanent redirect to the clean route.
+
+## 2026-08-11 — third vertical: World of Warcraft Retail
+
+WoW Retail is the third Money Meta economy. Retail and Classic will use separate datasets and models because their markets, audiences and live data are not interchangeable. The first Retail release focuses on crafting margin and farm liquidity; live prices remain a later data-layer upgrade.

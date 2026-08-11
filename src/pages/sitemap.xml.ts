@@ -5,6 +5,8 @@ const paths = [
   "/en/",
   "/dota-2/",
   "/en/dota-2/",
+  "/wow/",
+  "/en/wow/",
   "/gta-online/",
   "/en/gta-online/",
   "/gta-online/calculators/business-roi/",
