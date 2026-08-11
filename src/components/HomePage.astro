@@ -1,0 +1,157 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+
+const copy = lang === "ru" ? {
+  title: "Money Meta — аналитика игровых экономик и решения для игроков",
+  description: "Пойми экономику любимой игры и выбери следующий лучший шаг: окупаемость, чистая прибыль, стоимость времени и прозрачные допущения.",
+  eyebrow: "Decision intelligence for game economies",
+  headingA: "Пойми экономику.",
+  headingB: "Сделай более умный ход.",
+  lede: "Money Meta переводит игровые механики в решения: что купить, куда направить ограниченный капитал и как получить больше результата за доступное время — с формулами, источниками и честными ограничениями модели.",
+  primary: "Получить следующий ход",
+  secondary: "Открыть GTA Economy Hub",
+  section: "Экономики",
+  sectionCopy: "Сначала — глубокий продукт по одной экономике. Затем переносим проверенную методологию на другие типы рынков.",
+  live: "Работает",
+  gta: "GTA Online",
+  gtaText: "Вернись после перерыва, укажи бюджет и часы — получи персональный Next Best Move, сравнение активов и прозрачную окупаемость.",
+  gtaLink: "Открыть хаб",
+  planned: "Следующая вертикаль",
+  dota: "Dota 2",
+  dotaText: "Матчевая экономика: Midas IRR, стоимость buyback, timing cost и надёжное золото как разные классы капитала.",
+  method: "Один язык для разных экономик",
+  methodCopy: "Не пытаемся выдать один универсальный рейтинг за точную науку. Используем семейства моделей под конкретный тип решения.",
+  cards: [
+    ["Production Economy", "Чистая прибыль, окупаемость, capital efficiency, friction и solo viability."],
+    ["Match Economy", "Expected value, timing, opportunity cost, comeback risk и сложность исполнения."],
+    ["Market Economy", "Спред после комиссий, ликвидность, объём, волатильность и вероятность исполнения."]
+  ],
+  trust: "Built by a professional portfolio manager and lifelong gamer.",
+  trustText: "Здесь нет выдуманной точности. Каждая цифра получает дату проверки и статус: verified, estimated или community-reported."
+} : {
+  title: "Money Meta — game economy analytics and smarter player decisions",
+  description: "Understand your favorite game's economy and choose the next best move with payback, net profit, time cost and transparent assumptions.",
+  eyebrow: "Decision intelligence for game economies",
+  headingA: "Understand the economy.",
+  headingB: "Make the smarter move.",
+  lede: "Money Meta turns game mechanics into decisions: what to buy, where to allocate limited capital and how to get more from limited playtime — with formulas, sources and honest model limits.",
+  primary: "Get your next move",
+  secondary: "Open GTA Economy Hub",
+  section: "Economies",
+  sectionCopy: "We start with one deep product, prove the method, then apply it to other types of in-game markets.",
+  live: "Live",
+  gta: "GTA Online",
+  gtaText: "Returning after a break? Enter your budget and available hours to get a personal Next Best Move, asset comparison and transparent payback.",
+  gtaLink: "Open hub",
+  planned: "Next vertical",
+  dota: "Dota 2",
+  dotaText: "Match economy: Midas IRR, buyback value, timing cost and reliable gold as distinct classes of capital.",
+  method: "One language for different economies",
+  methodCopy: "We do not pretend one universal score is precise science. Each decision type gets a model designed for its actual economy.",
+  cards: [
+    ["Production Economy", "Net profit, payback, capital efficiency, friction and solo viability."],
+    ["Match Economy", "Expected value, timing, opportunity cost, comeback risk and execution difficulty."],
+    ["Market Economy", "Net spread after fees, liquidity, volume, volatility and fill probability."]
+  ],
+  trust: "Built by a professional portfolio manager and lifelong gamer.",
+  trustText: "No invented precision. Every material number gets a check date and a status: verified, estimated or community-reported."
+};
+
+const homePath = lang === "ru" ? "/" : "/en/";
+const gtaPath = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
+const calculatorPath = `${gtaPath}calculators/business-roi/`;
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={homePath}
+  alternatePath={lang === "ru" ? "/en/" : "/"}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Money Meta",
+    url: "https://themoneymeta.com",
+    description: copy.description,
+    inLanguage: ["ru", "en"]
+  }}
+>
+  <main class="page">
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/" enPath="/en/" />
+
+      <section class="hero">
+        <p class="eyebrow">{copy.eyebrow}</p>
+        <h1>{copy.headingA}<br /><span class="magenta">{copy.headingB}</span></h1>
+        <p class="lede">{copy.lede}</p>
+        <div class="hero-actions">
+          <a class="button primary" href={`${calculatorPath}#next-move`}>{copy.primary} →</a>
+          <a class="button ghost" href={gtaPath}>{copy.secondary}</a>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Money Meta coverage</span>
+            <h2>{copy.section}</h2>
+            <p class="section-copy">{copy.sectionCopy}</p>
+          </div>
+          <span class="count">2 mapped · 1 active</span>
+        </div>
+
+        <div class="grid-2">
+          <a class="card interactive" href={gtaPath}>
+            <div class="card-top">
+              <div><span class="pill teal">{copy.live}</span><h3 style="margin-top:12px">{copy.gta}</h3></div>
+              <span class="pill muted">7 assets</span>
+            </div>
+            <p>{copy.gtaText}</p>
+            <span class="card-link">{copy.gtaLink} →</span>
+          </a>
+
+          <article class="card" style="opacity:.72">
+            <div class="card-top">
+              <div><span class="pill gold">{copy.planned}</span><h3 style="margin-top:12px">{copy.dota}</h3></div>
+              <span class="pill muted">Research</span>
+            </div>
+            <p>{copy.dotaText}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Money Meta methodology</span>
+            <h2>{copy.method}</h2>
+            <p class="section-copy">{copy.methodCopy}</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          {copy.cards.map(([title, body], index) => (
+            <article class="card">
+              <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>Model 0{index + 1}</span>
+              <h3 style="margin:15px 0 8px">{title}</h3>
+              <p>{body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="callout">
+          <p><strong>{copy.trust}</strong> {copy.trustText}</p>
+        </div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

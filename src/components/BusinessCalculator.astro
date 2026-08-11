@@ -1,0 +1,336 @@
+---
+import { gtaBusinesses } from "../data/gta-businesses";
+import { calculateBusinessMetrics } from "../lib/economy";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
+const money = (value: number) => `$${formatter.format(Math.round(value))}`;
+
+const copy = lang === "ru" ? {
+  kicker: "Model Lab · все допущения открыты",
+  title: "Проверь экономику под свои условия",
+  text: "Выбери бизнес, измени исходные данные и сразу увидишь, как бонусы, закупка ресурсов и время производства влияют на решение.",
+  asset: "Бизнес",
+  setup: "Стартовые вложения, GTA$",
+  sale: "Полная продажа, GTA$",
+  supply: "Стоимость ресурсов, GTA$",
+  production: "Время производства, ч",
+  bonus: "Бонус к продаже, %",
+  weekly: "Онлайн-часов производства в неделю",
+  reset: "Вернуть базовые значения",
+  result: "Текущий сценарий",
+  gross: "Продажа с бонусом",
+  net: "Чистыми за цикл",
+  hourly: "Чистыми / ч производства",
+  payback: "Окупаемость",
+  roi: "vROI за цикл",
+  month: "Месячный потенциал",
+  hours: "ч производства",
+  estimateNote: "Месячный потенциал — steady-state оценка: доход в час × указанные онлайн-часы × 4,345 недели. Лимиты доставки и простои не учтены.",
+  compare: "Сравнение базовых сценариев",
+  compareCopy: "Единая методика для всех активов. Изменения формы влияют только на выбранный сценарий выше.",
+  portfolio: "Собери портфель под бюджет и время",
+  portfolioCopy: "Оптимизатор перебирает комбинации и выбирает максимальную чистую прибыль одного цикла в неделю в рамках ограничений.",
+  portfolioBudget: "Бюджет портфеля, GTA$",
+  portfolioHours: "Активных часов в неделю",
+  portfolioResult: "Оптимальная комбинация",
+  noPortfolio: "В эти ограничения пока не помещается ни один актив.",
+  totalCost: "Общие вложения",
+  activeTime: "Активное время",
+  weeklyProfit: "Чистыми / неделя",
+  monthlyProfit: "Чистыми / месяц",
+  dataTitle: "Статус данных: estimated",
+  dataText: "Набор проверен 1 июля 2026 года как рабочая модель, но требует повторной проверки в игре. Здесь нет скрытой точности: исходные значения редактируются, а архивные бонусы не выдаются за текущие.",
+  table: { asset: "Актив", net: "Чистыми / цикл", hourly: "Чистыми / ч", payback: "Окупаемость", roi: "vROI" }
+} : {
+  kicker: "Model Lab · every assumption is visible",
+  title: "Test the economy against your conditions",
+  text: "Choose a business, edit the inputs and see how bonuses, supply costs and production time change the decision.",
+  asset: "Business",
+  setup: "Initial investment, GTA$",
+  sale: "Full sale, GTA$",
+  supply: "Supply cost, GTA$",
+  production: "Production time, h",
+  bonus: "Sale bonus, %",
+  weekly: "Online production hours per week",
+  reset: "Restore baseline inputs",
+  result: "Current scenario",
+  gross: "Sale with bonus",
+  net: "Net per cycle",
+  hourly: "Net / production h",
+  payback: "Payback",
+  roi: "vROI per cycle",
+  month: "Monthly potential",
+  hours: "production h",
+  estimateNote: "Monthly potential is a steady-state estimate: hourly income × online hours × 4.345 weeks. Delivery limits and downtime are excluded.",
+  compare: "Baseline scenario comparison",
+  compareCopy: "One methodology across every asset. Form edits affect only the selected scenario above.",
+  portfolio: "Build a portfolio for your budget and time",
+  portfolioCopy: "The optimizer tests every combination and maximizes one net cycle per week within your constraints.",
+  portfolioBudget: "Portfolio budget, GTA$",
+  portfolioHours: "Active hours per week",
+  portfolioResult: "Optimal combination",
+  noPortfolio: "No asset fits these constraints yet.",
+  totalCost: "Total investment",
+  activeTime: "Active time",
+  weeklyProfit: "Net / week",
+  monthlyProfit: "Net / month",
+  dataTitle: "Data status: estimated",
+  dataText: "This set was checked on July 1, 2026 as a working model, but requires in-game revalidation. There is no false precision: inputs are editable and archived bonuses are never presented as current.",
+  table: { asset: "Asset", net: "Net / cycle", hourly: "Net / h", payback: "Payback", roi: "vROI" }
+};
+---
+
+<section id="model-lab" class="section" data-lang={lang}>
+  <div class="section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2>{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="pill gold">Estimated · editable</span>
+  </div>
+
+  <div class="grid-2">
+    <form class="card" data-role="calculator-form">
+      <div class="form-grid">
+        <div class="field" style="grid-column:1/-1">
+          <label for="calculator-business">{copy.asset}</label>
+          <select id="calculator-business" data-role="business">
+            {gtaBusinesses.map((business) => <option value={business.id}>{business.name[lang]}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="calculator-setup">{copy.setup}</label>
+          <input id="calculator-setup" data-role="setup" type="number" min="0" step="10000" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="calculator-sale">{copy.sale}</label>
+          <input id="calculator-sale" data-role="sale" type="number" min="0" step="5000" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="calculator-supply">{copy.supply}</label>
+          <input id="calculator-supply" data-role="supply" type="number" min="0" step="5000" inputmode="numeric" />
+        </div>
+        <div class="field">
+          <label for="calculator-production">{copy.production}</label>
+          <input id="calculator-production" data-role="production" type="number" min="0.1" step="0.1" />
+        </div>
+        <div class="field">
+          <label for="calculator-bonus">{copy.bonus}</label>
+          <input id="calculator-bonus" data-role="bonus" type="number" min="0" max="1000" step="10" value="0" />
+        </div>
+        <div class="field">
+          <label for="calculator-weekly">{copy.weekly}</label>
+          <input id="calculator-weekly" data-role="weekly" type="number" min="1" max="168" step="1" value="8" />
+        </div>
+      </div>
+      <button class="button ghost" data-role="reset" type="button" style="margin-top:18px;width:100%">↺ {copy.reset}</button>
+    </form>
+
+    <article class="card result-panel" aria-live="polite">
+      <span class="result-label">{copy.result}</span>
+      <div class="result-name" data-role="scenario-name">—</div>
+      <p class="result-reason" data-role="scenario-reason">—</p>
+      <div class="result-metrics">
+        <div class="result-metric"><span>{copy.gross}</span><strong data-role="gross">—</strong></div>
+        <div class="result-metric"><span>{copy.net}</span><strong class="teal" data-role="net">—</strong></div>
+        <div class="result-metric"><span>{copy.hourly}</span><strong data-role="hourly">—</strong></div>
+        <div class="result-metric"><span>{copy.payback}</span><strong data-role="payback">—</strong></div>
+        <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="roi">—</strong></div>
+        <div class="result-metric"><span>{copy.month}</span><strong class="gold" data-role="month">—</strong></div>
+      </div>
+      <p class="dim" style="margin-top:16px;font-size:11px">{copy.estimateNote}</p>
+    </article>
+  </div>
+
+  <section class="section" aria-labelledby="baseline-comparison-title">
+    <div class="section-head">
+      <div>
+        <span class="section-kicker">Cross-asset view</span>
+        <h2 id="baseline-comparison-title">{copy.compare}</h2>
+        <p class="section-copy">{copy.compareCopy}</p>
+      </div>
+      <span class="count">{gtaBusinesses.length} assets · baseline</span>
+    </div>
+    <div class="data-table">
+      <table>
+        <thead><tr><th>{copy.table.asset}</th><th>{copy.table.net}</th><th>{copy.table.hourly}</th><th>{copy.table.payback}</th><th>{copy.table.roi}</th></tr></thead>
+        <tbody>
+          {gtaBusinesses.map((business) => {
+            const metrics = calculateBusinessMetrics(business);
+            return (
+              <tr>
+                <td><strong>{business.name[lang]}</strong></td>
+                <td class="metric teal">{money(metrics.netPerCycle)}</td>
+                <td class="metric">{money(metrics.profitPerProductionHour)}</td>
+                <td class="metric">{formatter.format(Math.round(metrics.paybackProductionHours))} {copy.hours}</td>
+                <td class="metric magenta">{metrics.virtualRoi.toFixed(1)}%</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="portfolio-title">
+    <div class="section-head">
+      <div>
+        <span class="section-kicker">Portfolio Optimizer v1</span>
+        <h2 id="portfolio-title">{copy.portfolio}</h2>
+        <p class="section-copy">{copy.portfolioCopy}</p>
+      </div>
+    </div>
+    <div class="grid-2">
+      <form class="card" data-role="portfolio-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="portfolio-budget">{copy.portfolioBudget}</label>
+            <input id="portfolio-budget" data-role="portfolio-budget" type="number" min="0" step="100000" value="5000000" inputmode="numeric" />
+          </div>
+          <div class="field">
+            <label for="portfolio-hours">{copy.portfolioHours}</label>
+            <input id="portfolio-hours" data-role="portfolio-hours" type="number" min="0" max="168" step="0.5" value="2" />
+          </div>
+        </div>
+      </form>
+      <article class="card result-panel" aria-live="polite">
+        <span class="result-label">{copy.portfolioResult}</span>
+        <div class="portfolio-picks" data-role="portfolio-picks">—</div>
+        <div class="result-metrics">
+          <div class="result-metric"><span>{copy.totalCost}</span><strong data-role="portfolio-cost">—</strong></div>
+          <div class="result-metric"><span>{copy.activeTime}</span><strong data-role="portfolio-time">—</strong></div>
+          <div class="result-metric"><span>{copy.weeklyProfit}</span><strong class="teal" data-role="portfolio-week">—</strong></div>
+          <div class="result-metric"><span>{copy.monthlyProfit}</span><strong class="gold" data-role="portfolio-month">—</strong></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="callout warning" style="margin-top:24px">
+    <p><strong>{copy.dataTitle}.</strong> {copy.dataText}</p>
+  </div>
+</section>
+
+<script>
+  import { gtaBusinesses, type Locale } from "../data/gta-businesses";
+  import { calculateBusinessMetrics, findBestPortfolio } from "../lib/economy";
+
+  const root = document.querySelector<HTMLElement>("#model-lab");
+
+  if (root) {
+    const lang = (root.dataset.lang ?? "ru") as Locale;
+    const locale = lang === "ru" ? "ru-RU" : "en-US";
+    const formatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+    const money = (value: number) => `$${formatter.format(Math.round(value))}`;
+    const numberValue = (input: HTMLInputElement, fallback = 0) => Math.max(0, Number(input.value) || fallback);
+
+    const businessSelect = root.querySelector<HTMLSelectElement>("[data-role='business']")!;
+    const setup = root.querySelector<HTMLInputElement>("[data-role='setup']")!;
+    const sale = root.querySelector<HTMLInputElement>("[data-role='sale']")!;
+    const supply = root.querySelector<HTMLInputElement>("[data-role='supply']")!;
+    const production = root.querySelector<HTMLInputElement>("[data-role='production']")!;
+    const bonus = root.querySelector<HTMLInputElement>("[data-role='bonus']")!;
+    const weekly = root.querySelector<HTMLInputElement>("[data-role='weekly']")!;
+    const reset = root.querySelector<HTMLButtonElement>("[data-role='reset']")!;
+    const scenarioName = root.querySelector<HTMLElement>("[data-role='scenario-name']")!;
+    const scenarioReason = root.querySelector<HTMLElement>("[data-role='scenario-reason']")!;
+    const portfolioBudget = root.querySelector<HTMLInputElement>("[data-role='portfolio-budget']")!;
+    const portfolioHours = root.querySelector<HTMLInputElement>("[data-role='portfolio-hours']")!;
+
+    const metricTargets = {
+      gross: root.querySelector<HTMLElement>("[data-role='gross']")!,
+      net: root.querySelector<HTMLElement>("[data-role='net']")!,
+      hourly: root.querySelector<HTMLElement>("[data-role='hourly']")!,
+      payback: root.querySelector<HTMLElement>("[data-role='payback']")!,
+      roi: root.querySelector<HTMLElement>("[data-role='roi']")!,
+      month: root.querySelector<HTMLElement>("[data-role='month']")!
+    };
+
+    const portfolioTargets = {
+      picks: root.querySelector<HTMLElement>("[data-role='portfolio-picks']")!,
+      cost: root.querySelector<HTMLElement>("[data-role='portfolio-cost']")!,
+      time: root.querySelector<HTMLElement>("[data-role='portfolio-time']")!,
+      week: root.querySelector<HTMLElement>("[data-role='portfolio-week']")!,
+      month: root.querySelector<HTMLElement>("[data-role='portfolio-month']")!
+    };
+
+    const labels = lang === "ru"
+      ? { productionHours: "ч производства", activeHours: "ч", empty: "В эти ограничения пока не помещается ни один актив." }
+      : { productionHours: "production h", activeHours: "h", empty: "No asset fits these constraints yet." };
+
+    function selectedBusiness() {
+      return gtaBusinesses.find((business) => business.id === businessSelect.value) ?? gtaBusinesses[0]!;
+    }
+
+    function loadBaseline() {
+      const business = selectedBusiness();
+      setup.value = String(business.setupCost);
+      sale.value = String(business.fullSale);
+      supply.value = String(business.supplyCost);
+      production.value = String(business.productionHours);
+      bonus.value = "0";
+      renderScenario();
+    }
+
+    function renderScenario() {
+      const business = selectedBusiness();
+      const metrics = calculateBusinessMetrics({
+        setupCost: numberValue(setup),
+        fullSale: numberValue(sale),
+        supplyCost: numberValue(supply),
+        productionHours: Math.max(0.1, numberValue(production, 0.1))
+      }, numberValue(bonus));
+
+      scenarioName.textContent = business.name[lang];
+      scenarioReason.textContent = business.summary[lang];
+      metricTargets.gross.textContent = money(metrics.grossSale);
+      metricTargets.net.textContent = money(metrics.netPerCycle);
+      metricTargets.hourly.textContent = money(metrics.profitPerProductionHour);
+      metricTargets.payback.textContent = Number.isFinite(metrics.paybackProductionHours)
+        ? `${formatter.format(Math.round(metrics.paybackProductionHours))} ${labels.productionHours}`
+        : "∞";
+      metricTargets.roi.textContent = `${metrics.virtualRoi.toFixed(1)}%`;
+      metricTargets.month.textContent = money(metrics.profitPerProductionHour * numberValue(weekly, 1) * 4.345);
+    }
+
+    function renderPortfolio() {
+      const result = findBestPortfolio(gtaBusinesses, numberValue(portfolioBudget), numberValue(portfolioHours));
+
+      if (!result) {
+        portfolioTargets.picks.textContent = labels.empty;
+        portfolioTargets.cost.textContent = "—";
+        portfolioTargets.time.textContent = "—";
+        portfolioTargets.week.textContent = "—";
+        portfolioTargets.month.textContent = "—";
+        return;
+      }
+
+      portfolioTargets.picks.replaceChildren();
+      result.businesses.forEach((business) => {
+        const pill = document.createElement("span");
+        pill.className = "pill teal";
+        pill.textContent = business.name[lang];
+        portfolioTargets.picks.appendChild(pill);
+      });
+      portfolioTargets.cost.textContent = money(result.setupCost);
+      portfolioTargets.time.textContent = `${result.activeHours.toFixed(1)} ${labels.activeHours}`;
+      portfolioTargets.week.textContent = money(result.weeklyProfit);
+      portfolioTargets.month.textContent = money(result.weeklyProfit * 4.345);
+    }
+
+    businessSelect.addEventListener("change", loadBaseline);
+    [setup, sale, supply, production, bonus, weekly].forEach((input) => input.addEventListener("input", renderScenario));
+    [portfolioBudget, portfolioHours].forEach((input) => input.addEventListener("input", renderPortfolio));
+    reset.addEventListener("click", loadBaseline);
+
+    loadBaseline();
+    renderPortfolio();
+  }
+</script>
+
+<style>
+  .portfolio-picks { display: flex; flex-wrap: wrap; gap: 8px; min-height: 47px; margin-top: 12px; color: var(--muted); font-size: 13px; }
+</style>

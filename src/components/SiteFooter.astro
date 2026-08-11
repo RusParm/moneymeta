@@ -1,0 +1,15 @@
+---
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+---
+
+<footer class="footer">
+  <div class="footer-grid">
+    <p>
+      {lang === "ru"
+        ? "Money Meta — независимый аналитический проект. Не связан с Rockstar Games, Take-Two Interactive, Valve или другими издателями. Расчёты являются оценками игровых механик, а не официальными данными."
+        : "Money Meta is an independent analytics project. It is not affiliated with Rockstar Games, Take-Two Interactive, Valve or other publishers. Calculations are estimates of game mechanics, not official publisher data."}
+    </p>
+    <span class="mono">Understand the economy.<br />Make the smarter move.</span>
+  </div>
+</footer>

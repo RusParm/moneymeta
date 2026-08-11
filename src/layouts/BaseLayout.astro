@@ -1,0 +1,47 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: "ru" | "en";
+  canonicalPath?: string;
+  alternatePath?: string;
+  schema?: Record<string, unknown>;
+}
+
+const {
+  title,
+  description,
+  lang = "ru",
+  canonicalPath = Astro.url.pathname,
+  alternatePath,
+  schema
+} = Astro.props;
+
+const canonical = new URL(canonicalPath, Astro.site);
+const alternate = alternatePath ? new URL(alternatePath, Astro.site) : null;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0d0a17" />
+    <link rel="canonical" href={canonical} />
+    {alternate && <link rel="alternate" hreflang={lang === "ru" ? "en" : "ru"} href={alternate} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Money Meta" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

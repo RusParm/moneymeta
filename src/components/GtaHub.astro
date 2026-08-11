@@ -1,0 +1,143 @@
+---
+import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
+import { gradeForScore, isSnapshotStale, scoreBusinesses } from "../lib/economy";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const scores = scoreBusinesses(gtaBusinesses).sort((a, b) => b.score - a.score);
+const staleWeekly = isSnapshotStale(weeklyMeta.validThrough);
+const root = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
+const calculator = `${root}calculators/business-roi/`;
+
+const copy = lang === "ru" ? {
+  title: "GTA Online Economy Hub — Money Meta",
+  description: "Персональный следующий ход, сравнение GTA Online бизнесов, чистая прибыль, окупаемость и честные статусы данных.",
+  back: "← Все экономики",
+  eyebrow: "GTA Online · Economy Hub",
+  heading: "Не вспоминай всю мету. Получи следующий лучший ход.",
+  lede: "Укажи капитал, доступное время и приоритет — Money Meta отсеет неподходящие активы и объяснит, что делать сейчас. Ниже можно проверить модель и изменить каждое допущение.",
+  cta: "Запустить Next Best Move",
+  staleTitle: "Weekly Meta пока не подтверждена",
+  staleText: "Старая бонусная неделя автоматически снята со статуса «актуально». До повторной проверки Money Meta не показывает архивные бонусы как действующие.",
+  currentTitle: "Проверенная Weekly Meta",
+  tableTitle: "Production Economy Score",
+  tableCopy: "Относительное сравнение капитальной эффективности внутри текущего набора. Это инструмент выбора, а не абсолютная оценка качества бизнеса.",
+  asset: "Актив", roi: "vROI", payback: "Окупаемость", friction: "Friction", solo: "Solo", score: "Score", status: "Статус",
+  estimated: "Estimated",
+  hours: "ч производства",
+  methodology: "Methodology & data rules",
+  methodBody: [
+    "vROI — чистая прибыль цикла, делённая на стартовые вложения. Окупаемость измерена в часах производства, а не выдана за количество активного ручного grind.",
+    "Friction и Solo Suitability являются экспертными оценками и явно отделены от расчётных метрик.",
+    "Score складывается из нормализованных vROI, окупаемости и friction. При расширении выборки относительные грейды изменятся.",
+    "Текущий набор чисел имеет статус estimated и требует повторной проверки в игре перед публичной v1. Пользователь может изменить допущения в калькуляторе."
+  ]
+} : {
+  title: "GTA Online Economy Hub — Money Meta",
+  description: "Get a personal next move, compare GTA Online businesses, net profit, payback and transparent data status.",
+  back: "← All economies",
+  eyebrow: "GTA Online · Economy Hub",
+  heading: "Do not relearn the whole meta. Get your next best move.",
+  lede: "Enter your capital, available time and priority. Money Meta filters unsuitable assets and explains what to do now. Then inspect the model and edit every assumption.",
+  cta: "Launch Next Best Move",
+  staleTitle: "Weekly Meta is awaiting verification",
+  staleText: "The old bonus week was automatically removed from current status. Archived bonuses are never presented as active before revalidation.",
+  currentTitle: "Verified Weekly Meta",
+  tableTitle: "Production Economy Score",
+  tableCopy: "A relative capital-efficiency comparison within the current set. It is a decision aid, not an absolute quality rating.",
+  asset: "Asset", roi: "vROI", payback: "Payback", friction: "Friction", solo: "Solo", score: "Score", status: "Status",
+  estimated: "Estimated",
+  hours: "production h",
+  methodology: "Methodology & data rules",
+  methodBody: [
+    "vROI is net cycle profit divided by initial investment. Payback is measured in production hours, not mislabeled as manual grinding time.",
+    "Friction and Solo Suitability are expert estimates and are explicitly separated from calculated metrics.",
+    "The score combines normalized vROI, payback and friction. Relative grades will change as the comparison set expands.",
+    "The current number set is estimated and requires in-game revalidation before public v1. Users can edit assumptions in the calculator."
+  ]
+};
+
+const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 }).format(value);
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={root}
+  alternatePath={lang === "ru" ? "/en/gta-online/" : "/gta-online/"}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: copy.title,
+    about: { "@type": "VideoGame", name: "Grand Theft Auto Online", publisher: "Rockstar Games" },
+    description: copy.description
+  }}
+>
+  <main class="page">
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/gta-online/" enPath="/en/gta-online/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
+
+      <section class="hero">
+        <p class="eyebrow">{copy.eyebrow}</p>
+        <h1 style="font-size:clamp(38px,6vw,62px)">{copy.heading}</h1>
+        <p class="lede">{copy.lede}</p>
+        <div class="hero-actions">
+          <a class="button primary" href={`${calculator}#next-move`}>{copy.cta} →</a>
+          <a class="button ghost" href={calculator}>{lang === "ru" ? "Открыть все расчёты" : "Open full calculator"}</a>
+        </div>
+      </section>
+
+      <section class={`callout ${staleWeekly ? "warning" : ""}`}>
+        <p>
+          <strong>{staleWeekly ? copy.staleTitle : copy.currentTitle}.</strong>{" "}
+          {staleWeekly ? copy.staleText : weeklyMeta.items[lang].join(" ")}
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">Money Meta model 01</span>
+            <h2>{copy.tableTitle}</h2>
+            <p class="section-copy">{copy.tableCopy}</p>
+          </div>
+          <span class="count">{gtaBusinesses.length} assets · checked 2026-07-01</span>
+        </div>
+
+        <div class="data-table">
+          <table>
+            <thead><tr>
+              <th>{copy.asset}</th><th>{copy.roi}</th><th>{copy.payback}</th><th>{copy.friction}</th><th>{copy.solo}</th><th>{copy.score}</th><th>{copy.status}</th>
+            </tr></thead>
+            <tbody>
+              {scores.map(({ business, metrics, score }) => (
+                <tr>
+                  <td><strong>{business.name[lang]}</strong><br /><span class="dim" style="font-size:11px">{business.summary[lang]}</span></td>
+                  <td class="metric teal">{metrics.virtualRoi.toFixed(1)}%</td>
+                  <td class="metric">{money(metrics.paybackProductionHours)} {copy.hours}</td>
+                  <td class="metric">{business.friction}/10</td>
+                  <td class="metric">{business.soloSuitability}/10</td>
+                  <td class="metric magenta">{score.toFixed(0)} · {gradeForScore(score)}</td>
+                  <td><span class="pill gold">{copy.estimated}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <details>
+          <summary>{copy.methodology} ↓</summary>
+          <div>{copy.methodBody.map((paragraph) => <p>{paragraph}</p>)}</div>
+        </details>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
