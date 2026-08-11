@@ -10,6 +10,13 @@
 - Methodology and verification labels.
 - Tests, preview deployment and analytics-ready event names.
 
+## P0.5 — v0.4 two-economy release
+
+- Dota 2 Economy Lab in RU/EN.
+- Hand of Midas incremental ROI and payback.
+- Buyback liquidity reserve model.
+- Production release of the Astro/TypeScript platform.
+
 ## P1 — recurring utility
 
 - Goal Planner.
@@ -25,5 +32,5 @@
 - Payments and Money Meta Pro.
 - Creator dashboard and embeds.
 - Public data API.
-- Dota 2 match-economy tools.
+- Expanded Dota 2 match-economy tools: reliable/unreliable gold, death cost and item timing comparisons.
 - Minecraft/Hypixel market tools after the data workflow is proven.

@@ -14,16 +14,16 @@ const copy = lang === "ru" ? {
   headingB: "Сделай более умный ход.",
   lede: "Money Meta переводит игровые механики в решения: что купить, куда направить ограниченный капитал и как получить больше результата за доступное время — с формулами, источниками и честными ограничениями модели.",
   primary: "Получить следующий ход",
-  secondary: "Открыть GTA Economy Hub",
+  secondary: "Открыть Dota Economy Lab",
   section: "Экономики",
-  sectionCopy: "Сначала — глубокий продукт по одной экономике. Затем переносим проверенную методологию на другие типы рынков.",
+  sectionCopy: "Две работающие модели: долгосрочная production economy GTA и поминутная match economy Dota 2.",
   live: "Работает",
   gta: "GTA Online",
   gtaText: "Вернись после перерыва, укажи бюджет и часы — получи персональный Next Best Move, сравнение активов и прозрачную окупаемость.",
   gtaLink: "Открыть хаб",
-  planned: "Следующая вертикаль",
   dota: "Dota 2",
-  dotaText: "Матчевая экономика: Midas IRR, стоимость buyback, timing cost и надёжное золото как разные классы капитала.",
+  dotaText: "Матчевая экономика: Midas ROI, стоимость buyback, timing cost и надёжное золото как разные классы капитала.",
+  dotaLink: "Открыть лабораторию",
   method: "Один язык для разных экономик",
   methodCopy: "Не пытаемся выдать один универсальный рейтинг за точную науку. Используем семейства моделей под конкретный тип решения.",
   cards: [
@@ -41,16 +41,16 @@ const copy = lang === "ru" ? {
   headingB: "Make the smarter move.",
   lede: "Money Meta turns game mechanics into decisions: what to buy, where to allocate limited capital and how to get more from limited playtime — with formulas, sources and honest model limits.",
   primary: "Get your next move",
-  secondary: "Open GTA Economy Hub",
+  secondary: "Open Dota Economy Lab",
   section: "Economies",
-  sectionCopy: "We start with one deep product, prove the method, then apply it to other types of in-game markets.",
+  sectionCopy: "Two working models: GTA's long-horizon production economy and Dota 2's minute-by-minute match economy.",
   live: "Live",
   gta: "GTA Online",
   gtaText: "Returning after a break? Enter your budget and available hours to get a personal Next Best Move, asset comparison and transparent payback.",
   gtaLink: "Open hub",
-  planned: "Next vertical",
   dota: "Dota 2",
-  dotaText: "Match economy: Midas IRR, buyback value, timing cost and reliable gold as distinct classes of capital.",
+  dotaText: "Match economy: Midas ROI, buyback value, timing cost and reliable gold as distinct classes of capital.",
+  dotaLink: "Open lab",
   method: "One language for different economies",
   methodCopy: "We do not pretend one universal score is precise science. Each decision type gets a model designed for its actual economy.",
   cards: [
@@ -64,6 +64,7 @@ const copy = lang === "ru" ? {
 
 const homePath = lang === "ru" ? "/" : "/en/";
 const gtaPath = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
+const dotaPath = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
 ---
 
@@ -92,7 +93,7 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
         <p class="lede">{copy.lede}</p>
         <div class="hero-actions">
           <a class="button primary" href={`${calculatorPath}#next-move`}>{copy.primary} →</a>
-          <a class="button ghost" href={gtaPath}>{copy.secondary}</a>
+          <a class="button ghost" href={dotaPath}>{copy.secondary}</a>
         </div>
       </section>
 
@@ -103,7 +104,7 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
             <h2>{copy.section}</h2>
             <p class="section-copy">{copy.sectionCopy}</p>
           </div>
-          <span class="count">2 mapped · 1 active</span>
+          <span class="count">2 economies · 2 active</span>
         </div>
 
         <div class="grid-2">
@@ -116,13 +117,14 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
             <span class="card-link">{copy.gtaLink} →</span>
           </a>
 
-          <article class="card" style="opacity:.72">
+          <a class="card interactive" href={dotaPath}>
             <div class="card-top">
-              <div><span class="pill gold">{copy.planned}</span><h3 style="margin-top:12px">{copy.dota}</h3></div>
-              <span class="pill muted">Research</span>
+              <div><span class="pill gold">{copy.live}</span><h3 style="margin-top:12px">{copy.dota}</h3></div>
+              <span class="pill muted">2 models</span>
             </div>
             <p>{copy.dotaText}</p>
-          </article>
+            <span class="card-link">{copy.dotaLink} →</span>
+          </a>
         </div>
       </section>
 

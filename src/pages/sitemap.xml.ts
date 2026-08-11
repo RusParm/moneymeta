@@ -3,6 +3,8 @@ import type { APIRoute } from "astro";
 const paths = [
   "/",
   "/en/",
+  "/dota-2/",
+  "/en/dota-2/",
   "/gta-online/",
   "/en/gta-online/",
   "/gta-online/calculators/business-roi/",

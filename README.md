@@ -2,7 +2,7 @@
 
 Money Meta превращает внутриигровые экономики в понятные решения: что купить следующим, как быстро окупится актив и какой результат можно получить при ограниченном времени.
 
-Текущая версия `v0.3` — GTA Online-first foundation с русской и английской версиями сайта.
+Текущая версия `v0.4` — первая двухпродуктовая версия с GTA Online и Dota 2 на русском и английском языках.
 
 ## Что уже работает
 
@@ -10,6 +10,8 @@ Money Meta превращает внутриигровые экономики в
 - Model Lab — редактируемые исходные данные, чистая прибыль, vROI и окупаемость.
 - Сравнение семи GTA Online-бизнесов по единой методике.
 - Portfolio Optimizer — подбор комбинации активов под капитал и активное время.
+- Dota 2 Midas ROI/payback — окупаемость с учётом упущенного bounty и оставшегося времени матча.
+- Dota 2 Buyback Reserve — оценка ликвидности сейчас и к следующему objective.
 - Статусы происхождения и свежести данных.
 - RU/EN-маршруты, SEO metadata, sitemap и robots.txt.
 - Автоматические тесты расчётного ядра.
@@ -39,10 +41,11 @@ npm run build
 | Главная | `/` | `/en/` |
 | GTA Online Hub | `/gta-online/` | `/en/gta-online/` |
 | Decision Toolkit | `/gta-online/calculators/business-roi/` | `/en/gta-online/calculators/business-roi/` |
+| Dota 2 Economy Lab | `/dota-2/` | `/en/dota-2/` |
 
 ## Где менять данные
 
-Все GTA-бизнесы и provenance находятся в `src/data/gta-businesses.ts`. Формулы и decision logic — в `src/lib/economy.ts`. Не дублируй числа внутри страниц: интерфейс должен получать их из единого набора данных.
+Все GTA-бизнесы и provenance находятся в `src/data/gta-businesses.ts`, Dota patch context — в `src/data/dota-economy.ts`. Формулы и decision logic находятся в `src/lib/`. Не дублируй числа внутри страниц: интерфейс должен получать их из единого набора данных.
 
 Перед переводом статуса числа в `verified` нужно повторить проверку в игре и зафиксировать дату, версию и источник.
 
