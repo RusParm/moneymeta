@@ -18,7 +18,8 @@ const copy = lang === "ru" ? {
   heading: "Не просто считай прибыль. Принимай следующий ход.",
   lede: "Сначала получи персональную рекомендацию под свой капитал и время. Затем раскрой модель, измени допущения и собери портфель — без магических tier list и скрытых цифр.",
   start: "Подобрать следующий ход",
-  inspect: "Открыть Model Lab"
+  inspect: "Открыть Model Lab",
+  heroProof: [["1", "персональный next move"], ["7", "сравнимых активов"], ["2", "optimizers"], ["Share", "сценарные ссылки"]]
 } : {
   title: "GTA Online Business Calculator — Money Meta",
   description: "Get a personal recommendation, ROI, payback, comparison and GTA Online business portfolio optimization.",
@@ -27,7 +28,8 @@ const copy = lang === "ru" ? {
   heading: "Do not just calculate profit. Make the next move.",
   lede: "Start with a personal recommendation for your capital and time. Then inspect the model, edit assumptions and build a portfolio without magic tier lists or hidden numbers.",
   start: "Find my next move",
-  inspect: "Open Model Lab"
+  inspect: "Open Model Lab",
+  heroProof: [["1", "personal next move"], ["7", "comparable assets"], ["2", "optimizers"], ["Share", "scenario links"]]
 };
 ---
 
@@ -59,6 +61,9 @@ const copy = lang === "ru" ? {
         <div class="hero-actions">
           <a class="button primary" href="#next-move">{copy.start} →</a>
           <a class="button ghost" href="#model-lab">{copy.inspect}</a>
+        </div>
+        <div class="proof-strip">
+          {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
       </section>
 

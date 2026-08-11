@@ -28,8 +28,8 @@ const sharedProvenance: DataProvenance = {
   gameVersion: "GTA Online — July 2026 estimate set",
   status: "estimated",
   sourceNote: {
-    ru: "Рабочая оценка на основе открытых описаний механик. Перед публикацией v1 требуется повторная игровая проверка.",
-    en: "Working estimate based on public mechanic descriptions. In-game revalidation is required before v1 publication."
+    ru: "Рабочая оценка на основе открытых описаний механик. Для статуса verified требуется повторная игровая проверка.",
+    en: "Working estimate based on public mechanic descriptions. In-game revalidation is required before verified status."
   }
 };
 
@@ -152,21 +152,27 @@ export interface WeeklyMetaSnapshot {
   checkedAt: string;
   validThrough: string;
   status: VerificationStatus;
+  sourceUrl: string;
+  sourceLabel: string;
   items: Record<Locale, string[]>;
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  checkedAt: "2026-07-01",
-  validThrough: "2026-07-09",
+  checkedAt: "2026-08-11",
+  validThrough: "2026-08-12",
   status: "community-reported",
+  sourceUrl: "https://www.rockstargames.com/newswire",
+  sourceLabel: "Rockstar Newswire",
   items: {
     ru: [
-      "Архивный пример: продажи Acid Lab x2 GTA$/RP.",
-      "Архивный пример: отдельные контракты и бизнес-активы получали временные бонусы."
+      "До 12 августа: GTA$1,000,000 за вход (доставка может занять до 72 часов).",
+      "3X GTA$/RP в Community Mission Series; 2X GTA$/RP в A Superyacht Life и Assault on Cayo Perico.",
+      "Эти бонусы не применяются автоматически к production-business моделям ниже."
     ],
     en: [
-      "Archived example: Acid Lab sales at 2x GTA$/RP.",
-      "Archived example: selected contracts and business assets received temporary bonuses."
+      "Through August 12: GTA$1,000,000 login bonus (delivery may take up to 72 hours).",
+      "3X GTA$/RP in Community Mission Series; 2X GTA$/RP in A Superyacht Life and Assault on Cayo Perico.",
+      "These bonuses are not automatically applied to the production-business models below."
     ]
   }
 };

@@ -1,0 +1,96 @@
+---
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const copy = lang === "ru"
+  ? { share: "Поделиться сценарием", reset: "Сбросить", copied: "Ссылка скопирована", saved: "Параметры сохраняются локально" }
+  : { share: "Share scenario", reset: "Reset", copied: "Link copied", saved: "Inputs save locally" };
+---
+
+<div class="scenario-actions" data-scenario-actions>
+  <button class="mini-action" type="button" data-share-scenario data-copied-label={copy.copied}>↗ {copy.share}</button>
+  <button class="mini-action" type="button" data-reset-scenario>↺ {copy.reset}</button>
+  <span class="scenario-feedback" data-scenario-feedback>{copy.saved}</span>
+</div>
+
+<script>
+  type Control = HTMLInputElement | HTMLSelectElement;
+
+  const ready = (callback: () => void) => {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", callback, { once: true });
+    else callback();
+  };
+
+  ready(() => requestAnimationFrame(() => {
+    document.querySelectorAll<HTMLElement>("[data-scenario-root]").forEach((root) => {
+      if (root.dataset.scenarioReady === "true") return;
+      root.dataset.scenarioReady = "true";
+      const key = root.dataset.scenarioKey;
+      if (!key) return;
+      const controls = [...root.querySelectorAll<Control>("input[data-role], select[data-role]")];
+      const actions = root.querySelector<HTMLElement>("[data-scenario-actions]");
+      const share = actions?.querySelector<HTMLButtonElement>("[data-share-scenario]");
+      const reset = actions?.querySelector<HTMLButtonElement>("[data-reset-scenario]");
+      const feedback = actions?.querySelector<HTMLElement>("[data-scenario-feedback]");
+      if (!controls.length || !actions || !share || !reset || !feedback) return;
+
+      const storageKey = `money-meta:scenario:${key}:v1`;
+      const defaults = Object.fromEntries(controls.map((control) => [control.dataset.role!, control.value]));
+      const params = new URLSearchParams(window.location.search);
+      const fromUrl = Object.fromEntries(controls
+        .map((control) => [control.dataset.role!, params.get(`${key}.${control.dataset.role}`)] as const)
+        .filter((entry): entry is [string, string] => entry[1] !== null));
+      let stored: Record<string, string> = {};
+      try { stored = JSON.parse(localStorage.getItem(storageKey) ?? "{}"); } catch { localStorage.removeItem(storageKey); }
+      const restored = Object.keys(fromUrl).length ? fromUrl : stored;
+
+      const dispatch = (control: Control) => control.dispatchEvent(new Event(control instanceof HTMLSelectElement ? "change" : "input", { bubbles: true }));
+      const apply = (values: Record<string, string>) => {
+        controls.filter((control) => control instanceof HTMLSelectElement).forEach((control) => {
+          const value = values[control.dataset.role!];
+          if (value !== undefined) { control.value = value; dispatch(control); }
+        });
+        controls.filter((control) => control instanceof HTMLInputElement).forEach((control) => {
+          const value = values[control.dataset.role!];
+          if (value !== undefined) { control.value = value; dispatch(control); }
+        });
+      };
+      apply(restored);
+
+      const save = () => {
+        const values = Object.fromEntries(controls.map((control) => [control.dataset.role!, control.value]));
+        localStorage.setItem(storageKey, JSON.stringify(values));
+      };
+      controls.forEach((control) => {
+        control.addEventListener("input", save);
+        control.addEventListener("change", save);
+      });
+
+      const setFeedback = (message: string) => {
+        const previous = feedback.textContent ?? "";
+        feedback.textContent = message;
+        window.setTimeout(() => { feedback.textContent = previous; }, 1800);
+      };
+
+      share.addEventListener("click", async () => {
+        const url = new URL(window.location.href);
+        controls.forEach((control) => url.searchParams.set(`${key}.${control.dataset.role}`, control.value));
+        const section = root.closest<HTMLElement>("section[id]");
+        if (section) url.hash = section.id;
+        try {
+          await navigator.clipboard.writeText(url.toString());
+        } catch {
+          window.prompt(document.documentElement.lang === "ru" ? "Скопируй ссылку" : "Copy this link", url.toString());
+        }
+        setFeedback(share.dataset.copiedLabel ?? (document.documentElement.lang === "ru" ? "Ссылка скопирована" : "Link copied"));
+      });
+
+      reset.addEventListener("click", () => {
+        apply(defaults);
+        localStorage.removeItem(storageKey);
+        const url = new URL(window.location.href);
+        [...url.searchParams.keys()].filter((name) => name.startsWith(`${key}.`)).forEach((name) => url.searchParams.delete(name));
+        window.history.replaceState({}, "", url);
+      });
+    });
+  }));
+</script>

@@ -16,6 +16,13 @@ const copy = lang === "ru" ? {
   primary: "Получить следующий ход",
   secondary: "Открыть Dota Economy Lab",
   tertiary: "Открыть WoW Economy Lab",
+  consoleTitle: "Decision coverage · live",
+  consoleRows: [
+    ["GTA Online", "Капитал → актив → денежный поток", "Production"],
+    ["Dota 2", "Timing → opportunity cost → tempo", "Match"],
+    ["WoW Retail", "Цена → ликвидность → realised gold", "Market"]
+  ],
+  proof: [["3", "игровые экономики"], ["6+", "decision models"], ["16", "unit tests"], ["RU / EN", "полная локализация"]],
   section: "Экономики",
   sectionCopy: "Три работающие вертикали: production economy GTA, поминутная match economy Dota 2 и рыночная экономика WoW.",
   live: "Работает",
@@ -35,7 +42,7 @@ const copy = lang === "ru" ? {
     ["Match Economy", "Expected value, timing, opportunity cost, comeback risk и сложность исполнения."],
     ["Market Economy", "Спред после комиссий, ликвидность, объём, волатильность и вероятность исполнения."]
   ],
-  trust: "Built by a professional portfolio manager and lifelong gamer.",
+  trust: "Independent game-economy analysis. No influencer theatre.",
   trustText: "Здесь нет выдуманной точности. Каждая цифра получает дату проверки и статус: verified, estimated или community-reported."
 } : {
   title: "Money Meta — game economy analytics and smarter player decisions",
@@ -47,6 +54,13 @@ const copy = lang === "ru" ? {
   primary: "Get your next move",
   secondary: "Open Dota Economy Lab",
   tertiary: "Open WoW Economy Lab",
+  consoleTitle: "Decision coverage · live",
+  consoleRows: [
+    ["GTA Online", "Capital → asset → cash flow", "Production"],
+    ["Dota 2", "Timing → opportunity cost → tempo", "Match"],
+    ["WoW Retail", "Price → liquidity → realised gold", "Market"]
+  ],
+  proof: [["3", "game economies"], ["6+", "decision models"], ["16", "unit tests"], ["RU / EN", "full product parity"]],
   section: "Economies",
   sectionCopy: "Three live verticals: GTA's production economy, Dota 2's minute-by-minute match economy and WoW's player-driven market economy.",
   live: "Live",
@@ -66,7 +80,7 @@ const copy = lang === "ru" ? {
     ["Match Economy", "Expected value, timing, opportunity cost, comeback risk and execution difficulty."],
     ["Market Economy", "Net spread after fees, liquidity, volume, volatility and fill probability."]
   ],
-  trust: "Built by a professional portfolio manager and lifelong gamer.",
+  trust: "Independent game-economy analysis. No influencer theatre.",
   trustText: "No invented precision. Every material number gets a check date and a status: verified, estimated or community-reported."
 };
 
@@ -96,16 +110,31 @@ const calculatorPath = `${gtaPath}calculators/business-roi/`;
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/" enPath="/en/" />
 
-      <section class="hero">
-        <p class="eyebrow">{copy.eyebrow}</p>
-        <h1>{copy.headingA}<br /><span class="magenta">{copy.headingB}</span></h1>
-        <p class="lede">{copy.lede}</p>
-        <div class="hero-actions">
-          <a class="button primary" href={`${calculatorPath}#next-move`}>{copy.primary} →</a>
-          <a class="button ghost" href={dotaPath}>{copy.secondary}</a>
-          <a class="button ghost" href={wowPath}>{copy.tertiary}</a>
+      <section class="hero hero-dashboard">
+        <div class="hero-copy">
+          <p class="eyebrow">{copy.eyebrow}</p>
+          <h1>{copy.headingA}<br /><span class="magenta">{copy.headingB}</span></h1>
+          <p class="lede">{copy.lede}</p>
+          <div class="hero-actions">
+            <a class="button primary" href={`${calculatorPath}#next-move`}>{copy.primary} →</a>
+            <a class="button ghost" href={dotaPath}>{copy.secondary}</a>
+            <a class="button ghost" href={wowPath}>{copy.tertiary}</a>
+          </div>
         </div>
+        <aside class="hero-console" aria-label={copy.consoleTitle}>
+          <div class="console-head"><span class="console-title">{copy.consoleTitle}</span><span class="console-signal">Online</span></div>
+          {copy.consoleRows.map(([name, description, model], index) => (
+            <a class="console-row" href={[gtaPath, dotaPath, wowPath][index]}>
+              <div><strong>{name}</strong><p>{description}</p></div>
+              <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>{model}</span>
+            </a>
+          ))}
+        </aside>
       </section>
+
+      <div class="proof-strip" aria-label="Money Meta product coverage">
+        {copy.proof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+      </div>
 
       <section class="section">
         <div class="section-head">

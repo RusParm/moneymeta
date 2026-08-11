@@ -20,6 +20,7 @@ const copy = lang === "ru" ? {
   heading: "Не вспоминай всю мету. Получи следующий лучший ход.",
   lede: "Укажи капитал, доступное время и приоритет — Money Meta отсеет неподходящие активы и объяснит, что делать сейчас. Ниже можно проверить модель и изменить каждое допущение.",
   cta: "Запустить Next Best Move",
+  heroProof: [["7", "активов в модели"], ["3", "профиля игрока"], ["2", "decision engines"], ["100%", "редактируемые inputs"]],
   staleTitle: "Weekly Meta пока не подтверждена",
   staleText: "Старая бонусная неделя автоматически снята со статуса «актуально». До повторной проверки Money Meta не показывает архивные бонусы как действующие.",
   currentTitle: "Проверенная Weekly Meta",
@@ -33,7 +34,7 @@ const copy = lang === "ru" ? {
     "vROI — чистая прибыль цикла, делённая на стартовые вложения. Окупаемость измерена в часах производства, а не выдана за количество активного ручного grind.",
     "Friction и Solo Suitability являются экспертными оценками и явно отделены от расчётных метрик.",
     "Score складывается из нормализованных vROI, окупаемости и friction. При расширении выборки относительные грейды изменятся.",
-    "Текущий набор чисел имеет статус estimated и требует повторной проверки в игре перед публичной v1. Пользователь может изменить допущения в калькуляторе."
+    "Текущий набор чисел имеет статус estimated и требует повторной проверки в игре для статуса verified. Пользователь может изменить допущения в калькуляторе."
   ]
 } : {
   title: "GTA Online Economy Hub — Money Meta",
@@ -43,6 +44,7 @@ const copy = lang === "ru" ? {
   heading: "Do not relearn the whole meta. Get your next best move.",
   lede: "Enter your capital, available time and priority. Money Meta filters unsuitable assets and explains what to do now. Then inspect the model and edit every assumption.",
   cta: "Launch Next Best Move",
+  heroProof: [["7", "modeled assets"], ["3", "player profiles"], ["2", "decision engines"], ["100%", "editable inputs"]],
   staleTitle: "Weekly Meta is awaiting verification",
   staleText: "The old bonus week was automatically removed from current status. Archived bonuses are never presented as active before revalidation.",
   currentTitle: "Verified Weekly Meta",
@@ -56,7 +58,7 @@ const copy = lang === "ru" ? {
     "vROI is net cycle profit divided by initial investment. Payback is measured in production hours, not mislabeled as manual grinding time.",
     "Friction and Solo Suitability are expert estimates and are explicitly separated from calculated metrics.",
     "The score combines normalized vROI, payback and friction. Relative grades will change as the comparison set expands.",
-    "The current number set is estimated and requires in-game revalidation before public v1. Users can edit assumptions in the calculator."
+    "The current number set is estimated and requires in-game revalidation for verified status. Users can edit assumptions in the calculator."
   ]
 };
 
@@ -89,6 +91,9 @@ const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" :
           <a class="button primary" href={`${calculator}#next-move`}>{copy.cta} →</a>
           <a class="button ghost" href={calculator}>{lang === "ru" ? "Открыть все расчёты" : "Open full calculator"}</a>
         </div>
+        <div class="proof-strip">
+          {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+        </div>
       </section>
 
       <section class={`callout ${staleWeekly ? "warning" : ""}`}>
@@ -96,6 +101,7 @@ const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" :
           <strong>{staleWeekly ? copy.staleTitle : copy.currentTitle}.</strong>{" "}
           {staleWeekly ? copy.staleText : weeklyMeta.items[lang].join(" ")}
         </p>
+        {!staleWeekly && <a class="source-link" href={weeklyMeta.sourceUrl} rel="noopener noreferrer" target="_blank">{weeklyMeta.sourceLabel} ↗</a>}
       </section>
 
       <section class="section">
@@ -106,6 +112,22 @@ const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" :
             <p class="section-copy">{copy.tableCopy}</p>
           </div>
           <span class="count">{gtaBusinesses.length} assets · checked 2026-07-01</span>
+        </div>
+
+        <div class="rank-grid">
+          {scores.slice(0, 3).map(({ business, metrics, score }, index) => (
+            <article class="card rank-card">
+              <span class="rank-number">0{index + 1}</span>
+              <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>Capital rank</span>
+              <h3 style="margin-top:16px">{business.name[lang]}</h3>
+              <p>{business.summary[lang]}</p>
+              <div class="rank-metrics">
+                <span><strong>{metrics.virtualRoi.toFixed(1)}%</strong> vROI</span>
+                <span><strong>{money(metrics.paybackProductionHours)}</strong> {copy.hours}</span>
+                <span><strong>{score.toFixed(0)}</strong> score</span>
+              </div>
+            </article>
+          ))}
         </div>
 
         <div class="data-table">

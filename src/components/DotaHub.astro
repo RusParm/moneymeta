@@ -2,6 +2,7 @@
 import { buybackBaseline, dotaPatchContext, midasBaseline } from "../data/dota-economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
+import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -17,6 +18,7 @@ const copy = lang === "ru" ? {
   lede: "Dota — не просто GPM. Покупка Midas похожа на capex, buyback — на резерв ликвидности, а timing определяет, успеет ли инвестиция вообще окупиться.",
   midasCta: "Рассчитать Midas ROI",
   buybackCta: "Проверить buyback reserve",
+  heroProof: [["2", "decision models"], ["7.41", "patch context"], ["0", "скрытых допущений"], ["Live", "scenario updates"]],
   patch: "Patch context",
   patchText: `Модель проверена в контексте ${dotaPatchContext.patch} на ${dotaPatchContext.checkedAt}. Defaults редактируются и не заменяют цифры в клиенте игры.`,
   modelKicker: "Match Economy Model 01",
@@ -77,6 +79,7 @@ const copy = lang === "ru" ? {
   lede: "Dota is more than GPM. Buying Midas resembles capex, buyback is a liquidity reserve, and timing decides whether an investment can pay back at all.",
   midasCta: "Calculate Midas ROI",
   buybackCta: "Check buyback reserve",
+  heroProof: [["2", "decision models"], ["7.41", "patch context"], ["0", "hidden assumptions"], ["Live", "scenario updates"]],
   patch: "Patch context",
   patchText: `The model was checked in ${dotaPatchContext.patch} context on ${dotaPatchContext.checkedAt}. Defaults are editable and never override the numbers in your game client.`,
   modelKicker: "Match Economy Model 01",
@@ -160,6 +163,9 @@ const copy = lang === "ru" ? {
           <a class="button primary" href="#midas-irr">{copy.midasCta} →</a>
           <a class="button ghost" href="#buyback-reserve">{copy.buybackCta}</a>
         </div>
+        <div class="proof-strip">
+          {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+        </div>
       </section>
 
       <div class="callout warning">
@@ -175,7 +181,7 @@ const copy = lang === "ru" ? {
           </div>
           <span class="pill gold">Editable baseline</span>
         </div>
-        <div class="grid-2">
+        <div class="grid-2" data-scenario-root data-scenario-key="dota-midas">
           <form class="card" data-role="midas-form">
             <div class="form-grid">
               <div class="field"><label for="midas-cost">{copy.itemCost}</label><input id="midas-cost" data-role="midas-cost" type="number" min="0" step="50" value={midasBaseline.itemCost} /></div>
@@ -199,6 +205,7 @@ const copy = lang === "ru" ? {
               <div class="result-metric"><span>{copy.payback}</span><strong data-role="midas-payback">—</strong></div>
               <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="midas-roi">—</strong></div>
             </div>
+            <ScenarioActions lang={lang} />
           </article>
         </div>
       </section>
@@ -212,7 +219,7 @@ const copy = lang === "ru" ? {
           </div>
           <span class="pill teal">Formula + scenario</span>
         </div>
-        <div class="grid-2">
+        <div class="grid-2" data-scenario-root data-scenario-key="dota-buyback">
           <form class="card" data-role="buyback-form">
             <div class="form-grid">
               <div class="field"><label for="buyback-networth">{copy.netWorth}</label><input id="buyback-networth" data-role="buyback-networth" type="number" min="0" step="500" value={buybackBaseline.netWorth} /></div>
@@ -234,6 +241,7 @@ const copy = lang === "ru" ? {
               <div class="result-metric"><span>{copy.atObjective}</span><strong class="gold" data-role="buyback-objective-gold">—</strong></div>
               <div class="result-metric" style="grid-column:1/-1"><span>{copy.riskWeighted}</span><strong class="magenta" data-role="buyback-risk-weighted">—</strong></div>
             </div>
+            <ScenarioActions lang={lang} />
           </article>
         </div>
       </section>
@@ -302,6 +310,7 @@ const copy = lang === "ru" ? {
         expectedEndMinute: value("midas-end")
       });
       target("midas-decision").textContent = metrics.breaksEvenBeforeEnd ? labels.breakEvenYes : labels.breakEvenNo;
+      target("midas-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.breaksEvenBeforeEnd ? "positive" : "negative";
       target("midas-uses").textContent = formatter.format(metrics.usesRemaining);
       target("midas-incremental").textContent = gold(metrics.incrementalValuePerUse);
       target("midas-gross").textContent = gold(metrics.grossIncrementalValue);
@@ -320,6 +329,7 @@ const copy = lang === "ru" ? {
       });
       const decision = metrics.state === "ready-now" ? labels.readyNow : metrics.state === "ready-by-objective" ? labels.readyLater : labels.underfunded;
       target("buyback-decision").textContent = decision;
+      target("buyback-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "ready-now" ? "positive" : metrics.state === "ready-by-objective" ? "caution" : "negative";
       target("buyback-cost").textContent = gold(metrics.estimatedCost);
       target("buyback-gap").textContent = gold(metrics.reserveGap);
       target("buyback-surplus").textContent = gold(metrics.reserveSurplus);

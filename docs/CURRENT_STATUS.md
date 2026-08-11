@@ -25,6 +25,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - `npm run build`: type check and static build pass with zero diagnostics.
 - All eleven public pages plus robots.txt and sitemap build successfully.
 - Desktop and mobile browser QA passed for the WoW calculators, three-economy home and RU/EN routes.
+- v1.0 browser QA passed for desktop/mobile layout, zero horizontal overflow, cross-economy navigation, scenario URL sharing, local restore, reset and decision-state rendering.
 
 ## Production release — `product/v0.4`
 
@@ -34,13 +35,22 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Patch 7.41 context, editable baselines and source disclosures.
 - Home, sitemap, version and documentation updated for two active economies.
 
-## Active release candidate — `product/v0.5`
+## Release — `product/v0.5`
 
 - World of Warcraft Retail Economy Lab in RU/EN.
 - Crafting Margin model with Auction House cut, sell-through and inventory risk.
 - Farm Liquidity model separating listed GPH from effective GPH.
 - Midnight / Curse of Ula’tek context, editable assumptions and source disclosures.
 - Home, sitemap, version and documentation updated for three active economies.
+
+## Active release candidate — `product/v1.0`
+
+- Unified premium product shell and cross-economy navigation.
+- Decision-first homepage with visible model coverage and trust signals.
+- Ranked GTA opportunity cards plus current Weekly Meta freshness and source disclosure.
+- Persistent, resettable and shareable scenarios across GTA, Dota 2 and WoW calculators.
+- Positive, caution and negative result states for faster interpretation.
+- Bundled variable typography, keyboard focus treatment and reduced-motion support.
 
 ## Release policy
 

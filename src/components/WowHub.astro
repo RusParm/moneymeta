@@ -2,6 +2,7 @@
 import { craftingBaseline, farmBaseline, wowPatchContext } from "../data/wow-economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
+import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -17,6 +18,7 @@ const copy = lang === "ru" ? {
   lede: "WoW — это рынок с комиссиями, ликвидностью и замороженным капиталом. Money Meta показывает не красивую цену листинга, а сколько золота действительно конвертируется в прибыль.",
   craftCta: "Проверить crafting margin",
   farmCta: "Посчитать effective gold/hour",
+  heroProof: [["2", "market models"], ["5%", "editable AH cut"], ["Live", "scenario updates"], ["Local", "saved inputs"]],
   context: "Retail context",
   contextText: `Модель проверена для ${wowPatchContext.release} на ${wowPatchContext.checkedAt}. Все цены и sell-through редактируются: рынок зависит от региона, realm и категории товара.`,
   craftKicker: "Market Economy Model 01",
@@ -83,6 +85,7 @@ const copy = lang === "ru" ? {
   lede: "WoW is a market with fees, liquidity and working capital. Money Meta looks past the attractive listing price and measures how much gold can actually become profit.",
   craftCta: "Check crafting margin",
   farmCta: "Calculate effective gold/hour",
+  heroProof: [["2", "market models"], ["5%", "editable AH cut"], ["Live", "scenario updates"], ["Local", "saved inputs"]],
   context: "Retail context",
   contextText: `The model was checked for ${wowPatchContext.release} on ${wowPatchContext.checkedAt}. Every price and sell-through input is editable because markets vary by region, realm and item category.`,
   craftKicker: "Market Economy Model 01",
@@ -172,6 +175,9 @@ const copy = lang === "ru" ? {
           <a class="button primary" href="#crafting-margin">{copy.craftCta} →</a>
           <a class="button ghost" href="#farm-liquidity">{copy.farmCta}</a>
         </div>
+        <div class="proof-strip">
+          {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+        </div>
         <div class="callout warning" style="margin-top:24px">
           <p><span class="pill gold">{copy.context}</span> <strong>{wowPatchContext.release}</strong> · {copy.contextText}</p>
         </div>
@@ -182,7 +188,7 @@ const copy = lang === "ru" ? {
           <div><span class="section-kicker">{copy.craftKicker}</span><h2>{copy.craftTitle}</h2><p class="section-copy">{copy.craftText}</p></div>
           <span class="pill gold">Editable baseline</span>
         </div>
-        <div class="grid-2">
+        <div class="grid-2" data-scenario-root data-scenario-key="wow-crafting">
           <form class="card" data-role="craft-form">
             <div class="form-grid">
               <div class="field"><label for="craft-materials">{copy.materialCost}</label><input id="craft-materials" data-role="craft-materials" type="number" min="0" step="25" value={craftingBaseline.materialCostPerCraft} /></div>
@@ -208,6 +214,7 @@ const copy = lang === "ru" ? {
               <div class="result-metric"><span>{copy.breakEven}</span><strong data-role="craft-break-even">—</strong></div>
               <div class="result-metric"><span>{copy.inventoryRisk}</span><strong data-role="craft-inventory">—</strong></div>
             </div>
+            <ScenarioActions lang={lang} />
           </article>
         </div>
       </section>
@@ -217,7 +224,7 @@ const copy = lang === "ru" ? {
           <div><span class="section-kicker">{copy.farmKicker}</span><h2>{copy.farmTitle}</h2><p class="section-copy">{copy.farmText}</p></div>
           <span class="pill teal">Time + liquidity</span>
         </div>
-        <div class="grid-2">
+        <div class="grid-2" data-scenario-root data-scenario-key="wow-farm">
           <form class="card" data-role="farm-form">
             <div class="form-grid">
               <div class="field"><label for="farm-units">{copy.unitsHour}</label><input id="farm-units" data-role="farm-units" type="number" min="0" step="5" value={farmBaseline.unitsPerHour} /></div>
@@ -242,6 +249,7 @@ const copy = lang === "ru" ? {
               <div class="result-metric"><span>{copy.sessionGold}</span><strong class="gold" data-role="farm-session-gold">—</strong></div>
               <div class="result-metric" style="grid-column:1/-1"><span>{copy.targetHours}</span><strong data-role="farm-target-hours">—</strong></div>
             </div>
+            <ScenarioActions lang={lang} />
           </article>
         </div>
       </section>
@@ -309,6 +317,7 @@ const copy = lang === "ru" ? {
         crafts: value("craft-count")
       });
       target("craft-decision").textContent = metrics.state === "positive-edge" ? labels.positiveEdge : metrics.state === "thin-edge" ? labels.thinEdge : labels.negativeEdge;
+      target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "positive-edge" ? "positive" : metrics.state === "thin-edge" ? "caution" : "negative";
       target("craft-gross").textContent = gold(metrics.grossRevenueIfSold);
       target("craft-net-revenue").textContent = gold(metrics.netRevenueIfSold);
       target("craft-sold-profit").textContent = gold(metrics.profitIfSold);
@@ -331,6 +340,7 @@ const copy = lang === "ru" ? {
         targetGold: value("farm-target")
       });
       target("farm-decision").textContent = metrics.state === "liquid" ? labels.liquid : metrics.state === "discounted" ? labels.discounted : labels.inventoryTrap;
+      target("farm-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "liquid" ? "positive" : metrics.state === "discounted" ? "caution" : "negative";
       target("farm-listed").textContent = gold(metrics.listedGoldPerHour);
       target("farm-effective").textContent = gold(metrics.effectiveGoldPerHour);
       target("farm-rate").textContent = `${metrics.monetizationRatePercent.toFixed(1)}%`;

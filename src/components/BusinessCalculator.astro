@@ -1,6 +1,7 @@
 ---
 import { gtaBusinesses } from "../data/gta-businesses";
 import { calculateBusinessMetrics } from "../lib/economy";
+import ScenarioActions from "./ScenarioActions.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
@@ -92,7 +93,7 @@ const copy = lang === "ru" ? {
     <span class="pill gold">Estimated · editable</span>
   </div>
 
-  <div class="grid-2">
+  <div class="grid-2" data-scenario-root data-scenario-key="gta-business">
     <form class="card" data-role="calculator-form">
       <div class="form-grid">
         <div class="field" style="grid-column:1/-1">
@@ -142,6 +143,7 @@ const copy = lang === "ru" ? {
         <div class="result-metric"><span>{copy.month}</span><strong class="gold" data-role="month">—</strong></div>
       </div>
       <p class="dim" style="margin-top:16px;font-size:11px">{copy.estimateNote}</p>
+      <ScenarioActions lang={lang} />
     </article>
   </div>
 
@@ -183,7 +185,7 @@ const copy = lang === "ru" ? {
         <p class="section-copy">{copy.portfolioCopy}</p>
       </div>
     </div>
-    <div class="grid-2">
+    <div class="grid-2" data-scenario-root data-scenario-key="gta-portfolio">
       <form class="card" data-role="portfolio-form">
         <div class="form-grid">
           <div class="field">
@@ -205,6 +207,7 @@ const copy = lang === "ru" ? {
           <div class="result-metric"><span>{copy.weeklyProfit}</span><strong class="teal" data-role="portfolio-week">—</strong></div>
           <div class="result-metric"><span>{copy.monthlyProfit}</span><strong class="gold" data-role="portfolio-month">—</strong></div>
         </div>
+        <ScenarioActions lang={lang} />
       </article>
     </div>
   </section>
@@ -294,12 +297,14 @@ const copy = lang === "ru" ? {
         : "∞";
       metricTargets.roi.textContent = `${metrics.virtualRoi.toFixed(1)}%`;
       metricTargets.month.textContent = money(metrics.profitPerProductionHour * numberValue(weekly, 1) * 4.345);
+      scenarioName.closest<HTMLElement>(".result-panel")!.dataset.state = metrics.netPerCycle >= 0 ? "positive" : "negative";
     }
 
     function renderPortfolio() {
       const result = findBestPortfolio(gtaBusinesses, numberValue(portfolioBudget), numberValue(portfolioHours));
 
       if (!result) {
+        portfolioTargets.picks.closest<HTMLElement>(".result-panel")!.dataset.state = "negative";
         portfolioTargets.picks.textContent = labels.empty;
         portfolioTargets.cost.textContent = "—";
         portfolioTargets.time.textContent = "—";
@@ -307,6 +312,8 @@ const copy = lang === "ru" ? {
         portfolioTargets.month.textContent = "—";
         return;
       }
+
+      portfolioTargets.picks.closest<HTMLElement>(".result-panel")!.dataset.state = "positive";
 
       portfolioTargets.picks.replaceChildren();
       result.businesses.forEach((business) => {

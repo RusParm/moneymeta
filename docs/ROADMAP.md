@@ -24,12 +24,18 @@
 - Farm liquidity and effective gold/hour model.
 - Third active economy and first true player-driven market vertical.
 
-## P1 — recurring utility
+## P1 — v1.0 unified product release
+
+- One premium design system and navigation across all three economies.
+- Decision-first home and clearer trust/provenance cues.
+- Local scenario persistence, one-click reset and shareable parameterized URLs.
+- Responsive and accessible interaction polish.
+
+## P1.5 — recurring utility
 
 - Goal Planner.
 - Weekly Meta with freshness guard.
-- Saved local profile.
-- Shareable result cards.
+- Cross-device profile and result-card export.
 - Email capture and weekly brief.
 - GTA VI Economy Watch using only official/verified claims.
 

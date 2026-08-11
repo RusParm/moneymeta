@@ -1,4 +1,7 @@
 ---
+import "@fontsource-variable/inter";
+import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/roboto-condensed";
 import "../styles/global.css";
 
 interface Props {
@@ -31,6 +34,7 @@ const alternate = alternatePath ? new URL(alternatePath, Astro.site) : null;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0d0a17" />
     <link rel="canonical" href={canonical} />
     {alternate && <link rel="alternate" hreflang={lang === "ru" ? "en" : "ru"} href={alternate} />}
@@ -39,6 +43,10 @@ const alternate = alternatePath ? new URL(alternatePath, Astro.site) : null;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === "ru" ? "ru_RU" : "en_US"} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     {schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
   </head>
   <body>

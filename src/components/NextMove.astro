@@ -1,4 +1,6 @@
 ---
+import ScenarioActions from "./ScenarioActions.astro";
+
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
@@ -61,7 +63,7 @@ const copy = lang === "ru" ? {
     <span class="pill gold">{copy.estimated}</span>
   </div>
 
-  <div class="grid-2">
+  <div class="grid-2" data-scenario-root data-scenario-key="gta-next-move">
     <form class="card" data-role="decision-form">
       <div class="form-grid">
         <div class="field">
@@ -105,6 +107,7 @@ const copy = lang === "ru" ? {
         <div class="result-metric"><span>{copy.fit}</span><strong class="magenta" data-role="result-fit">—</strong></div>
       </div>
       <div class="alternatives" data-role="alternatives" aria-label={copy.alternatives}></div>
+      <ScenarioActions lang={lang} />
     </article>
   </div>
 </section>
@@ -162,6 +165,7 @@ const copy = lang === "ru" ? {
       alternatives.replaceChildren();
 
       if (!best) {
+        resultName.closest<HTMLElement>(".result-panel")!.dataset.state = "negative";
         resultName.textContent = text.empty;
         resultReason.textContent = text.emptyReason;
         resultPayback.textContent = "—";
@@ -171,6 +175,7 @@ const copy = lang === "ru" ? {
         return;
       }
 
+      resultName.closest<HTMLElement>(".result-panel")!.dataset.state = best.score >= 70 ? "positive" : "caution";
       resultName.textContent = best.business.name[lang];
       resultReason.textContent = best.business.summary[lang];
       resultPayback.textContent = `${formatter.format(Math.round(best.metrics.paybackProductionHours))} ${text.hours}`;

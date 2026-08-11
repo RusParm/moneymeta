@@ -4,9 +4,11 @@
 
 Become the trusted decision layer for in-game economies: a place where players get a transparent model and a concrete next action rather than another subjective tier list.
 
-## Founder advantage
+## Brand advantage
 
-Money Meta is built by a professional portfolio manager and lifelong gamer. The differentiator is not finance vocabulary as decoration; it is the ability to translate game mechanics into capital allocation, payback, time cost, risk and trade-offs.
+Money Meta is an independent product brand. Its differentiator is not finance vocabulary as decoration; it is the ability to translate game mechanics into capital allocation, payback, time cost, risk and trade-offs without exposing or relying on the founder's personal identity.
+
+LinkedIn, personal profiles, legal name, employer details and other founder-identifying information are out of scope for the product, SEO, analytics and marketing materials.
 
 ## Initial wedge
 

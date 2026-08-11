@@ -4,12 +4,21 @@ const { lang } = Astro.props;
 ---
 
 <footer class="footer">
+  <div class="footer-status">
+    <span class="console-signal">Money Meta v1.0</span>
+    <span>{lang === "ru" ? "3 экономики · прозрачные модели · RU/EN" : "3 economies · transparent models · RU/EN"}</span>
+  </div>
   <div class="footer-grid">
     <p>
       {lang === "ru"
         ? "Money Meta — независимый аналитический проект. Не связан с Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment или другими издателями. Расчёты являются оценками игровых механик, а не официальными данными."
         : "Money Meta is an independent analytics project. It is not affiliated with Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment or other publishers. Calculations are estimates of game mechanics, not official publisher data."}
     </p>
-    <span class="mono">Understand the economy.<br />Make the smarter move.</span>
+    <nav class="footer-nav" aria-label={lang === "ru" ? "Экономики" : "Economies"}>
+      <a href={lang === "ru" ? "/gta-online/" : "/en/gta-online/"}>GTA Online</a>
+      <a href={lang === "ru" ? "/dota-2/" : "/en/dota-2/"}>Dota 2</a>
+      <a href={lang === "ru" ? "/wow/" : "/en/wow/"}>WoW Retail</a>
+    </nav>
   </div>
+  <div class="footer-signature mono">Understand the economy. Make the smarter move.</div>
 </footer>
