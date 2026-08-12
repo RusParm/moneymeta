@@ -1,9 +1,11 @@
 ---
 import { buybackBaseline, dotaPatchContext, midasBaseline } from "../data/dota-economy";
+import dotaEconomyWorld from "../assets/game-worlds/dota-economy-world.webp";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import DecisionShortcuts from "./DecisionShortcuts.astro";
 import FeaturedInsight from "./FeaturedInsight.astro";
+import GameWorldHero from "./GameWorldHero.astro";
 import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
 
@@ -164,7 +166,7 @@ const copy = lang === "ru" ? {
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/dota-2/" enPath="/en/dota-2/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <section class="hero vertical-hero" data-visual="MIDAS" data-icon="M">
+      <GameWorldHero image={dotaEconomyWorld} worldCode="MATCH ECONOMY / 02">
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1 style="font-size:clamp(40px,6vw,66px)">{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
@@ -175,7 +177,7 @@ const copy = lang === "ru" ? {
         <div class="proof-strip">
           {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
-      </section>
+      </GameWorldHero>
 
       <DecisionShortcuts lang={lang} game="dota" items={shortcuts} />
 

@@ -1,10 +1,12 @@
 ---
 import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
+import gtaEconomyWorld from "../assets/game-worlds/gta-economy-world.webp";
 import { gradeForScore, isSnapshotStale, scoreBusinesses } from "../lib/economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import DecisionShortcuts from "./DecisionShortcuts.astro";
 import FeaturedInsight from "./FeaturedInsight.astro";
+import GameWorldHero from "./GameWorldHero.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -94,7 +96,7 @@ const shortcuts = lang === "ru" ? [
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/gta-online/" enPath="/en/gta-online/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <section class="hero vertical-hero" data-visual="GTA$" data-icon="$">
+      <GameWorldHero image={gtaEconomyWorld} worldCode="CITY NETWORK / 01">
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1 style="font-size:clamp(38px,6vw,62px)">{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
@@ -105,7 +107,7 @@ const shortcuts = lang === "ru" ? [
         <div class="proof-strip">
           {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
-      </section>
+      </GameWorldHero>
 
       <DecisionShortcuts lang={lang} game="gta" items={shortcuts} />
 

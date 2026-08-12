@@ -27,3 +27,11 @@ All verticals share one product shell, interaction grammar and trust model. Scen
 ## 2026-08-12 — content must complete a decision loop
 
 Money Meta Field Notes are not a generic blog. Every flagship analysis begins with one player question, exposes the relevant calculation and ends in a tool where the reader can replace the baseline with personal inputs. Homepage proof points prioritize player outcomes over implementation metrics.
+
+## 2026-08-12 — living hubs and owned visual identity
+
+Each vertical becomes a standalone living product with a visual economy map, player paths, current pulse, rankings, tools and a research library. Original Money Meta worlds establish immersion; data-driven HTML/SVG establishes trust and interactivity. Publisher artwork is never required for the product to feel premium.
+
+## 2026-08-12 — commercial media safety
+
+Absence of a visible prohibition is not permission. Publisher screenshots and promotional assets are limited to specific editorial use after rights review; original or explicitly licensed visuals remain the default for commercial surfaces.

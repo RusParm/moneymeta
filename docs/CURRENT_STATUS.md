@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-08-11
+Updated: 2026-08-12
 
 ## Baseline
 
@@ -61,6 +61,13 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Money Meta Field Notes with three flagship analyses in complete RU/EN parity.
 - Article-to-tool loops, Article schema and expanded sitemap coverage.
 - Nineteen static pages pass desktop/mobile overflow and interaction QA.
+
+## In development — v1.2 living hubs
+
+- Three original, responsive economy-world hero assets now establish a distinct GTA, Dota and WoW visual identity.
+- A shared optimized hero component keeps responsive image delivery, overlays and performance consistent across all verticals.
+- The complete living-hub product anatomy and commercial media policy are documented.
+- Next gate: choose and implement the first benchmark hub end to end, then transfer the proven system to the remaining verticals.
 
 ## Release policy
 

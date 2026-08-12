@@ -1,9 +1,11 @@
 ---
 import { craftingBaseline, farmBaseline, wowPatchContext } from "../data/wow-economy";
+import wowEconomyWorld from "../assets/game-worlds/wow-economy-world.webp";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import DecisionShortcuts from "./DecisionShortcuts.astro";
 import FeaturedInsight from "./FeaturedInsight.astro";
+import GameWorldHero from "./GameWorldHero.astro";
 import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
 
@@ -176,7 +178,7 @@ const copy = lang === "ru" ? {
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/wow/" enPath="/en/wow/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <section class="hero vertical-hero" data-visual="AUCTION HOUSE" data-icon="AH">
+      <GameWorldHero image={wowEconomyWorld} worldCode="MARKET FLOW / 03">
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
@@ -190,7 +192,7 @@ const copy = lang === "ru" ? {
         <div class="callout warning" style="margin-top:24px">
           <p><span class="pill gold">{copy.context}</span> <strong>{wowPatchContext.release}</strong> · {copy.contextText}</p>
         </div>
-      </section>
+      </GameWorldHero>
 
       <DecisionShortcuts lang={lang} game="wow" items={shortcuts} />
 

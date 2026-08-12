@@ -39,6 +39,14 @@
 - Article-to-tool loops and search-ready landing pages.
 - Game-specific visual identity without publisher artwork or personal branding.
 
+## P1.35 — v1.2 living game hubs
+
+- Original cinematic economy worlds for GTA Online, Dota 2 and WoW Retail.
+- Shared high-quality hub anatomy: economy map, player paths, current pulse, decision deck, rankings, scenario lab and research library.
+- One benchmark hub completed end to end before the system is adapted to the other two verticals.
+- Rights-aware media pipeline designed for a future commercial product.
+- Dense, responsive game identity without depending on publisher artwork.
+
 ## P1.5 — recurring utility
 
 - Goal Planner.
