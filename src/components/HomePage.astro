@@ -1,5 +1,5 @@
 ---
-import { midasBaseline } from "../data/dota-economy";
+import { dotaPatchContext, midasBaseline } from "../data/dota-economy";
 import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
 import { insights } from "../data/insights";
 import { craftingBaseline, wowPatchContext } from "../data/wow-economy";
@@ -26,23 +26,23 @@ const wowExample = calculateCraftingMetrics(craftingBaseline);
 const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
 
 const copy = lang === "ru" ? {
-  title: "Money Meta — что делать дальше в экономике любимой игры",
+  title: "Money Meta - что делать дальше в экономике любимой игры",
   description: "Персональные решения для GTA Online, Dota 2 и WoW: что купить, когда окупится и сколько игровой валюты ты реально получишь.",
   kicker: "Инструменты для игроков, которые ценят своё время",
   headingA: "Не гринди",
   headingB: "вслепую.",
-  lede: "Скажи, во что играешь и чего хочешь добиться. Money Meta покажет лучший следующий ход, реальную окупаемость и цену ошибки — без десяти роликов и советов «на глаз».",
+  lede: "Скажи, во что играешь и чего хочешь добиться. Money Meta покажет лучший следующий ход, реальную окупаемость и цену ошибки - без десяти роликов и советов «на глаз».",
   start: "Найти мой следующий ход",
   explore: "Открыть GTA Online Hub",
   promises: ["Ответ за 30 секунд", "Все допущения можно изменить", "Сценарий сохраняется и отправляется ссылкой"],
   demoLabel: "Пример решения · измени inputs внутри инструмента",
   demoQuestion: "Что говорит модель?",
-  gtaVerdict: "Сначала — Кислотная лаборатория",
+  gtaVerdict: "Сначала - Кислотная лаборатория",
   gtaReason: "Для solo-returner с GTA$2,5 млн и ограниченным временем baseline-модель ставит её выше более тяжёлых бизнесов.",
   dotaVerdict: "Midas успевает окупиться",
   dotaReason: "Покупка на 12-й минуте при ожидаемом конце на 42-й проходит break-even до завершения матча.",
   wowVerdict: "Крафт имеет положительный edge",
-  wowReason: "Но часть прибыли остаётся в непроданном inventory — headline margin завышает доступное золото.",
+  wowReason: "Но часть прибыли остаётся в непроданном inventory - headline margin завышает доступное золото.",
   openCase: "Открыть и пересчитать",
   metricSetup: "Вложения",
   metricNet: "Чистыми / цикл",
@@ -56,7 +56,7 @@ const copy = lang === "ru" ? {
   valueRail: [["30 сек", "от вопроса до action"], ["3 игры", "три разных типа экономики"], ["100%", "редактируемые inputs"], ["0", "скрытых допущений"]],
   chooseKicker: "Начни с реального вопроса",
   chooseTitle: "Что ты хочешь решить прямо сейчас?",
-  chooseText: "Не изучай структуру сайта. Выбери игру — и сразу переходи к нужному решению.",
+  chooseText: "Не изучай структуру сайта. Выбери игру - и сразу переходи к нужному решению.",
   active: "Доступно сейчас",
   gtaTag: "Production economy",
   gtaTitle: "GTA Online",
@@ -97,12 +97,12 @@ const copy = lang === "ru" ? {
   trustTitle: "Никакой выдуманной точности.",
   trustText: "Verified, estimated и community-reported никогда не смешиваются. Если данные устарели, Money Meta скажет это раньше, чем даст совет."
 } : {
-  title: "Money Meta — know what to do next in your game's economy",
+  title: "Money Meta - know what to do next in your game's economy",
   description: "Personal decisions for GTA Online, Dota 2 and WoW: what to buy, when it pays back and how much game currency you can actually realize.",
   kicker: "Tools for players who value their time",
   headingA: "Stop grinding",
   headingB: "blind.",
-  lede: "Tell us what you play and what you want to achieve. Money Meta shows the next best move, real payback and the cost of a bad decision — without ten videos or guesswork.",
+  lede: "Tell us what you play and what you want to achieve. Money Meta shows the next best move, real payback and the cost of a bad decision - without ten videos or guesswork.",
   start: "Find my next move",
   explore: "Open GTA Online Hub",
   promises: ["An answer in 30 seconds", "Edit every assumption", "Save and share any scenario"],
@@ -113,7 +113,7 @@ const copy = lang === "ru" ? {
   dotaVerdict: "Midas pays back in time",
   dotaReason: "A minute-12 purchase with a minute-42 expected finish reaches break-even before the match ends.",
   wowVerdict: "The craft has a positive edge",
-  wowReason: "But part of the profit remains in unsold inventory — headline margin overstates available gold.",
+  wowReason: "But part of the profit remains in unsold inventory - headline margin overstates available gold.",
   openCase: "Open and recalculate",
   metricSetup: "Investment",
   metricNet: "Net / cycle",
@@ -131,7 +131,7 @@ const copy = lang === "ru" ? {
   active: "Available now",
   gtaTag: "Production economy",
   gtaTitle: "GTA Online",
-  gtaText: "A multi-million-dollar purchase should pay back — not just look good in a garage.",
+  gtaText: "A multi-million-dollar purchase should pay back - not just look good in a garage.",
   gtaQuestions: [["What should I buy next?", `${calculatorPath}#next-move`], ["Which business pays back fastest?", gtaPath], ["Build a portfolio for my budget", `${calculatorPath}#portfolio`]],
   dotaTag: "Match economy",
   dotaTitle: "Dota 2",
@@ -323,9 +323,9 @@ const copy = lang === "ru" ? {
             <div class="pulse-meta"><span>{copy.validThrough}</span><b>{weeklyMeta.validThrough}</b></div>
           </a>
           <a class="pulse-card pulse-dota" href={dotaPath}>
-            <div class="pulse-head"><span>{copy.dota}</span><span class="pulse-state">community-reported</span></div>
-            <strong>Patch 7.41 · Midas + buyback models</strong>
-            <div class="pulse-meta"><span>{copy.checked}</span><b>2026-08-11</b></div>
+            <div class="pulse-head"><span>{copy.dota}</span><span class="pulse-state">{dotaPatchContext.status}</span></div>
+            <strong>Patch {dotaPatchContext.patch} · Midas + buyback models</strong>
+            <div class="pulse-meta"><span>{copy.checked}</span><b>{dotaPatchContext.checkedAt}</b></div>
           </a>
           <a class="pulse-card pulse-wow" href={wowPath}>
             <div class="pulse-head"><span>{copy.wow}</span><span class="pulse-state">{wowPatchContext.status}</span></div>

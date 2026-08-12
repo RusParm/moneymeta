@@ -1,4 +1,6 @@
-import type { DotaLocale } from "./dota-economy";
+import { dotaPatchContext, type DotaLocale } from "./dota-economy";
+
+const currentPatch = dotaPatchContext.patch;
 
 type Localized = Record<DotaLocale, string>;
 
@@ -35,7 +37,7 @@ const hero = (key: string, ru: string, en: string, fallback: string): DotaMediaA
 });
 
 export const dotaMedia = {
-  quellingBlade: item("quelling_blade", "Quelling Blade — источник last-hit дохода", "Quelling Blade — last-hit income", "QB"),
+  quellingBlade: item("quelling_blade", "Quelling Blade, источник last-hit дохода", "Quelling Blade, last-hit income source", "QB"),
   handOfMidas: item("hand_of_midas", "Hand of Midas", "Hand of Midas", "HM"),
   maelstrom: item("maelstrom", "Maelstrom", "Maelstrom", "ML"),
   battleFury: item("bfury", "Battle Fury", "Battle Fury", "BF"),
@@ -47,11 +49,11 @@ export const dotaMedia = {
   aegis: item("aegis", "Aegis of the Immortal", "Aegis of the Immortal", "AEG"),
   tp: item("tpscroll", "Town Portal Scroll", "Town Portal Scroll", "TP"),
   rapier: item("rapier", "Divine Rapier", "Divine Rapier", "DR"),
-  antiMage: hero("antimage", "Anti-Mage — carry-линза", "Anti-Mage — carry lens", "AM"),
-  axe: hero("axe", "Axe — initiator-линза", "Axe — initiator lens", "AXE"),
-  crystalMaiden: hero("crystal_maiden", "Crystal Maiden — support-линза", "Crystal Maiden — support lens", "CM"),
-  dragonKnight: hero("dragon_knight", "Dragon Knight — returner marker", "Dragon Knight — returner marker", "DK"),
-  alchemist: hero("alchemist", "Alchemist — replay economy marker", "Alchemist — replay economy marker", "ALC")
+  antiMage: hero("antimage", "Anti-Mage, carry-линза", "Anti-Mage, carry lens", "AM"),
+  axe: hero("axe", "Axe, initiator-линза", "Axe, initiator lens", "AXE"),
+  crystalMaiden: hero("crystal_maiden", "Crystal Maiden, support-линза", "Crystal Maiden, support lens", "CM"),
+  dragonKnight: hero("dragon_knight", "Dragon Knight, returner marker", "Dragon Knight, returner marker", "DK"),
+  alchemist: hero("alchemist", "Alchemist, replay economy marker", "Alchemist, replay economy marker", "ALC")
 } satisfies Record<string, DotaMediaAsset>;
 
 export interface DotaEconomyNode {
@@ -123,8 +125,8 @@ export const dotaEconomyNodes: DotaEconomyNode[] = [
       en: "Gold becomes strategic value only when the item is purchased and delivered. Until then, it remains potential power."
     },
     decision: {
-      ru: "Планируй timing вместе с TP, доставкой и позицией команды — не только по минуте в инвентаре.",
-      en: "Plan the timing together with TP, delivery and team position — not only the inventory timestamp."
+      ru: "Планируй timing вместе с TP, доставкой и позицией команды. Одной минуты появления предмета в инвентаре недостаточно.",
+      en: "Plan the timing together with TP, delivery and team position. The inventory timestamp alone is not enough."
     },
     signal: { ru: "gold → usable power", en: "gold → usable power" },
     href: "#role-lenses",
@@ -205,7 +207,7 @@ export const dotaPlayerPaths: DotaPlayerPath[] = [
     focus: { ru: "1 роль", en: "1 role" },
     tolerance: { ru: "низкая", en: "low" },
     steps: [
-      { title: { ru: "Прочитай delta", en: "Read the delta" }, text: { ru: "Отдели 7.41e-изменения экономики от hero balance, который не влияет на твои решения.", en: "Separate 7.41e economy changes from hero balance that does not affect your decisions." } },
+      { title: { ru: "Прочитай delta", en: "Read the delta" }, text: { ru: `Отдели изменения экономики ${currentPatch} от hero balance, который не влияет на твои решения.`, en: `Separate ${currentPatch} economy changes from hero balance that does not affect your decisions.` } },
       { title: { ru: "Зафиксируй timing", en: "Record one timing" }, text: { ru: "Запиши минуту первого ключевого предмета и что команда смогла сделать после него.", en: "Record the first key item minute and what the team achieved after it." } },
       { title: { ru: "Проверь резерв", en: "Check the reserve" }, text: { ru: "Перед поздним objective сравни компонент с buyback, а не покупай автоматически.", en: "Before a late objective, compare the component with buyback instead of auto-buying." } }
     ],
@@ -221,15 +223,15 @@ export const dotaPlayerPaths: DotaPlayerPath[] = [
     summary: { ru: "Один повторяемый вопрос на матч вместо десяти метрик.", en: "One repeatable question per match instead of ten metrics." },
     title: { ru: "Учись через один objective, а не через весь replay", en: "Learn through one objective, not the entire replay" },
     hero: dotaMedia.crystalMaiden,
-    matches: { ru: "2–4 / нед.", en: "2–4 / week" },
+    matches: { ru: "2-4 / нед.", en: "2-4 / week" },
     focus: { ru: "1 objective", en: "1 objective" },
     tolerance: { ru: "средняя", en: "medium" },
     steps: [
-      { title: { ru: "Назови окно", en: "Name the window" }, text: { ru: "Roshan, tower или защита high ground — только одна ближайшая причина копить золото.", en: "Roshan, tower or high-ground defense — keep one immediate reason to save gold." } },
+      { title: { ru: "Назови окно", en: "Name the window" }, text: { ru: "Выбери одну ближайшую причину копить золото: Roshan, tower или защиту high ground.", en: "Keep one immediate reason to save gold: Roshan, a tower or high-ground defense." } },
       { title: { ru: "Сверь buyback", en: "Check buyback" }, text: { ru: "Введи net worth, текущее золото и секунды до objective до открытия shop.", en: "Enter net worth, current gold and seconds to objective before opening the shop." } },
-      { title: { ru: "Оцени результат", en: "Grade the outcome" }, text: { ru: "Сработало ли потраченное золото в следующей драке — да, нет или драки не было.", en: "Did the spent gold work in the next fight — yes, no, or no fight happened." } }
+      { title: { ru: "Оцени результат", en: "Grade the outcome" }, text: { ru: "Оцени потраченное золото после следующей драки: сработало, не сработало или драки не было.", en: "Grade the spent gold after the next fight: it worked, it failed or no fight happened." } }
     ],
-    flipCondition: { ru: "Если команда не может вернуться после buyback, резерв теряет часть ценности — учитывай позицию и TP.", en: "If the team cannot re-enter after buyback, the reserve loses value — include position and TP access." },
+    flipCondition: { ru: "Если команда не может вернуться после buyback, резерв теряет часть ценности. Учитывай позицию и доступный TP.", en: "If the team cannot re-enter after buyback, the reserve loses value. Include position and TP access." },
     href: {
       ru: "/dota-2/?dota-buyback.buyback-networth=9000&dota-buyback.buyback-gold=750&dota-buyback.buyback-gpm=380&dota-buyback.buyback-objective=120&dota-buyback.buyback-risk=45#buyback-reserve",
       en: "/en/dota-2/?dota-buyback.buyback-networth=9000&dota-buyback.buyback-gold=750&dota-buyback.buyback-gpm=380&dota-buyback.buyback-objective=120&dota-buyback.buyback-risk=45#buyback-reserve"
@@ -245,7 +247,7 @@ export const dotaPlayerPaths: DotaPlayerPath[] = [
     focus: { ru: "sensitivity", en: "sensitivity" },
     tolerance: { ru: "высокая", en: "high" },
     steps: [
-      { title: { ru: "Сними timeline", en: "Capture timeline" }, text: { ru: "Purchase, objective, death и buyback — четыре точки вместо одного финального GPM.", en: "Purchase, objective, death and buyback — four points instead of one final GPM." } },
+      { title: { ru: "Сними timeline", en: "Capture timeline" }, text: { ru: "Сохрани четыре точки вместо одного финального GPM: purchase, objective, death и buyback.", en: "Capture four points instead of one final GPM: purchase, objective, death and buyback." } },
       { title: { ru: "Построй counterfactual", en: "Build a counterfactual" }, text: { ru: "Что изменилось бы при покупке на две минуты раньше или при сохранённом резерве.", en: "Test what changes with a two-minute earlier purchase or a preserved reserve." } },
       { title: { ru: "Найди flip", en: "Find the flip" }, text: { ru: "Зафиксируй условие, при котором greed превращается из плюса в потерю tempo.", en: "Record the condition where greed flips from positive value to lost tempo." } }
     ],
@@ -258,19 +260,19 @@ export const dotaPlayerPaths: DotaPlayerPath[] = [
 ];
 
 export const dotaPulse = {
-  patch: "7.41e",
+  patch: currentPatch,
   checkedAt: "2026-08-12",
   staleAfterDays: 45,
-  sourceUrl: "https://www.dota2.com/patches/7.41e",
+  sourceUrl: `https://www.dota2.com/patches/${currentPatch}`,
   status: "verified" as const,
   changes: [
     {
       signal: { ru: "+40 attack speed", en: "+40 attack speed" },
       title: { ru: "Midas получил больше силы сейчас", en: "Midas gained more power now" },
-      summary: { ru: "В 7.41e бонус attack speed увеличен с 35 до 40. Денежная часть Transmute в notes не менялась.", en: "Patch 7.41e increased the attack-speed bonus from 35 to 40. The notes do not change Transmute's cash component." },
+      summary: { ru: `В ${currentPatch} бонус attack speed увеличен с 35 до 40. Денежная часть Transmute в notes не менялась.`, en: `Patch ${currentPatch} increased the attack-speed bonus from 35 to 40. The notes do not change Transmute's cash component.` },
       decision: { ru: "Не двигай gold break-even раньше автоматически. Добавляй extra value только если +40 AS реально меняет героя или ближайший timing.", en: "Do not move cash break-even earlier automatically. Add extra value only when +40 AS changes the hero or the next timing." },
       media: dotaMedia.handOfMidas,
-      sourceUrl: "https://www.dota2.com/patches/7.41e"
+      sourceUrl: `https://www.dota2.com/patches/${currentPatch}`
     },
     {
       signal: { ru: "Madstone bundle", en: "Madstone bundle" },
@@ -313,7 +315,7 @@ export const dotaRoleLenses: DotaRoleLens[] = [
     hero: dotaMedia.antiMage,
     title: { ru: "Следующий слот должен либо ускорять карту, либо выигрывать timing", en: "The next slot must either accelerate the map or win a timing" },
     question: { ru: "Есть ли безопасный farm, чтобы окупить greed до обязательной драки?", en: "Is there enough safe farm to repay greed before the mandatory fight?" },
-    note: { ru: "Anti-Mage — только визуальный пример carry-линзы, не hero tier и не универсальный build order.", en: "Anti-Mage is a visual example of the carry lens, not a hero tier or universal build order." },
+    note: { ru: "Anti-Mage здесь служит визуальным примером carry-линзы, а не hero tier или универсальным build order.", en: "Anti-Mage is a visual example of the carry lens, not a hero tier or universal build order." },
     priorities: [
       { media: dotaMedia.battleFury, title: { ru: "Ускоритель", en: "Accelerator" }, signal: { ru: "farmable map", en: "farmable map" }, text: { ru: "Покупка оправдана, если команда может предоставить waves/camps и окно до следующего pressure.", en: "The purchase needs enough waves/camps and a real window before the next pressure point." } },
       { media: dotaMedia.bkb, title: { ru: "Конвертер timing", en: "Timing converter" }, signal: { ru: "fight → objective", en: "fight → objective" }, text: { ru: "Немедленная сила ценнее роста, когда один выигранный fight открывает Roshan или high ground.", en: "Immediate power dominates growth when one fight opens Roshan or high ground." } },
@@ -324,11 +326,11 @@ export const dotaRoleLenses: DotaRoleLens[] = [
     id: "initiator",
     label: { ru: "Initiator economy", en: "Initiator economy" },
     hero: dotaMedia.axe,
-    title: { ru: "Первая покупка создаёт доступ к драке, следующие — качество исполнения", en: "The first purchase creates access; later gold improves execution" },
+    title: { ru: "Первая покупка создаёт доступ к драке. Следующие повышают качество исполнения", en: "The first purchase creates access; later gold improves execution" },
     question: { ru: "Даёт ли новый предмет команде новую возможность начать или пережить fight?", en: "Does the item create a new way to start or survive the fight?" },
     note: { ru: "Axe обозначает initiator-архетип. Конкретный герой, draft и cooldown всегда важнее статического порядка.", en: "Axe marks the initiator archetype. Hero, draft and cooldowns always override a static order." },
     priorities: [
-      { media: dotaMedia.blink, title: { ru: "Доступ", en: "Access" }, signal: { ru: "new initiation", en: "new initiation" }, text: { ru: "Blink может изменить не damage, а сам набор доступных действий — это дискретный economic payoff.", en: "Blink may change the action set rather than damage — a discrete economic payoff." } },
+      { media: dotaMedia.blink, title: { ru: "Доступ", en: "Access" }, signal: { ru: "new initiation", en: "new initiation" }, text: { ru: "Blink может изменить не damage, а сам набор доступных действий. Это дискретный economic payoff.", en: "Blink may change the action set rather than damage. That is a discrete economic payoff." } },
       { media: dotaMedia.bkb, title: { ru: "Надёжность", en: "Reliability" }, signal: { ru: "execution rate", en: "execution rate" }, text: { ru: "Следующее золото повышает вероятность, что уже купленный initiation действительно реализуется.", en: "The next gold raises the probability that purchased initiation is actually realized." } },
       { media: dotaMedia.smoke, title: { ru: "Командная монетизация", en: "Team monetization" }, signal: { ru: "timing together", en: "timing together" }, text: { ru: "Дешёвый расходник способен реализовать дорогой timing быстрее ещё одного компонента.", en: "A cheap consumable can realize an expensive timing faster than another component." } }
     ]
@@ -339,10 +341,10 @@ export const dotaRoleLenses: DotaRoleLens[] = [
     hero: dotaMedia.crystalMaiden,
     title: { ru: "Маленький бюджет должен покупать вероятность командного результата", en: "A small budget should buy probability of a team outcome" },
     question: { ru: "Какой расход даст ценность даже без идеального личного net worth?", en: "Which spend creates value without perfect personal net worth?" },
-    note: { ru: "Crystal Maiden — визуальный маркер support-линзы. Это framework капитала, а не обязательный item build.", en: "Crystal Maiden is a visual marker for the support lens. This is a capital framework, not a required build." },
+    note: { ru: "Crystal Maiden служит визуальным маркером support-линзы. Это framework капитала, а не обязательный item build.", en: "Crystal Maiden is a visual marker for the support lens. This is a capital framework, not a required build." },
     priorities: [
       { media: dotaMedia.observerWard, title: { ru: "Информация", en: "Information" }, signal: { ru: "risk reduction", en: "risk reduction" }, text: { ru: "Vision уменьшает вероятность невыгодной драки и повышает качество следующего objective decision.", en: "Vision lowers the chance of a bad fight and improves the next objective decision." } },
-      { media: dotaMedia.forceStaff, title: { ru: "Спасённая ценность", en: "Value preserved" }, signal: { ru: "death avoided", en: "death avoided" }, text: { ru: "Utility окупается через сохранённого core, позицию или cooldown, а не через личный GPM.", en: "Utility pays through a saved core, position or cooldown — not personal GPM." } },
+      { media: dotaMedia.forceStaff, title: { ru: "Спасённая ценность", en: "Value preserved" }, signal: { ru: "death avoided", en: "death avoided" }, text: { ru: "Utility окупается через сохранённого core, позицию или cooldown, а не через личный GPM.", en: "Utility pays through a saved core, position or cooldown rather than personal GPM." } },
       { media: dotaMedia.smoke, title: { ru: "Дешёвый catalyst", en: "Cheap catalyst" }, signal: { ru: "map conversion", en: "map conversion" }, text: { ru: "Smoke превращает информацию и timing команды в попытку забрать kill или objective.", en: "Smoke turns information and team timing into an attempt to secure a kill or objective." } }
     ]
   }
@@ -379,7 +381,7 @@ export const dotaScenarios = [
     featured: false,
     media: dotaMedia.maelstrom,
     title: { ru: "Сколько стоит Madstone для тебя?", en: "What is Madstone worth to you?" },
-    text: { ru: "Sensitivity с 35 gold другой ценности на use — отдельно от гарантированного Transmute.", en: "Sensitivity with 35 gold of other value per use, separate from guaranteed Transmute." },
+    text: { ru: "Sensitivity: 35 gold другой ценности на use отдельно от гарантированного Transmute.", en: "Sensitivity with 35 gold of other value per use, separate from guaranteed Transmute." },
     href: {
       ru: "/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=35&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=12&dota-midas.midas-end=38#midas-irr",
       en: "/en/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=35&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=12&dota-midas.midas-end=38#midas-irr"

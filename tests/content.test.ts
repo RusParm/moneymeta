@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { gtaEconomyNodes, gtaPlayerPaths, gtaScenarios } from "../src/data/gta-hub";
 import { weeklyMeta } from "../src/data/gta-businesses";
 import { dotaEconomyNodes, dotaPlayerPaths, dotaPulse, dotaRoleLenses, dotaScenarios } from "../src/data/dota-hub";
+import { dotaPatchContext } from "../src/data/dota-economy";
 import { insights } from "../src/data/insights";
 
 describe("GTA benchmark hub content", () => {
@@ -56,8 +57,10 @@ describe("Dota living hub content", () => {
   });
 
   it("ties Patch Pulse to a dated primary source and freshness rule", () => {
+    expect(dotaPatchContext.patch).toBe("7.41e");
+    expect(dotaPulse.patch).toBe(dotaPatchContext.patch);
     expect(dotaPulse.status).toBe("verified");
-    expect(dotaPulse.sourceUrl).toContain("dota2.com/patches/7.41e");
+    expect(dotaPulse.sourceUrl).toContain(`dota2.com/patches/${dotaPatchContext.patch}`);
     expect(dotaPulse.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(dotaPulse.staleAfterDays).toBeGreaterThan(0);
     expect(dotaPulse.changes).toHaveLength(3);

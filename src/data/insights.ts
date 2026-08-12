@@ -1,3 +1,5 @@
+import { dotaPatchContext } from "./dota-economy";
+
 export type InsightLocale = "ru" | "en";
 export type InsightGame = "gta" | "dota" | "wow";
 export type InsightAudience = "returner" | "casual" | "grinder";
@@ -51,29 +53,29 @@ export const insights: Insight[] = [
         readTime: "6 мин",
         takeaways: [
           "Стартовая модель: GTA$1,0 млн вложений и около GTA$275 тыс. чистыми за полный цикл.",
-          "Расчётная окупаемость — примерно 17 часов производства, а не 17 часов активного grind.",
-          "Ответ меняется, если у тебя уже есть инфраструктура Nightclub, действует релевантный бонус или главная цель — максимальный active income."
+          "Расчётная окупаемость - примерно 17 часов производства, а не 17 часов активного grind.",
+          "Ответ меняется, если у тебя уже есть инфраструктура Nightclub, действует релевантный бонус или главная цель - максимальный active income."
         ],
         sections: [
           {
             heading: "Короткий ответ",
             paragraphs: [
-              "Для solo-игрока, который вернулся после перерыва, главный риск — потратить почти весь капитал на актив с длинной окупаемостью и тяжёлой операционкой. Поэтому сравнивать нужно не headline payout, а чистый cash flow после supplies, время производства и реальную сложность продажи.",
-              "В текущем estimated-наборе Кислотная лаборатория требует около GTA$1,0 млн стартовых вложений. Полная продажа в baseline составляет GTA$335 тыс., supplies — GTA$60 тыс., поэтому чистая прибыль цикла оценивается в GTA$275 тыс. Это даёт около 27,5% virtual ROI на цикл."
+              "Для solo-игрока, который вернулся после перерыва, главный риск - потратить почти весь капитал на актив с длинной окупаемостью и тяжёлой операционкой. Поэтому сравнивать нужно не headline payout, а чистый cash flow после supplies, время производства и реальную сложность продажи.",
+              "В текущем estimated-наборе Кислотная лаборатория требует около GTA$1,0 млн стартовых вложений. Полная продажа в baseline составляет GTA$335 тыс., supplies - GTA$60 тыс., поэтому чистая прибыль цикла оценивается в GTA$275 тыс. Это даёт около 27,5% virtual ROI на цикл."
             ]
           },
           {
             heading: "Почему не самый большой payout",
             paragraphs: [
               "Большая сумма продажи сама по себе ничего не говорит об эффективности. Дорогой актив может генерировать больше за цикл, но дольше производить товар, требовать несколько машин или постоянно отвлекать игрока. Для casual/solo это превращает красивую цифру в плохое использование времени.",
-              "Money Meta отдельно показывает production hours и active friction. Окупаемость Acid Lab около 17 часов означает время работы бизнеса внутри игры. Ручного времени нужно существенно меньше — и это принципиально отличается от гайдов, которые смешивают passive production и активный grind в один показатель."
+              "Money Meta отдельно показывает production hours и active friction. Окупаемость Acid Lab около 17 часов означает время работы бизнеса внутри игры. Ручного времени нужно существенно меньше - и это принципиально отличается от гайдов, которые смешивают passive production и активный grind в один показатель."
             ]
           },
           {
             heading: "Когда рекомендация изменится",
             paragraphs: [
               "Если у тебя уже куплены связанные бизнесы, Nightclub может стать стратегически важнее, чем показывает его упрощённая standalone-модель. Если действует двойной бонус на конкретные продажи, относительный рейтинг тоже изменится. А grinder с пятнадцатью часами в неделю может сознательно принять больше friction ради высокого потолка дохода.",
-              "Поэтому правильный вывод звучит не «всем покупать Acid Lab», а «при этих вводных Acid Lab — наиболее устойчивый первый ход». Измени бюджет, доступное время и цель в decision engine — и проверь, сохраняется ли ответ для твоего профиля."
+              "Поэтому правильный вывод звучит не «всем покупать Acid Lab», а «при этих вводных Acid Lab - наиболее устойчивый первый ход». Измени бюджет, доступное время и цель в decision engine - и проверь, сохраняется ли ответ для твоего профиля."
             ]
           }
         ],
@@ -83,7 +85,7 @@ export const insights: Insight[] = [
         title: "What to buy in GTA Online with GTA$2.5m after a long break",
         description: "Find the next best solo-returner business through payback, net profit and operating friction.",
         kicker: "GTA Online · Capital allocation",
-        thesis: "Under the baseline assumptions, Money Meta looks at the Acid Lab first — not because it is always S-tier, but because limited-time solo players get an attractive mix of entry cost, capital efficiency and sale convenience.",
+        thesis: "Under the baseline assumptions, Money Meta looks at the Acid Lab first - not because it is always S-tier, but because limited-time solo players get an attractive mix of entry cost, capital efficiency and sale convenience.",
         readTime: "6 min",
         takeaways: [
           "Baseline case: GTA$1.0m invested and roughly GTA$275k net per full cycle.",
@@ -95,14 +97,14 @@ export const insights: Insight[] = [
             heading: "The short answer",
             paragraphs: [
               "A returning solo player faces one major risk: deploying almost all available capital into an asset with slow payback and heavy operating friction. The useful comparison is not headline payout. It is net cash flow after supplies, production time and the practical difficulty of realizing the sale.",
-              "In the current estimated dataset, the Acid Lab requires roughly GTA$1.0m of starting capital. A baseline full sale is GTA$335k and supplies cost GTA$60k, leaving GTA$275k of net cycle profit — about 27.5% virtual ROI per cycle."
+              "In the current estimated dataset, the Acid Lab requires roughly GTA$1.0m of starting capital. A baseline full sale is GTA$335k and supplies cost GTA$60k, leaving GTA$275k of net cycle profit - about 27.5% virtual ROI per cycle."
             ]
           },
           {
             heading: "Why the largest payout is not the answer",
             paragraphs: [
               "A large sale number does not equal efficiency. A more expensive asset may produce more per cycle while taking longer, requiring multiple vehicles or constantly pulling the player away from other activities. For a casual solo player, that turns an impressive headline into a poor use of time.",
-              "Money Meta separates production hours from active friction. Acid Lab payback of roughly 17 hours means in-game production time. The manual workload is much lower — a critical distinction that many guides erase when they put passive production and active grind into one hourly number."
+              "Money Meta separates production hours from active friction. Acid Lab payback of roughly 17 hours means in-game production time. The manual workload is much lower - a critical distinction that many guides erase when they put passive production and active grind into one hourly number."
             ]
           },
           {
@@ -216,15 +218,15 @@ export const insights: Insight[] = [
     },
     content: {
       ru: {
-        title: "Почему самая большая сумма продажи — не лучший бизнес",
+        title: "Почему самая большая сумма продажи - не лучший бизнес",
         description: "Разбираем разницу между headline payout, net profit, production throughput и payback капитала.",
         kicker: "GTA Online · Unit economics",
-        thesis: "GTA$500 тыс. на экране продажи могут выглядеть сильнее GTA$335 тыс., но решение меняют supplies, длительность производства и стартовые вложения. Gross — это начало расчёта, а не вывод.",
+        thesis: "GTA$500 тыс. на экране продажи могут выглядеть сильнее GTA$335 тыс., но решение меняют supplies, длительность производства и стартовые вложения. Gross - это начало расчёта, а не вывод.",
         readTime: "5 мин",
         takeaways: [
           "Counterfeit Cash показывает GTA$500 тыс. gross и GTA$450 тыс. net в baseline, но производит цикл около 9,4 часа.",
           "Acid Lab показывает меньший gross, но примерно GTA$59,8 тыс. net на production-hour против GTA$47,9 тыс.",
-          "Капитальная окупаемость в модели — около 17 часов у Acid Lab против примерно 49 у Counterfeit Cash."
+          "Капитальная окупаемость в модели - около 17 часов у Acid Lab против примерно 49 у Counterfeit Cash."
         ],
         sections: [
           {
@@ -317,13 +319,13 @@ export const insights: Insight[] = [
             heading: "Почему максимум GTA$/hour может быть ловушкой",
             paragraphs: [
               "Теоретически сильный бизнес бесполезен, если короткая игровая сессия регулярно заканчивается незавершённой логистикой. Для casual-профиля стабильное выполнение цикла ценнее небольшого преимущества в таблице.",
-              "Friction ceiling заранее удаляет активы, которые конфликтуют со стилем игры. Это не объявляет их плохими — они просто не подходят текущему мандату."
+              "Friction ceiling заранее удаляет активы, которые конфликтуют со стилем игры. Это не объявляет их плохими - они просто не подходят текущему мандату."
             ]
           },
           {
             heading: "Спокойная недельная архитектура",
             paragraphs: [
-              "Первый слой — один solo-friendly production loop. Второй — текущая active-cash возможность из Pulse. Третий — резерв капитала, чтобы не пропустить редкое окно и не покупать supplies с пустым банком.",
+              "Первый слой - один solo-friendly production loop. Второй - текущая active-cash возможность из Pulse. Третий - резерв капитала, чтобы не пропустить редкое окно и не покупать supplies с пустым банком.",
               "Такой план выглядит менее эффектно, чем длинный список активностей, но лучше удерживается из недели в неделю. Повторяемость и есть реальный compounding."
             ]
           },
@@ -331,7 +333,7 @@ export const insights: Insight[] = [
             heading: "Как получить ответ под себя",
             paragraphs: [
               "Открой готовый casual-сценарий и поменяй только три вещи: банк, часы и friction. Decision engine пересчитает shortlist, не заставляя тебя заново изучать всю мету.",
-              "Если готов принять friction 5–6/10, расширь потолок и посмотри, когда Bunker возвращается в выборку. Это и есть sensitivity, которая важнее универсального топа."
+              "Если готов принять friction 5-6/10, расширь потолок и посмотри, когда Bunker возвращается в выборку. Это и есть sensitivity, которая важнее универсального топа."
             ]
           }
         ],
@@ -367,7 +369,7 @@ export const insights: Insight[] = [
             heading: "Get the answer for your case",
             paragraphs: [
               "Open the prepared casual scenario and change only three things: bank, hours and friction. The decision engine recalculates the shortlist without asking you to relearn the entire meta.",
-              "If you accept friction of 5–6/10, raise the ceiling and watch when Bunker returns. That sensitivity is more useful than a universal top list."
+              "If you accept friction of 5-6/10, raise the ceiling and watch when Bunker returns. That sensitivity is more useful than a universal top list."
             ]
           }
         ],
@@ -396,18 +398,18 @@ export const insights: Insight[] = [
         takeaways: [
           "Текущий baseline моделирует GTA$50 тыс. за час и низкую операционную нагрузку, но не полный warehouse.",
           "Высокий solo score отвечает на вопрос об удобстве, а не автоматически на вопрос о лучшей первой покупке.",
-          "Nightclub нужно оценивать как слой над уже существующим портфелем и отдельно — как новый capital allocation."
+          "Nightclub нужно оценивать как слой над уже существующим портфелем и отдельно - как новый capital allocation."
         ],
         sections: [
           {
             heading: "Почему Nightclub поднимается в solo ranking",
             paragraphs: [
               "В low-friction lens большой вес получают solo suitability и операционная простота. Nightclub закономерно выглядит сильным, потому что baseline требует мало активных минут.",
-              "Но score отвечает ровно на заданный вопрос. Он не доказывает, что GTA$2 млн setup — лучший первый расход для игрока без связанной инфраструктуры."
+              "Но score отвечает ровно на заданный вопрос. Он не доказывает, что GTA$2 млн setup - лучший первый расход для игрока без связанной инфраструктуры."
             ]
           },
           {
-            heading: "Standalone и portfolio — две модели",
+            heading: "Standalone и portfolio - две модели",
             paragraphs: [
               "Standalone-модель сравнивает самостоятельный денежный поток. Portfolio-модель должна учитывать, какие feeder-активы уже есть, сколько дополнительного времени требуется и какой объём капитала заморожен во всей системе.",
               "Смешивание этих двух моделей создаёт ложную точность. Money Meta оставляет warehouse-синергию вне baseline до полноценной проверяемой модели."
@@ -417,7 +419,7 @@ export const insights: Insight[] = [
             heading: "Как принять решение сейчас",
             paragraphs: [
               "Если Nightclub уже встроен в твою систему, оценивай следующий маржинальный апгрейд, а не повторно всю историческую цену. Если инфраструктуры нет, сравни полный setup с Acid Lab и Bunker по payback.",
-              "Portfolio Optimizer пока использует прозрачный упрощённый цикл. Он полезен для constraints, но не заменяет отдельную Nightclub warehouse-модель — это явно обозначенное ограничение, а не скрытый пробел."
+              "Portfolio Optimizer пока использует прозрачный упрощённый цикл. Он полезен для constraints, но не заменяет отдельную Nightclub warehouse-модель - это явно обозначенное ограничение, а не скрытый пробел."
             ]
           }
         ],
@@ -453,7 +455,7 @@ export const insights: Insight[] = [
             heading: "How to decide now",
             paragraphs: [
               "If Nightclub is already embedded in your system, evaluate the next marginal upgrade instead of charging the full historical price again. Without infrastructure, compare full setup with Acid Lab and Bunker payback.",
-              "Portfolio Optimizer currently uses a transparent simplified cycle. It helps test constraints, but it does not replace a dedicated Nightclub warehouse model — an explicit limitation, not a hidden gap."
+              "Portfolio Optimizer currently uses a transparent simplified cycle. It helps test constraints, but it does not replace a dedicated Nightclub warehouse model - an explicit limitation, not a hidden gap."
             ]
           }
         ],
@@ -465,7 +467,7 @@ export const insights: Insight[] = [
     slug: "gta-online-when-weekly-bonus-changes-plan",
     game: "gta",
     updatedAt: "2026-08-12",
-    gameVersion: "GTA Online · Summer Heist Event · Aug 6–12 2026",
+    gameVersion: "GTA Online · Summer Heist Event · Aug 6-12 2026",
     evidenceStatus: "verified",
     audiences: ["returner", "casual", "grinder"],
     toolPath: {
@@ -477,12 +479,12 @@ export const insights: Insight[] = [
         title: "Когда weekly-бонус должен изменить твой план в GTA Online",
         description: "Правило для ограниченных событий: сначала забрать безусловную ценность, затем оценить редкое окно и только потом менять портфель.",
         kicker: "GTA Online · Weekly opportunity cost",
-        thesis: "Weekly-бонус меняет порядок действий, но не всегда меняет лучшую долгосрочную покупку. В окне 6–12 августа правильная последовательность начинается со входного GTA$1 млн и первого свежего Cayo-run, а production-рейтинг остаётся отдельным.",
+        thesis: "Weekly-бонус меняет порядок действий, но не всегда меняет лучшую долгосрочную покупку. В окне 6-12 августа правильная последовательность начинается со входного GTA$1 млн и первого свежего Cayo-run, а production-рейтинг остаётся отдельным.",
         readTime: "5 мин",
         takeaways: [
           "До конца 12 августа официальный event даёт GTA$1 млн за вход; начисление может занять до 72 часов.",
           "Первое свежее прохождение Cayo Perico в этом окне гарантирует Panther Statue.",
-          "2X/3X активности — временный active-cash слой; они не применяются автоматически к постоянным production-бизнесам."
+          "2X/3X активности - временный active-cash слой; они не применяются автоматически к постоянным production-бизнесам."
         ],
         sections: [
           {
@@ -495,7 +497,7 @@ export const insights: Insight[] = [
           {
             heading: "Затем редкое ограниченное окно",
             paragraphs: [
-              "Гарантированная Panther Statue на первом свежем Cayo-прохождении — opportunity with expiry. Она заслуживает места выше обычного рутинного цикла, если игрок способен завершить run в срок.",
+              "Гарантированная Panther Statue на первом свежем Cayo-прохождении - opportunity with expiry. Она заслуживает места выше обычного рутинного цикла, если игрок способен завершить run в срок.",
               "Но редкий payout не делает Kosatka или любой другой актив автоматически лучшей постоянной покупкой для каждого. Сначала оцени доступ, setup и собственное время."
             ]
           },
@@ -513,7 +515,7 @@ export const insights: Insight[] = [
         title: "When a weekly bonus should change your GTA Online plan",
         description: "A rule for limited events: claim unconditional value, assess the rare window, then decide whether the portfolio changes.",
         kicker: "GTA Online · Weekly opportunity cost",
-        thesis: "A weekly bonus changes action order but does not always change the best long-term purchase. In the August 6–12 window, the sequence starts with the GTA$1m login value and a first fresh Cayo run while production rankings remain separate.",
+        thesis: "A weekly bonus changes action order but does not always change the best long-term purchase. In the August 6-12 window, the sequence starts with the GTA$1m login value and a first fresh Cayo run while production rankings remain separate.",
         readTime: "5 min",
         takeaways: [
           "Through the end of August 12, the official event grants GTA$1m for logging in; delivery can take up to 72 hours.",
@@ -551,49 +553,49 @@ export const insights: Insight[] = [
     slug: "dota-2-hand-of-midas-real-payback",
     game: "dota",
     updatedAt: "2026-08-12",
-    gameVersion: "Dota 2 · Patch 7.41e baseline",
+    gameVersion: `Dota 2 · Patch ${dotaPatchContext.patch} baseline`,
     evidenceStatus: "estimated",
     audiences: ["returner", "grinder"],
     toolPath: { ru: "/dota-2/#midas-irr", en: "/en/dota-2/#midas-irr" },
     content: {
       ru: {
-        title: "Когда Hand of Midas реально окупается — и почему 160 золота вводят в заблуждение",
+        title: "Когда Hand of Midas реально окупается - и почему 160 золота вводят в заблуждение",
         description: "Считаем incremental value Midas, минуту break-even и realized ROI до ожидаемого конца матча.",
         kicker: "Dota 2 · Timing economics",
         thesis: "Transmute даёт 160 золота, но не создаёт 160 золота чистой ценности: без Midas крип всё равно принёс бы bounty. При baseline-покупке на 12-й минуте предмет окупается примерно к 39-й; если матч закончится на 35-й, инвестиция останется в минусе.",
         readTime: "5 мин",
         takeaways: [
           "Incremental value baseline: 160 gold Transmute минус 40 gold упущенного bounty = 120 gold на use.",
-          "Для возврата стоимости 2 200 gold требуется 19 применений — break-even около 39-й минуты.",
+          "Для возврата стоимости 2 200 gold требуется 19 применений - break-even около 39-й минуты.",
           "Attack speed, Madstone и hero-specific tempo важны, но их нельзя честно свести к одной универсальной денежной цифре."
         ],
         sections: [
           {
             heading: "Ошибка в обычном расчёте",
             paragraphs: [
-              "Самый распространённый подход умножает 160 золота на количество Transmute и называет результат доходом Midas. Но это gross value. Альтернатива — убить того же крипа обычным способом и получить его bounty. Экономическая ценность предмета равна только разнице между этими сценариями.",
+              "Самый распространённый подход умножает 160 золота на количество Transmute и называет результат доходом Midas. Но это gross value. Альтернатива - убить того же крипа обычным способом и получить его bounty. Экономическая ценность предмета равна только разнице между этими сценариями.",
               "При baseline bounty 40 золота один use создаёт 120 incremental gold. Стоимость предмета 2 200 gold делится на эту величину: нужно 19 применений. При 90-секундном восстановлении заряда и первой активации сразу после покупки на 12-й минуте break-even наступает примерно на 39-й."
             ]
           },
           {
             heading: "Почему ожидаемая длительность матча решает всё",
             paragraphs: [
-              "Если матч закончится на 42-й минуте, модель успевает провести 21 Transmute. Gross incremental value составит 2 520 gold, net economic value после цены предмета — 320 gold, а realized ROI — около 14,5%.",
-              "При завершении на 35-й минуте останется только 16 применений. Они создадут 1 920 incremental gold — на 280 меньше стоимости предмета. Один и тот же Midas может быть положительной или отрицательной инвестицией только из-за изменившегося временного окна."
+              "Если матч закончится на 42-й минуте, модель успевает провести 21 Transmute. Gross incremental value составит 2 520 gold, net economic value после цены предмета - 320 gold, а realized ROI - около 14,5%.",
+              "При завершении на 35-й минуте останется только 16 применений. Они создадут 1 920 incremental gold - на 280 меньше стоимости предмета. Один и тот же Midas может быть положительной или отрицательной инвестицией только из-за изменившегося временного окна."
             ]
           },
           {
             heading: "Что формула сознательно не решает",
             paragraphs: [
-              "Midas даёт attack speed и взаимодействует с текущей Madstone-механикой. Для конкретного героя эти эффекты способны перевесить денежный минус — или не компенсировать потерянный tempo. Универсальная цена такого эффекта была бы выдуманной точностью.",
-              "Используй поле Other value, если готов сам оценить hero-specific эффект. Модель не выбирает предмет вместо тебя; она показывает, какую часть решения ты принимаешь как доказуемую экономику, а какую — как игровой judgement."
+              "Midas даёт attack speed и взаимодействует с текущей Madstone-механикой. Для конкретного героя эти эффекты способны перевесить денежный минус - или не компенсировать потерянный tempo. Универсальная цена такого эффекта была бы выдуманной точностью.",
+              "Используй поле Other value, если готов сам оценить hero-specific эффект. Модель не выбирает предмет вместо тебя; она показывает, какую часть решения ты принимаешь как доказуемую экономику, а какую - как игровой judgement."
             ]
           }
         ],
         toolLabel: "Проверить свой Midas-сценарий"
       },
       en: {
-        title: "When Hand of Midas actually pays back — and why 160 gold is misleading",
+        title: "When Hand of Midas actually pays back - and why 160 gold is misleading",
         description: "Calculate Midas incremental value, break-even minute and realized ROI through the expected match end.",
         kicker: "Dota 2 · Timing economics",
         thesis: "Transmute pays 160 gold, but it does not create 160 gold of pure value: the creep had a normal bounty. In the baseline minute-12 purchase, Midas breaks even around minute 39; if the match ends at 35, the investment remains negative.",
@@ -615,7 +617,7 @@ export const insights: Insight[] = [
             heading: "Why expected match length decides the case",
             paragraphs: [
               "If the game ends at minute 42, the model gets 21 Transmutes. Gross incremental value is 2,520 gold, net economic value after item cost is 320 gold and realized ROI is roughly 14.5%.",
-              "If the game ends at minute 35, only 16 uses remain. They create 1,920 incremental gold — 280 below item cost. The same Midas becomes a positive or negative investment purely because the available payback window changed."
+              "If the game ends at minute 35, only 16 uses remain. They create 1,920 incremental gold - 280 below item cost. The same Midas becomes a positive or negative investment purely because the available payback window changed."
             ]
           },
           {
@@ -634,7 +636,7 @@ export const insights: Insight[] = [
     slug: "dota-2-buyback-reserve-before-roshan",
     game: "dota",
     updatedAt: "2026-08-12",
-    gameVersion: "Dota 2 · Patch 7.41e · buyback formula verified",
+    gameVersion: `Dota 2 · Patch ${dotaPatchContext.patch} · buyback formula verified`,
     evidenceStatus: "verified",
     audiences: ["returner", "casual", "grinder"],
     toolPath: {
@@ -646,7 +648,7 @@ export const insights: Insight[] = [
         title: "Сколько золота реально нужно держать на buyback перед Roshan",
         description: "Исправляем старую формулу, считаем reserve gap и отделяем стоимость второй жизни от автоматического запрета покупать предметы.",
         kicker: "Dota 2 · Liquidity reserve",
-        thesis: "Buyback — это не просто сумма в интерфейсе, а опцион вернуться в конкретную драку. Действующая документированная база — 200 + Net Worth / 13; старая модель Money Meta с base 100 занижала резерв ровно на 100 gold.",
+        thesis: "Buyback - это не просто сумма в интерфейсе, а опцион вернуться в конкретную драку. Действующая документированная база - 200 + Net Worth / 13; старая модель Money Meta с base 100 занижала резерв ровно на 100 gold.",
         readTime: "6 мин",
         takeaways: [
           "При 15 000 net worth baseline buyback равен примерно 1 354 gold, а не 1 254.",
@@ -662,9 +664,9 @@ export const insights: Insight[] = [
             ]
           },
           {
-            heading: "Готов сейчас и готов к objective — разные состояния",
+            heading: "Готов сейчас и готов к objective - разные состояния",
             paragraphs: [
-              "При 18 000 net worth buyback оценивается примерно в 1 585 gold. С 1 200 gold сейчас не хватает около 385, но при 620 GPM за следующие 90 секунд модель прогнозирует около 2 130 gold — reserve становится доступен к objective.",
+              "При 18 000 net worth buyback оценивается примерно в 1 585 gold. С 1 200 gold сейчас не хватает около 385, но при 620 GPM за следующие 90 секунд модель прогнозирует около 2 130 gold - reserve становится доступен к objective.",
               "Это не совет потратить всё прогнозируемое золото. Forecast нужен, чтобы отличить временный дефицит от ситуации, где farming window физически не закрывает gap."
             ]
           },
@@ -720,7 +722,7 @@ export const insights: Insight[] = [
     slug: "dota-2-midas-madstone-noncash-value",
     game: "dota",
     updatedAt: "2026-08-12",
-    gameVersion: "Dota 2 · Patch 7.41e baseline",
+    gameVersion: `Dota 2 · Patch ${dotaPatchContext.patch} baseline`,
     evidenceStatus: "estimated",
     audiences: ["returner", "grinder"],
     toolPath: {
@@ -732,12 +734,12 @@ export const insights: Insight[] = [
         title: "Как оценивать Madstone и +40 attack speed, не подделывая Midas ROI",
         description: "Отделяем гарантированное золото Transmute от неденежной ценности текущего патча и проверяем sensitivity.",
         kicker: "Dota 2 · Non-cash utility",
-        thesis: "В 7.41e Midas даёт +40 attack speed, а neutral Transmute связан с Madstone. Эти эффекты могут изменить решение, но их нельзя молча добавить к 160 gold как гарантированный cash flow.",
+        thesis: `В ${dotaPatchContext.patch} Midas даёт +40 attack speed, а neutral Transmute связан с Madstone. Эти эффекты могут изменить решение, но их нельзя молча добавить к 160 gold как гарантированный cash flow.`,
         readTime: "5 мин",
         takeaways: [
           "При покупке на 12-й и конце на 38-й минуте cash-only baseline не успевает окупиться.",
           "Условные 35 gold other value на use сдвигают break-even примерно к 33-й минуте.",
-          "Other value — sensitivity пользователя, а не проверенный рыночный курс Madstone или attack speed."
+          "Other value - sensitivity пользователя, а не проверенный рыночный курс Madstone или attack speed."
         ],
         sections: [
           {
@@ -768,7 +770,7 @@ export const insights: Insight[] = [
         title: "How to value Madstone and +40 attack speed without faking Midas ROI",
         description: "Separate guaranteed Transmute gold from patch-specific non-cash value and run a sensitivity case.",
         kicker: "Dota 2 · Non-cash utility",
-        thesis: "In 7.41e Midas provides +40 attack speed and a neutral Transmute interacts with Madstone. Those effects can change the decision, but they cannot be silently added to 160 gold as guaranteed cash flow.",
+        thesis: `In ${dotaPatchContext.patch} Midas provides +40 attack speed and a neutral Transmute interacts with Madstone. Those effects can change the decision, but they cannot be silently added to 160 gold as guaranteed cash flow.`,
         readTime: "5 min",
         takeaways: [
           "With a minute-12 purchase and minute-38 finish, the cash-only baseline fails to pay back.",
@@ -806,7 +808,7 @@ export const insights: Insight[] = [
     slug: "dota-2-why-gpm-without-item-timing-is-incomplete",
     game: "dota",
     updatedAt: "2026-08-12",
-    gameVersion: "Dota 2 · Patch 7.41e framework",
+    gameVersion: `Dota 2 · Patch ${dotaPatchContext.patch} framework`,
     evidenceStatus: "estimated",
     audiences: ["returner", "casual", "grinder"],
     toolPath: { ru: "/dota-2/#economy-map", en: "/en/dota-2/#economy-map" },
@@ -819,7 +821,7 @@ export const insights: Insight[] = [
         readTime: "5 мин",
         takeaways: [
           "Записывай не только GPM, но и минуту purchase, delivery и первого objective после timing.",
-          "Непотраченное золото до покупки — потенциальная сила; после покупки без fight оно может остаться нереализованной силой.",
+          "Непотраченное золото до покупки - потенциальная сила; после покупки без fight оно может остаться нереализованной силой.",
           "Лучший replay-вопрос: что команда получила в следующие 120 секунд после ключевого предмета?"
         ],
         sections: [
@@ -840,7 +842,7 @@ export const insights: Insight[] = [
           {
             heading: "Минимальный post-match scorecard",
             paragraphs: [
-              "Зафиксируй четыре точки: purchase minute, delivery minute, первый fight и первый objective. Затем добавь результат — выигран, проигран или не состоялся.",
+              "Зафиксируй четыре точки: purchase minute, delivery minute, первый fight и первый objective. Затем добавь результат - выигран, проигран или не состоялся.",
               "Этот короткий timeline полезнее десяти средних метрик. Он показывает, где экономика закончилась действием, а где красивое число осталось на графике."
             ]
           }
@@ -876,7 +878,7 @@ export const insights: Insight[] = [
           {
             heading: "The minimum post-match scorecard",
             paragraphs: [
-              "Record four points: purchase minute, delivery minute, first fight and first objective. Add the result — won, lost or never attempted.",
+              "Record four points: purchase minute, delivery minute, first fight and first objective. Add the result - won, lost or never attempted.",
               "That short timeline is more useful than ten averages. It shows where economy ended in action and where an attractive number stayed on the graph."
             ]
           }
@@ -889,7 +891,7 @@ export const insights: Insight[] = [
     slug: "dota-2-component-or-buyback-before-high-ground",
     game: "dota",
     updatedAt: "2026-08-12",
-    gameVersion: "Dota 2 · Patch 7.41e scenario model",
+    gameVersion: `Dota 2 · Patch ${dotaPatchContext.patch} scenario model`,
     evidenceStatus: "estimated",
     audiences: ["casual", "grinder"],
     toolPath: {
@@ -906,7 +908,7 @@ export const insights: Insight[] = [
         takeaways: [
           "При 25 000 net worth buyback baseline составляет примерно 2 123 gold.",
           "С 1 800 gold и одной минутой при 700 GPM резерв будет сформирован к objective, если золото не потратить.",
-          "Компонент оправдан, когда он дискретно меняет fight; buyback — когда re-entry быстрый и вторая жизнь сохраняет impact."
+          "Компонент оправдан, когда он дискретно меняет fight; buyback - когда re-entry быстрый и вторая жизнь сохраняет impact."
         ],
         sections: [
           {
@@ -927,7 +929,7 @@ export const insights: Insight[] = [
             heading: "Проверь путь второй жизни",
             paragraphs: [
               "Buyback после смерти полезен, когда герой быстро возвращается: TP на живую постройку, Boots of Travel, близкая позиция или оборона собственной базы. Без re-entry резерв может оказаться дорогой иллюзией безопасности.",
-              "Money Meta показывает coverage и projected gold, но не скрывает эту границу. Вторая жизнь — не только платёж, а платёж плюс время и доступ к fight."
+              "Money Meta показывает coverage и projected gold, но не скрывает эту границу. Вторая жизнь - не только платёж, а платёж плюс время и доступ к fight."
             ]
           }
         ],
@@ -975,7 +977,7 @@ export const insights: Insight[] = [
     slug: "dota-2-replay-economy-four-timestamps",
     game: "dota",
     updatedAt: "2026-08-12",
-    gameVersion: "Dota 2 · Patch 7.41e replay framework",
+    gameVersion: `Dota 2 · Patch ${dotaPatchContext.patch} replay framework`,
     evidenceStatus: "estimated",
     audiences: ["returner", "grinder"],
     toolPath: { ru: "/dota-2/#player-paths", en: "/en/dota-2/#player-paths" },
@@ -989,14 +991,14 @@ export const insights: Insight[] = [
         takeaways: [
           "Запиши purchase/delivery, первый objective, первую дорогую смерть и решение о buyback.",
           "Для каждого события укажи доступные альтернативы, а не только фактический результат.",
-          "Проверь сценарий ±2 минуты или с сохранённым резервом — это sensitivity, а не поиск виноватого."
+          "Проверь сценарий ±2 минуты или с сохранённым резервом - это sensitivity, а не поиск виноватого."
         ],
         sections: [
           {
             heading: "Почему четыре точки лучше полного дневника",
             paragraphs: [
               "Попытка отметить каждую ошибку превращает replay в список без приоритета. Экономический review ищет моменты, где капитал менял доступный набор действий.",
-              "Purchase показывает конверсию gold в power, objective — реализацию timing, death — уничтоженную опциональность, buyback — решение купить вторую жизнь."
+              "Purchase показывает конверсию gold в power, objective - реализацию timing, death - уничтоженную опциональность, buyback - решение купить вторую жизнь."
             ]
           },
           {
@@ -1025,7 +1027,7 @@ export const insights: Insight[] = [
         takeaways: [
           "Record purchase/delivery, the first objective, the first expensive death and the buyback decision.",
           "For every event, state the available alternatives instead of only the observed result.",
-          "Test the scenario at ±2 minutes or with the reserve preserved — sensitivity, not blame."
+          "Test the scenario at ±2 minutes or with the reserve preserved - sensitivity, not blame."
         ],
         sections: [
           {
@@ -1045,7 +1047,7 @@ export const insights: Insight[] = [
           {
             heading: "Keep one rule for the next match",
             paragraphs: [
-              "A review is complete only when it creates a short rule — for example, check buyback before any purchase after minute 35 while Roshan is alive.",
+              "A review is complete only when it creates a short rule - for example, check buyback before any purchase after minute 35 while Roshan is alive.",
               "One repeatable trigger is stronger than a long conclusion list. Across matches, it creates a personal dataset that Money Meta can later turn into benchmarks."
             ]
           }
@@ -1076,24 +1078,24 @@ export const insights: Insight[] = [
         ],
         sections: [
           {
-            heading: "Listed value — это ещё не cash",
+            heading: "Listed value - это ещё не cash",
             paragraphs: [
-              "Игрок добывает 90 единиц товара в час и видит цену 38 gold за штуку. Простое умножение даёт 3 420 gold/hour. Эта цифра корректно описывает стоимость созданного inventory по текущему листингу — но не денежный результат.",
+              "Игрок добывает 90 единиц товара в час и видит цену 38 gold за штуку. Простое умножение даёт 3 420 gold/hour. Эта цифра корректно описывает стоимость созданного inventory по текущему листингу - но не денежный результат.",
               "Чтобы получить золото, товар должен найти покупателя. Если за один цикл листинга продаётся 65% объёма, только эта часть проходит через рынок. После стандартного 5% Auction House cut выручка дополнительно уменьшается."
             ]
           },
           {
             heading: "Как получается effective GPH",
             paragraphs: [
-              "Baseline-модель применяет 65% sell-through и 5% комиссию к 3 420 listed GPH, затем вычитает 120 gold почасовых расходов и 35 gold ожидаемых relisting losses. Результат — около 1 957 effective gold/hour.",
+              "Baseline-модель применяет 65% sell-through и 5% комиссию к 3 420 listed GPH, затем вычитает 120 gold почасовых расходов и 35 gold ожидаемых relisting losses. Результат - около 1 957 effective gold/hour.",
               "Monetization rate составляет примерно 57,2%. Это не означает, что остальные 42,8% исчезли: часть стоимости остаётся в непроданном товаре. Но этим inventory нельзя оплатить покупку сейчас, и для его реализации потребуются время, новые листинги или снижение цены."
             ]
           },
           {
             heading: "Ликвидность важнее красивой цены",
             paragraphs: [
-              "За двухчасовую сессию непроданные 35% добычи имеют listed value около 2 394 gold. Если продолжать фармить быстрее, чем рынок поглощает объём, working capital будет расти, а реальная скорость накопления золота — отставать от обещания гайда.",
-              "Поэтому сравнивай фармы по effective GPH и inventory at risk. Высокая цена хороша только вместе с достаточным объёмом спроса. Введи собственные данные по предмету, региону и sell-through — baseline нужен как стартовая гипотеза, а не универсальная истина."
+              "За двухчасовую сессию непроданные 35% добычи имеют listed value около 2 394 gold. Если продолжать фармить быстрее, чем рынок поглощает объём, working capital будет расти, а реальная скорость накопления золота - отставать от обещания гайда.",
+              "Поэтому сравнивай фармы по effective GPH и inventory at risk. Высокая цена хороша только вместе с достаточным объёмом спроса. Введи собственные данные по предмету, региону и sell-through - baseline нужен как стартовая гипотеза, а не универсальная истина."
             ]
           }
         ],
@@ -1103,7 +1105,7 @@ export const insights: Insight[] = [
         title: "Why 3,420 gold/hour in WoW may be only 1,957 of real gold",
         description: "Understand the liquidity haircut from sell-through, Auction House cut, expenses and unsold inventory.",
         kicker: "WoW Retail · Market liquidity",
-        thesis: "A guide usually multiplies farmed units by current price and reports listed GPH. Until the goods sell, that is inventory value — not gold. In the baseline scenario, 3,420 listed GPH becomes roughly 1,957 effective GPH.",
+        thesis: "A guide usually multiplies farmed units by current price and reports listed GPH. Until the goods sell, that is inventory value - not gold. In the baseline scenario, 3,420 listed GPH becomes roughly 1,957 effective GPH.",
         readTime: "6 min",
         takeaways: [
           "90 units per hour × 38 gold = 3,420 listed GPH.",
@@ -1114,7 +1116,7 @@ export const insights: Insight[] = [
           {
             heading: "Listed value is not cash yet",
             paragraphs: [
-              "A player farms 90 units per hour and sees a 38 gold unit price. Simple multiplication gives 3,420 gold/hour. That accurately describes the marked value of created inventory at the current listing price — not the realized outcome.",
+              "A player farms 90 units per hour and sees a 38 gold unit price. Simple multiplication gives 3,420 gold/hour. That accurately describes the marked value of created inventory at the current listing price - not the realized outcome.",
               "The goods need a buyer before they become gold. If 65% of volume sells in one listing cycle, only that portion passes through the market. The standard 5% Auction House cut reduces proceeds again."
             ]
           },
@@ -1129,7 +1131,7 @@ export const insights: Insight[] = [
             heading: "Liquidity matters more than an attractive price",
             paragraphs: [
               "Across a two-hour session, the unsold 35% of production has a listed value of roughly 2,394 gold. Keep farming faster than the market absorbs supply and working capital rises while actual gold accumulation falls behind the guide's promise.",
-              "Compare farms using effective GPH and inventory at risk. A high price is useful only with enough demand behind it. Enter your own item, region and sell-through data — the baseline is a starting hypothesis, not a universal truth."
+              "Compare farms using effective GPH and inventory at risk. A high price is useful only with enough demand behind it. Enter your own item, region and sell-through data - the baseline is a starting hypothesis, not a universal truth."
             ]
           }
         ],

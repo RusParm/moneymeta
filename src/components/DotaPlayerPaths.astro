@@ -1,5 +1,6 @@
 ---
 import { dotaPlayerPaths } from "../data/dota-hub";
+import { dotaPatchContext } from "../data/dota-economy";
 import DotaMedia from "./DotaMedia.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -73,7 +74,7 @@ const copy = lang === "ru" ? {
           <div class="dota-path-portrait" aria-hidden="true"><DotaMedia asset={path.hero} lang={lang} eager={index === 0} /></div>
           <div class="path-panel-head">
             <div>
-              <span class="game-tag">{path.label[lang]} · 7.41e</span>
+              <span class="game-tag">{path.label[lang]} · {dotaPatchContext.patch}</span>
               <h3>{path.title[lang]}</h3>
             </div>
             <div class="path-constraints" aria-label={lang === "ru" ? "Ограничения пути" : "Path constraints"}>

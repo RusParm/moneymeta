@@ -54,12 +54,14 @@ const copy = lang === "ru" ? {
       const asset = media[index % media.length]!;
       return (
         <article class={`research-card dota-research-card ${index === 0 ? "research-featured" : ""}`} data-library-card data-audiences={insight.audiences.join(" ")}>
-          <DotaMedia asset={asset} lang={lang} />
           <div class="research-card-meta">
             <span>0{index + 1}</span>
-            <span class={`pill ${insight.evidenceStatus === "verified" ? "dota-radiant" : "gold"}`}>
-              {insight.evidenceStatus === "verified" ? copy.verified : copy.estimated}
-            </span>
+            <div class="dota-research-meta-end">
+              <span class={`pill ${insight.evidenceStatus === "verified" ? "dota-radiant" : "gold"}`}>
+                {insight.evidenceStatus === "verified" ? copy.verified : copy.estimated}
+              </span>
+              <DotaMedia asset={asset} lang={lang} />
+            </div>
           </div>
           <div class="research-card-body">
             <span class="game-tag">{content.kicker}</span>

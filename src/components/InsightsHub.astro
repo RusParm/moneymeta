@@ -9,7 +9,7 @@ const { lang } = Astro.props;
 const prefix = lang === "ru" ? "" : "/en";
 const path = `${prefix}/insights/`;
 const copy = lang === "ru" ? {
-  title: "Money Meta Field Notes — разборы игровых экономик",
+  title: "Money Meta Field Notes - разборы игровых экономик",
   description: "Практические разборы GTA Online, Dota 2 и WoW с цифрами, моделями и конкретным следующим действием.",
   back: "← Главная",
   kicker: "Field Notes · решения, а не новости",
@@ -18,7 +18,7 @@ const copy = lang === "ru" ? {
   featured: "Flagship analysis",
   read: "Читать разбор"
 } : {
-  title: "Money Meta Field Notes — game economy analysis",
+  title: "Money Meta Field Notes - game economy analysis",
   description: "Practical GTA Online, Dota 2 and WoW analysis with numbers, models and a concrete next action.",
   back: "← Home",
   kicker: "Field Notes · decisions, not news",
@@ -39,7 +39,7 @@ const copy = lang === "ru" ? {
         <p class="lede">{copy.lede}</p>
       </section>
       <section class="section">
-        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01—{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{insights.length} notes · 3 games · RU/EN</span></div>
+        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01-{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{insights.length} notes · 3 games · RU/EN</span></div>
         <div class="insight-card-grid">
           {insights.map((insight, index) => {
             const content = insight.content[lang];

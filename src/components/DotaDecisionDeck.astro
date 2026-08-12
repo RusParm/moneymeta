@@ -1,5 +1,6 @@
 ---
 import { dotaScenarios } from "../data/dota-hub";
+import { dotaPatchContext } from "../data/dota-economy";
 import DotaMedia from "./DotaMedia.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -46,7 +47,7 @@ const copy = lang === "ru" ? {
           <DotaMedia asset={scenario.media} lang={lang} />
         </div>
         <div>
-          <span class="game-tag">Dota 2 · 7.41e</span>
+          <span class="game-tag">Dota 2 · {dotaPatchContext.patch}</span>
           <h3>{scenario.title[lang]}</h3>
           <p>{scenario.text[lang]}</p>
         </div>

@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { lang, game, items } = Astro.props;
-const label = lang === "ru" ? "Выбери задачу — получи ответ" : "Pick a problem — get an answer";
+const label = lang === "ru" ? "Выбери задачу - получи ответ" : "Pick a problem - get an answer";
 ---
 
 <section class={`decision-shortcuts shortcuts-${game}`} aria-label={label}>

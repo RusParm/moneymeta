@@ -9,7 +9,7 @@ const stale = Date.now() - checkedAt > dotaPulse.staleAfterDays * 86_400_000;
 
 const copy = lang === "ru" ? {
   kicker: "Patch Pulse · official delta → decision",
-  title: "Что изменилось в 7.41e — в языке золота и timing",
+  title: `Что изменилось в ${dotaPulse.patch}: на языке золота и timing`,
   text: "Не пересказываем весь patch. Pulse показывает только изменения, которые способны сдвинуть payback, item utility или buyback decision.",
   verified: "Verified · Valve notes",
   current: `Проверено ${dotaPulse.checkedAt} · ${dotaPulse.patch}`,
@@ -22,7 +22,7 @@ const copy = lang === "ru" ? {
   guardStale: "С момента проверки прошло более 45 дней. Данные сохранены как baseline, но current-статус снят до повторной сверки."
 } : {
   kicker: "Patch Pulse · official delta → decision",
-  title: "What changed in 7.41e — in the language of gold and timing",
+  title: `What changed in ${dotaPulse.patch}: gold and timing`,
   text: "This is not a full patch recap. Pulse keeps only the changes capable of moving payback, item utility or the buyback decision.",
   verified: "Verified · Valve notes",
   current: `Checked ${dotaPulse.checkedAt} · ${dotaPulse.patch}`,
@@ -63,10 +63,12 @@ const copy = lang === "ru" ? {
   <div class="pulse-grid">
     {dotaPulse.changes.map((item, index) => (
       <article class="pulse-card dota-pulse-card">
-        <DotaMedia asset={item.media} lang={lang} />
-        <div class="pulse-card-top">
-          <span>0{index + 1}</span>
-          <strong>{item.signal[lang]}</strong>
+        <div class="dota-pulse-card-head">
+          <div class="pulse-card-top">
+            <span>0{index + 1}</span>
+            <strong>{item.signal[lang]}</strong>
+          </div>
+          <DotaMedia asset={item.media} lang={lang} />
         </div>
         <h3>{item.title[lang]}</h3>
         <p>{item.summary[lang]}</p>

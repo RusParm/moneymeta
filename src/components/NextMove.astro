@@ -15,11 +15,11 @@ const copy = lang === "ru" ? {
   priority: "Главная цель",
   priorities: [["fast-payback", "Быстрее вернуть вложения"], ["max-income", "Максимум дохода"], ["low-friction", "Минимум ручной возни"]],
   friction: "Допустимый friction",
-  frictions: [["4", "Низкий — хочу спокойно"], ["6", "Средний"], ["10", "Любой — готов grind"]],
+  frictions: [["4", "Низкий - хочу спокойно"], ["6", "Средний"], ["10", "Любой - готов grind"]],
   button: "Рассчитать следующий ход",
   label: "Твой Next Best Move",
   empty: "Пока ничего не подходит",
-  emptyReason: "Увеличь бюджет или допустимый friction — Money Meta не будет советовать недоступный актив.",
+  emptyReason: "Увеличь бюджет или допустимый friction - Money Meta не будет советовать недоступный актив.",
   payback: "Окупаемость",
   income: "Чистыми / ч производства",
   setup: "Вложения",
@@ -38,7 +38,7 @@ const copy = lang === "ru" ? {
   priority: "Primary objective",
   priorities: [["fast-payback", "Recover capital faster"], ["max-income", "Maximize income"], ["low-friction", "Minimize manual work"]],
   friction: "Maximum friction",
-  frictions: [["4", "Low — keep it calm"], ["6", "Medium"], ["10", "Any — ready to grind"]],
+  frictions: [["4", "Low - keep it calm"], ["6", "Medium"], ["10", "Any - ready to grind"]],
   button: "Calculate next move",
   label: "Your Next Best Move",
   empty: "Nothing fits yet",
@@ -98,13 +98,13 @@ const copy = lang === "ru" ? {
 
     <article class="card result-panel" aria-live="polite">
       <span class="result-label">{copy.label}</span>
-      <div class="result-name" data-role="result-name">—</div>
-      <p class="result-reason" data-role="result-reason">—</p>
+      <div class="result-name" data-role="result-name">-</div>
+      <p class="result-reason" data-role="result-reason">-</p>
       <div class="result-metrics">
-        <div class="result-metric"><span>{copy.payback}</span><strong data-role="result-payback">—</strong></div>
-        <div class="result-metric"><span>{copy.income}</span><strong class="teal" data-role="result-income">—</strong></div>
-        <div class="result-metric"><span>{copy.setup}</span><strong data-role="result-setup">—</strong></div>
-        <div class="result-metric"><span>{copy.fit}</span><strong class="magenta" data-role="result-fit">—</strong></div>
+        <div class="result-metric"><span>{copy.payback}</span><strong data-role="result-payback">-</strong></div>
+        <div class="result-metric"><span>{copy.income}</span><strong class="teal" data-role="result-income">-</strong></div>
+        <div class="result-metric"><span>{copy.setup}</span><strong data-role="result-setup">-</strong></div>
+        <div class="result-metric"><span>{copy.fit}</span><strong class="magenta" data-role="result-fit">-</strong></div>
       </div>
       <div class="alternatives" data-role="alternatives" aria-label={copy.alternatives}></div>
       <ScenarioActions lang={lang} />
@@ -137,7 +137,7 @@ const copy = lang === "ru" ? {
 
     const text = lang === "ru" ? {
       empty: "Пока ничего не подходит",
-      emptyReason: "Увеличь бюджет или допустимый friction — Money Meta не будет советовать недоступный актив.",
+      emptyReason: "Увеличь бюджет или допустимый friction - Money Meta не будет советовать недоступный актив.",
       alternatives: "Альтернативы",
       hours: "ч производства"
     } : {
@@ -168,10 +168,10 @@ const copy = lang === "ru" ? {
         resultName.closest<HTMLElement>(".result-panel")!.dataset.state = "negative";
         resultName.textContent = text.empty;
         resultReason.textContent = text.emptyReason;
-        resultPayback.textContent = "—";
-        resultIncome.textContent = "—";
-        resultSetup.textContent = "—";
-        resultFit.textContent = "—";
+        resultPayback.textContent = "-";
+        resultIncome.textContent = "-";
+        resultSetup.textContent = "-";
+        resultFit.textContent = "-";
         return;
       }
 

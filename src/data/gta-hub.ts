@@ -18,7 +18,7 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     title: { ru: "Капитал", en: "Capital" },
     phase: { ru: "Точка входа", en: "Entry point" },
     summary: {
-      ru: "Банк — это запас вариантов. Потраченный GTA$ становится неликвидным активом, пока бизнес не вернёт вложения.",
+      ru: "Банк - это запас вариантов. Потраченный GTA$ становится неликвидным активом, пока бизнес не вернёт вложения.",
       en: "Cash is optionality. Once spent, GTA$ becomes an illiquid asset until the business earns the capital back."
     },
     decision: {
@@ -35,7 +35,7 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     phase: { ru: "Capital lock-up", en: "Capital lock-up" },
     summary: {
       ru: "Цена недвижимости и обязательных улучшений определяет реальный вход, а не рекламная цена одного объекта.",
-      en: "Property plus required upgrades define the real entry cost — not the headline property price alone."
+      en: "Property plus required upgrades define the real entry cost - not the headline property price alone."
     },
     decision: {
       ru: "Сравни полную стоимость запуска с окупаемостью и тем, что у тебя уже куплено.",
@@ -198,13 +198,13 @@ export const gtaPlayerPaths: GtaPlayerPath[] = [
         text: { ru: "Выбери актив, который реально обслуживать каждую неделю, а не идеальный портфель на бумаге.", en: "Choose one asset you can service every week, not a theoretical perfect portfolio." }
       },
       {
-        title: { ru: "Активные деньги — по Pulse", en: "Use the Pulse for active cash" },
+        title: { ru: "Активные деньги - по Pulse", en: "Use the Pulse for active cash" },
         text: { ru: "Свободное время направляй в текущий boosted route, не меняя долгосрочную модель бизнеса.", en: "Put spare time into the current boosted route without distorting the long-term business model." }
       }
     ],
     flipCondition: {
-      ru: "Если готов терпеть friction 5–6/10, Bunker и более широкий набор активов возвращаются в выборку.",
-      en: "If you accept friction of 5–6/10, Bunker and a wider asset set re-enter the shortlist."
+      ru: "Если готов терпеть friction 5-6/10, Bunker и более широкий набор активов возвращаются в выборку.",
+      en: "If you accept friction of 5-6/10, Bunker and a wider asset set re-enter the shortlist."
     }
   },
   {

@@ -43,7 +43,7 @@ export const wowPatchContext = {
       label: "Blizzard Forums · Auction House fee",
       url: "https://us.forums.blizzard.com/en/wow/t/auction-house-fee/2089197",
       note: {
-        ru: "Community cross-check стандартной комиссии 5%; поэтому статус baseline — community-reported.",
+        ru: "Community cross-check стандартной комиссии 5%; поэтому статус baseline - community-reported.",
         en: "Community cross-check for the standard 5% cut; the baseline is therefore community-reported."
       }
     },

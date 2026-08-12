@@ -20,12 +20,12 @@ const { lang } = Astro.props;
 const root = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
 
 const copy = lang === "ru" ? {
-  title: "Dota 2 Economy Hub — timing, Midas ROI и buyback | Money Meta",
-  description: "Интерактивная экономика Dota 2: путь золота, role-specific решения, patch 7.41e Pulse, Midas ROI, buyback reserve и replay-разборы.",
+  title: "Dota 2 Economy Hub: timing, Midas ROI и buyback | Money Meta",
+  description: `Интерактивная экономика Dota 2: путь золота, role-specific решения, patch ${dotaPatchContext.patch} Pulse, Midas ROI, buyback reserve и replay-разборы.`,
   back: "← Все экономики",
   eyebrow: "Dota 2 · Living Match Economy",
-  heading: "Золото не выигрывает матч. Решение о его моменте — может.",
-  lede: "Money Meta связывает last hits, item timings, Roshan и buyback в одну экономическую систему. Выбери момент матча — и увидишь, где greed становится потерей tempo.",
+  heading: "Золото не выигрывает матч. Но момент траты может.",
+  lede: "Money Meta связывает last hits, item timings, Roshan и buyback в одну экономическую систему. Выбери момент матча и посмотри, где greed превращается в потерю tempo.",
   primary: "Открыть карту матча",
   secondary: "Проверить Midas ROI",
   live: `Patch ${dotaPatchContext.patch} · checked ${dotaPatchContext.checkedAt}`,
@@ -34,9 +34,9 @@ const copy = lang === "ru" ? {
   nav: [["01", "Карта", "#economy-map"], ["02", "Пути", "#player-paths"], ["03", "Pulse", "#patch-pulse"], ["04", "Роли", "#role-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Разборы", "#research-library"]],
   manifestoKicker: "Money Meta doctrine · Dota edition",
   manifestoTitle: "Каждая цифра должна заканчиваться игровым действием.",
-  manifestoText: "GPM без момента покупки, item timing без objective и buyback без пути обратно в fight — неполные метрики. Хаб строится вокруг цепочки решений, а не вокруг ещё одного статичного build guide.",
+  manifestoText: "GPM без момента покупки, item timing без objective и buyback без пути обратно в fight остаются неполными метриками. Хаб строится вокруг цепочки решений, а не вокруг ещё одного статичного build guide.",
   principles: [
-    ["TIME VALUE", "Одна покупка на 10-й и 30-й минуте — разные инвестиции."],
+    ["TIME VALUE", "Одна и та же покупка на 10-й и 30-й минутах работает по-разному."],
     ["OPTIONALITY", "Непотраченное золото может быть ликвидностью, а не ошибкой."],
     ["CONVERSION", "Timing ценен только если превращается в objective или пространство."],
     ["COUNTERFACTUAL", "Replay полезен, когда показывает, где другой ход менял бы результат."]
@@ -54,8 +54,8 @@ const copy = lang === "ru" ? {
   disclaimer: "Dota, Dota 2 and related artwork are trademarks or property of Valve. Money Meta is an independent analytical product.",
   roadmap: "Следующий слой Dota: death cost, reliable/unreliable gold и post-match timeline import после проверки спроса."
 } : {
-  title: "Dota 2 Economy Hub — timings, Midas ROI and buyback | Money Meta",
-  description: "Interactive Dota 2 economy: the path of gold, role-specific decisions, patch 7.41e Pulse, Midas ROI, buyback reserve and replay research.",
+  title: "Dota 2 Economy Hub: timings, Midas ROI and buyback | Money Meta",
+  description: `Interactive Dota 2 economy: the path of gold, role-specific decisions, patch ${dotaPatchContext.patch} Pulse, Midas ROI, buyback reserve and replay research.`,
   back: "← All economies",
   eyebrow: "Dota 2 · Living Match Economy",
   heading: "Gold does not win the match. The timing decision might.",
@@ -118,7 +118,7 @@ const heroLoadout = [
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/dota-2/" enPath="/en/dota-2/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <GameWorldHero image={dotaEconomyWorld} worldCode="MATCH ECONOMY / 7.41E">
+      <GameWorldHero image={dotaEconomyWorld} worldCode={`MATCH ECONOMY / ${dotaPatchContext.patch}`}>
         <div class="hero-live-line"><span></span>{copy.live}</div>
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.heading}</h1>
@@ -188,7 +188,7 @@ const heroLoadout = [
           <div>
             <p>{dotaPatchContext.note[lang]}</p>
             {dotaPatchContext.sources.map((source) => (
-              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label} ↗</strong></a> — {source.note[lang]}</p>
+              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label} ↗</strong></a>: {source.note[lang]}</p>
             ))}
             <p><strong>{copy.media}:</strong> {dotaMediaPolicy.owner} · {dotaMediaPolicy.placement} · checked {dotaMediaPolicy.checkedAt}. {dotaMediaPolicy.licenseBasis}.</p>
             <p>{copy.disclaimer}</p>

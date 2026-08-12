@@ -10,11 +10,11 @@ const { lang } = Astro.props;
 const copy = lang === "ru" ? {
   labKicker: "Scenario lab · editable assumptions",
   labTitle: "Два решения, которые меняют траекторию матча",
-  labText: "Сначала проверь greed window, затем — ликвидность перед objective. Формулы показывают measurable layer и не прячут hero judgement за ложной точностью.",
+  labText: "Сначала проверь greed window, затем оцени ликвидность перед objective. Формулы показывают measurable layer и не прячут hero judgement за ложной точностью.",
   patch: `Patch ${dotaPatchContext.patch} · checked ${dotaPatchContext.checkedAt}`,
   modelKicker: "Model 01 · growth capex",
   midasTitle: "Hand of Midas: реальная окупаемость",
-  midasText: "Transmute payout — это gross. Модель вычитает bounty крипа, считает оставшиеся uses и показывает минуту break-even.",
+  midasText: "Transmute payout показывает gross value. Модель вычитает bounty крипа, считает оставшиеся uses и показывает минуту break-even.",
   itemCost: "Стоимость Midas",
   transmuteGold: "Золото Transmute",
   foregoneBounty: "Упущенный bounty",
@@ -123,15 +123,15 @@ const copy = lang === "ru" ? {
       </form>
       <article class="card result-panel dota-result-panel" aria-live="polite">
         <span class="result-label">{copy.result}</span>
-        <div class="result-name" data-role="midas-decision">—</div>
+        <div class="result-name" data-role="midas-decision">-</div>
         <p class="result-reason">{copy.midasNote}</p>
         <div class="result-metrics">
-          <div class="result-metric"><span>{copy.uses}</span><strong data-role="midas-uses">—</strong></div>
-          <div class="result-metric"><span>{copy.incremental}</span><strong data-role="midas-incremental">—</strong></div>
-          <div class="result-metric"><span>{copy.gross}</span><strong class="teal" data-role="midas-gross">—</strong></div>
-          <div class="result-metric"><span>{copy.net}</span><strong data-role="midas-net">—</strong></div>
-          <div class="result-metric"><span>{copy.payback}</span><strong data-role="midas-payback">—</strong></div>
-          <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="midas-roi">—</strong></div>
+          <div class="result-metric"><span>{copy.uses}</span><strong data-role="midas-uses">-</strong></div>
+          <div class="result-metric"><span>{copy.incremental}</span><strong data-role="midas-incremental">-</strong></div>
+          <div class="result-metric"><span>{copy.gross}</span><strong class="teal" data-role="midas-gross">-</strong></div>
+          <div class="result-metric"><span>{copy.net}</span><strong data-role="midas-net">-</strong></div>
+          <div class="result-metric"><span>{copy.payback}</span><strong data-role="midas-payback">-</strong></div>
+          <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="midas-roi">-</strong></div>
         </div>
         <ScenarioActions lang={lang} />
       </article>
@@ -161,15 +161,15 @@ const copy = lang === "ru" ? {
       </form>
       <article class="card result-panel dota-result-panel" aria-live="polite">
         <span class="result-label">{copy.reserveResult}</span>
-        <div class="result-name" data-role="buyback-decision">—</div>
+        <div class="result-name" data-role="buyback-decision">-</div>
         <div class="result-metrics">
-          <div class="result-metric"><span>{copy.cost}</span><strong data-role="buyback-cost">—</strong></div>
-          <div class="result-metric"><span>{copy.gap}</span><strong data-role="buyback-gap">—</strong></div>
-          <div class="result-metric"><span>{copy.surplus}</span><strong class="teal" data-role="buyback-surplus">—</strong></div>
-          <div class="result-metric"><span>{copy.coverage}</span><strong data-role="buyback-coverage">—</strong></div>
-          <div class="result-metric"><span>{copy.farmTime}</span><strong data-role="buyback-time">—</strong></div>
-          <div class="result-metric"><span>{copy.atObjective}</span><strong class="gold" data-role="buyback-objective-gold">—</strong></div>
-          <div class="result-metric" style="grid-column:1/-1"><span>{copy.riskWeighted}</span><strong class="magenta" data-role="buyback-risk-weighted">—</strong></div>
+          <div class="result-metric"><span>{copy.cost}</span><strong data-role="buyback-cost">-</strong></div>
+          <div class="result-metric"><span>{copy.gap}</span><strong data-role="buyback-gap">-</strong></div>
+          <div class="result-metric"><span>{copy.surplus}</span><strong class="teal" data-role="buyback-surplus">-</strong></div>
+          <div class="result-metric"><span>{copy.coverage}</span><strong data-role="buyback-coverage">-</strong></div>
+          <div class="result-metric"><span>{copy.farmTime}</span><strong data-role="buyback-time">-</strong></div>
+          <div class="result-metric"><span>{copy.atObjective}</span><strong class="gold" data-role="buyback-objective-gold">-</strong></div>
+          <div class="result-metric" style="grid-column:1/-1"><span>{copy.riskWeighted}</span><strong class="magenta" data-role="buyback-risk-weighted">-</strong></div>
         </div>
         <ScenarioActions lang={lang} />
       </article>

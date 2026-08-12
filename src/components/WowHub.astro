@@ -21,12 +21,12 @@ const shortcuts = lang === "ru" ? [
 ];
 
 const copy = lang === "ru" ? {
-  title: "WoW Economy Lab — crafting, Auction House и gold/hour | Money Meta",
+  title: "WoW Economy Lab - crafting, Auction House и gold/hour | Money Meta",
   description: "Рассчитай реальную маржу крафта и effective gold/hour после комиссии Auction House, sell-through и стоимости непроданного инвентаря.",
   back: "← Все экономики",
   eyebrow: "World of Warcraft Retail · Market Economy Lab",
-  heading: "Цена в Auction House — ещё не золото.",
-  lede: "WoW — это рынок с комиссиями, ликвидностью и замороженным капиталом. Money Meta показывает не красивую цену листинга, а сколько золота действительно конвертируется в прибыль.",
+  heading: "Цена в Auction House - ещё не золото.",
+  lede: "WoW - это рынок с комиссиями, ликвидностью и замороженным капиталом. Money Meta показывает не красивую цену листинга, а сколько золота действительно конвертируется в прибыль.",
   craftCta: "Проверить crafting margin",
   farmCta: "Посчитать effective gold/hour",
   heroProof: [["Net", "после AH cut"], ["Sell-through", "вероятность продажи"], ["GPH", "после liquidity"], ["Risk", "непроданный inventory"]],
@@ -54,7 +54,7 @@ const copy = lang === "ru" ? {
   positiveEdge: "Положительный market edge",
   thinEdge: "Маржа слишком тонкая",
   negativeEdge: "Отрицательная ожидаемая маржа",
-  craftNote: "Sell-through — сценарная вероятность продажи за один listing cycle, а не обещание. Непроданный товар остаётся активом, но блокирует капитал и требует нового листинга.",
+  craftNote: "Sell-through - сценарная вероятность продажи за один listing cycle, а не обещание. Непроданный товар остаётся активом, но блокирует капитал и требует нового листинга.",
   farmKicker: "Market Economy Model 02",
   farmTitle: "Farm Liquidity: настоящий gold/hour",
   farmText: "Гайды часто умножают добычу на текущую цену и называют результат GPH. Модель делает liquidity haircut и показывает золото, которое рынок способен поглотить.",
@@ -79,7 +79,7 @@ const copy = lang === "ru" ? {
   inventoryTrap: "Фарм превращается в inventory trap",
   hours: "ч",
   conceptsTitle: "Финансовый язык WoW",
-  conceptsText: "Рыночная цена, прибыль и ликвидность — три разные величины.",
+  conceptsText: "Рыночная цена, прибыль и ликвидность - три разные величины.",
   concepts: [
     ["Unit economics", "Рецепт создаёт value только после материалов, комиссии и стоимости неисполненного листинга."],
     ["Liquidity discount", "Высокая цена бесполезна, если объём нельзя реализовать без долгого ожидания или снижения цены."],
@@ -88,7 +88,7 @@ const copy = lang === "ru" ? {
   methodology: "Методология и источники",
   sourceNote: wowPatchContext.note.ru
 } : {
-  title: "WoW Economy Lab — crafting, Auction House and gold/hour | Money Meta",
+  title: "WoW Economy Lab - crafting, Auction House and gold/hour | Money Meta",
   description: "Calculate real crafting margin and effective gold/hour after Auction House fees, sell-through and unsold inventory risk.",
   back: "← All economies",
   eyebrow: "World of Warcraft Retail · Market Economy Lab",
@@ -224,17 +224,17 @@ const copy = lang === "ru" ? {
           </form>
           <article class="card result-panel" aria-live="polite">
             <span class="result-label">{copy.craftResult}</span>
-            <div class="result-name" data-role="craft-decision">—</div>
+            <div class="result-name" data-role="craft-decision">-</div>
             <p class="result-reason">{copy.craftNote}</p>
             <div class="result-metrics">
-              <div class="result-metric"><span>{copy.gross}</span><strong data-role="craft-gross">—</strong></div>
-              <div class="result-metric"><span>{copy.netRevenue}</span><strong data-role="craft-net-revenue">—</strong></div>
-              <div class="result-metric"><span>{copy.soldProfit}</span><strong class="teal" data-role="craft-sold-profit">—</strong></div>
-              <div class="result-metric"><span>{copy.expectedProfit}</span><strong data-role="craft-expected">—</strong></div>
-              <div class="result-metric"><span>{copy.batchProfit}</span><strong class="gold" data-role="craft-batch">—</strong></div>
-              <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="craft-roi">—</strong></div>
-              <div class="result-metric"><span>{copy.breakEven}</span><strong data-role="craft-break-even">—</strong></div>
-              <div class="result-metric"><span>{copy.inventoryRisk}</span><strong data-role="craft-inventory">—</strong></div>
+              <div class="result-metric"><span>{copy.gross}</span><strong data-role="craft-gross">-</strong></div>
+              <div class="result-metric"><span>{copy.netRevenue}</span><strong data-role="craft-net-revenue">-</strong></div>
+              <div class="result-metric"><span>{copy.soldProfit}</span><strong class="teal" data-role="craft-sold-profit">-</strong></div>
+              <div class="result-metric"><span>{copy.expectedProfit}</span><strong data-role="craft-expected">-</strong></div>
+              <div class="result-metric"><span>{copy.batchProfit}</span><strong class="gold" data-role="craft-batch">-</strong></div>
+              <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="craft-roi">-</strong></div>
+              <div class="result-metric"><span>{copy.breakEven}</span><strong data-role="craft-break-even">-</strong></div>
+              <div class="result-metric"><span>{copy.inventoryRisk}</span><strong data-role="craft-inventory">-</strong></div>
             </div>
             <ScenarioActions lang={lang} />
           </article>
@@ -261,15 +261,15 @@ const copy = lang === "ru" ? {
           </form>
           <article class="card result-panel" aria-live="polite">
             <span class="result-label">{copy.farmResult}</span>
-            <div class="result-name" data-role="farm-decision">—</div>
+            <div class="result-name" data-role="farm-decision">-</div>
             <div class="result-metrics">
-              <div class="result-metric"><span>{copy.listedGph}</span><strong data-role="farm-listed">—</strong></div>
-              <div class="result-metric"><span>{copy.effectiveGph}</span><strong class="teal" data-role="farm-effective">—</strong></div>
-              <div class="result-metric"><span>{copy.monetization}</span><strong class="magenta" data-role="farm-rate">—</strong></div>
-              <div class="result-metric"><span>{copy.liquidityHaircut}</span><strong data-role="farm-haircut">—</strong></div>
-              <div class="result-metric"><span>{copy.farmInventory}</span><strong data-role="farm-inventory">—</strong></div>
-              <div class="result-metric"><span>{copy.sessionGold}</span><strong class="gold" data-role="farm-session-gold">—</strong></div>
-              <div class="result-metric" style="grid-column:1/-1"><span>{copy.targetHours}</span><strong data-role="farm-target-hours">—</strong></div>
+              <div class="result-metric"><span>{copy.listedGph}</span><strong data-role="farm-listed">-</strong></div>
+              <div class="result-metric"><span>{copy.effectiveGph}</span><strong class="teal" data-role="farm-effective">-</strong></div>
+              <div class="result-metric"><span>{copy.monetization}</span><strong class="magenta" data-role="farm-rate">-</strong></div>
+              <div class="result-metric"><span>{copy.liquidityHaircut}</span><strong data-role="farm-haircut">-</strong></div>
+              <div class="result-metric"><span>{copy.farmInventory}</span><strong data-role="farm-inventory">-</strong></div>
+              <div class="result-metric"><span>{copy.sessionGold}</span><strong class="gold" data-role="farm-session-gold">-</strong></div>
+              <div class="result-metric" style="grid-column:1/-1"><span>{copy.targetHours}</span><strong data-role="farm-target-hours">-</strong></div>
             </div>
             <ScenarioActions lang={lang} />
           </article>
@@ -288,7 +288,7 @@ const copy = lang === "ru" ? {
           <summary>{copy.methodology} ↓</summary>
           <div>
             <p>{copy.sourceNote}</p>
-            {wowPatchContext.sources.map((source) => <p><a class="source-link" href={source.url} target="_blank" rel="noreferrer"><strong>{source.label} ↗</strong></a> — {source.note[lang]}</p>)}
+            {wowPatchContext.sources.map((source) => <p><a class="source-link" href={source.url} target="_blank" rel="noreferrer"><strong>{source.label} ↗</strong></a> - {source.note[lang]}</p>)}
           </div>
         </details>
       </section>

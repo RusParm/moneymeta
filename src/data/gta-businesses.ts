@@ -25,7 +25,7 @@ export interface GtaBusiness {
 
 const sharedProvenance: DataProvenance = {
   checkedAt: "2026-07-01",
-  gameVersion: "GTA Online — July 2026 estimate set",
+  gameVersion: "GTA Online - July 2026 estimate set",
   status: "estimated",
   sourceNote: {
     ru: "Рабочая оценка на основе открытых описаний механик. Для статуса verified требуется повторная игровая проверка.",
@@ -132,7 +132,7 @@ export const gtaBusinesses: GtaBusiness[] = [
   },
   {
     id: "club",
-    name: { ru: "Ночной клуб — базовая модель", en: "Nightclub — base model" },
+    name: { ru: "Ночной клуб - базовая модель", en: "Nightclub - base model" },
     summary: {
       ru: "Низкий friction и пассивный поток; текущая модель не включает синергию всех складских товаров.",
       en: "Low friction and passive cash flow; the current model excludes full warehouse synergies."
@@ -174,7 +174,7 @@ export const weeklyMeta: WeeklyMetaSnapshot = {
   items: {
     ru: [
       "До 12 августа: GTA$1,000,000 за вход (доставка может занять до 72 часов).",
-      "На первом новом прохождении Cayo Perico гарантирована Panther Statue; 3X GTA$/RP действует в Community Mission Series, 2X — в A Superyacht Life и Assault on Cayo Perico.",
+      "На первом новом прохождении Cayo Perico гарантирована Panther Statue; 3X GTA$/RP действует в Community Mission Series, 2X - в A Superyacht Life и Assault on Cayo Perico.",
       "Эти бонусы не применяются автоматически к production-business моделям ниже."
     ],
     en: [
@@ -203,8 +203,8 @@ export const weeklyMeta: WeeklyMetaSnapshot = {
       status: "verified",
       title: { ru: "Один редкий Cayo-run", en: "One rare Cayo run" },
       summary: {
-        ru: "Первое новое прохождение Cayo Perico в окне 6–12 августа гарантирует Panther Statue.",
-        en: "The first fresh Cayo Perico playthrough in the August 6–12 window guarantees the Panther Statue."
+        ru: "Первое новое прохождение Cayo Perico в окне 6-12 августа гарантирует Panther Statue.",
+        en: "The first fresh Cayo Perico playthrough in the August 6-12 window guarantees the Panther Statue."
       },
       decision: {
         ru: "Закрой старый setup, если он мешает новому первому прохождению; не откладывай окно на потом.",
@@ -217,14 +217,14 @@ export const weeklyMeta: WeeklyMetaSnapshot = {
       status: "verified",
       title: { ru: "Временный active-cash слой", en: "Temporary active-cash layer" },
       summary: {
-        ru: "3X действует в Community Mission Series; 2X — в A Superyacht Life и Assault on Cayo Perico.",
+        ru: "3X действует в Community Mission Series; 2X - в A Superyacht Life и Assault on Cayo Perico.",
         en: "Community Mission Series pays 3X; A Superyacht Life and Assault on Cayo Perico pay 2X."
       },
       decision: {
         ru: "Используй бусты как временный маршрут cash flow, но не переписывай ими базовую окупаемость production-активов.",
         en: "Use boosts as a temporary cash-flow route without rewriting baseline production-asset payback."
       },
-      signal: { ru: "2X–3X", en: "2X–3X" }
+      signal: { ru: "2X-3X", en: "2X-3X" }
     }
   ]
 };
