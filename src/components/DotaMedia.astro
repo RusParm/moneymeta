@@ -1,0 +1,26 @@
+---
+import type { DotaMediaAsset } from "../data/dota-hub";
+
+interface Props {
+  asset: DotaMediaAsset;
+  lang: "ru" | "en";
+  class?: string;
+  eager?: boolean;
+}
+
+const { asset, lang, class: className = "", eager = false } = Astro.props;
+---
+
+<span class={`dota-media ${asset.type === "hero" ? "is-hero" : "is-item"} ${className}`} data-dota-media={asset.key}>
+  <span class="dota-media-fallback" aria-hidden="true">{asset.fallback}</span>
+  <img
+    src={asset.src}
+    alt={asset.alt[lang]}
+    width={asset.type === "hero" ? "256" : "88"}
+    height={asset.type === "hero" ? "144" : "64"}
+    loading={eager ? "eager" : "lazy"}
+    decoding="async"
+    referrerpolicy="no-referrer"
+    onerror="this.style.display='none'"
+  />
+</span>

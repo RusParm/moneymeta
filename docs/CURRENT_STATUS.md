@@ -71,7 +71,17 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - GTA research expanded from one flagship note to six substantial RU/EN analyses with audience filters, evidence status, game version and article-to-tool loops.
 - The benchmark dataset has explicit estimated/verified separation; weekly opportunities never silently overwrite long-horizon production scores.
 - Twenty tests cover formulas, rankings, freshness and benchmark content depth. Twenty-nine static pages build with zero diagnostics.
-- Next gate: deploy and visually approve the GTA preview, then adapt the proven standard to Dota 2 and WoW Retail in sequence.
+- GTA preview approved as the benchmark; the system is now being adapted to Dota 2 and then WoW Retail in sequence.
+
+## Active release candidate — v1.3 Dota living match hub
+
+- Rebuilt the Dota vertical as a nine-section decision product with a seven-stage match-economy map, three player paths and three role-specific capital lenses.
+- Added a patch 7.41e Pulse with official-source links, a 45-day freshness guard and explicit separation between cash payback and non-cash Madstone / attack-speed utility.
+- Corrected the buyback formula from the stale `100 + Net Worth / 13` baseline to the documented `200 + Net Worth / 13` formula.
+- Added six prepared Midas and buyback scenarios with shareable URL parameters and expanded Dota research from one to six substantial RU/EN analyses.
+- Added rights-aware Dota item and hero identifiers over an original Money Meta hero world; every third-party visual has a fallback and removable media record.
+- Twenty-three tests cover formulas, GTA depth and Dota living-hub depth. Thirty-nine static pages build with zero diagnostics.
+- Next gate: Dota branch preview and visual QA, then WoW Retail living hub.
 
 ## Release policy
 

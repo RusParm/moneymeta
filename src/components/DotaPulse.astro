@@ -1,0 +1,106 @@
+---
+import { dotaPulse } from "../data/dota-hub";
+import DotaMedia from "./DotaMedia.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const checkedAt = new Date(`${dotaPulse.checkedAt}T00:00:00Z`).getTime();
+const stale = Date.now() - checkedAt > dotaPulse.staleAfterDays * 86_400_000;
+
+const copy = lang === "ru" ? {
+  kicker: "Patch Pulse · official delta → decision",
+  title: "Что изменилось в 7.41e — в языке золота и timing",
+  text: "Не пересказываем весь patch. Pulse показывает только изменения, которые способны сдвинуть payback, item utility или buyback decision.",
+  verified: "Verified · Valve notes",
+  current: `Проверено ${dotaPulse.checkedAt} · ${dotaPulse.patch}`,
+  stale: `Требует перепроверки · последний check ${dotaPulse.checkedAt}`,
+  action: "Что делать иначе",
+  evidence: "Источник изменения",
+  source: "Открыть patch notes",
+  guardTitle: "Patch freshness guard",
+  guardCurrent: `Контекст ${dotaPulse.patch} проверен. Числовые модели отделяют official changes от community-cross-checked defaults.`,
+  guardStale: "С момента проверки прошло более 45 дней. Данные сохранены как baseline, но current-статус снят до повторной сверки."
+} : {
+  kicker: "Patch Pulse · official delta → decision",
+  title: "What changed in 7.41e — in the language of gold and timing",
+  text: "This is not a full patch recap. Pulse keeps only the changes capable of moving payback, item utility or the buyback decision.",
+  verified: "Verified · Valve notes",
+  current: `Checked ${dotaPulse.checkedAt} · ${dotaPulse.patch}`,
+  stale: `Review required · last check ${dotaPulse.checkedAt}`,
+  action: "What to do differently",
+  evidence: "Change source",
+  source: "Open patch notes",
+  guardTitle: "Patch freshness guard",
+  guardCurrent: `${dotaPulse.patch} context is checked. Numeric models separate official changes from community-cross-checked defaults.`,
+  guardStale: "More than 45 days have passed since the check. The baseline remains visible, but current status is removed pending review."
+};
+---
+
+<section
+  id="patch-pulse"
+  class={`section hub-section pulse-section dota-pulse-section ${stale ? "is-stale" : "is-current"}`}
+  data-dota-pulse
+  data-checked-at={dotaPulse.checkedAt}
+  data-stale-after={dotaPulse.staleAfterDays}
+  data-current-label={copy.current}
+  data-stale-label={copy.stale}
+  data-current-guard={copy.guardCurrent}
+  data-stale-guard={copy.guardStale}
+  aria-labelledby="dota-pulse-title"
+>
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="dota-pulse-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <div class="pulse-status-stack">
+      <span class="pill dota-radiant">{copy.verified}</span>
+      <span class="pulse-window" data-pulse-window>{stale ? copy.stale : copy.current}</span>
+    </div>
+  </div>
+
+  <div class="pulse-grid">
+    {dotaPulse.changes.map((item, index) => (
+      <article class="pulse-card dota-pulse-card">
+        <DotaMedia asset={item.media} lang={lang} />
+        <div class="pulse-card-top">
+          <span>0{index + 1}</span>
+          <strong>{item.signal[lang]}</strong>
+        </div>
+        <h3>{item.title[lang]}</h3>
+        <p>{item.summary[lang]}</p>
+        <a class="dota-pulse-source" href={item.sourceUrl} rel="noopener noreferrer" target="_blank">{copy.evidence} ↗</a>
+        <div class="pulse-decision">
+          <span>{copy.action}</span>
+          <p>{item.decision[lang]}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div class="pulse-guard">
+    <div class="pulse-orbit" aria-hidden="true"><span></span></div>
+    <div>
+      <strong>{copy.guardTitle}</strong>
+      <p data-pulse-guard>{stale ? copy.guardStale : copy.guardCurrent}</p>
+    </div>
+    <a class="source-link" href={dotaPulse.sourceUrl} rel="noopener noreferrer" target="_blank">{copy.source} ↗</a>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-dota-pulse]").forEach((root) => {
+    const checkedAt = root.dataset.checkedAt;
+    const staleAfterDays = Number(root.dataset.staleAfter ?? 45);
+    if (!checkedAt) return;
+    const age = Date.now() - new Date(`${checkedAt}T00:00:00Z`).getTime();
+    const stale = age > staleAfterDays * 86_400_000;
+    root.classList.toggle("is-stale", stale);
+    root.classList.toggle("is-current", !stale);
+    const windowLabel = root.querySelector<HTMLElement>("[data-pulse-window]");
+    if (windowLabel) windowLabel.textContent = stale ? root.dataset.staleLabel ?? "Review" : root.dataset.currentLabel ?? "Current";
+    const guard = root.querySelector<HTMLElement>("[data-pulse-guard]");
+    if (guard) guard.textContent = stale ? root.dataset.staleGuard ?? "Review" : root.dataset.currentGuard ?? "Current";
+  });
+</script>

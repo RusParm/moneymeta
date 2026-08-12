@@ -1,0 +1,125 @@
+---
+import { dotaRoleLenses } from "../data/dota-hub";
+import DotaMedia from "./DotaMedia.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+
+const copy = lang === "ru" ? {
+  kicker: "Role lenses · conditional priority stack",
+  title: "Одинаковые 1 000 gold имеют разную работу",
+  text: "Carry покупает throughput и timing, initiator — доступ и надёжность, support — информацию и сохранённую командную ценность. Это conditional framework, а не один tier list.",
+  question: "Главный вопрос",
+  priority: "Приоритет",
+  caveat: "Граница модели",
+  open: "Проверить gold decision"
+} : {
+  kicker: "Role lenses · conditional priority stack",
+  title: "The same 1,000 gold has a different job",
+  text: "A carry buys throughput and timing, an initiator buys access and reliability, and a support buys information and preserved team value. This is a conditional framework, not one tier list.",
+  question: "Primary question",
+  priority: "Priority",
+  caveat: "Model boundary",
+  open: "Test the gold decision"
+};
+---
+
+<section id="role-lenses" class="section hub-section" aria-labelledby="dota-role-lenses-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="dota-role-lenses-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count">3 roles · 9 priorities</span>
+  </div>
+
+  <div class="ranking-lab dota-role-lab" data-dota-role-lab>
+    <div class="ranking-tabs" role="tablist" aria-label={lang === "ru" ? "Выбор экономической роли" : "Choose economy role"}>
+      {dotaRoleLenses.map((lens, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`dota-role-tab-${lens.id}`}
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-controls={`dota-role-panel-${lens.id}`}
+          tabindex={index === 0 ? "0" : "-1"}
+          data-dota-role-tab={lens.id}
+        >
+          <DotaMedia asset={lens.hero} lang={lang} />
+          <small>0{index + 1}</small>
+          <strong>{lens.label[lang]}</strong>
+        </button>
+      ))}
+    </div>
+
+    {dotaRoleLenses.map((lens, lensIndex) => (
+      <div
+        class="ranking-panel dota-role-panel"
+        id={`dota-role-panel-${lens.id}`}
+        role="tabpanel"
+        aria-labelledby={`dota-role-tab-${lens.id}`}
+        hidden={lensIndex !== 0}
+        data-dota-role-panel={lens.id}
+      >
+        <div class="dota-role-hero">
+          <DotaMedia asset={lens.hero} lang={lang} eager={lensIndex === 0} />
+          <div>
+            <span>{lens.label[lang]} · example lens</span>
+            <h3>{lens.title[lang]}</h3>
+            <p><strong>{copy.question}:</strong> {lens.question[lang]}</p>
+          </div>
+        </div>
+
+        <div class="conditional-rank-grid">
+          {lens.priorities.map((item, index) => (
+            <article class={`conditional-rank-card dota-priority-card ${index === 0 ? "rank-1" : ""}`}>
+              <div class="conditional-rank-top">
+                <span>0{index + 1}</span>
+                <DotaMedia asset={item.media} lang={lang} />
+              </div>
+              <span class="game-tag">{copy.priority} {index + 1} · {item.signal[lang]}</span>
+              <h3>{item.title[lang]}</h3>
+              <p>{item.text[lang]}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="ranking-note">
+          <span>{copy.caveat}</span>
+          <p>{lens.note[lang]}</p>
+          <a href="#decision-deck">{copy.open} →</a>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-dota-role-lab]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-dota-role-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-dota-role-panel]")];
+
+    const activate = (tab: HTMLButtonElement) => {
+      const id = tab.dataset.dotaRoleTab;
+      tabs.forEach((candidate) => {
+        const selected = candidate === tab;
+        candidate.setAttribute("aria-selected", String(selected));
+        candidate.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.dotaRolePanel !== id; });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const direction = event.key === "ArrowRight" ? 1 : -1;
+        const next = tabs[(index + direction + tabs.length) % tabs.length]!;
+        activate(next);
+        next.focus();
+      });
+    });
+  });
+</script>

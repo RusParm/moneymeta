@@ -34,6 +34,6 @@ Primary promise: **Understand the economy. Make the smarter move.**
 
 ## Current priority
 
-Validate the World of Warcraft Retail market-economy wedge, then establish analytics, saved scenarios and recurring data freshness across all three active verticals.
+Complete the living-hub rollout sequentially: GTA Online is the benchmark, Dota 2 is the current release candidate, and World of Warcraft Retail follows. Then establish analytics, saved scenarios and recurring data freshness across all three active verticals.
 
 Read `docs/PROJECT_CONTEXT.md`, `docs/ROADMAP.md`, `docs/DECISIONS.md` and `docs/CURRENT_STATUS.md` before changing product direction.

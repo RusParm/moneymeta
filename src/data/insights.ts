@@ -551,7 +551,7 @@ export const insights: Insight[] = [
     slug: "dota-2-hand-of-midas-real-payback",
     game: "dota",
     updatedAt: "2026-08-12",
-    gameVersion: "Dota 2 · Patch 7.41 baseline",
+    gameVersion: "Dota 2 · Patch 7.41e baseline",
     evidenceStatus: "estimated",
     audiences: ["returner", "grinder"],
     toolPath: { ru: "/dota-2/#midas-irr", en: "/en/dota-2/#midas-irr" },
@@ -565,7 +565,7 @@ export const insights: Insight[] = [
         takeaways: [
           "Incremental value baseline: 160 gold Transmute минус 40 gold упущенного bounty = 120 gold на use.",
           "Для возврата стоимости 2 200 gold требуется 19 применений — break-even около 39-й минуты.",
-          "XP, attack speed и hero-specific tempo важны, но их нельзя честно свести к одной универсальной денежной цифре."
+          "Attack speed, Madstone и hero-specific tempo важны, но их нельзя честно свести к одной универсальной денежной цифре."
         ],
         sections: [
           {
@@ -585,7 +585,7 @@ export const insights: Insight[] = [
           {
             heading: "Что формула сознательно не решает",
             paragraphs: [
-              "Midas даёт attack speed, дополнительный XP и может взаимодействовать с патчевыми механиками. Для конкретного героя эти эффекты способны перевесить денежный минус — или не компенсировать потерянный tempo. Универсальная цена такого эффекта была бы выдуманной точностью.",
+              "Midas даёт attack speed и взаимодействует с текущей Madstone-механикой. Для конкретного героя эти эффекты способны перевесить денежный минус — или не компенсировать потерянный tempo. Универсальная цена такого эффекта была бы выдуманной точностью.",
               "Используй поле Other value, если готов сам оценить hero-specific эффект. Модель не выбирает предмет вместо тебя; она показывает, какую часть решения ты принимаешь как доказуемую экономику, а какую — как игровой judgement."
             ]
           }
@@ -601,7 +601,7 @@ export const insights: Insight[] = [
         takeaways: [
           "Baseline incremental value: 160 Transmute gold minus 40 foregone creep bounty = 120 gold per use.",
           "Recovering a 2,200 gold cost needs 19 uses, putting break-even near minute 39.",
-          "XP, attack speed and hero-specific tempo matter, but no honest universal gold value exists for them."
+          "Attack speed, Madstone and hero-specific tempo matter, but no honest universal gold value exists for them."
         ],
         sections: [
           {
@@ -621,12 +621,436 @@ export const insights: Insight[] = [
           {
             heading: "What the formula deliberately does not solve",
             paragraphs: [
-              "Midas provides attack speed, extra XP and patch-specific interactions. For one hero those effects may outweigh a monetary loss; for another they may not compensate for surrendered tempo. Assigning one universal value would be invented precision.",
+              "Midas provides attack speed and interacts with the current Madstone mechanic. For one hero those effects may outweigh a monetary loss; for another they may not compensate for surrendered tempo. Assigning one universal value would be invented precision.",
               "Use Other value when you are willing to price the hero-specific effect yourself. The model does not choose the item for you. It separates the provable economic part of the decision from game judgement."
             ]
           }
         ],
         toolLabel: "Test your Midas scenario"
+      }
+    }
+  },
+  {
+    slug: "dota-2-buyback-reserve-before-roshan",
+    game: "dota",
+    updatedAt: "2026-08-12",
+    gameVersion: "Dota 2 · Patch 7.41e · buyback formula verified",
+    evidenceStatus: "verified",
+    audiences: ["returner", "casual", "grinder"],
+    toolPath: {
+      ru: "/dota-2/?dota-buyback.buyback-networth=18000&dota-buyback.buyback-gold=1200&dota-buyback.buyback-gpm=620&dota-buyback.buyback-objective=90&dota-buyback.buyback-risk=55#buyback-reserve",
+      en: "/en/dota-2/?dota-buyback.buyback-networth=18000&dota-buyback.buyback-gold=1200&dota-buyback.buyback-gpm=620&dota-buyback.buyback-objective=90&dota-buyback.buyback-risk=55#buyback-reserve"
+    },
+    content: {
+      ru: {
+        title: "Сколько золота реально нужно держать на buyback перед Roshan",
+        description: "Исправляем старую формулу, считаем reserve gap и отделяем стоимость второй жизни от автоматического запрета покупать предметы.",
+        kicker: "Dota 2 · Liquidity reserve",
+        thesis: "Buyback — это не просто сумма в интерфейсе, а опцион вернуться в конкретную драку. Действующая документированная база — 200 + Net Worth / 13; старая модель Money Meta с base 100 занижала резерв ровно на 100 gold.",
+        readTime: "6 мин",
+        takeaways: [
+          "При 15 000 net worth baseline buyback равен примерно 1 354 gold, а не 1 254.",
+          "При 18 000 net worth и 1 200 gold сейчас резерв дефицитен, но 620 GPM за 90 секунд формируют его до objective.",
+          "Профинансированный buyback полезен только при реальной возможности вернуться в fight и повлиять на objective."
+        ],
+        sections: [
+          {
+            heading: "Почему формула была занижена",
+            paragraphs: [
+              "Valve изменила базу buyback в 7.24, а в 7.29 зафиксировала формулу 200 + Net Worth / 13. Использование старого base cost 100 создаёт систематическую ошибку: каждый сценарий выглядит на 100 gold безопаснее, чем он есть.",
+              "Разница кажется небольшой, но именно около границы решения она критична. Игрок может потратить компонент и обнаружить, что резерв больше не профинансирован перед Roshan или защитой high ground."
+            ]
+          },
+          {
+            heading: "Готов сейчас и готов к objective — разные состояния",
+            paragraphs: [
+              "При 18 000 net worth buyback оценивается примерно в 1 585 gold. С 1 200 gold сейчас не хватает около 385, но при 620 GPM за следующие 90 секунд модель прогнозирует около 2 130 gold — reserve становится доступен к objective.",
+              "Это не совет потратить всё прогнозируемое золото. Forecast нужен, чтобы отличить временный дефицит от ситуации, где farming window физически не закрывает gap."
+            ]
+          },
+          {
+            heading: "Когда компонент всё-таки сильнее второй жизни",
+            paragraphs: [
+              "Buyback сохраняет опциональность, но не гарантирует результат. Если нет TP, ближайшая точка возврата разрушена или герой не успевает в бой, ликвидность не превращается в полезную вторую жизнь.",
+              "Сравнивай конкретную силу компонента с ожидаемой ценностью re-entry. Risk-weighted reserve помогает увидеть масштаб ставки, но финальное решение остаётся функцией draft, позиции, cooldowns и objective."
+            ]
+          }
+        ],
+        toolLabel: "Открыть сценарий core перед Roshan"
+      },
+      en: {
+        title: "How much gold to actually hold for buyback before Roshan",
+        description: "Correct the old formula, calculate the reserve gap and separate the value of a second life from a blanket ban on spending.",
+        kicker: "Dota 2 · Liquidity reserve",
+        thesis: "Buyback is not just a UI price. It is an option to re-enter a specific fight. The documented baseline is 200 + Net Worth / 13; Money Meta's old 100 base understated every reserve by exactly 100 gold.",
+        readTime: "6 min",
+        takeaways: [
+          "At 15,000 net worth the baseline buyback is roughly 1,354 gold, not 1,254.",
+          "At 18,000 net worth and 1,200 current gold the reserve is underfunded now, but 620 GPM over 90 seconds funds it by the objective.",
+          "A funded buyback matters only when the hero can re-enter the fight and influence the objective."
+        ],
+        sections: [
+          {
+            heading: "Why the formula was understated",
+            paragraphs: [
+              "Valve raised the buyback base in 7.24 and documented 200 + Net Worth / 13 in 7.29. Keeping the earlier 100 base creates a systematic error: every scenario looks 100 gold safer than it is.",
+              "That looks small until the decision sits near the boundary. A player can buy a component and discover the reserve is no longer funded before Roshan or a high-ground defense."
+            ]
+          },
+          {
+            heading: "Ready now and ready by the objective are different states",
+            paragraphs: [
+              "At 18,000 net worth, estimated buyback is roughly 1,585 gold. With 1,200 now, the gap is about 385. At 620 GPM for the next 90 seconds, projected gold reaches roughly 2,130 and the reserve becomes available by the objective.",
+              "That forecast is not permission to spend every projected coin. It distinguishes a temporary deficit from a window that physically cannot close the gap."
+            ]
+          },
+          {
+            heading: "When the component is still stronger than a second life",
+            paragraphs: [
+              "Buyback preserves optionality but does not guarantee value. Without TP access, a surviving structure or enough time to re-enter, liquidity never becomes a useful second life.",
+              "Compare the component's concrete power with the expected value of re-entry. Risk-weighted reserve shows the size of the stake; draft, position, cooldowns and objective still decide the action."
+            ]
+          }
+        ],
+        toolLabel: "Open the core-before-Roshan scenario"
+      }
+    }
+  },
+  {
+    slug: "dota-2-midas-madstone-noncash-value",
+    game: "dota",
+    updatedAt: "2026-08-12",
+    gameVersion: "Dota 2 · Patch 7.41e baseline",
+    evidenceStatus: "estimated",
+    audiences: ["returner", "grinder"],
+    toolPath: {
+      ru: "/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=35&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=12&dota-midas.midas-end=38#midas-irr",
+      en: "/en/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=35&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=12&dota-midas.midas-end=38#midas-irr"
+    },
+    content: {
+      ru: {
+        title: "Как оценивать Madstone и +40 attack speed, не подделывая Midas ROI",
+        description: "Отделяем гарантированное золото Transmute от неденежной ценности текущего патча и проверяем sensitivity.",
+        kicker: "Dota 2 · Non-cash utility",
+        thesis: "В 7.41e Midas даёт +40 attack speed, а neutral Transmute связан с Madstone. Эти эффекты могут изменить решение, но их нельзя молча добавить к 160 gold как гарантированный cash flow.",
+        readTime: "5 мин",
+        takeaways: [
+          "При покупке на 12-й и конце на 38-й минуте cash-only baseline не успевает окупиться.",
+          "Условные 35 gold other value на use сдвигают break-even примерно к 33-й минуте.",
+          "Other value — sensitivity пользователя, а не проверенный рыночный курс Madstone или attack speed."
+        ],
+        sections: [
+          {
+            heading: "Почему cash model должна оставаться узкой",
+            paragraphs: [
+              "Transmute гарантирует указанное золото, но sacrificed creep имел собственный bounty. Поэтому cash layer считает только incremental gold после этой альтернативы.",
+              "Attack speed и Madstone имеют реальную игровую полезность, однако она зависит от героя, цели neutral Transmute и состояния матча. Универсальный обменный курс превратил бы полезную модель в красивую выдумку."
+            ]
+          },
+          {
+            heading: "Что показывает sensitivity на 35 gold",
+            paragraphs: [
+              "При minute-12 покупке и minute-38 конце cash-only модель получает 18 uses: 2 160 incremental gold и остаётся на 40 gold ниже цены предмета. Payback наступил бы только около 39-й.",
+              "Если пользователь оценивает Madstone и attack speed вместе в 35 additional value на use, incremental value растёт до 155. Тогда требуется 15 uses и break-even сдвигается примерно на 33-ю минуту."
+            ]
+          },
+          {
+            heading: "Как не превратить sensitivity в самообман",
+            paragraphs: [
+              "Введи other value до просмотра результата и запиши, что именно она означает. После матча проверь: изменил ли attack speed фарм или fight, и принесла ли Madstone-опция фактическую полезность.",
+              "Если оценка существует только затем, чтобы сделать ROI положительным, оставь cash baseline нулевым. Модель должна спорить с решением, а не оправдывать уже купленный предмет."
+            ]
+          }
+        ],
+        toolLabel: "Проверить Madstone sensitivity"
+      },
+      en: {
+        title: "How to value Madstone and +40 attack speed without faking Midas ROI",
+        description: "Separate guaranteed Transmute gold from patch-specific non-cash value and run a sensitivity case.",
+        kicker: "Dota 2 · Non-cash utility",
+        thesis: "In 7.41e Midas provides +40 attack speed and a neutral Transmute interacts with Madstone. Those effects can change the decision, but they cannot be silently added to 160 gold as guaranteed cash flow.",
+        readTime: "5 min",
+        takeaways: [
+          "With a minute-12 purchase and minute-38 finish, the cash-only baseline fails to pay back.",
+          "A hypothetical 35 gold of other value per use moves break-even to roughly minute 33.",
+          "Other value is user sensitivity, not a verified exchange rate for Madstone or attack speed."
+        ],
+        sections: [
+          {
+            heading: "Why the cash model should remain narrow",
+            paragraphs: [
+              "Transmute guarantees its stated gold, but the sacrificed creep had a bounty. The cash layer therefore counts only incremental gold above that alternative.",
+              "Attack speed and Madstone can create real game value, but it depends on hero, neutral target and match state. One universal exchange rate would turn a useful model into attractive fiction."
+            ]
+          },
+          {
+            heading: "What a 35-gold sensitivity shows",
+            paragraphs: [
+              "A minute-12 purchase with a minute-38 finish gets 18 uses in the cash-only model: 2,160 incremental gold, still 40 below the item price. Payback would arrive near minute 39.",
+              "If the user values Madstone and attack speed together at 35 additional gold per use, incremental value becomes 155. Fifteen uses are enough and break-even moves to roughly minute 33."
+            ]
+          },
+          {
+            heading: "Keep sensitivity from becoming self-justification",
+            paragraphs: [
+              "Enter other value before viewing the answer and state what it represents. After the match, test whether attack speed changed farm or fighting and whether the Madstone option produced actual utility.",
+              "If the estimate exists only to force positive ROI, keep the cash baseline at zero. The model should challenge the purchase, not rationalize it."
+            ]
+          }
+        ],
+        toolLabel: "Test Madstone sensitivity"
+      }
+    }
+  },
+  {
+    slug: "dota-2-why-gpm-without-item-timing-is-incomplete",
+    game: "dota",
+    updatedAt: "2026-08-12",
+    gameVersion: "Dota 2 · Patch 7.41e framework",
+    evidenceStatus: "estimated",
+    audiences: ["returner", "casual", "grinder"],
+    toolPath: { ru: "/dota-2/#economy-map", en: "/en/dota-2/#economy-map" },
+    content: {
+      ru: {
+        title: "Почему хороший GPM ничего не доказывает без item timing",
+        description: "Связываем доход с минутой покупки, ближайшим objective и фактической конверсией преимущества.",
+        kicker: "Dota 2 · Timing quality",
+        thesis: "Финальный GPM измеряет скорость накопления, но стирает момент, когда золото стало usable power. Два игрока с одинаковым GPM могут создать совершенно разную ценность для карты.",
+        readTime: "5 мин",
+        takeaways: [
+          "Записывай не только GPM, но и минуту purchase, delivery и первого objective после timing.",
+          "Непотраченное золото до покупки — потенциальная сила; после покупки без fight оно может остаться нереализованной силой.",
+          "Лучший replay-вопрос: что команда получила в следующие 120 секунд после ключевого предмета?"
+        ],
+        sections: [
+          {
+            heading: "GPM сжимает слишком много событий",
+            paragraphs: [
+              "Среднее за матч объединяет сильную линию, безопасные waves, kills и поздний comeback gold. Оно не показывает, когда игрок достиг конкретного budget threshold.",
+              "Даже точная минута покупки неполна без доставки и позиции героя. Предмет в stash или на courier ещё не выполняет свою экономическую работу."
+            ]
+          },
+          {
+            heading: "Timing должен иметь объект монетизации",
+            paragraphs: [
+              "BKB, Blink или farming item важны не сами по себе. Они меняют доступный набор действий: начать fight, пережить spells, быстрее очистить карту или угрожать Roshan.",
+              "Назови objective до покупки. Если после timing команда продолжила делать то же самое и не получила пространство, измеренный прирост net worth мог не превратиться в стратегическую ценность."
+            ]
+          },
+          {
+            heading: "Минимальный post-match scorecard",
+            paragraphs: [
+              "Зафиксируй четыре точки: purchase minute, delivery minute, первый fight и первый objective. Затем добавь результат — выигран, проигран или не состоялся.",
+              "Этот короткий timeline полезнее десяти средних метрик. Он показывает, где экономика закончилась действием, а где красивое число осталось на графике."
+            ]
+          }
+        ],
+        toolLabel: "Открыть карту match economy"
+      },
+      en: {
+        title: "Why strong GPM proves nothing without item timing",
+        description: "Connect income to purchase minute, the nearest objective and the realized conversion of the lead.",
+        kicker: "Dota 2 · Timing quality",
+        thesis: "Final GPM measures accumulation speed but erases the moment when gold became usable power. Two players with equal GPM can create completely different map value.",
+        readTime: "5 min",
+        takeaways: [
+          "Record GPM together with purchase, delivery and the first objective after the timing.",
+          "Unspent gold is potential power; a delivered item without a fight can still remain unrealized power.",
+          "The best replay question is what the team gained in the 120 seconds after the key item."
+        ],
+        sections: [
+          {
+            heading: "GPM compresses too many events",
+            paragraphs: [
+              "A match average combines a strong lane, safe waves, kills and late comeback gold. It does not reveal when the player crossed a specific budget threshold.",
+              "Even purchase minute is incomplete without delivery and hero position. An item in stash or on the courier has not started its economic job."
+            ]
+          },
+          {
+            heading: "A timing needs an object of monetization",
+            paragraphs: [
+              "BKB, Blink or a farming item does not matter in isolation. It changes the action set: start a fight, survive spells, clear the map faster or threaten Roshan.",
+              "Name the objective before buying. If the team does the same thing after the timing and gains no space, higher net worth may not have become strategic value."
+            ]
+          },
+          {
+            heading: "The minimum post-match scorecard",
+            paragraphs: [
+              "Record four points: purchase minute, delivery minute, first fight and first objective. Add the result — won, lost or never attempted.",
+              "That short timeline is more useful than ten averages. It shows where economy ended in action and where an attractive number stayed on the graph."
+            ]
+          }
+        ],
+        toolLabel: "Open the match economy map"
+      }
+    }
+  },
+  {
+    slug: "dota-2-component-or-buyback-before-high-ground",
+    game: "dota",
+    updatedAt: "2026-08-12",
+    gameVersion: "Dota 2 · Patch 7.41e scenario model",
+    evidenceStatus: "estimated",
+    audiences: ["casual", "grinder"],
+    toolPath: {
+      ru: "/dota-2/?dota-buyback.buyback-networth=25000&dota-buyback.buyback-gold=1800&dota-buyback.buyback-gpm=700&dota-buyback.buyback-objective=60&dota-buyback.buyback-risk=65#buyback-reserve",
+      en: "/en/dota-2/?dota-buyback.buyback-networth=25000&dota-buyback.buyback-gold=1800&dota-buyback.buyback-gpm=700&dota-buyback.buyback-objective=60&dota-buyback.buyback-risk=65#buyback-reserve"
+    },
+    content: {
+      ru: {
+        title: "Компонент или buyback за минуту до high ground",
+        description: "Разбираем позднюю развилку через reserve gap, re-entry и то, создаёт ли покупка новый способ выиграть fight.",
+        kicker: "Dota 2 · Closing liquidity",
+        thesis: "Перед high ground вопрос не звучит как «всегда держать buyback». Нужно сравнить две опции: новая сила первой жизни и вероятность полезной второй жизни в конкретной позиции.",
+        readTime: "6 мин",
+        takeaways: [
+          "При 25 000 net worth buyback baseline составляет примерно 2 123 gold.",
+          "С 1 800 gold и одной минутой при 700 GPM резерв будет сформирован к objective, если золото не потратить.",
+          "Компонент оправдан, когда он дискретно меняет fight; buyback — когда re-entry быстрый и вторая жизнь сохраняет impact."
+        ],
+        sections: [
+          {
+            heading: "Сначала посчитай границу",
+            paragraphs: [
+              "Формула 200 + 25 000 / 13 даёт около 2 123 gold. Текущий gap при 1 800 равен примерно 323, а минута при 700 GPM добавляет около 700. Без покупки резерв формируется до push.",
+              "Эта арифметика не выбирает действие. Она только показывает, что покупка на сумму больше прогнозируемого surplus осознанно отменяет вторую жизнь."
+            ]
+          },
+          {
+            heading: "Оцени качество первой жизни",
+            paragraphs: [
+              "Компонент ценен, если завершает BKB, даёт dispel, initiation или другой новый ответ на enemy draft. Небольшой линейный прирост damage редко равен новой стратегической возможности.",
+              "Задай проверяемый вопрос: какой spell, позицию или героя эта покупка позволяет пережить или убить? Если ответа нет, reserve сохраняет больше optionality."
+            ]
+          },
+          {
+            heading: "Проверь путь второй жизни",
+            paragraphs: [
+              "Buyback после смерти полезен, когда герой быстро возвращается: TP на живую постройку, Boots of Travel, близкая позиция или оборона собственной базы. Без re-entry резерв может оказаться дорогой иллюзией безопасности.",
+              "Money Meta показывает coverage и projected gold, но не скрывает эту границу. Вторая жизнь — не только платёж, а платёж плюс время и доступ к fight."
+            ]
+          }
+        ],
+        toolLabel: "Запустить high-ground reserve"
+      },
+      en: {
+        title: "Component or buyback one minute before high ground",
+        description: "Analyze the late-game fork through reserve gap, re-entry and whether the purchase creates a new way to win the fight.",
+        kicker: "Dota 2 · Closing liquidity",
+        thesis: "Before high ground, the rule is not ‘always hold buyback.’ Compare the new power of the first life with the probability that a second life is useful from the current position.",
+        readTime: "6 min",
+        takeaways: [
+          "At 25,000 net worth the baseline buyback is roughly 2,123 gold.",
+          "With 1,800 gold and one minute at 700 GPM, the reserve will be funded by the objective if nothing is spent.",
+          "A component wins when it discretely changes the fight; buyback wins when re-entry is fast and the second life retains impact."
+        ],
+        sections: [
+          {
+            heading: "Calculate the boundary first",
+            paragraphs: [
+              "The formula 200 + 25,000 / 13 returns roughly 2,123 gold. The current gap at 1,800 is about 323, while one minute at 700 GPM adds roughly 700. Without spending, the reserve is ready by the push.",
+              "That arithmetic does not choose the action. It shows that a purchase above projected surplus deliberately cancels the second life."
+            ]
+          },
+          {
+            heading: "Grade the quality of the first life",
+            paragraphs: [
+              "A component is valuable when it completes BKB, adds dispel, initiation or another new answer to the enemy draft. A small linear damage increase rarely equals a new strategic capability.",
+              "Ask a testable question: which spell, position or hero can this purchase now survive or kill? Without an answer, the reserve preserves more optionality."
+            ]
+          },
+          {
+            heading: "Check the route for the second life",
+            paragraphs: [
+              "A post-death buyback matters when the hero returns quickly: TP to a surviving structure, Boots of Travel, close positioning or a base defense. Without re-entry, the reserve can become an expensive illusion of safety.",
+              "Money Meta shows coverage and projected gold without hiding this boundary. A second life is not only payment; it is payment plus time and access to the fight."
+            ]
+          }
+        ],
+        toolLabel: "Run the high-ground reserve scenario"
+      }
+    }
+  },
+  {
+    slug: "dota-2-replay-economy-four-timestamps",
+    game: "dota",
+    updatedAt: "2026-08-12",
+    gameVersion: "Dota 2 · Patch 7.41e replay framework",
+    evidenceStatus: "estimated",
+    audiences: ["returner", "grinder"],
+    toolPath: { ru: "/dota-2/#player-paths", en: "/en/dota-2/#player-paths" },
+    content: {
+      ru: {
+        title: "Четыре timestamps, которые превращают replay в экономический разбор",
+        description: "Purchase, objective, death и buyback помогают найти решение, изменившее траекторию, вместо охоты за одной плохой минутой.",
+        kicker: "Dota 2 · Replay review",
+        thesis: "Полный replay слишком богат событиями, чтобы учиться на всём сразу. Четыре экономические точки создают короткую причинную цепочку и позволяют построить реалистичный counterfactual.",
+        readTime: "5 мин",
+        takeaways: [
+          "Запиши purchase/delivery, первый objective, первую дорогую смерть и решение о buyback.",
+          "Для каждого события укажи доступные альтернативы, а не только фактический результат.",
+          "Проверь сценарий ±2 минуты или с сохранённым резервом — это sensitivity, а не поиск виноватого."
+        ],
+        sections: [
+          {
+            heading: "Почему четыре точки лучше полного дневника",
+            paragraphs: [
+              "Попытка отметить каждую ошибку превращает replay в список без приоритета. Экономический review ищет моменты, где капитал менял доступный набор действий.",
+              "Purchase показывает конверсию gold в power, objective — реализацию timing, death — уничтоженную опциональность, buyback — решение купить вторую жизнь."
+            ]
+          },
+          {
+            heading: "Строй counterfactual, который можно проверить",
+            paragraphs: [
+              "Вместо «надо было играть лучше» спроси: что изменилось бы при покупке на две минуты раньше, другом компоненте или сохранённых 400 gold? Ответ должен вести к наблюдаемому fight или objective.",
+              "Если альтернативный ход не меняет доступные действия команды, он вряд ли является главной экономической развилкой матча."
+            ]
+          },
+          {
+            heading: "Сохрани одно правило на следующий матч",
+            paragraphs: [
+              "Review завершён только тогда, когда появляется короткое правило: например, проверить buyback до покупки после 35-й минуты при живом Roshan.",
+              "Один repeatable trigger сильнее длинного списка выводов. Через серию матчей он создаёт собственный dataset, из которого Money Meta сможет строить персональные benchmarks."
+            ]
+          }
+        ],
+        toolLabel: "Выбрать replay-путь"
+      },
+      en: {
+        title: "Four timestamps that turn a replay into an economy review",
+        description: "Purchase, objective, death and buyback reveal the decision that changed the trajectory instead of hunting one bad minute.",
+        kicker: "Dota 2 · Replay review",
+        thesis: "A full replay contains too much to learn from everything at once. Four economic points create a short causal chain and support a realistic counterfactual.",
+        readTime: "5 min",
+        takeaways: [
+          "Record purchase/delivery, the first objective, the first expensive death and the buyback decision.",
+          "For every event, state the available alternatives instead of only the observed result.",
+          "Test the scenario at ±2 minutes or with the reserve preserved — sensitivity, not blame."
+        ],
+        sections: [
+          {
+            heading: "Why four points beat a complete diary",
+            paragraphs: [
+              "Trying to mark every mistake turns a replay into an unranked list. An economy review looks for moments where capital changed the available action set.",
+              "Purchase captures gold becoming power, objective captures timing realization, death destroys optionality and buyback purchases a second life."
+            ]
+          },
+          {
+            heading: "Build a counterfactual you can test",
+            paragraphs: [
+              "Replace ‘play better’ with a concrete question: what changes with a purchase two minutes earlier, a different component or 400 gold preserved? The answer should lead to an observable fight or objective.",
+              "If the alternative does not change the team's possible actions, it is unlikely to be the match's primary economic fork."
+            ]
+          },
+          {
+            heading: "Keep one rule for the next match",
+            paragraphs: [
+              "A review is complete only when it creates a short rule — for example, check buyback before any purchase after minute 35 while Roshan is alive.",
+              "One repeatable trigger is stronger than a long conclusion list. Across matches, it creates a personal dataset that Money Meta can later turn into benchmarks."
+            ]
+          }
+        ],
+        toolLabel: "Choose the replay-review path"
       }
     }
   },

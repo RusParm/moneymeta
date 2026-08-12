@@ -50,8 +50,8 @@
 ### Sequential rollout
 
 - GTA Online benchmark: implemented in complete RU/EN parity.
-- Dota 2 living hub: next.
-- WoW Retail living hub: follows Dota 2.
+- Dota 2 living hub: implemented in complete RU/EN parity; current preview gate.
+- WoW Retail living hub: next after Dota 2 approval.
 
 ## P1.5 — recurring utility
 

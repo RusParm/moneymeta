@@ -20,6 +20,16 @@ Current original world assets:
 - `src/assets/game-worlds/dota-economy-world.webp`
 - `src/assets/game-worlds/wow-economy-world.webp`
 
+### Dota editorial identifiers
+
+The Dota living hub links item icons and hero portraits from Valve's official Dota asset CDN only inside mechanic explanations, role lenses, scenarios and research cards. They are not stored as a substitute art pack and are not used as the primary brand hero.
+
+- Owner: Valve.
+- Placement purpose: editorial identification of the exact item, hero archetype or objective under analysis.
+- Commercial status: pending exact-use rights review; not treated as a blanket license.
+- Fallback: every placement has a styled text fallback and can be removed without breaking the product.
+- Record: `src/data/dota-hub.ts` → `dotaMediaPolicy` and `dotaMedia`.
+
 ### B — product visuals
 
 - HTML/SVG economy maps, charts, comparison matrices and calculator states.
@@ -64,4 +74,3 @@ Every third-party visual needs:
 - date checked;
 - game version when relevant;
 - review status and removal path.
-

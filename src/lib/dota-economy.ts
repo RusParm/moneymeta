@@ -78,7 +78,7 @@ export function calculateMidasMetrics(input: MidasInput): MidasMetrics {
 }
 
 export function estimateBuybackCost(netWorth: number): number {
-  return 100 + positive(netWorth) / 13;
+  return 200 + positive(netWorth) / 13;
 }
 
 export function calculateBuybackMetrics(input: BuybackInput): BuybackMetrics {

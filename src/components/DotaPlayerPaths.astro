@@ -1,0 +1,133 @@
+---
+import { dotaPlayerPaths } from "../data/dota-hub";
+import DotaMedia from "./DotaMedia.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+
+const copy = lang === "ru" ? {
+  kicker: "Personal path · learn the economy your way",
+  title: "Один патч. Три разных способа стать сильнее.",
+  text: "Returner восстанавливает карту решений, игрок с малым числом матчей тренирует один repeatable question, а grinder ищет counterfactual в replay.",
+  matches: "Объём",
+  focus: "Фокус",
+  tolerance: "Сложность",
+  route: "Экономический маршрут",
+  flip: "Когда вывод меняется",
+  cta: "Открыть готовый сценарий",
+  note: "Портреты обозначают role lens, а не hero tier или build recommendation."
+} : {
+  kicker: "Personal path · learn the economy your way",
+  title: "One patch. Three different ways to improve.",
+  text: "A returner rebuilds the decision map, a limited-match learner trains one repeatable question, and a grinder searches for replay counterfactuals.",
+  matches: "Volume",
+  focus: "Focus",
+  tolerance: "Complexity",
+  route: "Economy route",
+  flip: "When the conclusion changes",
+  cta: "Open prepared scenario",
+  note: "Portraits mark a role lens, not a hero tier or build recommendation."
+};
+---
+
+<section id="player-paths" class="section hub-section" aria-labelledby="dota-player-paths-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="dota-player-paths-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count">3 learning systems</span>
+  </div>
+
+  <div class="path-planner dota-path-planner" data-dota-path-planner>
+    <div class="path-tabs" role="tablist" aria-label={lang === "ru" ? "Выбор пути игрока Dota 2" : "Choose a Dota 2 player path"}>
+      {dotaPlayerPaths.map((path, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`dota-path-tab-${path.id}`}
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-controls={`dota-path-panel-${path.id}`}
+          tabindex={index === 0 ? "0" : "-1"}
+          data-dota-path-tab={path.id}
+        >
+          <DotaMedia asset={path.hero} lang={lang} />
+          <span>0{index + 1}</span>
+          <strong>{path.label[lang]}</strong>
+          <small>{path.summary[lang]}</small>
+        </button>
+      ))}
+    </div>
+
+    <div class="path-panels">
+      {dotaPlayerPaths.map((path, index) => (
+        <article
+          class="path-panel dota-path-panel"
+          id={`dota-path-panel-${path.id}`}
+          role="tabpanel"
+          aria-labelledby={`dota-path-tab-${path.id}`}
+          hidden={index !== 0}
+          data-dota-path-panel={path.id}
+        >
+          <div class="dota-path-portrait" aria-hidden="true"><DotaMedia asset={path.hero} lang={lang} eager={index === 0} /></div>
+          <div class="path-panel-head">
+            <div>
+              <span class="game-tag">{path.label[lang]} · 7.41e</span>
+              <h3>{path.title[lang]}</h3>
+            </div>
+            <div class="path-constraints" aria-label={lang === "ru" ? "Ограничения пути" : "Path constraints"}>
+              <span><small>{copy.matches}</small><strong>{path.matches[lang]}</strong></span>
+              <span><small>{copy.focus}</small><strong>{path.focus[lang]}</strong></span>
+              <span><small>{copy.tolerance}</small><strong>{path.tolerance[lang]}</strong></span>
+            </div>
+          </div>
+
+          <div class="path-route">
+            <span class="path-route-label">{copy.route}</span>
+            {path.steps.map((step, stepIndex) => (
+              <div class="path-step">
+                <span>{stepIndex + 1}</span>
+                <div><strong>{step.title[lang]}</strong><p>{step.text[lang]}</p></div>
+              </div>
+            ))}
+          </div>
+
+          <div class="path-panel-foot">
+            <div class="path-flip"><span>{copy.flip}</span><p>{path.flipCondition[lang]}</p><small>{copy.note}</small></div>
+            <a class="button primary dota-primary" href={path.href[lang]}>{copy.cta} →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-dota-path-planner]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-dota-path-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-dota-path-panel]")];
+
+    const activate = (tab: HTMLButtonElement) => {
+      const id = tab.dataset.dotaPathTab;
+      tabs.forEach((candidate) => {
+        const selected = candidate === tab;
+        candidate.setAttribute("aria-selected", String(selected));
+        candidate.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.dotaPathPanel !== id; });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(event.key)) return;
+        event.preventDefault();
+        const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
+        const next = tabs[(index + direction + tabs.length) % tabs.length]!;
+        activate(next);
+        next.focus();
+      });
+    });
+  });
+</script>

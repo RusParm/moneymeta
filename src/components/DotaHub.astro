@@ -1,148 +1,100 @@
 ---
-import { buybackBaseline, dotaPatchContext, midasBaseline } from "../data/dota-economy";
 import dotaEconomyWorld from "../assets/game-worlds/dota-economy-world.webp";
+import { dotaPatchContext } from "../data/dota-economy";
+import { dotaMedia, dotaMediaPolicy } from "../data/dota-hub";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
-import DecisionShortcuts from "./DecisionShortcuts.astro";
-import FeaturedInsight from "./FeaturedInsight.astro";
+import DotaCalculators from "./DotaCalculators.astro";
+import DotaDecisionDeck from "./DotaDecisionDeck.astro";
+import DotaEconomyMap from "./DotaEconomyMap.astro";
+import DotaLibrary from "./DotaLibrary.astro";
+import DotaMedia from "./DotaMedia.astro";
+import DotaPlayerPaths from "./DotaPlayerPaths.astro";
+import DotaPulse from "./DotaPulse.astro";
+import DotaRoleLenses from "./DotaRoleLenses.astro";
 import GameWorldHero from "./GameWorldHero.astro";
-import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const root = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
-const shortcuts = lang === "ru" ? [
-  { eyebrow: "Greed check", title: "Окупится ли Midas?", text: "Поставь минуту покупки и ожидаемый конец — увидишь break-even и realized ROI.", href: "#midas-irr", meta: "7 inputs" },
-  { eyebrow: "Fight readiness", title: "Хватит ли на buyback?", text: "Проверь reserve сейчас и к следующему Roshan, high ground или другой objective.", href: "#buyback-reserve", meta: "5 inputs" }
-] : [
-  { eyebrow: "Greed check", title: "Will Midas pay back?", text: "Set purchase time and expected finish to see break-even and realized ROI.", href: "#midas-irr", meta: "7 inputs" },
-  { eyebrow: "Fight readiness", title: "Can I fund buyback?", text: "Check the reserve now and by the next Roshan, high ground or objective.", href: "#buyback-reserve", meta: "5 inputs" }
-];
 
 const copy = lang === "ru" ? {
-  title: "Dota 2 Economy Lab — Money Meta",
-  description: "Midas ROI, opportunity cost, buyback reserve и стоимость времени в экономике матча Dota 2.",
+  title: "Dota 2 Economy Hub — timing, Midas ROI и buyback | Money Meta",
+  description: "Интерактивная экономика Dota 2: путь золота, role-specific решения, patch 7.41e Pulse, Midas ROI, buyback reserve и replay-разборы.",
   back: "← Все экономики",
-  eyebrow: "Dota 2 · Match Economy Lab",
-  heading: "Каждая минута — капитал. Посчитай, куда его направить.",
-  lede: "Dota — не просто GPM. Покупка Midas похожа на capex, buyback — на резерв ликвидности, а timing определяет, успеет ли инвестиция вообще окупиться.",
-  midasCta: "Рассчитать Midas ROI",
-  buybackCta: "Проверить buyback reserve",
-  heroProof: [["Payback", "минута окупаемости"], ["ROI", "к концу матча"], ["Reserve", "gap до buyback"], ["Share", "сценарий ссылкой"]],
-  patch: "Patch context",
-  patchText: `Модель проверена в контексте ${dotaPatchContext.patch} на ${dotaPatchContext.checkedAt}. Defaults редактируются и не заменяют цифры в клиенте игры.`,
-  modelKicker: "Match Economy Model 01",
-  midasTitle: "Hand of Midas: реальная окупаемость",
-  midasText: "Полная выплата Transmute — не чистая прибыль: ты жертвуешь обычным bounty крипа. Модель считает incremental value и показывает, успеет ли предмет вернуть вложения до конца матча.",
-  itemCost: "Стоимость Midas",
-  transmuteGold: "Золото Transmute",
-  foregoneBounty: "Упущенный bounty крипа",
-  otherValue: "Прочая ценность / use",
-  cooldown: "Восстановление заряда, сек",
-  purchaseMinute: "Минута покупки",
-  endMinute: "Ожидаемый конец матча",
-  result: "Midas investment case",
-  uses: "Оставшиеся use",
-  incremental: "Incremental value / use",
-  gross: "Value до конца матча",
-  net: "Net value после цены",
-  payback: "Минута окупаемости",
-  roi: "Realized ROI",
-  breakEvenYes: "Окупается в заданном окне",
-  breakEvenNo: "Не окупается в заданном окне",
-  midasNote: "Attack speed, XP и Madstone по умолчанию имеют нулевую денежную оценку. Добавь свою оценку в «прочую ценность», если они важны для героя и текущего патча.",
-  reserveKicker: "Match Economy Model 02",
-  reserveTitle: "Buyback Reserve: ликвидность перед objective",
-  reserveText: "Резерв на buyback — это не бездействующее золото, а опцион вернуться в ключевую драку. Модель отделяет готовность сейчас от готовности к следующему objective.",
-  netWorth: "Net worth героя",
-  currentGold: "Текущее золото",
-  gpm: "Ожидаемый GPM",
-  objective: "До objective, сек",
-  deathRisk: "Вероятность смерти, %",
-  reserveResult: "Reserve position",
-  cost: "Оценка buyback",
-  gap: "Дефицит резерва",
-  surplus: "Свободно сверх резерва",
-  coverage: "Reserve coverage",
-  farmTime: "Время до резерва",
-  atObjective: "Золото к objective",
-  riskWeighted: "Probability-weighted reserve",
-  readyNow: "Buyback профинансирован сейчас",
-  readyLater: "Резерв будет готов к objective",
-  underfunded: "Резерв не успевает сформироваться",
-  minutes: "мин",
-  conceptsTitle: "Финансовый язык Dota 2",
-  conceptsText: "Не заменяет игровой judgement — делает скрытые trade-offs видимыми.",
-  concepts: [
-    ["Growth capex", "Midas и greed-предметы обменивают текущий tempo на будущий денежный поток."],
-    ["Liquidity reserve", "Buyback сохраняет стратегическую гибкость, даже если золото временно не работает в слотах."],
-    ["Time value", "Одинаковая покупка на 10-й и 30-й минуте — разные инвестиции из-за оставшегося окна окупаемости."]
+  eyebrow: "Dota 2 · Living Match Economy",
+  heading: "Золото не выигрывает матч. Решение о его моменте — может.",
+  lede: "Money Meta связывает last hits, item timings, Roshan и buyback в одну экономическую систему. Выбери момент матча — и увидишь, где greed становится потерей tempo.",
+  primary: "Открыть карту матча",
+  secondary: "Проверить Midas ROI",
+  live: `Patch ${dotaPatchContext.patch} · checked ${dotaPatchContext.checkedAt}`,
+  proof: [["7", "узлов match economy"], ["3", "role lenses"], ["2", "живые модели"], ["6", "готовых сценариев"]],
+  navBrand: "DOTA / MATCH SYSTEM",
+  nav: [["01", "Карта", "#economy-map"], ["02", "Пути", "#player-paths"], ["03", "Pulse", "#patch-pulse"], ["04", "Роли", "#role-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Разборы", "#research-library"]],
+  manifestoKicker: "Money Meta doctrine · Dota edition",
+  manifestoTitle: "Каждая цифра должна заканчиваться игровым действием.",
+  manifestoText: "GPM без момента покупки, item timing без objective и buyback без пути обратно в fight — неполные метрики. Хаб строится вокруг цепочки решений, а не вокруг ещё одного статичного build guide.",
+  principles: [
+    ["TIME VALUE", "Одна покупка на 10-й и 30-й минуте — разные инвестиции."],
+    ["OPTIONALITY", "Непотраченное золото может быть ликвидностью, а не ошибкой."],
+    ["CONVERSION", "Timing ценен только если превращается в objective или пространство."],
+    ["COUNTERFACTUAL", "Replay полезен, когда показывает, где другой ход менял бы результат."]
   ],
-  methodology: "Методология и источники",
-  sourceNote: dotaPatchContext.note.ru
+  trustKicker: "Methodology · sources · media boundary",
+  trustTitle: "Видно, что взято из patch notes, что посчитано и где начинается judgement",
+  trustText: "Money Meta не связан с Valve. Изображения предметов и героев используются только для редакционной идентификации механик и могут быть удалены независимо от продукта.",
+  trustCards: [
+    ["01", "Verified layer", "Версия патча, документированная формула buyback и изменения предметов ведут к официальным notes Valve.", "official source"],
+    ["02", "Estimated layer", "Bounty для Midas, неденежная ценность и ожидаемый конец матча остаются редактируемыми допущениями.", "user scenario"],
+    ["03", "Visual layer", "Оригинальный мир Money Meta задаёт атмосферу; официальные значки идентифицируют обсуждаемую механику.", "rights-aware"],
+  ],
+  methodology: "Открыть методологию и первоисточники",
+  media: "Media record",
+  disclaimer: "Dota, Dota 2 and related artwork are trademarks or property of Valve. Money Meta is an independent analytical product.",
+  roadmap: "Следующий слой Dota: death cost, reliable/unreliable gold и post-match timeline import после проверки спроса."
 } : {
-  title: "Dota 2 Economy Lab — Money Meta",
-  description: "Midas ROI, opportunity cost, buyback reserve and the value of time in Dota 2's match economy.",
+  title: "Dota 2 Economy Hub — timings, Midas ROI and buyback | Money Meta",
+  description: "Interactive Dota 2 economy: the path of gold, role-specific decisions, patch 7.41e Pulse, Midas ROI, buyback reserve and replay research.",
   back: "← All economies",
-  eyebrow: "Dota 2 · Match Economy Lab",
-  heading: "Every minute is capital. Decide where to allocate it.",
-  lede: "Dota is more than GPM. Buying Midas resembles capex, buyback is a liquidity reserve, and timing decides whether an investment can pay back at all.",
-  midasCta: "Calculate Midas ROI",
-  buybackCta: "Check buyback reserve",
-  heroProof: [["Payback", "break-even minute"], ["ROI", "by match end"], ["Reserve", "buyback gap"], ["Share", "scenario by link"]],
-  patch: "Patch context",
-  patchText: `The model was checked in ${dotaPatchContext.patch} context on ${dotaPatchContext.checkedAt}. Defaults are editable and never override the numbers in your game client.`,
-  modelKicker: "Match Economy Model 01",
-  midasTitle: "Hand of Midas: economic payback",
-  midasText: "The full Transmute payout is not pure profit: you sacrifice a creep's normal bounty. The model measures incremental value and tests whether the item repays before the match ends.",
-  itemCost: "Midas cost",
-  transmuteGold: "Transmute gold",
-  foregoneBounty: "Foregone creep bounty",
-  otherValue: "Other value / use",
-  cooldown: "Charge restore, sec",
-  purchaseMinute: "Purchase minute",
-  endMinute: "Expected match end",
-  result: "Midas investment case",
-  uses: "Remaining uses",
-  incremental: "Incremental value / use",
-  gross: "Value through match end",
-  net: "Net value after cost",
-  payback: "Payback minute",
-  roi: "Realized ROI",
-  breakEvenYes: "Breaks even in this window",
-  breakEvenNo: "Does not break even in this window",
-  midasNote: "Attack speed, XP and Madstone have zero monetary value by default. Add your estimate under other value when they matter for the hero and current patch.",
-  reserveKicker: "Match Economy Model 02",
-  reserveTitle: "Buyback Reserve: liquidity before an objective",
-  reserveText: "A buyback reserve is not idle gold; it is an option to re-enter a decisive fight. The model separates readiness now from readiness by the next objective.",
-  netWorth: "Hero net worth",
-  currentGold: "Current gold",
-  gpm: "Expected GPM",
-  objective: "Seconds to objective",
-  deathRisk: "Death probability, %",
-  reserveResult: "Reserve position",
-  cost: "Estimated buyback",
-  gap: "Reserve deficit",
-  surplus: "Gold above reserve",
-  coverage: "Reserve coverage",
-  farmTime: "Time to reserve",
-  atObjective: "Gold at objective",
-  riskWeighted: "Probability-weighted reserve",
-  readyNow: "Buyback is funded now",
-  readyLater: "Reserve will be ready by objective",
-  underfunded: "Reserve will remain underfunded",
-  minutes: "min",
-  conceptsTitle: "The financial language of Dota 2",
-  conceptsText: "It does not replace game judgement. It makes hidden trade-offs visible.",
-  concepts: [
-    ["Growth capex", "Midas and greed items exchange current tempo for a future cash-flow stream."],
-    ["Liquidity reserve", "Buyback preserves strategic flexibility even while the gold is not working in item slots."],
-    ["Time value", "The same purchase at minute 10 and minute 30 is a different investment because the payback window changed."]
+  eyebrow: "Dota 2 · Living Match Economy",
+  heading: "Gold does not win the match. The timing decision might.",
+  lede: "Money Meta connects last hits, item timings, Roshan and buyback into one economic system. Choose a match moment and see where greed becomes lost tempo.",
+  primary: "Open the match map",
+  secondary: "Test Midas ROI",
+  live: `Patch ${dotaPatchContext.patch} · checked ${dotaPatchContext.checkedAt}`,
+  proof: [["7", "match-economy nodes"], ["3", "role lenses"], ["2", "live models"], ["6", "prepared scenarios"]],
+  navBrand: "DOTA / MATCH SYSTEM",
+  nav: [["01", "Map", "#economy-map"], ["02", "Paths", "#player-paths"], ["03", "Pulse", "#patch-pulse"], ["04", "Roles", "#role-lenses"], ["05", "Scenarios", "#decision-deck"], ["06", "Models", "#scenario-lab"], ["07", "Research", "#research-library"]],
+  manifestoKicker: "Money Meta doctrine · Dota edition",
+  manifestoTitle: "Every number should end in an in-game action.",
+  manifestoText: "GPM without a purchase minute, an item timing without an objective, and buyback without a route back into the fight are incomplete metrics. This hub is a chain of decisions, not another static build guide.",
+  principles: [
+    ["TIME VALUE", "The same purchase at minute 10 and 30 is a different investment."],
+    ["OPTIONALITY", "Unspent gold can be liquidity rather than a mistake."],
+    ["CONVERSION", "A timing matters only when it becomes an objective or map space."],
+    ["COUNTERFACTUAL", "A replay is useful when it finds where another action changes the result."]
   ],
-  methodology: "Methodology and sources",
-  sourceNote: dotaPatchContext.note.en
+  trustKicker: "Methodology · sources · media boundary",
+  trustTitle: "See what came from patch notes, what was modeled and where judgement begins",
+  trustText: "Money Meta is not affiliated with Valve. Item and hero images are used only to identify the mechanics under editorial analysis and can be removed independently of the product.",
+  trustCards: [
+    ["01", "Verified layer", "Patch version, documented buyback formula and stated item changes link to Valve's notes.", "official source"],
+    ["02", "Estimated layer", "Midas bounty, non-cash value and expected end time remain editable assumptions.", "user scenario"],
+    ["03", "Visual layer", "Original Money Meta world carries the atmosphere; official icons identify the exact mechanic being discussed.", "rights-aware"],
+  ],
+  methodology: "Open methodology and primary sources",
+  media: "Media record",
+  disclaimer: "Dota, Dota 2 and related artwork are trademarks or property of Valve. Money Meta is an independent analytical product.",
+  roadmap: "Next Dota layer: death cost, reliable/unreliable gold and post-match timeline import after demand validation."
 };
+
+const heroLoadout = [
+  { asset: dotaMedia.handOfMidas, label: "GROWTH", value: "Midas ROI" },
+  { asset: dotaMedia.bkb, label: "TIMING", value: "Fight power" },
+  { asset: dotaMedia.aegis, label: "OBJECTIVE", value: "Map conversion" },
+  { asset: dotaMedia.tp, label: "LIQUIDITY", value: "Buyback reserve" }
+];
 ---
 
 <BaseLayout
@@ -162,127 +114,85 @@ const copy = lang === "ru" ? {
     about: { "@type": "VideoGame", name: "Dota 2", publisher: "Valve" }
   }}
 >
-  <main class="page game-page game-dota" id="dota-economy-lab" data-lang={lang}>
+  <main class="page game-page game-dota dota-living-hub" id="dota-economy-hub" data-lang={lang}>
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/dota-2/" enPath="/en/dota-2/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <GameWorldHero image={dotaEconomyWorld} worldCode="MATCH ECONOMY / 02">
+      <GameWorldHero image={dotaEconomyWorld} worldCode="MATCH ECONOMY / 7.41E">
+        <div class="hero-live-line"><span></span>{copy.live}</div>
         <p class="eyebrow">{copy.eyebrow}</p>
-        <h1 style="font-size:clamp(40px,6vw,66px)">{copy.heading}</h1>
+        <h1>{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
         <div class="hero-actions">
-          <a class="button primary" href="#midas-irr">{copy.midasCta} →</a>
-          <a class="button ghost" href="#buyback-reserve">{copy.buybackCta}</a>
+          <a class="button primary dota-primary" href="#economy-map">{copy.primary} →</a>
+          <a class="button ghost" href="#midas-irr">{copy.secondary}</a>
         </div>
         <div class="proof-strip">
-          {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+          {copy.proof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+        </div>
+        <div class="dota-hero-loadout" aria-label={lang === "ru" ? "Ключевые Dota-механики хаба" : "Key Dota mechanics in the hub"}>
+          {heroLoadout.map(({ asset, label, value }) => (
+            <div><DotaMedia asset={asset} lang={lang} eager /><span>{label}</span><strong>{value}</strong></div>
+          ))}
         </div>
       </GameWorldHero>
 
-      <DecisionShortcuts lang={lang} game="dota" items={shortcuts} />
+      <nav class="hub-jump-nav dota-jump-nav" aria-label={lang === "ru" ? "Навигация Dota-хаба" : "Dota hub navigation"}>
+        <span class="hub-jump-brand"><i></i>{copy.navBrand}</span>
+        <div>{copy.nav.map(([code, label, href]) => <a href={href}><span>{code}</span>{label}</a>)}</div>
+      </nav>
 
-      <FeaturedInsight
-        lang={lang}
-        game="dota"
-        title={lang === "ru" ? "Почему 160 gold Midas вводят в заблуждение" : "Why 160 Midas gold is misleading"}
-        summary={lang === "ru" ? "Incremental value, break-even около 39-й и сценарий, где тот же предмет не успевает окупиться." : "Incremental value, break-even near minute 39 and the scenario where the same item fails to pay back."}
-        href={`${lang === "ru" ? "" : "/en"}/insights/dota-2-hand-of-midas-real-payback/`}
-        readTime={lang === "ru" ? "5 мин" : "5 min"}
-      />
+      <section class="hub-manifesto dota-manifesto" aria-labelledby="dota-manifesto-title">
+        <div>
+          <span class="section-kicker">{copy.manifestoKicker}</span>
+          <h2 id="dota-manifesto-title">{copy.manifestoTitle}</h2>
+          <p>{copy.manifestoText}</p>
+        </div>
+        <div class="manifesto-grid">
+          {copy.principles.map(([title, text], index) => (
+            <div><span>0{index + 1} / {title}</span><strong>{title}</strong><p>{text}</p></div>
+          ))}
+        </div>
+      </section>
 
-      <div class="callout warning">
-        <p><strong>{copy.patch}: {dotaPatchContext.patch}.</strong> {copy.patchText}</p>
-      </div>
+      <DotaEconomyMap lang={lang} />
+      <DotaPlayerPaths lang={lang} />
+      <DotaPulse lang={lang} />
+      <DotaRoleLenses lang={lang} />
+      <DotaDecisionDeck lang={lang} />
+      <DotaCalculators lang={lang} />
+      <DotaLibrary lang={lang} />
 
-      <section id="midas-irr" class="section">
-        <div class="section-head">
+      <section id="methodology" class="section hub-section trust-rail" aria-labelledby="dota-methodology-title">
+        <div class="section-head hub-section-head">
           <div>
-            <span class="section-kicker">{copy.modelKicker}</span>
-            <h2>{copy.midasTitle}</h2>
-            <p class="section-copy">{copy.midasText}</p>
+            <span class="section-kicker">{copy.trustKicker}</span>
+            <h2 id="dota-methodology-title">{copy.trustTitle}</h2>
+            <p class="section-copy">{copy.trustText}</p>
           </div>
-          <span class="pill gold">Editable baseline</span>
+          <span class="count">{dotaPatchContext.patch} · {dotaPatchContext.checkedAt}</span>
         </div>
-        <div class="grid-2" data-scenario-root data-scenario-key="dota-midas">
-          <form class="card" data-role="midas-form">
-            <div class="form-grid">
-              <div class="field"><label for="midas-cost">{copy.itemCost}</label><input id="midas-cost" data-role="midas-cost" type="number" min="0" step="50" value={midasBaseline.itemCost} /></div>
-              <div class="field"><label for="midas-gold">{copy.transmuteGold}</label><input id="midas-gold" data-role="midas-gold" type="number" min="0" step="10" value={midasBaseline.transmuteGold} /></div>
-              <div class="field"><label for="midas-bounty">{copy.foregoneBounty}</label><input id="midas-bounty" data-role="midas-bounty" type="number" min="0" step="5" value={midasBaseline.foregoneCreepBounty} /></div>
-              <div class="field"><label for="midas-other">{copy.otherValue}</label><input id="midas-other" data-role="midas-other" type="number" min="0" step="5" value={midasBaseline.otherValuePerUse} /></div>
-              <div class="field"><label for="midas-cooldown">{copy.cooldown}</label><input id="midas-cooldown" data-role="midas-cooldown" type="number" min="1" step="5" value={midasBaseline.chargeRestoreSeconds} /></div>
-              <div class="field"><label for="midas-purchase">{copy.purchaseMinute}</label><input id="midas-purchase" data-role="midas-purchase" type="number" min="0" step="1" value={midasBaseline.purchaseMinute} /></div>
-              <div class="field" style="grid-column:1/-1"><label for="midas-end">{copy.endMinute}</label><input id="midas-end" data-role="midas-end" type="number" min="0" step="1" value={midasBaseline.expectedEndMinute} /></div>
-            </div>
-          </form>
-          <article class="card result-panel" aria-live="polite">
-            <span class="result-label">{copy.result}</span>
-            <div class="result-name" data-role="midas-decision">—</div>
-            <p class="result-reason">{copy.midasNote}</p>
-            <div class="result-metrics">
-              <div class="result-metric"><span>{copy.uses}</span><strong data-role="midas-uses">—</strong></div>
-              <div class="result-metric"><span>{copy.incremental}</span><strong data-role="midas-incremental">—</strong></div>
-              <div class="result-metric"><span>{copy.gross}</span><strong class="teal" data-role="midas-gross">—</strong></div>
-              <div class="result-metric"><span>{copy.net}</span><strong data-role="midas-net">—</strong></div>
-              <div class="result-metric"><span>{copy.payback}</span><strong data-role="midas-payback">—</strong></div>
-              <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="midas-roi">—</strong></div>
-            </div>
-            <ScenarioActions lang={lang} />
-          </article>
-        </div>
-      </section>
 
-      <section id="buyback-reserve" class="section">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">{copy.reserveKicker}</span>
-            <h2>{copy.reserveTitle}</h2>
-            <p class="section-copy">{copy.reserveText}</p>
-          </div>
-          <span class="pill teal">Formula + scenario</span>
+        <div class="trust-grid">
+          {copy.trustCards.map(([code, title, text, status]) => (
+            <article class="trust-card">
+              <div><span>{code}</span><span class="pill muted">{status}</span></div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
         </div>
-        <div class="grid-2" data-scenario-root data-scenario-key="dota-buyback">
-          <form class="card" data-role="buyback-form">
-            <div class="form-grid">
-              <div class="field"><label for="buyback-networth">{copy.netWorth}</label><input id="buyback-networth" data-role="buyback-networth" type="number" min="0" step="500" value={buybackBaseline.netWorth} /></div>
-              <div class="field"><label for="buyback-gold">{copy.currentGold}</label><input id="buyback-gold" data-role="buyback-gold" type="number" min="0" step="100" value={buybackBaseline.currentGold} /></div>
-              <div class="field"><label for="buyback-gpm">{copy.gpm}</label><input id="buyback-gpm" data-role="buyback-gpm" type="number" min="0" step="10" value={buybackBaseline.goldPerMinute} /></div>
-              <div class="field"><label for="buyback-objective">{copy.objective}</label><input id="buyback-objective" data-role="buyback-objective" type="number" min="0" step="15" value={buybackBaseline.secondsToObjective} /></div>
-              <div class="field" style="grid-column:1/-1"><label for="buyback-risk">{copy.deathRisk}</label><input id="buyback-risk" data-role="buyback-risk" type="number" min="0" max="100" step="5" value={buybackBaseline.deathProbabilityPercent} /></div>
-            </div>
-          </form>
-          <article class="card result-panel" aria-live="polite">
-            <span class="result-label">{copy.reserveResult}</span>
-            <div class="result-name" data-role="buyback-decision">—</div>
-            <div class="result-metrics">
-              <div class="result-metric"><span>{copy.cost}</span><strong data-role="buyback-cost">—</strong></div>
-              <div class="result-metric"><span>{copy.gap}</span><strong data-role="buyback-gap">—</strong></div>
-              <div class="result-metric"><span>{copy.surplus}</span><strong class="teal" data-role="buyback-surplus">—</strong></div>
-              <div class="result-metric"><span>{copy.coverage}</span><strong data-role="buyback-coverage">—</strong></div>
-              <div class="result-metric"><span>{copy.farmTime}</span><strong data-role="buyback-time">—</strong></div>
-              <div class="result-metric"><span>{copy.atObjective}</span><strong class="gold" data-role="buyback-objective-gold">—</strong></div>
-              <div class="result-metric" style="grid-column:1/-1"><span>{copy.riskWeighted}</span><strong class="magenta" data-role="buyback-risk-weighted">—</strong></div>
-            </div>
-            <ScenarioActions lang={lang} />
-          </article>
-        </div>
-      </section>
 
-      <section class="section">
-        <div class="section-head">
-          <div><span class="section-kicker">Mental models</span><h2>{copy.conceptsTitle}</h2><p class="section-copy">{copy.conceptsText}</p></div>
-        </div>
-        <div class="grid-3">
-          {copy.concepts.map(([title, body], index) => <article class="card"><span class={`pill ${index === 0 ? "gold" : index === 1 ? "teal" : "muted"}`}>0{index + 1}</span><h3 style="margin:15px 0 8px">{title}</h3><p>{body}</p></article>)}
-        </div>
-      </section>
-
-      <section class="section">
-        <details>
+        <details class="dota-method-details">
           <summary>{copy.methodology} ↓</summary>
           <div>
-            <p>{copy.sourceNote}</p>
-            {dotaPatchContext.sources.map((source) => <p><a class="source-link" href={source.url} target="_blank" rel="noreferrer"><strong>{source.label} ↗</strong></a> — {source.note[lang]}</p>)}
+            <p>{dotaPatchContext.note[lang]}</p>
+            {dotaPatchContext.sources.map((source) => (
+              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label} ↗</strong></a> — {source.note[lang]}</p>
+            ))}
+            <p><strong>{copy.media}:</strong> {dotaMediaPolicy.owner} · {dotaMediaPolicy.placement} · checked {dotaMediaPolicy.checkedAt}. {dotaMediaPolicy.licenseBasis}.</p>
+            <p>{copy.disclaimer}</p>
+            <p>{copy.roadmap}</p>
           </div>
         </details>
       </section>
@@ -291,84 +201,3 @@ const copy = lang === "ru" ? {
     </div>
   </main>
 </BaseLayout>
-
-<script>
-  import type { DotaLocale } from "../data/dota-economy";
-  import { calculateBuybackMetrics, calculateMidasMetrics } from "../lib/dota-economy";
-
-  const root = document.querySelector<HTMLElement>("#dota-economy-lab");
-  if (root) {
-    const lang = (root.dataset.lang ?? "ru") as DotaLocale;
-    const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
-    const gold = (value: number) => `${formatter.format(Math.round(value))} g`;
-    const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
-    const target = (role: string) => root.querySelector<HTMLElement>(`[data-role='${role}']`)!;
-    const value = (role: string) => Math.max(0, Number(input(role).value) || 0);
-
-    const labels = lang === "ru" ? {
-      breakEvenYes: "Окупается в заданном окне",
-      breakEvenNo: "Не окупается в заданном окне",
-      readyNow: "Buyback профинансирован сейчас",
-      readyLater: "Резерв будет готов к objective",
-      underfunded: "Резерв не успевает сформироваться",
-      minutes: "мин"
-    } : {
-      breakEvenYes: "Breaks even in this window",
-      breakEvenNo: "Does not break even in this window",
-      readyNow: "Buyback is funded now",
-      readyLater: "Reserve will be ready by objective",
-      underfunded: "Reserve will remain underfunded",
-      minutes: "min"
-    };
-
-    function renderMidas() {
-      const metrics = calculateMidasMetrics({
-        itemCost: value("midas-cost"),
-        transmuteGold: value("midas-gold"),
-        foregoneCreepBounty: value("midas-bounty"),
-        otherValuePerUse: value("midas-other"),
-        chargeRestoreSeconds: value("midas-cooldown"),
-        purchaseMinute: value("midas-purchase"),
-        expectedEndMinute: value("midas-end")
-      });
-      target("midas-decision").textContent = metrics.breaksEvenBeforeEnd ? labels.breakEvenYes : labels.breakEvenNo;
-      target("midas-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.breaksEvenBeforeEnd ? "positive" : "negative";
-      target("midas-uses").textContent = formatter.format(metrics.usesRemaining);
-      target("midas-incremental").textContent = gold(metrics.incrementalValuePerUse);
-      target("midas-gross").textContent = gold(metrics.grossIncrementalValue);
-      target("midas-net").textContent = gold(metrics.netEconomicValue);
-      target("midas-payback").textContent = Number.isFinite(metrics.paybackMatchMinute) ? `${metrics.paybackMatchMinute.toFixed(1)} ${labels.minutes}` : "∞";
-      target("midas-roi").textContent = `${metrics.realizedRoi.toFixed(1)}%`;
-    }
-
-    function renderBuyback() {
-      const metrics = calculateBuybackMetrics({
-        netWorth: value("buyback-networth"),
-        currentGold: value("buyback-gold"),
-        goldPerMinute: value("buyback-gpm"),
-        secondsToObjective: value("buyback-objective"),
-        deathProbabilityPercent: value("buyback-risk")
-      });
-      const decision = metrics.state === "ready-now" ? labels.readyNow : metrics.state === "ready-by-objective" ? labels.readyLater : labels.underfunded;
-      target("buyback-decision").textContent = decision;
-      target("buyback-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "ready-now" ? "positive" : metrics.state === "ready-by-objective" ? "caution" : "negative";
-      target("buyback-cost").textContent = gold(metrics.estimatedCost);
-      target("buyback-gap").textContent = gold(metrics.reserveGap);
-      target("buyback-surplus").textContent = gold(metrics.reserveSurplus);
-      target("buyback-coverage").textContent = `${Math.round(metrics.coveragePercent)}%`;
-      target("buyback-time").textContent = Number.isFinite(metrics.farmMinutesToReserve) ? `${metrics.farmMinutesToReserve.toFixed(1)} ${labels.minutes}` : "∞";
-      target("buyback-objective-gold").textContent = gold(metrics.projectedGoldAtObjective);
-      target("buyback-risk-weighted").textContent = gold(metrics.probabilityWeightedReserve);
-    }
-
-    ["midas-cost", "midas-gold", "midas-bounty", "midas-other", "midas-cooldown", "midas-purchase", "midas-end"].forEach((role) => input(role).addEventListener("input", renderMidas));
-    ["buyback-networth", "buyback-gold", "buyback-gpm", "buyback-objective", "buyback-risk"].forEach((role) => input(role).addEventListener("input", renderBuyback));
-    renderMidas();
-    renderBuyback();
-  }
-</script>
-
-<style>
-  .source-link { color: var(--teal); }
-  .source-link:hover { color: var(--magenta); }
-</style>

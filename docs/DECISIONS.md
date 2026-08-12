@@ -43,3 +43,11 @@ GTA Online is the first hub implemented to the full living-product quality gate.
 ## 2026-08-12 — weekly opportunity is not permanent asset value
 
 Official weekly events change action order and short-term opportunity cost. They remain a dated Pulse layer and do not automatically alter long-horizon production rankings unless the bonus directly changes a modeled asset.
+
+## 2026-08-12 — Dota visual identity stays decision-native
+
+The Dota hub uses an original Money Meta match-economy world as its owned visual foundation. Official item icons and hero portraits may appear only where they identify a mechanic or role lens under editorial analysis; every placement has a removable media record and does not carry the layout by itself.
+
+## 2026-08-12 — correct buyback baseline
+
+The Dota reserve model uses the documented post-7.29 formula `200 + Net Worth / 13`. The earlier `100 + Net Worth / 13` baseline was stale and understated every reserve by 100 gold. Formula history and current patch context are separate provenance layers.
