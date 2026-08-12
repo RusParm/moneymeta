@@ -1,0 +1,50 @@
+---
+import { wowScenarios, type WowScenarioKind } from "../data/wow-hub";
+import WowMarketMark from "./WowMarketMark.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+
+const labels: Record<WowScenarioKind, string> = lang === "ru" ? {
+  craft: "Recipe margin",
+  farm: "Farm liquidity",
+  order: "Order floor",
+  allocation: "Knowledge allocation",
+  event: "Demand window"
+} : {
+  craft: "Recipe margin",
+  farm: "Farm liquidity",
+  order: "Order floor",
+  allocation: "Knowledge allocation",
+  event: "Demand window"
+};
+
+const copy = lang === "ru" ? {
+  kicker: "Decision deck · eight market questions",
+  title: "Начни не с профессии. Начни с решения, которое нужно принять сегодня.",
+  text: "Recipe margin, liquid farming, order commission, profession reset и новый demand window требуют разных моделей. Каждая карточка открывает готовый сценарий или playbook.",
+  cta: "Открыть сценарий"
+} : {
+  kicker: "Decision deck · eight market questions",
+  title: "Do not start with a profession. Start with today's decision.",
+  text: "Recipe margin, liquid farming, order commission, a profession reset and a new demand window need different models. Every card opens a prepared scenario or playbook.",
+  cta: "Open scenario"
+};
+---
+
+<section id="decision-deck" class="section hub-section" aria-labelledby="wow-decision-deck-title">
+  <div class="section-head hub-section-head">
+    <div><span class="section-kicker">{copy.kicker}</span><h2 id="wow-decision-deck-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+    <span class="count">8 entry points · 3 live models</span>
+  </div>
+
+  <div class="decision-deck-grid wow-decision-deck">
+    {wowScenarios.map((scenario, index) => (
+      <a class={`decision-deck-card wow-decision-card ${scenario.featured ? "is-featured" : ""}`} href={scenario.href[lang]}>
+        <div class="decision-deck-top"><span>0{index + 1} · {labels[scenario.kind]}</span><WowMarketMark mark={scenario.mark} lang={lang} /></div>
+        <div><span class="game-tag">WoW Retail · Midnight</span><h3>{scenario.title[lang]}</h3><p>{scenario.text[lang]}</p></div>
+        <strong>{copy.cta} →</strong>
+      </a>
+    ))}
+  </div>
+</section>

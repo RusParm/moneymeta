@@ -7,20 +7,28 @@ export interface EconomySource {
 }
 
 export const dotaPatchContext = {
-  patch: "7.41",
-  checkedAt: "2026-08-11",
-  status: "community-reported" as const,
+  patch: "7.41e",
+  checkedAt: "2026-08-12",
+  status: "mixed" as const,
   note: {
-    ru: "Patch context подтверждён официальными notes Valve. Числовые defaults — редактируемый baseline, а не обещание вечной актуальности.",
-    en: "The patch context is confirmed by Valve's official notes. Numeric defaults are an editable baseline, not a claim of permanent accuracy."
+    ru: "Patch context и формула buyback подтверждены официальными notes Valve. Текущие характеристики Midas дополнительно сверены по community-источнику; все числовые defaults остаются редактируемым baseline.",
+    en: "Patch context and the buyback formula are confirmed by Valve's official notes. Current Midas stats are additionally community-cross-checked; every numeric default remains editable."
   },
   sources: [
+    {
+      label: "Valve · Patch 7.41e",
+      url: "https://www.dota2.com/patches/7.41e",
+      note: {
+        ru: "Текущий patch context; бонус attack speed Hand of Midas увеличен с 35 до 40.",
+        en: "Current patch context; Hand of Midas attack speed increased from 35 to 40."
+      }
+    },
     {
       label: "Valve · Patch 7.41",
       url: "https://www.dota2.com/patches/7.41",
       note: {
-        ru: "Текущий patch context и изменение взаимодействия Hand of Midas с Madstone.",
-        en: "Current patch context and the Hand of Midas interaction with Madstone."
+        ru: "Контекст новой neutral-item экономики и стоимости Madstone для Tier 1.",
+        en: "Context for the new neutral-item economy and Tier 1 Madstone cost."
       }
     },
     {
@@ -32,11 +40,19 @@ export const dotaPatchContext = {
       }
     },
     {
-      label: "Valve · Patch 7.11",
-      url: "https://www.dota2.com/patches/7.11",
+      label: "Valve · Patch 7.38",
+      url: "https://www.dota2.com/patches/7.38",
       note: {
-        ru: "Последняя официально зафиксированная базовая формула buyback: 100 + Net Worth / 13.",
-        en: "The last officially documented baseline buyback formula: 100 + Net Worth / 13."
+        ru: "Официальное введение Madstone Bundle при neutral Transmute.",
+        en: "Official introduction of a Madstone Bundle on neutral Transmute."
+      }
+    },
+    {
+      label: "Valve · Patch 7.29",
+      url: "https://www.dota2.com/patches/7.29",
+      note: {
+        ru: "Действующая документированная базовая формула buyback: floor(200 + Net Worth / 13).",
+        en: "The documented current baseline buyback formula: floor(200 + Net Worth / 13)."
       }
     },
     {
@@ -67,3 +83,5 @@ export const buybackBaseline = {
   secondsToObjective: 120,
   deathProbabilityPercent: 30
 };
+
+export const buybackBaseCost = 200;

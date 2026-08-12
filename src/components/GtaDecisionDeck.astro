@@ -1,0 +1,54 @@
+---
+import { gtaScenarios } from "../data/gta-hub";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const calculator = lang === "ru" ? "/gta-online/calculators/business-roi/" : "/en/gta-online/calculators/business-roi/";
+
+const copy = lang === "ru" ? {
+  kicker: "Decision deck · prebuilt scenarios",
+  title: "Не начинай с пустой формы. Начни со своего вопроса.",
+  text: "Каждая карточка открывает уже настроенный сценарий. Дальше меняй цифры, сохраняй результат или отправляй ссылку другу.",
+  open: "Открыть сценарий",
+  modes: { "next-move": "Next Best Move", model: "Model Lab", portfolio: "Portfolio Optimizer" }
+} : {
+  kicker: "Decision deck · prebuilt scenarios",
+  title: "Do not start with an empty form. Start with your question.",
+  text: "Every card opens a preconfigured scenario. Change the inputs, save the result or share the URL from there.",
+  open: "Open scenario",
+  modes: { "next-move": "Next Best Move", model: "Model Lab", portfolio: "Portfolio Optimizer" }
+};
+
+const scenarioHref = (scenario: (typeof gtaScenarios)[number]) => {
+  const params = new URLSearchParams(scenario.parameters);
+  return `${calculator}?${params.toString()}#${scenario.hash}`;
+};
+---
+
+<section id="scenario-deck" class="section hub-section" aria-labelledby="scenario-deck-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="scenario-deck-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count">6 entry points · shareable</span>
+  </div>
+
+  <div class="decision-deck-grid">
+    {gtaScenarios.map((scenario, index) => (
+      <a class={`decision-deck-card scenario-${scenario.mode} ${index === 1 ? "is-featured" : ""}`} href={scenarioHref(scenario)}>
+        <div class="decision-deck-top">
+          <span>0{index + 1}</span>
+          <span>{copy.modes[scenario.mode]}</span>
+        </div>
+        <div>
+          <span class="game-tag">{scenario.eyebrow[lang]}</span>
+          <h3>{scenario.question[lang]}</h3>
+          <p>{scenario.outcome[lang]}</p>
+        </div>
+        <strong>{copy.open} →</strong>
+      </a>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,124 @@
+---
+import type { Insight, InsightLocale } from "../data/insights";
+import { insights } from "../data/insights";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { lang: InsightLocale; insight: Insight; }
+const { lang, insight } = Astro.props;
+const content = insight.content[lang];
+const prefix = lang === "ru" ? "" : "/en";
+const path = `${prefix}/insights/${insight.slug}/`;
+const alternatePath = `${lang === "ru" ? "/en" : ""}/insights/${insight.slug}/`;
+const gameLabel = insight.game === "gta" ? "GTA Online" : insight.game === "dota" ? "Dota 2" : "WoW Retail";
+const allInsightsPath = `${prefix}/insights/`;
+const related = insights
+  .filter((item) => item.slug !== insight.slug)
+  .sort((a, b) => Number(b.game === insight.game) - Number(a.game === insight.game))
+  .slice(0, 3);
+
+const labels = lang === "ru" ? {
+  back: "← Все разборы",
+  updated: "Обновлено",
+  read: "Чтение",
+  evidence: "Данные",
+  version: "Версия",
+  takeaways: "Главное за 30 секунд",
+  model: "Открыть модель",
+  related: "Следующие разборы",
+  relatedText: "Три экономики, один принцип: сначала понять trade-off, затем действовать.",
+  disclosure: "Data note",
+  disclosureText: "Все числовые примеры являются прозрачными baseline-сценариями. Они не выдаются за официальные данные издателя и могут быть пересчитаны в связанном инструменте."
+} : {
+  back: "← All field notes",
+  updated: "Updated",
+  read: "Read",
+  evidence: "Evidence",
+  version: "Version",
+  takeaways: "The 30-second answer",
+  model: "Open the model",
+  related: "Read next",
+  relatedText: "Three economies, one principle: understand the trade-off before acting.",
+  disclosure: "Data note",
+  disclosureText: "Every numeric example is a transparent baseline scenario. It is not presented as official publisher data and can be recalculated in the linked tool."
+};
+---
+
+<BaseLayout
+  title={`${content.title} | Money Meta`}
+  description={content.description}
+  lang={lang}
+  canonicalPath={path}
+  alternatePath={alternatePath}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: content.title,
+    description: content.description,
+    dateModified: insight.updatedAt,
+    author: { "@type": "Organization", name: "Money Meta" },
+    publisher: { "@type": "Organization", name: "Money Meta" },
+    about: gameLabel,
+    inLanguage: lang
+  }}
+>
+  <main class={`page insight-page insight-${insight.game}`}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={`/insights/${insight.slug}/`} enPath={`/en/insights/${insight.slug}/`} backPath={allInsightsPath} backLabel={labels.back} />
+
+      <article>
+        <header class="insight-hero">
+          <div class="insight-meta-row">
+            <span class="insight-game">{gameLabel}</span>
+            <span>{labels.updated} · {insight.updatedAt}</span>
+            <span>{labels.read} · {content.readTime}</span>
+            <span>{labels.evidence} · {insight.evidenceStatus}</span>
+            <span>{labels.version} · {insight.gameVersion}</span>
+          </div>
+          <p class="eyebrow">{content.kicker}</p>
+          <h1>{content.title}</h1>
+          <p class="insight-thesis">{content.thesis}</p>
+          <a class="button primary button-large" href={insight.toolPath[lang]}>{content.toolLabel} →</a>
+        </header>
+
+        <div class="insight-layout">
+          <aside class="takeaway-card">
+            <span class="result-label">{labels.takeaways}</span>
+            <ol>{content.takeaways.map((takeaway) => <li>{takeaway}</li>)}</ol>
+            <a class="demo-link" href={insight.toolPath[lang]}>{labels.model} ↗</a>
+          </aside>
+
+          <div class="article-body">
+            {content.sections.map((section, index) => (
+              <section>
+                <span class="article-index">0{index + 1}</span>
+                <h2>{section.heading}</h2>
+                {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+              </section>
+            ))}
+            <div class="article-cta">
+              <span class="game-sigil">MM</span>
+              <div><strong>{content.toolLabel}</strong><p>{lang === "ru" ? "Замени baseline своими вводными и получи ответ для своего сценария." : "Replace the baseline with your inputs and get an answer for your scenario."}</p></div>
+              <a class="button primary" href={insight.toolPath[lang]}>{labels.model} →</a>
+            </div>
+            <div class="callout"><p><strong>{labels.disclosure}.</strong> {labels.disclosureText}</p></div>
+          </div>
+        </div>
+      </article>
+
+      <section class="section section-roomy">
+        <div class="section-head"><div><span class="section-kicker">Money Meta Field Notes</span><h2>{labels.related}</h2><p class="section-copy">{labels.relatedText}</p></div></div>
+        <div class="related-grid">
+          {related.map((item) => {
+            const itemContent = item.content[lang];
+            const href = `${prefix}/insights/${item.slug}/`;
+            return <a class={`related-card related-${item.game}`} href={href}><span>{item.game === "gta" ? "GTA Online" : item.game === "dota" ? "Dota 2" : "WoW Retail"}</span><h3>{itemContent.title}</h3><p>{itemContent.description}</p><strong>{itemContent.readTime} · ↗</strong></a>;
+          })}
+        </div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

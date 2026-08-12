@@ -42,6 +42,47 @@ export interface FarmMetrics {
   state: "liquid" | "discounted" | "inventory-trap";
 }
 
+export interface WorkOrderInput {
+  commissionGold: number;
+  crafterMaterialCost: number;
+  expectedRecraftReserve: number;
+  serviceMinutes: number;
+  targetGoldPerHour: number;
+  orders: number;
+}
+
+export interface WorkOrderMetrics {
+  cashProfitPerOrder: number;
+  timeCostPerOrder: number;
+  economicProfitPerOrder: number;
+  minimumCommission: number;
+  effectiveGoldPerHour: number;
+  batchEconomicProfit: number;
+  marginOfSafetyPercent: number;
+  state: "accept" | "negotiate" | "decline";
+}
+
+export type WowRouteMetric = "capitalAccess" | "liquidity" | "timeFit" | "specializationMoat" | "priceResilience" | "lowFriction";
+
+export interface WowMarketRouteMetrics {
+  capitalAccess: number;
+  liquidity: number;
+  timeFit: number;
+  specializationMoat: number;
+  priceResilience: number;
+  lowFriction: number;
+}
+
+export interface WowMarketRouteLike {
+  id: string;
+  metrics: WowMarketRouteMetrics;
+}
+
+export interface WowRankingLens {
+  id: string;
+  weights: Record<WowRouteMetric, number>;
+}
+
 function positive(value: number): number {
   return Math.max(0, Number.isFinite(value) ? value : 0);
 }
@@ -126,4 +167,58 @@ export function calculateFarmMetrics(input: FarmInput): FarmMetrics {
     hoursToTarget,
     state
   };
+}
+
+export function calculateWorkOrderMetrics(input: WorkOrderInput): WorkOrderMetrics {
+  const commission = positive(input.commissionGold);
+  const materialCost = positive(input.crafterMaterialCost);
+  const recraftReserve = positive(input.expectedRecraftReserve);
+  const serviceMinutes = positive(input.serviceMinutes);
+  const targetGoldPerHour = positive(input.targetGoldPerHour);
+  const orders = positive(input.orders);
+
+  const cashProfitPerOrder = commission - materialCost - recraftReserve;
+  const timeCostPerOrder = serviceMinutes / 60 * targetGoldPerHour;
+  const economicProfitPerOrder = cashProfitPerOrder - timeCostPerOrder;
+  const minimumCommission = materialCost + recraftReserve + timeCostPerOrder;
+  const effectiveGoldPerHour = serviceMinutes > 0
+    ? Math.max(0, cashProfitPerOrder) / serviceMinutes * 60
+    : cashProfitPerOrder > 0 ? Number.POSITIVE_INFINITY : 0;
+  const batchEconomicProfit = economicProfitPerOrder * orders;
+  const marginOfSafetyPercent = minimumCommission > 0
+    ? (commission - minimumCommission) / minimumCommission * 100
+    : commission > 0 ? 100 : 0;
+  const state = economicProfitPerOrder <= 0
+    ? "decline"
+    : marginOfSafetyPercent >= 20 ? "accept" : "negotiate";
+
+  return {
+    cashProfitPerOrder,
+    timeCostPerOrder,
+    economicProfitPerOrder,
+    minimumCommission,
+    effectiveGoldPerHour,
+    batchEconomicProfit,
+    marginOfSafetyPercent,
+    state
+  };
+}
+
+export function scoreWowMarketRoute(route: WowMarketRouteLike, lens: WowRankingLens): number {
+  const entries = Object.entries(lens.weights) as Array<[WowRouteMetric, number]>;
+  const totalWeight = entries.reduce((sum, [, weight]) => sum + positive(weight), 0);
+  if (totalWeight === 0) return 0;
+
+  const weighted = entries.reduce((sum, [metric, weight]) => {
+    const metricScore = Math.min(10, positive(route.metrics[metric]));
+    return sum + metricScore * positive(weight);
+  }, 0);
+
+  return weighted / totalWeight * 10;
+}
+
+export function rankWowMarketRoutes<T extends WowMarketRouteLike>(routes: T[], lens: WowRankingLens): Array<{ route: T; score: number }> {
+  return routes
+    .map((route) => ({ route, score: scoreWowMarketRoute(route, lens) }))
+    .sort((a, b) => b.score - a.score || a.route.id.localeCompare(b.route.id));
 }

@@ -13,9 +13,10 @@ const links = [
   { id: "home", label: lang === "ru" ? "Обзор" : "Overview", href: lang === "ru" ? "/" : "/en/" },
   { id: "gta", label: "GTA Online", href: lang === "ru" ? "/gta-online/" : "/en/gta-online/" },
   { id: "dota", label: "Dota 2", href: lang === "ru" ? "/dota-2/" : "/en/dota-2/" },
-  { id: "wow", label: "WoW Retail", href: lang === "ru" ? "/wow/" : "/en/wow/" }
+  { id: "wow", label: "WoW Retail", href: lang === "ru" ? "/wow/" : "/en/wow/" },
+  { id: "insights", label: lang === "ru" ? "Разборы" : "Field Notes", href: lang === "ru" ? "/insights/" : "/en/insights/" }
 ];
-const active = currentPath.includes("gta-online") ? "gta" : currentPath.includes("dota-2") ? "dota" : currentPath.includes("wow") ? "wow" : "home";
+const active = currentPath.includes("insights") ? "insights" : currentPath.includes("gta-online") ? "gta" : currentPath.includes("dota-2") ? "dota" : currentPath.includes("wow") ? "wow" : "home";
 ---
 
 <div class="site-chrome">
@@ -26,7 +27,6 @@ const active = currentPath.includes("gta-online") ? "gta" : currentPath.includes
     </a>
     <div class="topbar-actions">
       {backPath && <a class="version back-link" href={backPath}>{backLabel}</a>}
-      <span class="version">v1.0</span>
       <nav class="lang-switch" aria-label="Language">
         <a href={ruPath} aria-current={lang === "ru" ? "page" : undefined}>RU</a>
         <a href={enPath} aria-current={lang === "en" ? "page" : undefined}>EN</a>

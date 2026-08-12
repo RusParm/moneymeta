@@ -1,0 +1,101 @@
+---
+import { dotaMedia } from "../data/dota-hub";
+import { insights } from "../data/insights";
+import DotaMedia from "./DotaMedia.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const prefix = lang === "ru" ? "" : "/en";
+const dotaInsights = insights.filter((insight) => insight.game === "dota");
+const media = [dotaMedia.handOfMidas, dotaMedia.tp, dotaMedia.bkb, dotaMedia.aegis, dotaMedia.observerWard, dotaMedia.maelstrom];
+
+const copy = lang === "ru" ? {
+  kicker: "Replay library · from result to decision",
+  title: "Не build-гайды. Разборы экономических развилок.",
+  text: "Каждый материал начинаетcя с игрового момента, отделяет измеримое от judgement и заканчивается готовым сценарием в модели.",
+  filters: [["all", "Все"], ["returner", "Returner"], ["casual", "Limited matches"], ["grinder", "Replay grinder"]],
+  read: "Читать разбор",
+  updated: "Проверено",
+  estimated: "Estimated model",
+  verified: "Verified source",
+  showing: "разборов"
+} : {
+  kicker: "Replay library · from result to decision",
+  title: "Not build guides. Analyses of economic forks.",
+  text: "Every note starts from a match moment, separates measurable value from judgement and ends in a prepared model scenario.",
+  filters: [["all", "All"], ["returner", "Returner"], ["casual", "Limited matches"], ["grinder", "Replay grinder"]],
+  read: "Read analysis",
+  updated: "Checked",
+  estimated: "Estimated model",
+  verified: "Verified source",
+  showing: "analyses"
+};
+---
+
+<section id="research-library" class="section hub-section" aria-labelledby="dota-library-title" data-dota-research-library>
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="dota-library-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count"><span data-library-count>{dotaInsights.length}</span> {copy.showing} · RU/EN</span>
+  </div>
+
+  <div class="library-filter" role="group" aria-label={lang === "ru" ? "Фильтр Dota-разборов" : "Filter Dota research"}>
+    {copy.filters.map(([id, label], index) => (
+      <button type="button" aria-pressed={index === 0 ? "true" : "false"} data-library-filter={id}>{label}</button>
+    ))}
+  </div>
+
+  <div class="research-grid dota-research-grid">
+    {dotaInsights.map((insight, index) => {
+      const content = insight.content[lang];
+      const asset = media[index % media.length]!;
+      return (
+        <article class={`research-card dota-research-card ${index === 0 ? "research-featured" : ""}`} data-library-card data-audiences={insight.audiences.join(" ")}>
+          <div class="research-card-meta">
+            <span>0{index + 1}</span>
+            <div class="dota-research-meta-end">
+              <span class={`pill ${insight.evidenceStatus === "verified" ? "dota-radiant" : "gold"}`}>
+                {insight.evidenceStatus === "verified" ? copy.verified : copy.estimated}
+              </span>
+              <DotaMedia asset={asset} lang={lang} />
+            </div>
+          </div>
+          <div class="research-card-body">
+            <span class="game-tag">{content.kicker}</span>
+            <h3>{content.title}</h3>
+            <p>{content.description}</p>
+          </div>
+          <div class="research-card-foot">
+            <span>{content.readTime}</span>
+            <span>{copy.updated} · {insight.updatedAt}</span>
+            <span>{insight.gameVersion}</span>
+          </div>
+          <a href={`${prefix}/insights/${insight.slug}/`} aria-label={`${copy.read}: ${content.title}`}>{copy.read} →</a>
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-dota-research-library]").forEach((root) => {
+    const filters = [...root.querySelectorAll<HTMLButtonElement>("[data-library-filter]")];
+    const cards = [...root.querySelectorAll<HTMLElement>("[data-library-card]")];
+    const count = root.querySelector<HTMLElement>("[data-library-count]");
+
+    filters.forEach((button) => button.addEventListener("click", () => {
+      const filter = button.dataset.libraryFilter ?? "all";
+      filters.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+      let visible = 0;
+      cards.forEach((card) => {
+        const matches = filter === "all" || (card.dataset.audiences ?? "").split(" ").includes(filter);
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+    }));
+  });
+</script>

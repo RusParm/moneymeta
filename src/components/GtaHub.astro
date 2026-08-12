@@ -1,68 +1,145 @@
 ---
+import gtaEconomyWorld from "../assets/game-worlds/gta-economy-world.webp";
 import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
-import { gradeForScore, isSnapshotStale, scoreBusinesses } from "../lib/economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
+import GameWorldHero from "./GameWorldHero.astro";
+import GtaDecisionDeck from "./GtaDecisionDeck.astro";
+import GtaEconomyMap from "./GtaEconomyMap.astro";
+import GtaLibrary from "./GtaLibrary.astro";
+import GtaPlayerPaths from "./GtaPlayerPaths.astro";
+import GtaPulse from "./GtaPulse.astro";
+import GtaRankings from "./GtaRankings.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
-const scores = scoreBusinesses(gtaBusinesses).sort((a, b) => b.score - a.score);
-const staleWeekly = isSnapshotStale(weeklyMeta.validThrough);
 const root = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
-const calculator = `${root}calculators/business-roi/`;
+const calculator = root + "calculators/business-roi/";
 
 const copy = lang === "ru" ? {
-  title: "GTA Online Economy Hub — Money Meta",
-  description: "Персональный следующий ход, сравнение GTA Online бизнесов, чистая прибыль, окупаемость и честные статусы данных.",
+  title: "GTA Online Economy Hub - карта экономики, мета и калькуляторы | Money Meta",
+  description: "Полноценная карта экономики GTA Online: персональные маршруты, официальный Weekly Pulse, условные рейтинги бизнесов, сценарии и библиотека разборов.",
   back: "← Все экономики",
-  eyebrow: "GTA Online · Economy Hub",
-  heading: "Не вспоминай всю мету. Получи следующий лучший ход.",
-  lede: "Укажи капитал, доступное время и приоритет — Money Meta отсеет неподходящие активы и объяснит, что делать сейчас. Ниже можно проверить модель и изменить каждое допущение.",
-  cta: "Запустить Next Best Move",
-  heroProof: [["7", "активов в модели"], ["3", "профиля игрока"], ["2", "decision engines"], ["100%", "редактируемые inputs"]],
-  staleTitle: "Weekly Meta пока не подтверждена",
-  staleText: "Старая бонусная неделя автоматически снята со статуса «актуально». До повторной проверки Money Meta не показывает архивные бонусы как действующие.",
-  currentTitle: "Проверенная Weekly Meta",
-  tableTitle: "Production Economy Score",
-  tableCopy: "Относительное сравнение капитальной эффективности внутри текущего набора. Это инструмент выбора, а не абсолютная оценка качества бизнеса.",
-  asset: "Актив", roi: "vROI", payback: "Окупаемость", friction: "Friction", solo: "Solo", score: "Score", status: "Статус",
-  estimated: "Estimated",
-  hours: "ч производства",
-  methodology: "Methodology & data rules",
-  methodBody: [
-    "vROI — чистая прибыль цикла, делённая на стартовые вложения. Окупаемость измерена в часах производства, а не выдана за количество активного ручного grind.",
-    "Friction и Solo Suitability являются экспертными оценками и явно отделены от расчётных метрик.",
-    "Score складывается из нормализованных vROI, окупаемости и friction. При расширении выборки относительные грейды изменятся.",
-    "Текущий набор чисел имеет статус estimated и требует повторной проверки в игре для статуса verified. Пользователь может изменить допущения в калькуляторе."
-  ]
+  eyebrow: "GTA Online · Living Economy Hub",
+  heading: "Los Santos - это портфель. Управляй им как системой.",
+  lede: "Проследи путь капитала, выбери маршрут под свой стиль и проверь следующий ход на цифрах. Не ещё один tier list - живая модель того, где деньги входят, застревают и возвращаются.",
+  primary: "Выбрать мой путь",
+  secondary: "Увидеть карту экономики",
+  heroProof: [
+    ["7", "активов в модели"],
+    ["3", "пути игрока"],
+    ["6", "полных разборов"],
+    ["Auto", "freshness guard"]
+  ],
+  navLabel: "Навигация по GTA Economy Hub",
+  nav: [
+    ["Карта", "#economy-map"],
+    ["Мой путь", "#player-paths"],
+    ["Pulse", "#weekly-pulse"],
+    ["Рейтинги", "#conditional-rankings"],
+    ["Сценарии", "#scenario-deck"],
+    ["Библиотека", "#research-library"]
+  ],
+  manifestoEyebrow: "The Money Meta difference",
+  manifestoTitle: "Каждая цифра должна закончиться действием.",
+  manifestoText: "Гайд говорит, что популярно. Money Meta показывает, что подходит твоему банку, времени и допустимой возне - и где ответ перестаёт быть верным.",
+  manifestoPoints: [
+    ["Capital", "Сколько GTA$ реально можно заморозить"],
+    ["Time", "Production-hours отдельно от active grind"],
+    ["Friction", "Сможешь ли ты повторять цикл каждую неделю"],
+    ["Freshness", "Бонус исчезает из current, когда окно закрыто"]
+  ],
+  trustKicker: "Trust rail · method before confidence",
+  trustTitle: "Где факт, где модель и где твоё решение",
+  trustText: "Money Meta не маскирует рабочие оценки под официальные цифры. Источник, дата, версия и ограничение остаются рядом с выводом.",
+  trustCards: [
+    {
+      label: "Production dataset",
+      status: "Estimated",
+      title: "Редактируемая рабочая модель",
+      text: "Семь активов проверены как единый estimate set. Setup, sale, supplies и production time можно заменить своими значениями.",
+      meta: "Checked · 2026-07-01"
+    },
+    {
+      label: "Weekly Pulse",
+      status: "Verified",
+      title: "Официальный источник и срок",
+      text: "Текущие события привязаны к конкретному Rockstar Newswire и автоматически переходят в архив после valid-through.",
+      meta: "Checked · " + weeklyMeta.checkedAt
+    },
+    {
+      label: "Independence",
+      status: "Independent",
+      title: "Никакой скрытой аффилиации",
+      text: "Money Meta - независимый аналитический продукт. Он не связан с Rockstar Games и не строится на читах, продаже аккаунтов или нарушении правил.",
+      meta: "Owned visuals · transparent models"
+    }
+  ],
+  source: "Официальный Weekly-источник",
+  fullModel: "Открыть полный Calculator Suite"
 } : {
-  title: "GTA Online Economy Hub — Money Meta",
-  description: "Get a personal next move, compare GTA Online businesses, net profit, payback and transparent data status.",
+  title: "GTA Online Economy Hub - economy map, meta and calculators | Money Meta",
+  description: "A complete GTA Online economy map with personal routes, official Weekly Pulse, conditional business rankings, scenarios and a deep research library.",
   back: "← All economies",
-  eyebrow: "GTA Online · Economy Hub",
-  heading: "Do not relearn the whole meta. Get your next best move.",
-  lede: "Enter your capital, available time and priority. Money Meta filters unsuitable assets and explains what to do now. Then inspect the model and edit every assumption.",
-  cta: "Launch Next Best Move",
-  heroProof: [["7", "modeled assets"], ["3", "player profiles"], ["2", "decision engines"], ["100%", "editable inputs"]],
-  staleTitle: "Weekly Meta is awaiting verification",
-  staleText: "The old bonus week was automatically removed from current status. Archived bonuses are never presented as active before revalidation.",
-  currentTitle: "Verified Weekly Meta",
-  tableTitle: "Production Economy Score",
-  tableCopy: "A relative capital-efficiency comparison within the current set. It is a decision aid, not an absolute quality rating.",
-  asset: "Asset", roi: "vROI", payback: "Payback", friction: "Friction", solo: "Solo", score: "Score", status: "Status",
-  estimated: "Estimated",
-  hours: "production h",
-  methodology: "Methodology & data rules",
-  methodBody: [
-    "vROI is net cycle profit divided by initial investment. Payback is measured in production hours, not mislabeled as manual grinding time.",
-    "Friction and Solo Suitability are expert estimates and are explicitly separated from calculated metrics.",
-    "The score combines normalized vROI, payback and friction. Relative grades will change as the comparison set expands.",
-    "The current number set is estimated and requires in-game revalidation for verified status. Users can edit assumptions in the calculator."
-  ]
+  eyebrow: "GTA Online · Living Economy Hub",
+  heading: "Los Santos is a portfolio. Run it as a system.",
+  lede: "Follow the capital, choose a route for your play style and test the next move against the numbers. Not another tier list - a living model of where money enters, gets trapped and comes back.",
+  primary: "Choose my path",
+  secondary: "See the economy map",
+  heroProof: [
+    ["7", "modeled assets"],
+    ["3", "player paths"],
+    ["6", "complete analyses"],
+    ["Auto", "freshness guard"]
+  ],
+  navLabel: "GTA Economy Hub navigation",
+  nav: [
+    ["Map", "#economy-map"],
+    ["My path", "#player-paths"],
+    ["Pulse", "#weekly-pulse"],
+    ["Rankings", "#conditional-rankings"],
+    ["Scenarios", "#scenario-deck"],
+    ["Library", "#research-library"]
+  ],
+  manifestoEyebrow: "The Money Meta difference",
+  manifestoTitle: "Every number should end in an action.",
+  manifestoText: "A guide tells you what is popular. Money Meta shows what fits your bank, time and friction tolerance - and where the answer stops being true.",
+  manifestoPoints: [
+    ["Capital", "How much GTA$ can actually be locked up"],
+    ["Time", "Production hours separated from active grind"],
+    ["Friction", "Whether the loop can be repeated every week"],
+    ["Freshness", "A bonus loses current status when its window closes"]
+  ],
+  trustKicker: "Trust rail · method before confidence",
+  trustTitle: "Know what is fact, model and personal judgement",
+  trustText: "Money Meta never disguises working estimates as official numbers. Source, date, version and limitation stay next to the conclusion.",
+  trustCards: [
+    {
+      label: "Production dataset",
+      status: "Estimated",
+      title: "Editable working model",
+      text: "Seven assets are checked as one estimate set. Setup, sale, supplies and production time can be replaced with your own values.",
+      meta: "Checked · 2026-07-01"
+    },
+    {
+      label: "Weekly Pulse",
+      status: "Verified",
+      title: "Official source and expiry",
+      text: "Current events are tied to one Rockstar Newswire source and automatically move to archive after valid-through.",
+      meta: "Checked · " + weeklyMeta.checkedAt
+    },
+    {
+      label: "Independence",
+      status: "Independent",
+      title: "No hidden affiliation",
+      text: "Money Meta is an independent analysis product. It is not affiliated with Rockstar Games and does not promote cheats, account sales or rule-breaking.",
+      meta: "Owned visuals · transparent models"
+    }
+  ],
+  source: "Official weekly source",
+  fullModel: "Open the full Calculator Suite"
 };
-
-const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 }).format(value);
 ---
 
 <BaseLayout
@@ -73,90 +150,86 @@ const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" :
   alternatePath={lang === "ru" ? "/en/gta-online/" : "/gta-online/"}
   schema={{
     "@context": "https://schema.org",
-    "@type": "WebPage",
+    "@type": "CollectionPage",
     name: copy.title,
     about: { "@type": "VideoGame", name: "Grand Theft Auto Online", publisher: "Rockstar Games" },
-    description: copy.description
+    description: copy.description,
+    inLanguage: lang,
+    hasPart: [
+      { "@type": "SoftwareApplication", name: "GTA Online Next Best Move", applicationCategory: "GameApplication" },
+      { "@type": "ItemList", name: "Conditional GTA Online business rankings", numberOfItems: gtaBusinesses.length }
+    ]
   }}
 >
-  <main class="page">
+  <main class="page game-page game-gta gta-living-hub">
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/gta-online/" enPath="/en/gta-online/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <section class="hero">
+      <GameWorldHero
+        image={gtaEconomyWorld}
+        alt={lang === "ru" ? "Оригинальная иллюстрация Money Meta: ночной город и сеть денежных потоков GTA Online" : "Original Money Meta illustration of a night city and GTA Online cash-flow network"}
+        worldCode="CITY NETWORK / 01"
+      >
+        <div class="hero-live-line"><span></span>Portfolio economy · active model</div>
         <p class="eyebrow">{copy.eyebrow}</p>
-        <h1 style="font-size:clamp(38px,6vw,62px)">{copy.heading}</h1>
+        <h1>{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
         <div class="hero-actions">
-          <a class="button primary" href={`${calculator}#next-move`}>{copy.cta} →</a>
-          <a class="button ghost" href={calculator}>{lang === "ru" ? "Открыть все расчёты" : "Open full calculator"}</a>
+          <a class="button primary button-large" href="#player-paths">{copy.primary} →</a>
+          <a class="button ghost button-large" href="#economy-map">{copy.secondary}</a>
         </div>
         <div class="proof-strip">
           {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
-      </section>
+      </GameWorldHero>
 
-      <section class={`callout ${staleWeekly ? "warning" : ""}`}>
-        <p>
-          <strong>{staleWeekly ? copy.staleTitle : copy.currentTitle}.</strong>{" "}
-          {staleWeekly ? copy.staleText : weeklyMeta.items[lang].join(" ")}
-        </p>
-        {!staleWeekly && <a class="source-link" href={weeklyMeta.sourceUrl} rel="noopener noreferrer" target="_blank">{weeklyMeta.sourceLabel} ↗</a>}
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <div>
-            <span class="section-kicker">Money Meta model 01</span>
-            <h2>{copy.tableTitle}</h2>
-            <p class="section-copy">{copy.tableCopy}</p>
-          </div>
-          <span class="count">{gtaBusinesses.length} assets · checked 2026-07-01</span>
+      <nav class="hub-jump-nav" aria-label={copy.navLabel}>
+        <span class="hub-jump-brand"><i aria-hidden="true"></i>GTA / ECONOMY OS</span>
+        <div>
+          {copy.nav.map(([label, href], index) => <a href={href}><span>0{index + 1}</span>{label}</a>)}
         </div>
+      </nav>
 
-        <div class="rank-grid">
-          {scores.slice(0, 3).map(({ business, metrics, score }, index) => (
-            <article class="card rank-card">
-              <span class="rank-number">0{index + 1}</span>
-              <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>Capital rank</span>
-              <h3 style="margin-top:16px">{business.name[lang]}</h3>
-              <p>{business.summary[lang]}</p>
-              <div class="rank-metrics">
-                <span><strong>{metrics.virtualRoi.toFixed(1)}%</strong> vROI</span>
-                <span><strong>{money(metrics.paybackProductionHours)}</strong> {copy.hours}</span>
-                <span><strong>{score.toFixed(0)}</strong> score</span>
-              </div>
+      <section class="hub-manifesto" aria-labelledby="hub-manifesto-title">
+        <div>
+          <span class="section-kicker">{copy.manifestoEyebrow}</span>
+          <h2 id="hub-manifesto-title">{copy.manifestoTitle}</h2>
+          <p>{copy.manifestoText}</p>
+        </div>
+        <div class="manifesto-grid">
+          {copy.manifestoPoints.map(([label, text], index) => (
+            <div><span>0{index + 1}</span><strong>{label}</strong><p>{text}</p></div>
+          ))}
+        </div>
+      </section>
+
+      <GtaEconomyMap lang={lang} />
+      <GtaPlayerPaths lang={lang} />
+      <GtaPulse lang={lang} />
+      <GtaRankings lang={lang} />
+      <GtaDecisionDeck lang={lang} />
+      <GtaLibrary lang={lang} />
+
+      <section id="methodology" class="section hub-section trust-rail" aria-labelledby="trust-rail-title">
+        <div class="section-head hub-section-head">
+          <div>
+            <span class="section-kicker">{copy.trustKicker}</span>
+            <h2 id="trust-rail-title">{copy.trustTitle}</h2>
+            <p class="section-copy">{copy.trustText}</p>
+          </div>
+          <a class="button ghost" href={calculator}>{copy.fullModel} →</a>
+        </div>
+        <div class="trust-grid">
+          {copy.trustCards.map((card, index) => (
+            <article class="trust-card">
+              <div><span>0{index + 1} · {card.label}</span><span class={index === 1 ? "pill teal" : index === 0 ? "pill gold" : "pill muted"}>{card.status}</span></div>
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+              <small>{card.meta}</small>
+              {index === 1 && <a class="source-link" href={weeklyMeta.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} ↗</a>}
             </article>
           ))}
         </div>
-
-        <div class="data-table">
-          <table>
-            <thead><tr>
-              <th>{copy.asset}</th><th>{copy.roi}</th><th>{copy.payback}</th><th>{copy.friction}</th><th>{copy.solo}</th><th>{copy.score}</th><th>{copy.status}</th>
-            </tr></thead>
-            <tbody>
-              {scores.map(({ business, metrics, score }) => (
-                <tr>
-                  <td><strong>{business.name[lang]}</strong><br /><span class="dim" style="font-size:11px">{business.summary[lang]}</span></td>
-                  <td class="metric teal">{metrics.virtualRoi.toFixed(1)}%</td>
-                  <td class="metric">{money(metrics.paybackProductionHours)} {copy.hours}</td>
-                  <td class="metric">{business.friction}/10</td>
-                  <td class="metric">{business.soloSuitability}/10</td>
-                  <td class="metric magenta">{score.toFixed(0)} · {gradeForScore(score)}</td>
-                  <td><span class="pill gold">{copy.estimated}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section">
-        <details>
-          <summary>{copy.methodology} ↓</summary>
-          <div>{copy.methodBody.map((paragraph) => <p>{paragraph}</p>)}</div>
-        </details>
       </section>
 
       <SiteFooter lang={lang} />

@@ -1,0 +1,363 @@
+.wow-living-hub {
+  --wow-arcane: #78bfff;
+  --wow-frost: #a8e8ff;
+  --wow-gold: #e9ba62;
+  --wow-nature: #6fd6a7;
+  --wow-ember: #ef8a68;
+  --wow-void: #a58ce8;
+  --wow-ink: #070b13;
+  --wow-panel: rgba(11, 17, 29, .94);
+  --game-accent: var(--wow-arcane);
+  --hub-line: rgba(120, 191, 255, .22);
+  overflow: clip;
+}
+
+.wow-living-hub .site-chrome { margin-bottom: 32px; }
+.wow-living-hub .hub-section { scroll-margin-top: 188px; }
+.wow-living-hub .section-kicker { color: var(--wow-arcane); }
+.wow-living-hub .game-tag { color: rgba(168, 232, 255, .66); font-size: 11px; }
+.wow-living-hub .count { font-size: 11px; line-height: 1.45; }
+.wow-living-hub .pill { font-size: 10px; line-height: 1.2; }
+.wow-living-hub .source-link { color: var(--wow-frost); font-size: 11px; line-height: 1.4; }
+.wow-living-hub .field label { font-size: 13px; line-height: 1.45; }
+.wow-living-hub .result-label { font-size: 11px; line-height: 1.35; }
+.wow-living-hub .result-metric span { font-size: 10px; line-height: 1.45; }
+.wow-living-hub .result-metric strong { overflow-wrap: anywhere; }
+.wow-living-hub .scenario-actions { gap: 9px; }
+.wow-living-hub .mini-action,
+.wow-living-hub .scenario-feedback { font-size: 10px; line-height: 1.4; }
+
+.wow-living-hub .cinematic-hero {
+  min-height: 820px;
+  margin-bottom: 20px;
+  border-color: rgba(120, 191, 255, .3);
+  background: var(--wow-ink);
+  box-shadow: 0 40px 130px rgba(0, 0, 0, .56), 0 0 130px rgba(72, 129, 210, .12);
+}
+
+.wow-living-hub .cinematic-hero::before {
+  background:
+    linear-gradient(90deg, rgba(5, 9, 16, .99) 0%, rgba(5, 9, 16, .94) 33%, rgba(5, 9, 16, .66) 57%, rgba(5, 9, 16, .13) 83%),
+    linear-gradient(0deg, rgba(5, 9, 16, .98) 0%, rgba(5, 9, 16, .28) 50%, rgba(5, 9, 16, .08) 100%);
+}
+
+.wow-living-hub .cinematic-hero .cinematic-hero-art { object-position: 60% center; filter: saturate(.92) contrast(1.04); }
+.wow-living-hub .cinematic-hero-content { width: min(810px, 76%); }
+.wow-living-hub .cinematic-hero h1 {
+  max-width: 800px;
+  font-size: clamp(55px, 7.3vw, 88px);
+  line-height: .89;
+  letter-spacing: -.038em;
+}
+.wow-living-hub .cinematic-hero .lede { max-width: 710px; font-size: 17px; line-height: 1.68; }
+.wow-living-hub .hero-live-line { font-size: 11px; }
+.wow-living-hub .hero-live-line span { background: var(--wow-frost); box-shadow: 0 0 18px var(--wow-frost); }
+.wow-primary {
+  border-color: var(--wow-gold) !important;
+  background: linear-gradient(135deg, #f2c874, #dca94d) !important;
+  color: #181108 !important;
+  box-shadow: 0 12px 34px rgba(233, 186, 98, .2) !important;
+}
+.wow-primary:hover { border-color: #ffe1a6 !important; box-shadow: 0 16px 42px rgba(233, 186, 98, .27) !important; }
+
+.wow-market-mark {
+  --mark-color: var(--wow-arcane);
+  position: relative;
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 58px;
+  height: 54px;
+  grid-template-rows: 1fr auto;
+  place-items: center;
+  overflow: hidden;
+  padding: 6px 7px 5px;
+  border: 1px solid color-mix(in srgb, var(--mark-color) 38%, transparent);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--mark-color) 20%, transparent), transparent 66%),
+    rgba(7, 13, 23, .92);
+  box-shadow: inset 0 0 24px color-mix(in srgb, var(--mark-color) 6%, transparent), 0 10px 24px rgba(0, 0, 0, .2);
+  color: var(--mark-color);
+}
+.wow-market-mark::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid color-mix(in srgb, var(--mark-color) 13%, transparent);
+  border-radius: 8px;
+  transform: rotate(4deg);
+  pointer-events: none;
+}
+.wow-market-mark i { position: relative; z-index: 1; font: normal 700 23px/1 Georgia, serif; text-shadow: 0 0 16px currentColor; }
+.wow-market-mark small { position: relative; z-index: 1; color: color-mix(in srgb, var(--mark-color) 72%, white); font: 700 10px/1 "JetBrains Mono", monospace; letter-spacing: .1em; }
+.wow-market-mark.is-large { width: 88px; height: 80px; padding: 9px; border-radius: 16px; }
+.wow-market-mark.is-large i { font-size: 36px; }
+.wow-market-mark.is-large small { font-size: 10px; }
+.wow-market-mark.tone-nature { --mark-color: var(--wow-nature); }
+.wow-market-mark.tone-ember { --mark-color: var(--wow-ember); }
+.wow-market-mark.tone-gold { --mark-color: var(--wow-gold); }
+.wow-market-mark.tone-void { --mark-color: var(--wow-void); }
+.wow-market-mark.tone-frost { --mark-color: var(--wow-frost); }
+
+.wow-hero-loadout {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  max-width: 790px;
+  margin-top: 13px;
+}
+.wow-hero-loadout > div {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 50px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  gap: 3px 10px;
+  align-items: center;
+  min-height: 64px;
+  padding: 8px;
+  border: 1px solid rgba(120, 191, 255, .18);
+  border-radius: 11px;
+  background: rgba(6, 11, 19, .76);
+  backdrop-filter: blur(14px);
+}
+.wow-hero-loadout .wow-market-mark { grid-column: 1; grid-row: 1 / 3; width: 50px; height: 46px; border-radius: 9px; }
+.wow-hero-loadout .wow-market-mark i { font-size: 19px; }
+.wow-hero-loadout span:not(.wow-market-mark) { grid-column: 2; grid-row: 1; min-width: 0; color: rgba(168, 232, 255, .58); font: 700 9px/1.25 "JetBrains Mono", monospace; letter-spacing: .07em; overflow-wrap: anywhere; }
+.wow-hero-loadout strong { grid-column: 2; grid-row: 2; min-width: 0; font: 700 13px/1.15 "Roboto Condensed", sans-serif; overflow-wrap: anywhere; }
+
+.wow-jump-nav { border-color: rgba(120, 191, 255, .24); background: rgba(6, 11, 19, .88); }
+.wow-jump-nav .hub-jump-brand i { border-color: var(--wow-gold); box-shadow: inset 0 0 8px rgba(233, 186, 98, .38), 0 0 14px rgba(233, 186, 98, .25); }
+.wow-jump-nav a span { color: rgba(168, 232, 255, .62); }
+.wow-jump-nav a:hover { border-color: rgba(120, 191, 255, .29); background: rgba(120, 191, 255, .07); }
+
+.wow-manifesto {
+  border-color: rgba(120, 191, 255, .2);
+  background:
+    radial-gradient(700px 320px at 100% 0, rgba(165, 140, 232, .12), transparent 68%),
+    linear-gradient(135deg, rgba(233, 186, 98, .055), transparent 35%),
+    linear-gradient(160deg, rgba(14, 24, 39, .98), rgba(6, 10, 18, .99));
+}
+.wow-manifesto .manifesto-grid { border-color: rgba(120, 191, 255, .17); background: rgba(120, 191, 255, .17); }
+.wow-manifesto .manifesto-grid > div { background: rgba(7, 14, 24, .97); }
+.wow-manifesto .manifesto-grid span { color: rgba(168, 232, 255, .62); font-size: 10px; line-height: 1.4; }
+.wow-manifesto .manifesto-grid p { font-size: 13px; line-height: 1.65; }
+
+.wow-economy-map {
+  border-color: rgba(120, 191, 255, .23);
+  background:
+    radial-gradient(720px 300px at 18% -15%, rgba(111, 214, 167, .1), transparent 70%),
+    radial-gradient(630px 290px at 91% 108%, rgba(165, 140, 232, .11), transparent 70%),
+    linear-gradient(160deg, rgba(13, 23, 38, .99), rgba(5, 9, 16, .99));
+}
+.wow-economy-map::after { background-image: linear-gradient(rgba(120, 191, 255, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 191, 255, .04) 1px, transparent 1px); }
+.wow-economy-map .economy-flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.wow-economy-map .economy-flow::before,
+.wow-economy-node .economy-node-pulse { display: none; }
+.wow-economy-node { min-height: 178px; padding: 14px; }
+.wow-economy-node .wow-market-mark { width: 56px; height: 52px; }
+.wow-economy-node .economy-node-index { position: absolute; top: 18px; right: 13px; border-color: rgba(120, 191, 255, .43); color: var(--wow-frost); }
+.wow-economy-node .economy-node-copy { gap: 8px; margin-top: 25px; }
+.wow-economy-node .economy-node-copy small { font-size: 10px; line-height: 1.35; overflow-wrap: anywhere; }
+.wow-economy-node .economy-node-copy strong { font-size: clamp(18px, 1.55vw, 21px); line-height: 1.04; overflow-wrap: anywhere; }
+.wow-economy-node[aria-pressed="true"] { border-color: rgba(120, 191, 255, .63); background: linear-gradient(155deg, rgba(120, 191, 255, .13), rgba(7, 14, 24, .99) 72%); }
+.wow-economy-node:hover { border-color: rgba(168, 232, 255, .42); }
+.wow-economy-node .economy-node-pulse { background: rgba(120, 191, 255, .5); }
+.wow-economy-detail { border-color: rgba(120, 191, 255, .24); background: rgba(5, 10, 18, .94); }
+.wow-economy-detail .economy-detail-top { align-content: start; }
+.wow-economy-detail .economy-detail-code { color: rgba(168, 232, 255, .09); }
+.wow-economy-detail .economy-detail-grid span { font-size: 10px; }
+.wow-economy-detail .economy-detail-grid strong { font-size: 14px; line-height: 1.6; }
+.wow-economy-detail .economy-detail-grid > div:first-child strong,
+.wow-economy-detail .map-tool-link { color: var(--wow-frost); }
+.wow-economy-detail .map-tool-link { font-size: 11px; line-height: 1.4; }
+
+.wow-path-planner .path-tabs { border-color: rgba(120, 191, 255, .2); background: rgba(5, 11, 20, .92); }
+.wow-path-planner .path-tabs button {
+  grid-template-columns: 62px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: 4px 12px;
+  min-height: 128px;
+  padding: 14px;
+}
+.wow-path-planner .path-tabs button > .wow-market-mark { grid-column: 1; grid-row: 1 / 4; width: 62px; height: 58px; align-self: center; }
+.wow-path-planner .path-tabs button > span:not(.wow-market-mark) { grid-column: 2; grid-row: 1; color: rgba(168, 232, 255, .6); font-size: 10px; }
+.wow-path-planner .path-tabs button > strong { grid-column: 2; grid-row: 2; min-width: 0; font-size: 22px; line-height: 1.05; overflow-wrap: anywhere; }
+.wow-path-planner .path-tabs button > small { grid-column: 2; grid-row: 3; min-width: 0; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+.wow-path-planner .path-tabs button[aria-selected="true"] { border-color: rgba(120, 191, 255, .38); background: linear-gradient(140deg, rgba(120, 191, 255, .12), rgba(165, 140, 232, .04)); }
+.wow-path-panel {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(120, 191, 255, .21);
+  background:
+    radial-gradient(460px 260px at 98% 0, rgba(165, 140, 232, .1), transparent 70%),
+    linear-gradient(155deg, rgba(15, 25, 40, .98), rgba(6, 11, 20, .99));
+}
+.wow-path-panel > *:not(.wow-path-watermark) { position: relative; z-index: 1; }
+.wow-path-watermark { position: absolute; right: 24px; bottom: 20px; opacity: .055; pointer-events: none; transform: scale(2.6) rotate(-8deg); }
+.wow-path-planner .path-route-label,
+.wow-path-planner .path-step > span { color: var(--wow-frost); }
+.wow-path-planner .path-constraints small { font-size: 10px; line-height: 1.35; }
+.wow-path-planner .path-route-label { background: #0c1523; font-size: 10px; }
+.wow-path-planner .path-step strong { font-size: 18px; line-height: 1.12; }
+.wow-path-planner .path-step p,
+.wow-path-planner .path-flip p { font-size: 13px; line-height: 1.65; }
+.wow-path-planner .path-flip span { color: var(--wow-gold); font-size: 10px; }
+
+.wow-pulse-section .pulse-card { border-color: rgba(120, 191, 255, .23); }
+.wow-pulse-card { display: flex; min-height: 410px; flex-direction: column; }
+.wow-pulse-card-head { display: grid; grid-template-columns: minmax(0, 1fr) 58px; gap: 14px; align-items: start; }
+.wow-pulse-card-head .pulse-card-top { display: grid; min-width: 0; grid-template-columns: auto minmax(0, 1fr); gap: 9px; font-size: 10px; }
+.wow-pulse-card-head .pulse-card-top strong { min-width: 0; color: var(--wow-frost); font-size: 11px; text-align: right; overflow-wrap: anywhere; }
+.wow-pulse-card-head > .wow-market-mark { grid-column: 2; width: 58px; height: 54px; }
+.wow-pulse-card h3 { max-width: 100%; min-width: 0; margin-top: 28px; font-size: 32px; overflow-wrap: anywhere; }
+.wow-pulse-card > p { font-size: 14px; line-height: 1.67; }
+.wow-pulse-source { display: inline-flex; margin-top: 12px; color: var(--wow-frost); font: 700 10px/1.4 "JetBrains Mono", monospace; letter-spacing: .06em; text-transform: uppercase; }
+.wow-pulse-card .pulse-decision { position: static; margin-top: auto; padding-top: 15px; }
+.wow-pulse-card .pulse-decision span { color: var(--wow-frost); font-size: 10px; }
+.wow-pulse-card .pulse-decision p { font-size: 13px; line-height: 1.62; }
+.wow-pulse-section .pulse-orbit { border-color: rgba(168, 232, 255, .38); }
+.wow-pulse-section .pulse-orbit span { background: var(--wow-frost); box-shadow: 0 0 18px var(--wow-frost); }
+.wow-pulse-section .pulse-guard strong { font-size: 18px; }
+.wow-pulse-section .pulse-guard p { font-size: 13px; }
+.wow-pulse-section.is-current .pulse-window { color: var(--wow-frost); }
+
+.wow-ranking-lab { border-color: rgba(120, 191, 255, .21); background: rgba(5, 10, 18, .94); }
+.wow-ranking-lab .ranking-tabs button[aria-selected="true"] { background: linear-gradient(130deg, rgba(120, 191, 255, .14), rgba(11, 18, 30, .99)); }
+.wow-ranking-lab .ranking-tabs small { color: rgba(168, 232, 255, .62); font-size: 10px; }
+.wow-ranking-lab .ranking-tabs strong { font-size: 18px; }
+.wow-ranking-lab .ranking-question span { font-size: 10px; }
+.wow-ranking-lab .ranking-question code { color: var(--wow-frost); font-size: 10px; line-height: 1.55; }
+.wow-route-card { min-height: 365px; }
+.wow-route-card.rank-1 { border-color: rgba(233, 186, 98, .39); box-shadow: inset 0 0 45px rgba(233, 186, 98, .035); }
+.wow-route-card .conditional-rank-top { align-items: start; }
+.wow-route-card .conditional-rank-top > div { display: flex; min-width: 0; flex-wrap: wrap; align-items: start; justify-content: flex-end; gap: 8px; }
+.wow-route-card .conditional-rank-top .wow-market-mark { width: 58px; height: 54px; }
+.wow-route-card h3 { font-size: 30px; line-height: 1.02; }
+.wow-route-card > p { min-height: 76px; font-size: 13px; line-height: 1.63; }
+.wow-route-card .conditional-metrics small { font-size: 10px; line-height: 1.35; }
+.wow-route-card .conditional-metrics strong { font-size: 13px; }
+.wow-ranking-lab .ranking-note > span { color: var(--wow-gold); font-size: 10px; }
+.wow-ranking-lab .ranking-note p { font-size: 13px; }
+.wow-ranking-lab .ranking-note a { color: var(--wow-frost); font-size: 10px; }
+
+.wow-decision-deck { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.wow-decision-card { min-height: 350px; }
+.wow-decision-card .decision-deck-top { display: grid; grid-template-columns: minmax(0, 1fr) 58px; gap: 12px; align-items: start; font-size: 10px; line-height: 1.45; }
+.wow-decision-card .decision-deck-top > span { min-width: 0; overflow-wrap: anywhere; }
+.wow-decision-card .decision-deck-top .wow-market-mark { grid-column: 2; width: 58px; height: 54px; justify-self: end; }
+.wow-decision-card > div:nth-child(2) { margin-top: 32px; }
+.wow-decision-card h3 { font-size: 29px; }
+.wow-decision-card p { font-size: 14px; line-height: 1.62; }
+.wow-decision-card > strong { color: var(--wow-frost); font-size: 10px; }
+.wow-decision-card::after { background: var(--wow-arcane); }
+.wow-decision-card:hover { border-color: rgba(120, 191, 255, .42); }
+.wow-decision-card.is-featured { border-color: rgba(233, 186, 98, .4); background: linear-gradient(150deg, rgba(233, 186, 98, .105), rgba(9, 15, 25, .99) 58%); }
+.wow-decision-card.is-featured::after { background: var(--wow-gold); }
+.wow-decision-card.is-featured > strong { color: var(--wow-gold); }
+
+.wow-scenario-lab { scroll-margin-top: 145px; }
+.wow-model {
+  padding: 28px;
+  border: 1px solid rgba(120, 191, 255, .2);
+  border-radius: 22px;
+  background:
+    radial-gradient(600px 230px at 100% 0, rgba(120, 191, 255, .065), transparent 72%),
+    linear-gradient(160deg, rgba(12, 20, 33, .97), rgba(5, 10, 18, .99));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, .29);
+}
+.wow-model + .wow-model { margin-top: 22px; }
+.wow-model-head { display: grid; grid-template-columns: 88px minmax(0, 1fr) auto; gap: 22px; align-items: center; margin-bottom: 24px; }
+.wow-model-head > .wow-market-mark { grid-column: 1; width: 88px; height: 80px; }
+.wow-model-head > div { min-width: 0; }
+.wow-model-head h3 { margin-top: 8px; font-size: clamp(34px, 4.7vw, 54px); line-height: .94; }
+.wow-model-head p { max-width: 760px; margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.68; }
+.wow-model-grid { gap: 12px; }
+.wow-input-card { background: rgba(5, 11, 20, .88); }
+.wow-result-panel { background: linear-gradient(155deg, rgba(14, 25, 41, .96), rgba(5, 10, 18, .99)); }
+.wow-result-panel[data-state="positive"] { border-color: rgba(111, 214, 167, .39); box-shadow: inset 0 0 48px rgba(111, 214, 167, .035); }
+.wow-result-panel[data-state="caution"] { border-color: rgba(233, 186, 98, .38); }
+.wow-result-panel[data-state="negative"] { border-color: rgba(239, 138, 104, .42); box-shadow: inset 0 0 48px rgba(239, 138, 104, .04); }
+.wow-result-panel .result-name { color: var(--wow-frost); font-size: clamp(30px, 4.6vw, 43px); }
+
+.wow-research-meta-end { display: flex; min-width: 0; flex-wrap: wrap; align-items: start; justify-content: flex-end; gap: 10px; }
+.wow-research-meta-end .wow-market-mark { width: 58px; height: 54px; }
+.wow-research-card::after { background: linear-gradient(transparent, var(--wow-arcane)); }
+.wow-research-card > a { color: var(--wow-frost); font-size: 11px; }
+.wow-research-card.research-featured {
+  border-color: rgba(233, 186, 98, .32);
+  background:
+    radial-gradient(560px 290px at 90% 4%, rgba(120, 191, 255, .14), transparent 70%),
+    linear-gradient(150deg, rgba(16, 29, 45, .98), rgba(5, 10, 18, .99) 63%);
+}
+.wow-research-card .research-card-body p { font-size: 14px; line-height: 1.68; }
+.wow-research-card .research-card-foot { font-size: 10px; line-height: 1.45; }
+.wow-living-hub .library-filter button { font-size: 11px; }
+.wow-living-hub .library-filter button[aria-pressed="true"] { border-color: rgba(120, 191, 255, .44); background: rgba(120, 191, 255, .1); color: var(--wow-frost); }
+
+.wow-trust-rail .trust-card { border-color: rgba(120, 191, 255, .18); background: rgba(6, 12, 21, .94); }
+.wow-trust-rail .trust-card > div { font-size: 10px; }
+.wow-trust-rail .trust-card > p { font-size: 14px; }
+.wow-method-details { margin-top: 12px; border-color: rgba(120, 191, 255, .2); background: rgba(6, 12, 21, .9); }
+.wow-method-details summary { font-size: 11px; }
+.wow-method-details > div { font-size: 14px; line-height: 1.7; }
+
+@media (max-width: 1100px) {
+  .wow-decision-deck { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 980px) {
+  .wow-living-hub .cinematic-hero-content { width: min(830px, 91%); }
+  .wow-hero-loadout { grid-template-columns: 1fr 1fr; }
+  .wow-path-planner .path-tabs button { grid-template-columns: 58px minmax(0, 1fr); }
+  .wow-path-planner .path-tabs button > .wow-market-mark { width: 58px; height: 54px; }
+  .wow-model-head { grid-template-columns: 78px minmax(0, 1fr); }
+  .wow-model-head > .wow-market-mark { width: 78px; height: 72px; }
+  .wow-model-head > .pill { grid-column: 2; justify-self: start; }
+}
+
+@media (max-width: 720px) {
+  .wow-living-hub .hub-section { scroll-margin-top: 116px; }
+  .wow-living-hub .cinematic-hero { min-height: 890px; padding: 34px 26px; }
+  .wow-living-hub .cinematic-hero .cinematic-hero-art { object-position: 68% center; }
+  .wow-living-hub .cinematic-hero-content { width: 100%; }
+  .wow-living-hub .cinematic-hero::before { background: linear-gradient(0deg, rgba(5, 9, 16, .99) 0%, rgba(5, 9, 16, .93) 62%, rgba(5, 9, 16, .26) 100%); }
+  .wow-economy-node { min-height: 150px; }
+  .wow-economy-detail .economy-detail-top { grid-template-columns: auto auto minmax(0, 1fr); gap: 12px; }
+  .wow-economy-detail .economy-detail-top .pill { min-width: 0; white-space: normal; }
+  .wow-path-watermark { display: none; }
+  .wow-pulse-card { min-height: 380px; }
+  .wow-model { padding: 20px; }
+  .wow-model-head { grid-template-columns: 68px minmax(0, 1fr); gap: 15px; align-items: start; }
+  .wow-model-head > .wow-market-mark { width: 68px; height: 63px; }
+  .wow-model-head > .pill { grid-column: 1 / -1; }
+  .wow-model-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .wow-living-hub .cinematic-hero { min-height: 960px; padding: 28px 19px; }
+  .wow-living-hub .cinematic-hero h1 { font-size: 45px !important; }
+  .wow-living-hub .cinematic-hero .lede { font-size: 15px; }
+  .wow-living-hub .cinematic-hero .proof-strip { grid-template-columns: 1fr 1fr; }
+  .wow-hero-loadout { grid-template-columns: 1fr; }
+  .wow-hero-loadout > div { min-height: 58px; }
+  .wow-economy-node { min-height: 128px; }
+  .wow-economy-node .economy-node-copy { margin-top: 18px; }
+  .wow-economy-detail .economy-detail-top { grid-template-columns: 52px 1fr; }
+  .wow-economy-detail .economy-detail-code { font-size: 42px; }
+  .wow-economy-detail .economy-detail-top .wow-market-mark { width: 52px; height: 49px; }
+  .wow-economy-detail .economy-detail-top .pill { grid-column: 1 / -1; }
+  .wow-path-planner .path-tabs button { grid-template-columns: 54px minmax(0, 1fr); min-height: 116px; padding: 12px; }
+  .wow-path-planner .path-tabs button > .wow-market-mark { width: 54px; height: 51px; }
+  .wow-pulse-card { min-height: 420px; }
+  .wow-route-card { min-height: 340px; }
+  .wow-decision-deck { grid-template-columns: 1fr; }
+  .wow-decision-card { min-height: 330px; }
+  .wow-model { padding: 17px; border-radius: 18px; }
+  .wow-model-head { grid-template-columns: 58px minmax(0, 1fr); gap: 12px; }
+  .wow-model-head > .wow-market-mark { width: 58px; height: 54px; }
+  .wow-model-head h3 { font-size: 34px; }
+  .wow-model .form-grid { grid-template-columns: 1fr; }
+  .wow-model .field[style] { grid-column: auto !important; }
+  .wow-research-meta-end .wow-market-mark { width: 52px; height: 49px; }
+  .wow-research-card .research-card-meta { gap: 10px; }
+}

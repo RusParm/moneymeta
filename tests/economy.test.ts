@@ -4,6 +4,7 @@ import {
   calculateBusinessMetrics,
   findBestPortfolio,
   isSnapshotStale,
+  rankBusinessesByLens,
   recommendBusinesses
 } from "../src/lib/economy";
 
@@ -53,6 +54,17 @@ describe("decision engine", () => {
 
   it("returns no portfolio when nothing fits", () => {
     expect(findBestPortfolio(gtaBusinesses, 100_000, 1)).toBeNull();
+  });
+
+  it("keeps rankings conditional instead of producing one universal tier list", () => {
+    const firstBuy = rankBusinessesByLens(gtaBusinesses, "first-buy");
+    const solo = rankBusinessesByLens(gtaBusinesses, "solo-efficiency");
+    const production = rankBusinessesByLens(gtaBusinesses, "production-income");
+
+    expect(firstBuy[0]?.business.id).toBe("acid");
+    expect(solo[0]?.business.id).toBe("club");
+    expect(production[0]?.business.id).not.toBe(solo[0]?.business.id);
+    expect(firstBuy.every((item, index) => index === 0 || firstBuy[index - 1]!.score >= item.score)).toBe(true);
   });
 
   it("does not label expired weekly data as current", () => {

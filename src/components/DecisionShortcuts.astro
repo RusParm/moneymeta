@@ -1,0 +1,38 @@
+---
+interface Shortcut {
+  eyebrow: string;
+  title: string;
+  text: string;
+  href: string;
+  meta: string;
+}
+
+interface Props {
+  lang: "ru" | "en";
+  game: "gta" | "dota" | "wow";
+  items: Shortcut[];
+}
+
+const { lang, game, items } = Astro.props;
+const label = lang === "ru" ? "Выбери задачу - получи ответ" : "Pick a problem - get an answer";
+---
+
+<section class={`decision-shortcuts shortcuts-${game}`} aria-label={label}>
+  <div class="shortcut-intro">
+    <span class="section-kicker">{lang === "ru" ? "Быстрый старт" : "Quick start"}</span>
+    <strong>{label}</strong>
+  </div>
+  <div class="shortcut-grid">
+    {items.map((item, index) => (
+      <a class="shortcut-card" href={item.href}>
+        <span class="shortcut-index">0{index + 1}</span>
+        <div>
+          <span class="shortcut-eyebrow">{item.eyebrow}</span>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </div>
+        <span class="shortcut-meta">{item.meta}<b>↗</b></span>
+      </a>
+    ))}
+  </div>
+</section>

@@ -8,11 +8,11 @@ export interface WowEconomySource {
 
 export const wowPatchContext = {
   release: "Midnight · Curse of Ula’tek",
-  checkedAt: "2026-08-11",
-  status: "community-reported" as const,
+  checkedAt: "2026-08-12",
+  status: "mixed evidence" as const,
   note: {
-    ru: "Текущий Retail-контекст подтверждён материалами Blizzard. Комиссия Auction House и числовые defaults остаются редактируемым baseline и требуют сверки с клиентом и вашим рынком.",
-    en: "The current Retail context is confirmed by Blizzard materials. The Auction House cut and numeric defaults remain an editable baseline that should be checked against your client and market."
+    ru: "Текущий Retail-контекст подтверждён материалами Blizzard. Рыночные цены, sell-through, комиссия Auction House и числовые defaults остаются редактируемой моделью и требуют сверки с вашим регионом, realm и категорией товара.",
+    en: "The current Retail context is confirmed by Blizzard materials. Market prices, sell-through, the Auction House cut and numeric defaults remain an editable model that must be checked against your region, realm and item category."
   },
   sources: [
     {
@@ -24,11 +24,11 @@ export const wowPatchContext = {
       }
     },
     {
-      label: "Blizzard · Content Update Notes",
-      url: "https://worldofwarcraft.blizzard.com/news/24293281/curse-of-ulatek-content-update-notes",
+      label: "Blizzard · Quality-of-Life Update",
+      url: "https://worldofwarcraft.blizzard.com/en-us/news/24288418/quality-of-life-improvements-coming-in-curse-of-ulatek",
       note: {
-        ru: "Официальные notes текущего обновления Retail.",
-        en: "Official notes for the current Retail update."
+        ru: "Официальный источник по profession knowledge reset, снижению стоимости crafted Housing decor и Auction House filters.",
+        en: "Official source for the profession knowledge reset, lower crafted Housing decor costs and persistent Auction House filters."
       }
     },
     {
@@ -40,10 +40,18 @@ export const wowPatchContext = {
       }
     },
     {
+      label: "Blizzard · Crafting Orders",
+      url: "https://worldofwarcraft.blizzard.com/en-gb/news/23876529/dragonflight-making-it-with-professions",
+      note: {
+        ru: "Официальное описание public, guild и personal Crafting Orders и распределения reagents между заказчиком и crafter.",
+        en: "Official description of public, guild and personal Crafting Orders and how reagents can be allocated between customer and crafter."
+      }
+    },
+    {
       label: "Blizzard Forums · Auction House fee",
       url: "https://us.forums.blizzard.com/en/wow/t/auction-house-fee/2089197",
       note: {
-        ru: "Community cross-check стандартной комиссии 5%; поэтому статус baseline — community-reported.",
+        ru: "Community cross-check стандартной комиссии 5%; поэтому статус baseline - community-reported.",
         en: "Community cross-check for the standard 5% cut; the baseline is therefore community-reported."
       }
     },
@@ -77,4 +85,13 @@ export const farmBaseline = {
   relistingLossPerHour: 35,
   sessionHours: 2,
   targetGold: 25_000
+};
+
+export const orderBaseline = {
+  commissionGold: 2_500,
+  crafterMaterialCost: 450,
+  expectedRecraftReserve: 180,
+  serviceMinutes: 6,
+  targetGoldPerHour: 8_000,
+  orders: 5
 };

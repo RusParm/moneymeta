@@ -1,0 +1,122 @@
+---
+import { dotaEconomyNodes } from "../data/dota-hub";
+import DotaMedia from "./DotaMedia.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const first = dotaEconomyNodes[0]!;
+
+const copy = lang === "ru" ? {
+  kicker: "Match economy map · one gold timeline",
+  title: "Проследи путь одного gold: от last hit до трона",
+  text: "Экономика Dota живёт по дедлайну. Доход превращается в предмет, предмет открывает objective, а преимущество должно закончить матч до следующего вражеского timing.",
+  mapLabel: "Интерактивная карта экономики матча Dota 2",
+  signal: "Ключевой сигнал",
+  decision: "Решение игрока",
+  open: "Перейти к связанному решению"
+} : {
+  kicker: "Match economy map · one gold timeline",
+  title: "Follow one gold from the last hit to the Ancient",
+  text: "Dota is an economy with a deadline. Income must become an item, the item an objective, and the lead a finished match before the next enemy timing.",
+  mapLabel: "Interactive Dota 2 match economy map",
+  signal: "Key signal",
+  decision: "Player decision",
+  open: "Open the connected decision"
+};
+---
+
+<section id="economy-map" class="section hub-section hub-map-section" aria-labelledby="dota-economy-map-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="dota-economy-map-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count">00:00 → GG · interactive</span>
+  </div>
+
+  <div class="economy-map dota-economy-map" data-dota-map>
+    <div class="economy-flow" aria-label={copy.mapLabel}>
+      {dotaEconomyNodes.map((node, index) => (
+        <button
+          class="economy-node dota-economy-node"
+          type="button"
+          aria-pressed={index === 0 ? "true" : "false"}
+          data-map-node
+          data-code={node.code}
+          data-title={node.title[lang]}
+          data-phase={node.phase[lang]}
+          data-summary={node.summary[lang]}
+          data-decision={node.decision[lang]}
+          data-signal={node.signal[lang]}
+          data-href={node.href}
+          data-media-src={node.media.src}
+          data-media-alt={node.media.alt[lang]}
+          data-media-fallback={node.media.fallback}
+        >
+          <DotaMedia asset={node.media} lang={lang} />
+          <span class="economy-node-index">{node.code}</span>
+          <span class="economy-node-copy">
+            <small>{node.phase[lang]}</small>
+            <strong>{node.title[lang]}</strong>
+          </span>
+          <span class="economy-node-pulse" aria-hidden="true"></span>
+        </button>
+      ))}
+    </div>
+
+    <article class="economy-detail dota-economy-detail" aria-live="polite">
+      <div class="economy-detail-top">
+        <DotaMedia asset={first.media} lang={lang} class="dota-detail-media" eager />
+        <span class="economy-detail-code" data-map-code>{first.code}</span>
+        <span class="pill dota-radiant" data-map-phase>{first.phase[lang]}</span>
+      </div>
+      <h3 data-map-title>{first.title[lang]}</h3>
+      <p data-map-summary>{first.summary[lang]}</p>
+      <div class="economy-detail-grid">
+        <div>
+          <span>{copy.signal}</span>
+          <strong data-map-signal>{first.signal[lang]}</strong>
+        </div>
+        <div>
+          <span>{copy.decision}</span>
+          <strong data-map-decision>{first.decision[lang]}</strong>
+        </div>
+      </div>
+      <a class="map-tool-link" data-map-link href={first.href}>{copy.open} →</a>
+    </article>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-dota-map]").forEach((root) => {
+    const nodes = [...root.querySelectorAll<HTMLButtonElement>("[data-map-node]")];
+    const code = root.querySelector<HTMLElement>("[data-map-code]")!;
+    const phase = root.querySelector<HTMLElement>("[data-map-phase]")!;
+    const title = root.querySelector<HTMLElement>("[data-map-title]")!;
+    const summary = root.querySelector<HTMLElement>("[data-map-summary]")!;
+    const signal = root.querySelector<HTMLElement>("[data-map-signal]")!;
+    const decision = root.querySelector<HTMLElement>("[data-map-decision]")!;
+    const link = root.querySelector<HTMLAnchorElement>("[data-map-link]")!;
+    const media = root.querySelector<HTMLElement>(".dota-detail-media")!;
+    const mediaImage = media.querySelector<HTMLImageElement>("img")!;
+    const mediaFallback = media.querySelector<HTMLElement>(".dota-media-fallback")!;
+
+    const select = (node: HTMLButtonElement) => {
+      nodes.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === node)));
+      code.textContent = node.dataset.code ?? "";
+      phase.textContent = node.dataset.phase ?? "";
+      title.textContent = node.dataset.title ?? "";
+      summary.textContent = node.dataset.summary ?? "";
+      signal.textContent = node.dataset.signal ?? "";
+      decision.textContent = node.dataset.decision ?? "";
+      link.href = node.dataset.href ?? "#";
+      mediaFallback.textContent = node.dataset.mediaFallback ?? "";
+      mediaImage.style.display = "";
+      mediaImage.src = node.dataset.mediaSrc ?? "";
+      mediaImage.alt = node.dataset.mediaAlt ?? "";
+    };
+
+    nodes.forEach((node) => node.addEventListener("click", () => select(node)));
+  });
+</script>

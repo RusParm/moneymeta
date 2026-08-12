@@ -1,0 +1,16 @@
+---
+import type { WowMarketMark } from "../data/wow-hub";
+
+interface Props {
+  mark: WowMarketMark;
+  lang: "ru" | "en";
+  large?: boolean;
+}
+
+const { mark, lang, large = false } = Astro.props;
+---
+
+<span class={`wow-market-mark tone-${mark.tone} ${large ? "is-large" : ""}`} role="img" aria-label={mark.label[lang]}>
+  <i aria-hidden="true">{mark.glyph}</i>
+  <small aria-hidden="true">{mark.code}</small>
+</span>

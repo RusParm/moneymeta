@@ -28,7 +28,7 @@ const copy = lang === "ru" ? {
   roi: "vROI за цикл",
   month: "Месячный потенциал",
   hours: "ч производства",
-  estimateNote: "Месячный потенциал — steady-state оценка: доход в час × указанные онлайн-часы × 4,345 недели. Лимиты доставки и простои не учтены.",
+  estimateNote: "Месячный потенциал - steady-state оценка: доход в час × указанные онлайн-часы × 4,345 недели. Лимиты доставки и простои не учтены.",
   compare: "Сравнение базовых сценариев",
   compareCopy: "Единая методика для всех активов. Изменения формы влияют только на выбранный сценарий выше.",
   portfolio: "Собери портфель под бюджет и время",
@@ -132,22 +132,22 @@ const copy = lang === "ru" ? {
 
     <article class="card result-panel" aria-live="polite">
       <span class="result-label">{copy.result}</span>
-      <div class="result-name" data-role="scenario-name">—</div>
-      <p class="result-reason" data-role="scenario-reason">—</p>
+      <div class="result-name" data-role="scenario-name">-</div>
+      <p class="result-reason" data-role="scenario-reason">-</p>
       <div class="result-metrics">
-        <div class="result-metric"><span>{copy.gross}</span><strong data-role="gross">—</strong></div>
-        <div class="result-metric"><span>{copy.net}</span><strong class="teal" data-role="net">—</strong></div>
-        <div class="result-metric"><span>{copy.hourly}</span><strong data-role="hourly">—</strong></div>
-        <div class="result-metric"><span>{copy.payback}</span><strong data-role="payback">—</strong></div>
-        <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="roi">—</strong></div>
-        <div class="result-metric"><span>{copy.month}</span><strong class="gold" data-role="month">—</strong></div>
+        <div class="result-metric"><span>{copy.gross}</span><strong data-role="gross">-</strong></div>
+        <div class="result-metric"><span>{copy.net}</span><strong class="teal" data-role="net">-</strong></div>
+        <div class="result-metric"><span>{copy.hourly}</span><strong data-role="hourly">-</strong></div>
+        <div class="result-metric"><span>{copy.payback}</span><strong data-role="payback">-</strong></div>
+        <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="roi">-</strong></div>
+        <div class="result-metric"><span>{copy.month}</span><strong class="gold" data-role="month">-</strong></div>
       </div>
       <p class="dim" style="margin-top:16px;font-size:11px">{copy.estimateNote}</p>
       <ScenarioActions lang={lang} />
     </article>
   </div>
 
-  <section class="section" aria-labelledby="baseline-comparison-title">
+  <section id="business-comparison" class="section" aria-labelledby="baseline-comparison-title">
     <div class="section-head">
       <div>
         <span class="section-kicker">Cross-asset view</span>
@@ -177,7 +177,7 @@ const copy = lang === "ru" ? {
     </div>
   </section>
 
-  <section class="section" aria-labelledby="portfolio-title">
+  <section id="portfolio" class="section" aria-labelledby="portfolio-title">
     <div class="section-head">
       <div>
         <span class="section-kicker">Portfolio Optimizer v1</span>
@@ -200,12 +200,12 @@ const copy = lang === "ru" ? {
       </form>
       <article class="card result-panel" aria-live="polite">
         <span class="result-label">{copy.portfolioResult}</span>
-        <div class="portfolio-picks" data-role="portfolio-picks">—</div>
+        <div class="portfolio-picks" data-role="portfolio-picks">-</div>
         <div class="result-metrics">
-          <div class="result-metric"><span>{copy.totalCost}</span><strong data-role="portfolio-cost">—</strong></div>
-          <div class="result-metric"><span>{copy.activeTime}</span><strong data-role="portfolio-time">—</strong></div>
-          <div class="result-metric"><span>{copy.weeklyProfit}</span><strong class="teal" data-role="portfolio-week">—</strong></div>
-          <div class="result-metric"><span>{copy.monthlyProfit}</span><strong class="gold" data-role="portfolio-month">—</strong></div>
+          <div class="result-metric"><span>{copy.totalCost}</span><strong data-role="portfolio-cost">-</strong></div>
+          <div class="result-metric"><span>{copy.activeTime}</span><strong data-role="portfolio-time">-</strong></div>
+          <div class="result-metric"><span>{copy.weeklyProfit}</span><strong class="teal" data-role="portfolio-week">-</strong></div>
+          <div class="result-metric"><span>{copy.monthlyProfit}</span><strong class="gold" data-role="portfolio-month">-</strong></div>
         </div>
         <ScenarioActions lang={lang} />
       </article>
@@ -306,10 +306,10 @@ const copy = lang === "ru" ? {
       if (!result) {
         portfolioTargets.picks.closest<HTMLElement>(".result-panel")!.dataset.state = "negative";
         portfolioTargets.picks.textContent = labels.empty;
-        portfolioTargets.cost.textContent = "—";
-        portfolioTargets.time.textContent = "—";
-        portfolioTargets.week.textContent = "—";
-        portfolioTargets.month.textContent = "—";
+        portfolioTargets.cost.textContent = "-";
+        portfolioTargets.time.textContent = "-";
+        portfolioTargets.week.textContent = "-";
+        portfolioTargets.month.textContent = "-";
         return;
       }
 

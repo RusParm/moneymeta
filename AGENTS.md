@@ -34,6 +34,6 @@ Primary promise: **Understand the economy. Make the smarter move.**
 
 ## Current priority
 
-Validate the World of Warcraft Retail market-economy wedge, then establish analytics, saved scenarios and recurring data freshness across all three active verticals.
+Ship and operate the complete GTA Online, Dota 2 and World of Warcraft Retail living hubs. Next, establish analytics, recurring data freshness, saved profiles and acquisition loops across all three active verticals. Research Total War and Crusader Kings as the next expansion candidates before implementation; keep Civilization and Age of Empires demand-led.
 
 Read `docs/PROJECT_CONTEXT.md`, `docs/ROADMAP.md`, `docs/DECISIONS.md` and `docs/CURRENT_STATUS.md` before changing product direction.

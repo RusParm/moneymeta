@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { craftingBaseline, farmBaseline } from "../src/data/wow-economy";
-import { calculateCraftingMetrics, calculateFarmMetrics } from "../src/lib/wow-economy";
+import { craftingBaseline, farmBaseline, orderBaseline } from "../src/data/wow-economy";
+import { calculateCraftingMetrics, calculateFarmMetrics, calculateWorkOrderMetrics, rankWowMarketRoutes } from "../src/lib/wow-economy";
 
 describe("WoW crafting economics", () => {
   it("deducts the Auction House cut before measuring crafting profit", () => {
@@ -41,5 +41,55 @@ describe("WoW farm liquidity", () => {
 
     expect(metrics.state).toBe("inventory-trap");
     expect(metrics.inventoryValueAtRisk).toBeGreaterThan(metrics.expectedSessionGold);
+  });
+});
+
+describe("WoW crafting order floor", () => {
+  it("prices crafter materials, recraft risk and time into the minimum commission", () => {
+    const metrics = calculateWorkOrderMetrics(orderBaseline);
+
+    expect(metrics.minimumCommission).toBeCloseTo(1_430, 2);
+    expect(metrics.cashProfitPerOrder).toBe(1_870);
+    expect(metrics.economicProfitPerOrder).toBeCloseTo(1_070, 2);
+    expect(metrics.state).toBe("accept");
+  });
+
+  it("declines an order that pays less than its economic floor", () => {
+    const metrics = calculateWorkOrderMetrics({ ...orderBaseline, commissionGold: 900 });
+
+    expect(metrics.economicProfitPerOrder).toBeLessThan(0);
+    expect(metrics.state).toBe("decline");
+  });
+
+  it("clamps invalid costs and scales a batch", () => {
+    const metrics = calculateWorkOrderMetrics({
+      ...orderBaseline,
+      crafterMaterialCost: -100,
+      orders: 3
+    });
+
+    expect(metrics.minimumCommission).toBeCloseTo(980, 2);
+    expect(metrics.batchEconomicProfit).toBeCloseTo(metrics.economicProfitPerOrder * 3, 2);
+  });
+});
+
+describe("WoW conditional market rankings", () => {
+  const routes = [
+    { id: "liquid", metrics: { capitalAccess: 8, liquidity: 10, timeFit: 8, specializationMoat: 2, priceResilience: 7, lowFriction: 8 } },
+    { id: "specialist", metrics: { capitalAccess: 4, liquidity: 4, timeFit: 5, specializationMoat: 10, priceResilience: 8, lowFriction: 4 } }
+  ];
+
+  it("changes the leader when the player objective changes", () => {
+    const casual = rankWowMarketRoutes(routes, {
+      id: "casual",
+      weights: { capitalAccess: 20, liquidity: 30, timeFit: 25, specializationMoat: 5, priceResilience: 10, lowFriction: 10 }
+    });
+    const specialist = rankWowMarketRoutes(routes, {
+      id: "specialist",
+      weights: { capitalAccess: 5, liquidity: 5, timeFit: 10, specializationMoat: 55, priceResilience: 20, lowFriction: 5 }
+    });
+
+    expect(casual[0]?.route.id).toBe("liquid");
+    expect(specialist[0]?.route.id).toBe("specialist");
   });
 });

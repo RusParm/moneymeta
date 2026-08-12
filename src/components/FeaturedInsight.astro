@@ -1,0 +1,16 @@
+---
+interface Props {
+  lang: "ru" | "en";
+  game: "gta" | "dota" | "wow";
+  title: string;
+  summary: string;
+  href: string;
+  readTime: string;
+}
+const { lang, game, title, summary, href, readTime } = Astro.props;
+---
+<a class={`featured-insight featured-insight-${game}`} href={href}>
+  <span class="featured-insight-label">Money Meta Field Note</span>
+  <div><strong>{title}</strong><p>{summary}</p></div>
+  <span class="featured-insight-cta">{lang === "ru" ? "Читать" : "Read"} · {readTime} ↗</span>
+</a>
