@@ -1,0 +1,332 @@
+---
+import { craftingBaseline, farmBaseline, orderBaseline } from "../data/wow-economy";
+import ScenarioActions from "./ScenarioActions.astro";
+import WowMarketMark from "./WowMarketMark.astro";
+import { wowMarks } from "../data/wow-hub";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+
+const copy = lang === "ru" ? {
+  kicker: "Scenario Lab · three market engines",
+  title: "Три модели для трёх разных способов зарабатывать gold",
+  text: "Auction House craft, material farm и Crafting Order нельзя сравнивать одной headline margin. Каждый engine показывает свой cash flow, риск и точку отказа.",
+  count: "22 inputs · local save · shareable URL",
+  craftKicker: "Model 01 · recipe economics",
+  craftTitle: "Crafting Margin: прибыль после ликвидности",
+  craftText: "Модель учитывает Auction House cut, sell-through и потерю deposit при неудачном listing cycle.",
+  materialCost: "Материалы / craft",
+  outputUnits: "Выход товара / craft",
+  salePrice: "Цена продажи / ед.",
+  ahCut: "Комиссия AH, %",
+  deposit: "Deposit / listing",
+  sellThrough: "Sell-through / цикл, %",
+  crafts: "Размер batch, crafts",
+  craftResult: "Crafting investment case",
+  craftNote: "Sell-through является сценарием одного listing cycle. Непроданный товар сохраняет стоимость, но блокирует капитал и требует нового листинга.",
+  gross: "Gross revenue / sold craft",
+  netRevenue: "Net revenue после AH",
+  soldProfit: "Прибыль если продано",
+  expectedProfit: "Expected profit / цикл",
+  batchProfit: "Expected batch profit",
+  roi: "Expected ROI / цикл",
+  breakEven: "Break-even / ед.",
+  inventoryRisk: "Капитал в непроданном",
+  farmKicker: "Model 02 · liquidity haircut",
+  farmTitle: "Farm Liquidity: настоящий gold/hour",
+  farmText: "Listed price превращается в effective GPH только после sell-through, AH cut, расходов и relisting losses.",
+  unitsHour: "Единиц добычи / час",
+  marketPrice: "Market price / ед.",
+  farmSellThrough: "Sell-through, %",
+  farmAhCut: "Комиссия AH, %",
+  hourlyExpenses: "Расходы / час",
+  relistingLoss: "Relisting losses / час",
+  sessionHours: "Длина сессии, часов",
+  targetGold: "Цель, gold",
+  farmResult: "Farm liquidity case",
+  listedGph: "Quoted / listed GPH",
+  effectiveGph: "Effective GPH",
+  monetization: "Monetization rate",
+  liquidityHaircut: "Liquidity haircut / час",
+  farmInventory: "Inventory at risk / сессия",
+  sessionGold: "Expected gold / сессия",
+  targetHours: "Часов до цели",
+  orderKicker: "Model 03 · service economics",
+  orderTitle: "Crafting Order Floor: сколько должна стоить твоя работа",
+  orderText: "Commission должна покрывать materials crafter, expected recraft reserve и время, которое можно было монетизировать другим способом.",
+  commission: "Commission / order",
+  orderMaterials: "Материалы crafter",
+  recraft: "Expected recraft reserve",
+  serviceMinutes: "Время / order, мин",
+  targetGph: "Твой target gold/hour",
+  orders: "Количество orders",
+  orderResult: "Crafting Order case",
+  orderNote: "Модель не назначает универсальную цену skill. Target GPH является твоей альтернативной стоимостью времени, а recraft reserve остаётся редактируемым ожиданием.",
+  cashProfit: "Cash profit / order",
+  timeCost: "Стоимость времени",
+  economicProfit: "Economic profit / order",
+  minimumCommission: "Minimum commission",
+  orderGph: "Effective gold/hour",
+  orderBatch: "Batch economic profit",
+  safety: "Margin of safety",
+  states: {
+    positiveEdge: "Положительный market edge",
+    thinEdge: "Маржа слишком тонкая",
+    negativeEdge: "Отрицательная expected margin",
+    liquid: "Рынок поглощает объём",
+    discounted: "GPH требует дисконта",
+    inventoryTrap: "Фарм превращается в inventory trap",
+    accept: "Order выше экономического floor",
+    negotiate: "Комиссия слишком близко к floor",
+    decline: "Order не покрывает полную стоимость"
+  },
+  hours: "ч"
+} : {
+  kicker: "Scenario Lab · three market engines",
+  title: "Three models for three different ways to earn gold",
+  text: "Auction House crafting, material farming and Crafting Orders cannot share one headline margin. Each engine exposes its own cash flow, risk and stop condition.",
+  count: "22 inputs · local save · shareable URL",
+  craftKicker: "Model 01 · recipe economics",
+  craftTitle: "Crafting Margin: profit after liquidity",
+  craftText: "The model includes the Auction House cut, sell-through and lost deposit in an unsuccessful listing cycle.",
+  materialCost: "Materials / craft",
+  outputUnits: "Output units / craft",
+  salePrice: "Sale price / unit",
+  ahCut: "AH cut, %",
+  deposit: "Deposit / listing",
+  sellThrough: "Sell-through / cycle, %",
+  crafts: "Batch size, crafts",
+  craftResult: "Crafting investment case",
+  craftNote: "Sell-through is a scenario for one listing cycle. Unsold goods retain value but lock capital and require another listing.",
+  gross: "Gross revenue / sold craft",
+  netRevenue: "Net revenue after AH",
+  soldProfit: "Profit if sold",
+  expectedProfit: "Expected profit / cycle",
+  batchProfit: "Expected batch profit",
+  roi: "Expected ROI / cycle",
+  breakEven: "Break-even / unit",
+  inventoryRisk: "Capital in unsold stock",
+  farmKicker: "Model 02 · liquidity haircut",
+  farmTitle: "Farm Liquidity: your real gold/hour",
+  farmText: "Listed price becomes effective GPH only after sell-through, the AH cut, expenses and relisting losses.",
+  unitsHour: "Units farmed / hour",
+  marketPrice: "Market price / unit",
+  farmSellThrough: "Sell-through, %",
+  farmAhCut: "AH cut, %",
+  hourlyExpenses: "Expenses / hour",
+  relistingLoss: "Relisting losses / hour",
+  sessionHours: "Session length, hours",
+  targetGold: "Gold target",
+  farmResult: "Farm liquidity case",
+  listedGph: "Quoted / listed GPH",
+  effectiveGph: "Effective GPH",
+  monetization: "Monetization rate",
+  liquidityHaircut: "Liquidity haircut / hour",
+  farmInventory: "Inventory at risk / session",
+  sessionGold: "Expected gold / session",
+  targetHours: "Hours to target",
+  orderKicker: "Model 03 · service economics",
+  orderTitle: "Crafting Order Floor: what your work needs to earn",
+  orderText: "Commission must cover crafter materials, expected recraft reserve and time that could have been monetized elsewhere.",
+  commission: "Commission / order",
+  orderMaterials: "Crafter materials",
+  recraft: "Expected recraft reserve",
+  serviceMinutes: "Time / order, min",
+  targetGph: "Your target gold/hour",
+  orders: "Number of orders",
+  orderResult: "Crafting Order case",
+  orderNote: "The model does not assign a universal price to skill. Target GPH is your time opportunity cost and recraft reserve remains an editable expectation.",
+  cashProfit: "Cash profit / order",
+  timeCost: "Time cost",
+  economicProfit: "Economic profit / order",
+  minimumCommission: "Minimum commission",
+  orderGph: "Effective gold/hour",
+  orderBatch: "Batch economic profit",
+  safety: "Margin of safety",
+  states: {
+    positiveEdge: "Positive market edge",
+    thinEdge: "The margin is too thin",
+    negativeEdge: "Negative expected margin",
+    liquid: "The market absorbs this volume",
+    discounted: "GPH needs a liquidity discount",
+    inventoryTrap: "The farm becomes an inventory trap",
+    accept: "Order clears the economic floor",
+    negotiate: "Commission is too close to the floor",
+    decline: "Order does not cover its full cost"
+  },
+  hours: "h"
+};
+---
+
+<section id="scenario-lab" class="section hub-section wow-scenario-lab" aria-labelledby="wow-scenario-lab-title">
+  <div class="section-head hub-section-head">
+    <div><span class="section-kicker">{copy.kicker}</span><h2 id="wow-scenario-lab-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+    <span class="count">{copy.count}</span>
+  </div>
+
+  <div id="crafting-margin" class="wow-model">
+    <div class="wow-model-head"><WowMarketMark mark={wowMarks.craft} lang={lang} large /><div><span class="game-tag">{copy.craftKicker}</span><h3>{copy.craftTitle}</h3><p>{copy.craftText}</p></div><span class="pill gold">Editable baseline</span></div>
+    <div class="grid-2 wow-model-grid" data-scenario-root data-scenario-key="wow-crafting">
+      <form class="card wow-input-card" data-role="craft-form">
+        <div class="form-grid">
+          <div class="field"><label for="craft-materials">{copy.materialCost}</label><input id="craft-materials" data-role="craft-materials" type="number" min="0" step="25" value={craftingBaseline.materialCostPerCraft} /></div>
+          <div class="field"><label for="craft-output">{copy.outputUnits}</label><input id="craft-output" data-role="craft-output" type="number" min="0" step="1" value={craftingBaseline.outputUnits} /></div>
+          <div class="field"><label for="craft-price">{copy.salePrice}</label><input id="craft-price" data-role="craft-price" type="number" min="0" step="5" value={craftingBaseline.salePricePerUnit} /></div>
+          <div class="field"><label for="craft-cut">{copy.ahCut}</label><input id="craft-cut" data-role="craft-cut" type="number" min="0" max="100" step="1" value={craftingBaseline.auctionHouseCutPercent} /></div>
+          <div class="field"><label for="craft-deposit">{copy.deposit}</label><input id="craft-deposit" data-role="craft-deposit" type="number" min="0" step="1" value={craftingBaseline.depositPerListing} /></div>
+          <div class="field"><label for="craft-sellthrough">{copy.sellThrough}</label><input id="craft-sellthrough" data-role="craft-sellthrough" type="number" min="0" max="100" step="5" value={craftingBaseline.sellThroughPercent} /></div>
+          <div class="field" style="grid-column:1/-1"><label for="craft-count">{copy.crafts}</label><input id="craft-count" data-role="craft-count" type="number" min="0" step="1" value={craftingBaseline.crafts} /></div>
+        </div>
+      </form>
+      <article class="card result-panel wow-result-panel" aria-live="polite">
+        <span class="result-label">{copy.craftResult}</span><div class="result-name" data-role="craft-decision">-</div><p class="result-reason">{copy.craftNote}</p>
+        <div class="result-metrics">
+          <div class="result-metric"><span>{copy.gross}</span><strong data-role="craft-gross">-</strong></div>
+          <div class="result-metric"><span>{copy.netRevenue}</span><strong data-role="craft-net-revenue">-</strong></div>
+          <div class="result-metric"><span>{copy.soldProfit}</span><strong class="teal" data-role="craft-sold-profit">-</strong></div>
+          <div class="result-metric"><span>{copy.expectedProfit}</span><strong data-role="craft-expected">-</strong></div>
+          <div class="result-metric"><span>{copy.batchProfit}</span><strong class="gold" data-role="craft-batch">-</strong></div>
+          <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="craft-roi">-</strong></div>
+          <div class="result-metric"><span>{copy.breakEven}</span><strong data-role="craft-break-even">-</strong></div>
+          <div class="result-metric"><span>{copy.inventoryRisk}</span><strong data-role="craft-inventory">-</strong></div>
+        </div>
+        <ScenarioActions lang={lang} />
+      </article>
+    </div>
+  </div>
+
+  <div id="farm-liquidity" class="wow-model">
+    <div class="wow-model-head"><WowMarketMark mark={wowMarks.gather} lang={lang} large /><div><span class="game-tag">{copy.farmKicker}</span><h3>{copy.farmTitle}</h3><p>{copy.farmText}</p></div><span class="pill teal">Time + liquidity</span></div>
+    <div class="grid-2 wow-model-grid" data-scenario-root data-scenario-key="wow-farm">
+      <form class="card wow-input-card" data-role="farm-form">
+        <div class="form-grid">
+          <div class="field"><label for="farm-units">{copy.unitsHour}</label><input id="farm-units" data-role="farm-units" type="number" min="0" step="5" value={farmBaseline.unitsPerHour} /></div>
+          <div class="field"><label for="farm-price">{copy.marketPrice}</label><input id="farm-price" data-role="farm-price" type="number" min="0" step="1" value={farmBaseline.marketPricePerUnit} /></div>
+          <div class="field"><label for="farm-sellthrough">{copy.farmSellThrough}</label><input id="farm-sellthrough" data-role="farm-sellthrough" type="number" min="0" max="100" step="5" value={farmBaseline.sellThroughPercent} /></div>
+          <div class="field"><label for="farm-cut">{copy.farmAhCut}</label><input id="farm-cut" data-role="farm-cut" type="number" min="0" max="100" step="1" value={farmBaseline.auctionHouseCutPercent} /></div>
+          <div class="field"><label for="farm-expenses">{copy.hourlyExpenses}</label><input id="farm-expenses" data-role="farm-expenses" type="number" min="0" step="10" value={farmBaseline.hourlyExpenses} /></div>
+          <div class="field"><label for="farm-relisting">{copy.relistingLoss}</label><input id="farm-relisting" data-role="farm-relisting" type="number" min="0" step="5" value={farmBaseline.relistingLossPerHour} /></div>
+          <div class="field"><label for="farm-session">{copy.sessionHours}</label><input id="farm-session" data-role="farm-session" type="number" min="0" step="0.5" value={farmBaseline.sessionHours} /></div>
+          <div class="field"><label for="farm-target">{copy.targetGold}</label><input id="farm-target" data-role="farm-target" type="number" min="0" step="1000" value={farmBaseline.targetGold} /></div>
+        </div>
+      </form>
+      <article class="card result-panel wow-result-panel" aria-live="polite">
+        <span class="result-label">{copy.farmResult}</span><div class="result-name" data-role="farm-decision">-</div>
+        <div class="result-metrics">
+          <div class="result-metric"><span>{copy.listedGph}</span><strong data-role="farm-listed">-</strong></div>
+          <div class="result-metric"><span>{copy.effectiveGph}</span><strong class="teal" data-role="farm-effective">-</strong></div>
+          <div class="result-metric"><span>{copy.monetization}</span><strong class="magenta" data-role="farm-rate">-</strong></div>
+          <div class="result-metric"><span>{copy.liquidityHaircut}</span><strong data-role="farm-haircut">-</strong></div>
+          <div class="result-metric"><span>{copy.farmInventory}</span><strong data-role="farm-inventory">-</strong></div>
+          <div class="result-metric"><span>{copy.sessionGold}</span><strong class="gold" data-role="farm-session-gold">-</strong></div>
+          <div class="result-metric" style="grid-column:1/-1"><span>{copy.targetHours}</span><strong data-role="farm-target-hours">-</strong></div>
+        </div>
+        <ScenarioActions lang={lang} />
+      </article>
+    </div>
+  </div>
+
+  <div id="order-floor" class="wow-model">
+    <div class="wow-model-head"><WowMarketMark mark={wowMarks.orders} lang={lang} large /><div><span class="game-tag">{copy.orderKicker}</span><h3>{copy.orderTitle}</h3><p>{copy.orderText}</p></div><span class="pill muted">Opportunity cost</span></div>
+    <div class="grid-2 wow-model-grid" data-scenario-root data-scenario-key="wow-order">
+      <form class="card wow-input-card" data-role="order-form">
+        <div class="form-grid">
+          <div class="field"><label for="order-commission">{copy.commission}</label><input id="order-commission" data-role="order-commission" type="number" min="0" step="100" value={orderBaseline.commissionGold} /></div>
+          <div class="field"><label for="order-materials">{copy.orderMaterials}</label><input id="order-materials" data-role="order-materials" type="number" min="0" step="25" value={orderBaseline.crafterMaterialCost} /></div>
+          <div class="field"><label for="order-recraft">{copy.recraft}</label><input id="order-recraft" data-role="order-recraft" type="number" min="0" step="25" value={orderBaseline.expectedRecraftReserve} /></div>
+          <div class="field"><label for="order-minutes">{copy.serviceMinutes}</label><input id="order-minutes" data-role="order-minutes" type="number" min="0" step="1" value={orderBaseline.serviceMinutes} /></div>
+          <div class="field"><label for="order-target-gph">{copy.targetGph}</label><input id="order-target-gph" data-role="order-target-gph" type="number" min="0" step="500" value={orderBaseline.targetGoldPerHour} /></div>
+          <div class="field"><label for="order-count">{copy.orders}</label><input id="order-count" data-role="order-count" type="number" min="0" step="1" value={orderBaseline.orders} /></div>
+        </div>
+      </form>
+      <article class="card result-panel wow-result-panel" aria-live="polite">
+        <span class="result-label">{copy.orderResult}</span><div class="result-name" data-role="order-decision">-</div><p class="result-reason">{copy.orderNote}</p>
+        <div class="result-metrics">
+          <div class="result-metric"><span>{copy.cashProfit}</span><strong data-role="order-cash-profit">-</strong></div>
+          <div class="result-metric"><span>{copy.timeCost}</span><strong data-role="order-time-cost">-</strong></div>
+          <div class="result-metric"><span>{copy.economicProfit}</span><strong class="teal" data-role="order-economic-profit">-</strong></div>
+          <div class="result-metric"><span>{copy.minimumCommission}</span><strong class="gold" data-role="order-minimum">-</strong></div>
+          <div class="result-metric"><span>{copy.orderGph}</span><strong data-role="order-gph">-</strong></div>
+          <div class="result-metric"><span>{copy.orderBatch}</span><strong data-role="order-batch">-</strong></div>
+          <div class="result-metric" style="grid-column:1/-1"><span>{copy.safety}</span><strong class="magenta" data-role="order-safety">-</strong></div>
+        </div>
+        <ScenarioActions lang={lang} />
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+  import type { WowLocale } from "../data/wow-economy";
+  import { calculateCraftingMetrics, calculateFarmMetrics, calculateWorkOrderMetrics } from "../lib/wow-economy";
+
+  document.querySelectorAll<HTMLElement>("#wow-economy-hub").forEach((root) => {
+    if (root.dataset.calculatorsReady === "true") return;
+    root.dataset.calculatorsReady = "true";
+    const lang = (root.dataset.lang ?? "ru") as WowLocale;
+    const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
+    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(Math.round(value))} g` : "∞";
+    const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
+    const target = (role: string) => root.querySelector<HTMLElement>(`[data-role='${role}']`)!;
+    const value = (role: string) => Math.max(0, Number(input(role).value) || 0);
+    const labels = lang === "ru" ? {
+      positiveEdge: "Положительный market edge", thinEdge: "Маржа слишком тонкая", negativeEdge: "Отрицательная expected margin",
+      liquid: "Рынок поглощает объём", discounted: "GPH требует дисконта", inventoryTrap: "Фарм превращается в inventory trap",
+      accept: "Order выше экономического floor", negotiate: "Комиссия слишком близко к floor", decline: "Order не покрывает полную стоимость", hours: "ч"
+    } : {
+      positiveEdge: "Positive market edge", thinEdge: "The margin is too thin", negativeEdge: "Negative expected margin",
+      liquid: "The market absorbs this volume", discounted: "GPH needs a liquidity discount", inventoryTrap: "The farm becomes an inventory trap",
+      accept: "Order clears the economic floor", negotiate: "Commission is too close to the floor", decline: "Order does not cover its full cost", hours: "h"
+    };
+
+    function renderCrafting() {
+      const metrics = calculateCraftingMetrics({ materialCostPerCraft: value("craft-materials"), outputUnits: value("craft-output"), salePricePerUnit: value("craft-price"), auctionHouseCutPercent: value("craft-cut"), depositPerListing: value("craft-deposit"), sellThroughPercent: value("craft-sellthrough"), crafts: value("craft-count") });
+      target("craft-decision").textContent = metrics.state === "positive-edge" ? labels.positiveEdge : metrics.state === "thin-edge" ? labels.thinEdge : labels.negativeEdge;
+      target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "positive-edge" ? "positive" : metrics.state === "thin-edge" ? "caution" : "negative";
+      target("craft-gross").textContent = gold(metrics.grossRevenueIfSold);
+      target("craft-net-revenue").textContent = gold(metrics.netRevenueIfSold);
+      target("craft-sold-profit").textContent = gold(metrics.profitIfSold);
+      target("craft-expected").textContent = gold(metrics.expectedProfitPerCycle);
+      target("craft-batch").textContent = gold(metrics.expectedBatchProfit);
+      target("craft-roi").textContent = `${metrics.expectedRoiPercent.toFixed(1)}%`;
+      target("craft-break-even").textContent = gold(metrics.breakEvenPricePerUnit);
+      target("craft-inventory").textContent = gold(metrics.inventoryCapitalAtRisk);
+    }
+
+    function renderFarm() {
+      const metrics = calculateFarmMetrics({ unitsPerHour: value("farm-units"), marketPricePerUnit: value("farm-price"), sellThroughPercent: value("farm-sellthrough"), auctionHouseCutPercent: value("farm-cut"), hourlyExpenses: value("farm-expenses"), relistingLossPerHour: value("farm-relisting"), sessionHours: value("farm-session"), targetGold: value("farm-target") });
+      target("farm-decision").textContent = metrics.state === "liquid" ? labels.liquid : metrics.state === "discounted" ? labels.discounted : labels.inventoryTrap;
+      target("farm-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "liquid" ? "positive" : metrics.state === "discounted" ? "caution" : "negative";
+      target("farm-listed").textContent = gold(metrics.listedGoldPerHour);
+      target("farm-effective").textContent = gold(metrics.effectiveGoldPerHour);
+      target("farm-rate").textContent = `${metrics.monetizationRatePercent.toFixed(1)}%`;
+      target("farm-haircut").textContent = gold(metrics.liquidityHaircutPerHour);
+      target("farm-inventory").textContent = gold(metrics.inventoryValueAtRisk);
+      target("farm-session-gold").textContent = gold(metrics.expectedSessionGold);
+      target("farm-target-hours").textContent = Number.isFinite(metrics.hoursToTarget) ? `${metrics.hoursToTarget.toFixed(1)} ${labels.hours}` : "∞";
+    }
+
+    function renderOrder() {
+      const metrics = calculateWorkOrderMetrics({ commissionGold: value("order-commission"), crafterMaterialCost: value("order-materials"), expectedRecraftReserve: value("order-recraft"), serviceMinutes: value("order-minutes"), targetGoldPerHour: value("order-target-gph"), orders: value("order-count") });
+      target("order-decision").textContent = metrics.state === "accept" ? labels.accept : metrics.state === "negotiate" ? labels.negotiate : labels.decline;
+      target("order-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "accept" ? "positive" : metrics.state === "negotiate" ? "caution" : "negative";
+      target("order-cash-profit").textContent = gold(metrics.cashProfitPerOrder);
+      target("order-time-cost").textContent = gold(metrics.timeCostPerOrder);
+      target("order-economic-profit").textContent = gold(metrics.economicProfitPerOrder);
+      target("order-minimum").textContent = gold(metrics.minimumCommission);
+      target("order-gph").textContent = gold(metrics.effectiveGoldPerHour);
+      target("order-batch").textContent = gold(metrics.batchEconomicProfit);
+      target("order-safety").textContent = `${metrics.marginOfSafetyPercent.toFixed(1)}%`;
+    }
+
+    const craftRoles = ["craft-materials", "craft-output", "craft-price", "craft-cut", "craft-deposit", "craft-sellthrough", "craft-count"];
+    const farmRoles = ["farm-units", "farm-price", "farm-sellthrough", "farm-cut", "farm-expenses", "farm-relisting", "farm-session", "farm-target"];
+    const orderRoles = ["order-commission", "order-materials", "order-recraft", "order-minutes", "order-target-gph", "order-count"];
+    craftRoles.forEach((role) => input(role).addEventListener("input", renderCrafting));
+    farmRoles.forEach((role) => input(role).addEventListener("input", renderFarm));
+    orderRoles.forEach((role) => input(role).addEventListener("input", renderOrder));
+    renderCrafting();
+    renderFarm();
+    renderOrder();
+  });
+</script>

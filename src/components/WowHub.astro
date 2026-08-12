@@ -1,159 +1,135 @@
 ---
-import { craftingBaseline, farmBaseline, wowPatchContext } from "../data/wow-economy";
 import wowEconomyWorld from "../assets/game-worlds/wow-economy-world.webp";
+import { wowPatchContext } from "../data/wow-economy";
+import { wowEconomyNodes, wowMarks, wowMarketRoutes, wowScenarios } from "../data/wow-hub";
+import { insights } from "../data/insights";
+import "../styles/wow-hub.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
-import DecisionShortcuts from "./DecisionShortcuts.astro";
-import FeaturedInsight from "./FeaturedInsight.astro";
 import GameWorldHero from "./GameWorldHero.astro";
-import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
+import WowCalculators from "./WowCalculators.astro";
+import WowDecisionDeck from "./WowDecisionDeck.astro";
+import WowEconomyMap from "./WowEconomyMap.astro";
+import WowLibrary from "./WowLibrary.astro";
+import WowMarketMark from "./WowMarketMark.astro";
+import WowPlayerPaths from "./WowPlayerPaths.astro";
+import WowPulse from "./WowPulse.astro";
+import WowRankings from "./WowRankings.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const root = lang === "ru" ? "/wow/" : "/en/wow/";
-const shortcuts = lang === "ru" ? [
-  { eyebrow: "Crafting", title: "Рецепт правда прибыльный?", text: "Проверь margin после AH cut, sell-through и стоимости неудачного листинга.", href: "#crafting-margin", meta: "7 inputs" },
-  { eyebrow: "Farming", title: "Сколько золота я реально получу?", text: "Отдели цену добытого inventory от ликвидного effective gold/hour.", href: "#farm-liquidity", meta: "8 inputs" }
-] : [
-  { eyebrow: "Crafting", title: "Is the recipe actually profitable?", text: "Test margin after AH cut, sell-through and failed-listing cost.", href: "#crafting-margin", meta: "7 inputs" },
-  { eyebrow: "Farming", title: "How much gold can I realize?", text: "Separate inventory list value from liquid effective gold/hour.", href: "#farm-liquidity", meta: "8 inputs" }
-];
+const wowInsightCount = insights.filter((insight) => insight.game === "wow").length;
 
 const copy = lang === "ru" ? {
-  title: "WoW Economy Lab - crafting, Auction House и gold/hour | Money Meta",
-  description: "Рассчитай реальную маржу крафта и effective gold/hour после комиссии Auction House, sell-through и стоимости непроданного инвентаря.",
+  title: "WoW Retail Economy Hub: Auction House, профессии и gold | Money Meta",
+  description: "Живая модель экономики WoW Retail: карта рынка, персональные пути, актуальные изменения, рейтинги способов заработка, сценарии и калькуляторы.",
   back: "← Все экономики",
-  eyebrow: "World of Warcraft Retail · Market Economy Lab",
-  heading: "Цена в Auction House - ещё не золото.",
-  lede: "WoW - это рынок с комиссиями, ликвидностью и замороженным капиталом. Money Meta показывает не красивую цену листинга, а сколько золота действительно конвертируется в прибыль.",
-  craftCta: "Проверить crafting margin",
-  farmCta: "Посчитать effective gold/hour",
-  heroProof: [["Net", "после AH cut"], ["Sell-through", "вероятность продажи"], ["GPH", "после liquidity"], ["Risk", "непроданный inventory"]],
-  context: "Retail context",
-  contextText: `Модель проверена для ${wowPatchContext.release} на ${wowPatchContext.checkedAt}. Все цены и sell-through редактируются: рынок зависит от региона, realm и категории товара.`,
-  craftKicker: "Market Economy Model 01",
-  craftTitle: "Crafting Margin: прибыль после ликвидности",
-  craftText: "Положительный spread до комиссии ещё не означает прибыль. Модель учитывает Auction House cut, вероятность продажи и потерю deposit при неудачном цикле листинга.",
-  materialCost: "Материалы / craft",
-  outputUnits: "Выход товара / craft",
-  salePrice: "Цена продажи / ед.",
-  ahCut: "Комиссия AH, %",
-  deposit: "Deposit / listing",
-  sellThrough: "Sell-through / цикл, %",
-  crafts: "Размер batch, crafts",
-  craftResult: "Crafting investment case",
-  gross: "Gross revenue / sold craft",
-  netRevenue: "Net revenue после AH",
-  soldProfit: "Прибыль если продано",
-  expectedProfit: "Expected profit / цикл",
-  batchProfit: "Expected batch profit",
-  roi: "Expected ROI / цикл",
-  breakEven: "Break-even / ед.",
-  inventoryRisk: "Капитал в непроданном",
-  positiveEdge: "Положительный market edge",
-  thinEdge: "Маржа слишком тонкая",
-  negativeEdge: "Отрицательная ожидаемая маржа",
-  craftNote: "Sell-through - сценарная вероятность продажи за один listing cycle, а не обещание. Непроданный товар остаётся активом, но блокирует капитал и требует нового листинга.",
-  farmKicker: "Market Economy Model 02",
-  farmTitle: "Farm Liquidity: настоящий gold/hour",
-  farmText: "Гайды часто умножают добычу на текущую цену и называют результат GPH. Модель делает liquidity haircut и показывает золото, которое рынок способен поглотить.",
-  unitsHour: "Единиц добычи / час",
-  marketPrice: "Market price / ед.",
-  farmSellThrough: "Sell-through, %",
-  farmAhCut: "Комиссия AH, %",
-  hourlyExpenses: "Расходы / час",
-  relistingLoss: "Relisting losses / час",
-  sessionHours: "Длина сессии, часов",
-  targetGold: "Цель, золото",
-  farmResult: "Farm liquidity case",
-  listedGph: "Quoted / listed GPH",
-  effectiveGph: "Effective GPH",
-  monetization: "Monetization rate",
-  liquidityHaircut: "Liquidity haircut / час",
-  farmInventory: "Inventory at risk / сессия",
-  sessionGold: "Expected gold / сессия",
-  targetHours: "Часов до цели",
-  liquid: "Рынок поглощает объём",
-  discounted: "GPH требует дисконта",
-  inventoryTrap: "Фарм превращается в inventory trap",
-  hours: "ч",
-  conceptsTitle: "Финансовый язык WoW",
-  conceptsText: "Рыночная цена, прибыль и ликвидность - три разные величины.",
-  concepts: [
-    ["Unit economics", "Рецепт создаёт value только после материалов, комиссии и стоимости неисполненного листинга."],
-    ["Liquidity discount", "Высокая цена бесполезна, если объём нельзя реализовать без долгого ожидания или снижения цены."],
-    ["Working capital", "Непроданные reagents и crafted items продолжают иметь стоимость, но блокируют золото для следующей сделки."]
+  live: "Retail market model · checked 2026-08-12",
+  eyebrow: "World of Warcraft Retail · Living Market Hub",
+  heading: "Не фарми цену. Управляй потоком gold.",
+  lede: "Проследи путь капитала от reagent до реализованной прибыли. Выбери рыночную роль, проверь ликвидность и узнай, где твоя margin перестаёт быть настоящей.",
+  primary: "Найти мой market path",
+  secondary: "Открыть Scenario Lab",
+  proof: [
+    [String(wowEconomyNodes.length), "звеньев экономики"],
+    [String(wowMarketRoutes.length), "market routes"],
+    [String(wowScenarios.length), "готовых решений"],
+    [String(wowInsightCount), "полных разборов"]
   ],
-  methodology: "Методология и источники",
-  sourceNote: wowPatchContext.note.ru
+  loadoutLabel: "Ключевые системы WoW-хаба",
+  loadout: [
+    [wowMarks.knowledge, "ALLOCATION", "Knowledge reset"],
+    [wowMarks.craft, "MARGIN", "Recipe economics"],
+    [wowMarks.orders, "SERVICE", "Order floor"],
+    [wowMarks.liquidity, "CASH", "Realized GPH"]
+  ] as const,
+  navLabel: "Навигация WoW Economy Hub",
+  navBrand: "WOW / MARKET OS",
+  nav: [
+    ["01", "Карта", "#economy-map"],
+    ["02", "Мой путь", "#player-paths"],
+    ["03", "Pulse", "#market-pulse"],
+    ["04", "Рейтинги", "#market-rankings"],
+    ["05", "Решения", "#decision-deck"],
+    ["06", "Модели", "#scenario-lab"],
+    ["07", "Разборы", "#research-library"]
+  ],
+  manifestoKicker: "The Money Meta difference",
+  manifestoTitle: "В WoW есть три разных вида богатства. Не смешивай их.",
+  manifestoText: "Gold в bags, inventory по цене листинга и доступ профессии к рынку имеют разную ликвидность. Хаб показывает, как одно превращается в другое и где цепочка ломается.",
+  principles: [
+    ["CASH", "Только реализованный gold финансирует следующий ход."],
+    ["INVENTORY", "Непроданный stock является working capital, а не прибылью."],
+    ["KNOWLEDGE", "Специализация создаёт moat только при повторяемом спросе."],
+    ["TIME", "Фарм, craft и service имеют разную opportunity cost."]
+  ],
+  trustKicker: "Methodology · evidence · independence",
+  trustTitle: "Официальный контекст отдельно. Рыночная модель отдельно.",
+  trustText: "Money Meta связывает изменения Blizzard с решениями игрока, но не выдаёт редактируемые цены или sell-through за данные издателя.",
+  trustCards: [
+    ["01", "Verified context", "Curse of Ula’tek, profession reset, decor costs и persistent AH filters привязаны к официальным материалам Blizzard.", "official"],
+    ["02", "Editable market layer", "Prices, AH cut, sell-through, deposits, recraft reserve и target GPH остаются пользовательскими допущениями.", "model"],
+    ["03", "Independent analysis", "Money Meta не связан с Blizzard Entertainment. Визуальный язык и market marks созданы для этого продукта.", "independent"]
+  ],
+  methodology: "Открыть методологию и источники",
+  disclaimer: "World of Warcraft и связанные названия являются собственностью Blizzard Entertainment. Money Meta является независимым аналитическим продуктом.",
+  roadmap: "Следующий WoW-слой после проверки спроса: live region data, Token context, profession-specific ledgers и сохранённый портфель market routes."
 } : {
-  title: "WoW Economy Lab - crafting, Auction House and gold/hour | Money Meta",
-  description: "Calculate real crafting margin and effective gold/hour after Auction House fees, sell-through and unsold inventory risk.",
+  title: "WoW Retail Economy Hub: Auction House, professions and gold | Money Meta",
+  description: "A living WoW Retail economy model with a market map, personal paths, current changes, conditional route rankings, scenarios and calculators.",
   back: "← All economies",
-  eyebrow: "World of Warcraft Retail · Market Economy Lab",
-  heading: "An Auction House price is not gold yet.",
-  lede: "WoW is a market with fees, liquidity and working capital. Money Meta looks past the attractive listing price and measures how much gold can actually become profit.",
-  craftCta: "Check crafting margin",
-  farmCta: "Calculate effective gold/hour",
-  heroProof: [["Net", "after AH cut"], ["Sell-through", "sale probability"], ["GPH", "after liquidity"], ["Risk", "unsold inventory"]],
-  context: "Retail context",
-  contextText: `The model was checked for ${wowPatchContext.release} on ${wowPatchContext.checkedAt}. Every price and sell-through input is editable because markets vary by region, realm and item category.`,
-  craftKicker: "Market Economy Model 01",
-  craftTitle: "Crafting Margin: profit after liquidity",
-  craftText: "A positive pre-fee spread does not guarantee profit. The model includes the Auction House cut, sale probability and a lost deposit when a listing cycle fails.",
-  materialCost: "Materials / craft",
-  outputUnits: "Output units / craft",
-  salePrice: "Sale price / unit",
-  ahCut: "AH cut, %",
-  deposit: "Deposit / listing",
-  sellThrough: "Sell-through / cycle, %",
-  crafts: "Batch size, crafts",
-  craftResult: "Crafting investment case",
-  gross: "Gross revenue / sold craft",
-  netRevenue: "Net revenue after AH",
-  soldProfit: "Profit if sold",
-  expectedProfit: "Expected profit / cycle",
-  batchProfit: "Expected batch profit",
-  roi: "Expected ROI / cycle",
-  breakEven: "Break-even / unit",
-  inventoryRisk: "Capital in unsold stock",
-  positiveEdge: "Positive market edge",
-  thinEdge: "The margin is too thin",
-  negativeEdge: "Negative expected margin",
-  craftNote: "Sell-through is a scenario probability for one listing cycle, not a promise. Unsold goods remain an asset, but tie up capital and require another listing.",
-  farmKicker: "Market Economy Model 02",
-  farmTitle: "Farm Liquidity: your real gold/hour",
-  farmText: "Guides often multiply loot by the current price and call it GPH. This model applies a liquidity haircut and estimates how much gold the market can absorb.",
-  unitsHour: "Units farmed / hour",
-  marketPrice: "Market price / unit",
-  farmSellThrough: "Sell-through, %",
-  farmAhCut: "AH cut, %",
-  hourlyExpenses: "Expenses / hour",
-  relistingLoss: "Relisting losses / hour",
-  sessionHours: "Session length, hours",
-  targetGold: "Gold target",
-  farmResult: "Farm liquidity case",
-  listedGph: "Quoted / listed GPH",
-  effectiveGph: "Effective GPH",
-  monetization: "Monetization rate",
-  liquidityHaircut: "Liquidity haircut / hour",
-  farmInventory: "Inventory at risk / session",
-  sessionGold: "Expected gold / session",
-  targetHours: "Hours to target",
-  liquid: "The market absorbs this volume",
-  discounted: "GPH needs a liquidity discount",
-  inventoryTrap: "The farm becomes an inventory trap",
-  hours: "h",
-  conceptsTitle: "The financial language of WoW",
-  conceptsText: "Market price, profit and liquidity are three different numbers.",
-  concepts: [
-    ["Unit economics", "A recipe creates value only after materials, fees and the cost of an unsuccessful listing."],
-    ["Liquidity discount", "A high price is useless when volume cannot sell without a long wait or a markdown."],
-    ["Working capital", "Unsold reagents and crafted goods retain value, but lock gold away from the next trade."]
+  live: "Retail market model · checked 2026-08-12",
+  eyebrow: "World of Warcraft Retail · Living Market Hub",
+  heading: "Do not farm a price. Manage the flow of gold.",
+  lede: "Follow capital from reagent to realized profit. Choose a market role, test liquidity and see where the attractive margin stops being real.",
+  primary: "Find my market path",
+  secondary: "Open Scenario Lab",
+  proof: [
+    [String(wowEconomyNodes.length), "economy links"],
+    [String(wowMarketRoutes.length), "market routes"],
+    [String(wowScenarios.length), "prepared decisions"],
+    [String(wowInsightCount), "complete analyses"]
   ],
-  methodology: "Methodology and sources",
-  sourceNote: wowPatchContext.note.en
+  loadoutLabel: "Key systems in the WoW hub",
+  loadout: [
+    [wowMarks.knowledge, "ALLOCATION", "Knowledge reset"],
+    [wowMarks.craft, "MARGIN", "Recipe economics"],
+    [wowMarks.orders, "SERVICE", "Order floor"],
+    [wowMarks.liquidity, "CASH", "Realized GPH"]
+  ] as const,
+  navLabel: "WoW Economy Hub navigation",
+  navBrand: "WOW / MARKET OS",
+  nav: [
+    ["01", "Map", "#economy-map"],
+    ["02", "My path", "#player-paths"],
+    ["03", "Pulse", "#market-pulse"],
+    ["04", "Rankings", "#market-rankings"],
+    ["05", "Decisions", "#decision-deck"],
+    ["06", "Models", "#scenario-lab"],
+    ["07", "Research", "#research-library"]
+  ],
+  manifestoKicker: "The Money Meta difference",
+  manifestoTitle: "WoW has three kinds of wealth. Do not mix them.",
+  manifestoText: "Gold in bags, inventory at listing price and profession access to a market carry different liquidity. The hub shows how one becomes another and where the chain breaks.",
+  principles: [
+    ["CASH", "Only realized gold can fund the next move."],
+    ["INVENTORY", "Unsold stock is working capital, not profit."],
+    ["KNOWLEDGE", "Specialization creates a moat only with repeat demand."],
+    ["TIME", "Gathering, crafting and service carry different opportunity costs."]
+  ],
+  trustKicker: "Methodology · evidence · independence",
+  trustTitle: "Official context on one layer. Market model on another.",
+  trustText: "Money Meta connects Blizzard changes to player decisions without presenting editable prices or sell-through as publisher data.",
+  trustCards: [
+    ["01", "Verified context", "Curse of Ula’tek, the profession reset, decor costs and persistent AH filters link to official Blizzard materials.", "official"],
+    ["02", "Editable market layer", "Prices, the AH cut, sell-through, deposits, recraft reserve and target GPH remain user assumptions.", "model"],
+    ["03", "Independent analysis", "Money Meta is not affiliated with Blizzard Entertainment. The visual system and market marks are original to this product.", "independent"]
+  ],
+  methodology: "Open methodology and sources",
+  disclaimer: "World of Warcraft and related names are property of Blizzard Entertainment. Money Meta is an independent analytical product.",
+  roadmap: "The next WoW layer after demand validation: live regional data, Token context, profession-specific ledgers and a saved portfolio of market routes."
 };
 ---
 
@@ -165,130 +141,101 @@ const copy = lang === "ru" ? {
   alternatePath={lang === "ru" ? "/en/wow/" : "/wow/"}
   schema={{
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    name: "Money Meta WoW Economy Lab",
-    applicationCategory: "GameApplication",
-    operatingSystem: "Web",
-    url: new URL(root, Astro.site),
+    "@type": "CollectionPage",
+    name: copy.title,
     description: copy.description,
-    inLanguage: lang
+    inLanguage: lang,
+    about: { "@type": "VideoGame", name: "World of Warcraft", publisher: "Blizzard Entertainment" },
+    hasPart: [
+      { "@type": "SoftwareApplication", name: "WoW Crafting Margin", applicationCategory: "GameApplication" },
+      { "@type": "SoftwareApplication", name: "WoW Farm Liquidity", applicationCategory: "GameApplication" },
+      { "@type": "SoftwareApplication", name: "WoW Crafting Order Floor", applicationCategory: "GameApplication" },
+      { "@type": "ItemList", name: "Conditional WoW market route rankings", numberOfItems: wowMarketRoutes.length }
+    ]
   }}
 >
-  <main id="wow-economy-lab" class="page game-page game-wow" data-lang={lang}>
+  <main id="wow-economy-hub" class="page game-page game-wow wow-living-hub" data-lang={lang}>
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/wow/" enPath="/en/wow/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <GameWorldHero image={wowEconomyWorld} worldCode="MARKET FLOW / 03">
+      <GameWorldHero
+        image={wowEconomyWorld}
+        alt={lang === "ru" ? "Оригинальная иллюстрация Money Meta: магический рынок и потоки капитала WoW Retail" : "Original Money Meta illustration of an arcane market and WoW Retail capital flows"}
+        worldCode="MARKET FLYWHEEL / 03"
+      >
+        <div class="hero-live-line"><span></span>{copy.live}</div>
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
         <div class="hero-actions">
-          <a class="button primary" href="#crafting-margin">{copy.craftCta} →</a>
-          <a class="button ghost" href="#farm-liquidity">{copy.farmCta}</a>
+          <a class="button primary button-large wow-primary" href="#player-paths">{copy.primary} →</a>
+          <a class="button ghost button-large" href="#scenario-lab">{copy.secondary}</a>
         </div>
         <div class="proof-strip">
-          {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
+          {copy.proof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
-        <div class="callout warning" style="margin-top:24px">
-          <p><span class="pill gold">{copy.context}</span> <strong>{wowPatchContext.release}</strong> · {copy.contextText}</p>
+        <div class="wow-hero-loadout" aria-label={copy.loadoutLabel}>
+          {copy.loadout.map(([mark, label, value]) => (
+            <div><WowMarketMark mark={mark} lang={lang} /><span>{label}</span><strong>{value}</strong></div>
+          ))}
         </div>
       </GameWorldHero>
 
-      <DecisionShortcuts lang={lang} game="wow" items={shortcuts} />
+      <nav class="hub-jump-nav wow-jump-nav" aria-label={copy.navLabel}>
+        <span class="hub-jump-brand"><i aria-hidden="true"></i>{copy.navBrand}</span>
+        <div>{copy.nav.map(([code, label, href]) => <a href={href}><span>{code}</span>{label}</a>)}</div>
+      </nav>
 
-      <FeaturedInsight
-        lang={lang}
-        game="wow"
-        title={lang === "ru" ? "Почему 3 420 listed GPH могут быть только 1 957 gold" : "Why 3,420 listed GPH may be only 1,957 gold"}
-        summary={lang === "ru" ? "Sell-through, AH cut и inventory at risk превращают красивую цену в другой денежный результат." : "Sell-through, AH cut and inventory at risk turn an attractive listing price into a different cash outcome."}
-        href={`${lang === "ru" ? "" : "/en"}/insights/wow-listed-gold-per-hour-vs-real-gph/`}
-        readTime={lang === "ru" ? "6 мин" : "6 min"}
-      />
-
-      <section id="crafting-margin" class="section">
-        <div class="section-head">
-          <div><span class="section-kicker">{copy.craftKicker}</span><h2>{copy.craftTitle}</h2><p class="section-copy">{copy.craftText}</p></div>
-          <span class="pill gold">Editable baseline</span>
+      <section class="hub-manifesto wow-manifesto" aria-labelledby="wow-manifesto-title">
+        <div>
+          <span class="section-kicker">{copy.manifestoKicker}</span>
+          <h2 id="wow-manifesto-title">{copy.manifestoTitle}</h2>
+          <p>{copy.manifestoText}</p>
         </div>
-        <div class="grid-2" data-scenario-root data-scenario-key="wow-crafting">
-          <form class="card" data-role="craft-form">
-            <div class="form-grid">
-              <div class="field"><label for="craft-materials">{copy.materialCost}</label><input id="craft-materials" data-role="craft-materials" type="number" min="0" step="25" value={craftingBaseline.materialCostPerCraft} /></div>
-              <div class="field"><label for="craft-output">{copy.outputUnits}</label><input id="craft-output" data-role="craft-output" type="number" min="0" step="1" value={craftingBaseline.outputUnits} /></div>
-              <div class="field"><label for="craft-price">{copy.salePrice}</label><input id="craft-price" data-role="craft-price" type="number" min="0" step="5" value={craftingBaseline.salePricePerUnit} /></div>
-              <div class="field"><label for="craft-cut">{copy.ahCut}</label><input id="craft-cut" data-role="craft-cut" type="number" min="0" max="100" step="1" value={craftingBaseline.auctionHouseCutPercent} /></div>
-              <div class="field"><label for="craft-deposit">{copy.deposit}</label><input id="craft-deposit" data-role="craft-deposit" type="number" min="0" step="1" value={craftingBaseline.depositPerListing} /></div>
-              <div class="field"><label for="craft-sellthrough">{copy.sellThrough}</label><input id="craft-sellthrough" data-role="craft-sellthrough" type="number" min="0" max="100" step="5" value={craftingBaseline.sellThroughPercent} /></div>
-              <div class="field" style="grid-column:1/-1"><label for="craft-count">{copy.crafts}</label><input id="craft-count" data-role="craft-count" type="number" min="0" step="1" value={craftingBaseline.crafts} /></div>
-            </div>
-          </form>
-          <article class="card result-panel" aria-live="polite">
-            <span class="result-label">{copy.craftResult}</span>
-            <div class="result-name" data-role="craft-decision">-</div>
-            <p class="result-reason">{copy.craftNote}</p>
-            <div class="result-metrics">
-              <div class="result-metric"><span>{copy.gross}</span><strong data-role="craft-gross">-</strong></div>
-              <div class="result-metric"><span>{copy.netRevenue}</span><strong data-role="craft-net-revenue">-</strong></div>
-              <div class="result-metric"><span>{copy.soldProfit}</span><strong class="teal" data-role="craft-sold-profit">-</strong></div>
-              <div class="result-metric"><span>{copy.expectedProfit}</span><strong data-role="craft-expected">-</strong></div>
-              <div class="result-metric"><span>{copy.batchProfit}</span><strong class="gold" data-role="craft-batch">-</strong></div>
-              <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="craft-roi">-</strong></div>
-              <div class="result-metric"><span>{copy.breakEven}</span><strong data-role="craft-break-even">-</strong></div>
-              <div class="result-metric"><span>{copy.inventoryRisk}</span><strong data-role="craft-inventory">-</strong></div>
-            </div>
-            <ScenarioActions lang={lang} />
-          </article>
+        <div class="manifesto-grid">
+          {copy.principles.map(([title, text], index) => (
+            <div><span>0{index + 1} / {title}</span><strong>{title}</strong><p>{text}</p></div>
+          ))}
         </div>
       </section>
 
-      <section id="farm-liquidity" class="section">
-        <div class="section-head">
-          <div><span class="section-kicker">{copy.farmKicker}</span><h2>{copy.farmTitle}</h2><p class="section-copy">{copy.farmText}</p></div>
-          <span class="pill teal">Time + liquidity</span>
-        </div>
-        <div class="grid-2" data-scenario-root data-scenario-key="wow-farm">
-          <form class="card" data-role="farm-form">
-            <div class="form-grid">
-              <div class="field"><label for="farm-units">{copy.unitsHour}</label><input id="farm-units" data-role="farm-units" type="number" min="0" step="5" value={farmBaseline.unitsPerHour} /></div>
-              <div class="field"><label for="farm-price">{copy.marketPrice}</label><input id="farm-price" data-role="farm-price" type="number" min="0" step="1" value={farmBaseline.marketPricePerUnit} /></div>
-              <div class="field"><label for="farm-sellthrough">{copy.farmSellThrough}</label><input id="farm-sellthrough" data-role="farm-sellthrough" type="number" min="0" max="100" step="5" value={farmBaseline.sellThroughPercent} /></div>
-              <div class="field"><label for="farm-cut">{copy.farmAhCut}</label><input id="farm-cut" data-role="farm-cut" type="number" min="0" max="100" step="1" value={farmBaseline.auctionHouseCutPercent} /></div>
-              <div class="field"><label for="farm-expenses">{copy.hourlyExpenses}</label><input id="farm-expenses" data-role="farm-expenses" type="number" min="0" step="10" value={farmBaseline.hourlyExpenses} /></div>
-              <div class="field"><label for="farm-relisting">{copy.relistingLoss}</label><input id="farm-relisting" data-role="farm-relisting" type="number" min="0" step="5" value={farmBaseline.relistingLossPerHour} /></div>
-              <div class="field"><label for="farm-session">{copy.sessionHours}</label><input id="farm-session" data-role="farm-session" type="number" min="0" step="0.5" value={farmBaseline.sessionHours} /></div>
-              <div class="field"><label for="farm-target">{copy.targetGold}</label><input id="farm-target" data-role="farm-target" type="number" min="0" step="1000" value={farmBaseline.targetGold} /></div>
-            </div>
-          </form>
-          <article class="card result-panel" aria-live="polite">
-            <span class="result-label">{copy.farmResult}</span>
-            <div class="result-name" data-role="farm-decision">-</div>
-            <div class="result-metrics">
-              <div class="result-metric"><span>{copy.listedGph}</span><strong data-role="farm-listed">-</strong></div>
-              <div class="result-metric"><span>{copy.effectiveGph}</span><strong class="teal" data-role="farm-effective">-</strong></div>
-              <div class="result-metric"><span>{copy.monetization}</span><strong class="magenta" data-role="farm-rate">-</strong></div>
-              <div class="result-metric"><span>{copy.liquidityHaircut}</span><strong data-role="farm-haircut">-</strong></div>
-              <div class="result-metric"><span>{copy.farmInventory}</span><strong data-role="farm-inventory">-</strong></div>
-              <div class="result-metric"><span>{copy.sessionGold}</span><strong class="gold" data-role="farm-session-gold">-</strong></div>
-              <div class="result-metric" style="grid-column:1/-1"><span>{copy.targetHours}</span><strong data-role="farm-target-hours">-</strong></div>
-            </div>
-            <ScenarioActions lang={lang} />
-          </article>
-        </div>
-      </section>
+      <WowEconomyMap lang={lang} />
+      <WowPlayerPaths lang={lang} />
+      <WowPulse lang={lang} />
+      <WowRankings lang={lang} />
+      <WowDecisionDeck lang={lang} />
+      <WowCalculators lang={lang} />
+      <WowLibrary lang={lang} />
 
-      <section class="section">
-        <div class="section-head"><div><span class="section-kicker">Mental models</span><h2>{copy.conceptsTitle}</h2><p class="section-copy">{copy.conceptsText}</p></div></div>
-        <div class="grid-3">
-          {copy.concepts.map(([title, body], index) => <article class="card"><span class={`pill ${index === 0 ? "gold" : index === 1 ? "teal" : "muted"}`}>0{index + 1}</span><h3 style="margin:15px 0 8px">{title}</h3><p>{body}</p></article>)}
+      <section id="methodology" class="section hub-section trust-rail wow-trust-rail" aria-labelledby="wow-methodology-title">
+        <div class="section-head hub-section-head">
+          <div>
+            <span class="section-kicker">{copy.trustKicker}</span>
+            <h2 id="wow-methodology-title">{copy.trustTitle}</h2>
+            <p class="section-copy">{copy.trustText}</p>
+          </div>
+          <span class="count">{wowPatchContext.release} · {wowPatchContext.checkedAt}</span>
         </div>
-      </section>
 
-      <section class="section">
-        <details>
+        <div class="trust-grid">
+          {copy.trustCards.map(([code, title, text, status], index) => (
+            <article class="trust-card">
+              <div><span>{code}</span><span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>{status}</span></div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
+
+        <details class="wow-method-details">
           <summary>{copy.methodology} ↓</summary>
           <div>
-            <p>{copy.sourceNote}</p>
-            {wowPatchContext.sources.map((source) => <p><a class="source-link" href={source.url} target="_blank" rel="noreferrer"><strong>{source.label} ↗</strong></a> - {source.note[lang]}</p>)}
+            <p>{wowPatchContext.note[lang]}</p>
+            {wowPatchContext.sources.map((source) => (
+              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label} ↗</strong></a>: {source.note[lang]}</p>
+            ))}
+            <p>{copy.disclaimer}</p>
+            <p>{copy.roadmap}</p>
           </div>
         </details>
       </section>
@@ -297,89 +244,3 @@ const copy = lang === "ru" ? {
     </div>
   </main>
 </BaseLayout>
-
-<script>
-  import type { WowLocale } from "../data/wow-economy";
-  import { calculateCraftingMetrics, calculateFarmMetrics } from "../lib/wow-economy";
-
-  const root = document.querySelector<HTMLElement>("#wow-economy-lab");
-  if (root) {
-    const lang = (root.dataset.lang ?? "ru") as WowLocale;
-    const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
-    const gold = (value: number) => `${formatter.format(Math.round(value))} g`;
-    const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
-    const target = (role: string) => root.querySelector<HTMLElement>(`[data-role='${role}']`)!;
-    const value = (role: string) => Math.max(0, Number(input(role).value) || 0);
-    const labels = lang === "ru" ? {
-      positiveEdge: "Положительный market edge",
-      thinEdge: "Маржа слишком тонкая",
-      negativeEdge: "Отрицательная ожидаемая маржа",
-      liquid: "Рынок поглощает объём",
-      discounted: "GPH требует дисконта",
-      inventoryTrap: "Фарм превращается в inventory trap",
-      hours: "ч"
-    } : {
-      positiveEdge: "Positive market edge",
-      thinEdge: "The margin is too thin",
-      negativeEdge: "Negative expected margin",
-      liquid: "The market absorbs this volume",
-      discounted: "GPH needs a liquidity discount",
-      inventoryTrap: "The farm becomes an inventory trap",
-      hours: "h"
-    };
-
-    function renderCrafting() {
-      const metrics = calculateCraftingMetrics({
-        materialCostPerCraft: value("craft-materials"),
-        outputUnits: value("craft-output"),
-        salePricePerUnit: value("craft-price"),
-        auctionHouseCutPercent: value("craft-cut"),
-        depositPerListing: value("craft-deposit"),
-        sellThroughPercent: value("craft-sellthrough"),
-        crafts: value("craft-count")
-      });
-      target("craft-decision").textContent = metrics.state === "positive-edge" ? labels.positiveEdge : metrics.state === "thin-edge" ? labels.thinEdge : labels.negativeEdge;
-      target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "positive-edge" ? "positive" : metrics.state === "thin-edge" ? "caution" : "negative";
-      target("craft-gross").textContent = gold(metrics.grossRevenueIfSold);
-      target("craft-net-revenue").textContent = gold(metrics.netRevenueIfSold);
-      target("craft-sold-profit").textContent = gold(metrics.profitIfSold);
-      target("craft-expected").textContent = gold(metrics.expectedProfitPerCycle);
-      target("craft-batch").textContent = gold(metrics.expectedBatchProfit);
-      target("craft-roi").textContent = `${metrics.expectedRoiPercent.toFixed(1)}%`;
-      target("craft-break-even").textContent = Number.isFinite(metrics.breakEvenPricePerUnit) ? gold(metrics.breakEvenPricePerUnit) : "∞";
-      target("craft-inventory").textContent = gold(metrics.inventoryCapitalAtRisk);
-    }
-
-    function renderFarm() {
-      const metrics = calculateFarmMetrics({
-        unitsPerHour: value("farm-units"),
-        marketPricePerUnit: value("farm-price"),
-        sellThroughPercent: value("farm-sellthrough"),
-        auctionHouseCutPercent: value("farm-cut"),
-        hourlyExpenses: value("farm-expenses"),
-        relistingLossPerHour: value("farm-relisting"),
-        sessionHours: value("farm-session"),
-        targetGold: value("farm-target")
-      });
-      target("farm-decision").textContent = metrics.state === "liquid" ? labels.liquid : metrics.state === "discounted" ? labels.discounted : labels.inventoryTrap;
-      target("farm-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "liquid" ? "positive" : metrics.state === "discounted" ? "caution" : "negative";
-      target("farm-listed").textContent = gold(metrics.listedGoldPerHour);
-      target("farm-effective").textContent = gold(metrics.effectiveGoldPerHour);
-      target("farm-rate").textContent = `${metrics.monetizationRatePercent.toFixed(1)}%`;
-      target("farm-haircut").textContent = gold(metrics.liquidityHaircutPerHour);
-      target("farm-inventory").textContent = gold(metrics.inventoryValueAtRisk);
-      target("farm-session-gold").textContent = gold(metrics.expectedSessionGold);
-      target("farm-target-hours").textContent = Number.isFinite(metrics.hoursToTarget) ? `${metrics.hoursToTarget.toFixed(1)} ${labels.hours}` : "∞";
-    }
-
-    ["craft-materials", "craft-output", "craft-price", "craft-cut", "craft-deposit", "craft-sellthrough", "craft-count"].forEach((role) => input(role).addEventListener("input", renderCrafting));
-    ["farm-units", "farm-price", "farm-sellthrough", "farm-cut", "farm-expenses", "farm-relisting", "farm-session", "farm-target"].forEach((role) => input(role).addEventListener("input", renderFarm));
-    renderCrafting();
-    renderFarm();
-  }
-</script>
-
-<style>
-  .source-link { color: var(--teal); }
-  .source-link:hover { color: var(--magenta); }
-</style>

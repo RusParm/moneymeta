@@ -1,0 +1,101 @@
+---
+import { insights } from "../data/insights";
+import { wowMarks } from "../data/wow-hub";
+import WowMarketMark from "./WowMarketMark.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const prefix = lang === "ru" ? "" : "/en";
+const wowInsights = insights.filter((insight) => insight.game === "wow");
+const marks = [wowMarks.liquidity, wowMarks.craft, wowMarks.knowledge, wowMarks.orders, wowMarks.capital, wowMarks.gather];
+
+const copy = lang === "ru" ? {
+  kicker: "Market research · from signal to action",
+  title: "Не советы про gold. Разборы рыночных решений.",
+  text: "Шесть материалов для returner, casual и market operator. В каждом есть тезис, модель, граница применимости и готовый переход в сценарий.",
+  filters: [["all", "Все"], ["returner", "Returner"], ["casual", "Мало времени"], ["grinder", "Market operator"]],
+  read: "Читать разбор",
+  updated: "Проверено",
+  estimated: "Estimated model",
+  verified: "Verified source",
+  showing: "разборов"
+} : {
+  kicker: "Market research · from signal to action",
+  title: "Not gold tips. Analyses of market decisions.",
+  text: "Six complete notes for returners, limited-time players and market operators. Each one contains a thesis, model boundary and prepared scenario.",
+  filters: [["all", "All"], ["returner", "Returner"], ["casual", "Limited time"], ["grinder", "Market operator"]],
+  read: "Read analysis",
+  updated: "Checked",
+  estimated: "Estimated model",
+  verified: "Verified source",
+  showing: "analyses"
+};
+---
+
+<section id="research-library" class="section hub-section wow-research-library" aria-labelledby="wow-research-title" data-wow-library>
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="wow-research-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count"><span data-library-count>{wowInsights.length}</span> {copy.showing} · RU/EN</span>
+  </div>
+
+  <div class="library-filter" role="group" aria-label={lang === "ru" ? "Фильтр WoW-разборов" : "Filter WoW analyses"}>
+    {copy.filters.map(([id, label], index) => (
+      <button type="button" aria-pressed={index === 0 ? "true" : "false"} data-library-filter={id}>{label}</button>
+    ))}
+  </div>
+
+  <div class="research-grid">
+    {wowInsights.map((insight, index) => {
+      const content = insight.content[lang];
+      const mark = marks[index % marks.length]!;
+      return (
+        <article class={`research-card wow-research-card ${index === 0 ? "research-featured" : ""}`} data-library-card data-audiences={insight.audiences.join(" ")}>
+          <div class="research-card-meta">
+            <span>0{index + 1}</span>
+            <div class="wow-research-meta-end">
+              <span class={`pill ${insight.evidenceStatus === "verified" ? "teal" : "gold"}`}>
+                {insight.evidenceStatus === "verified" ? copy.verified : copy.estimated}
+              </span>
+              <WowMarketMark mark={mark} lang={lang} />
+            </div>
+          </div>
+          <div class="research-card-body">
+            <span class="game-tag">{content.kicker}</span>
+            <h3>{content.title}</h3>
+            <p>{content.description}</p>
+          </div>
+          <div class="research-card-foot">
+            <span>{content.readTime}</span>
+            <span>{copy.updated} · {insight.updatedAt}</span>
+            <span>{insight.gameVersion}</span>
+          </div>
+          <a href={`${prefix}/insights/${insight.slug}/`} aria-label={`${copy.read}: ${content.title}`}>{copy.read} →</a>
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-wow-library]").forEach((root) => {
+    const filters = [...root.querySelectorAll<HTMLButtonElement>("[data-library-filter]")];
+    const cards = [...root.querySelectorAll<HTMLElement>("[data-library-card]")];
+    const count = root.querySelector<HTMLElement>("[data-library-count]");
+
+    filters.forEach((button) => button.addEventListener("click", () => {
+      const filter = button.dataset.libraryFilter ?? "all";
+      filters.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+      let visible = 0;
+      cards.forEach((card) => {
+        const matches = filter === "all" || (card.dataset.audiences ?? "").split(" ").includes(filter);
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+    }));
+  });
+</script>

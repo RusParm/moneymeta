@@ -7,24 +7,34 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const kindLabel = lang === "ru" ? {
+  farm: "Farm capacity",
+  timing: "Timing allocation",
+  utility: "Team utility",
+  objective: "Objective conversion",
+  review: "Replay review",
   midas: "Greed window",
   sensitivity: "Sensitivity",
   buyback: "Liquidity reserve"
 } : {
+  farm: "Farm capacity",
+  timing: "Timing allocation",
+  utility: "Team utility",
+  objective: "Objective conversion",
+  review: "Replay review",
   midas: "Greed window",
   sensitivity: "Sensitivity",
   buyback: "Liquidity reserve"
 };
 
 const copy = lang === "ru" ? {
-  kicker: "Decision deck · six live questions",
-  title: "Не начинай с пустой формы. Начни с момента матча.",
-  text: "Каждая карточка открывает уже заполненный сценарий. Меняй одну переменную и сразу увидишь, где решение переворачивается.",
+  kicker: "Decision deck · eight match decisions",
+  title: "В Dota нет одного экономического вопроса.",
+  text: "Выбери реальную развилку матча: где фармить, когда закончить greed, чем реализовать timing, сохранять ли buyback или что проверить в replay.",
   cta: "Открыть сценарий"
 } : {
-  kicker: "Decision deck · six live questions",
-  title: "Do not start with an empty form. Start with a match moment.",
-  text: "Every card opens a prepared scenario. Change one variable and see where the decision flips.",
+  kicker: "Decision deck · eight match decisions",
+  title: "Dota never has only one economic question.",
+  text: "Choose the actual match fork: where to farm, when greed must end, how to convert a timing, whether to hold buyback or what to test in the replay.",
   cta: "Open scenario"
 };
 ---
@@ -36,7 +46,7 @@ const copy = lang === "ru" ? {
       <h2 id="dota-decision-deck-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">6 scenarios · URL-ready</span>
+    <span class="count">8 decisions · calculators + playbooks</span>
   </div>
 
   <div class="decision-deck-grid dota-decision-deck">

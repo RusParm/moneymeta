@@ -352,9 +352,27 @@ export const dotaRoleLenses: DotaRoleLens[] = [
 
 export const dotaScenarios = [
   {
+    id: "safe-farm-capacity",
+    kind: "farm",
+    featured: false,
+    media: dotaMedia.battleFury,
+    title: { ru: "У карты хватит фарма на accelerator?", en: "Can the map feed an accelerator?" },
+    text: { ru: "Проверь безопасные waves, camps и время до обязательной драки до покупки Battle Fury или Maelstrom.", en: "Check safe waves, camps and time before the mandatory fight before buying Battle Fury or Maelstrom." },
+    href: { ru: "/dota-2/#economy-map", en: "/en/dota-2/#economy-map" }
+  },
+  {
+    id: "accelerator-or-fight",
+    kind: "timing",
+    featured: true,
+    media: dotaMedia.bkb,
+    title: { ru: "Accelerator или сила в ближайшей драке?", en: "Accelerator or power for the next fight?" },
+    text: { ru: "Сравни будущий farm throughput с objective, который BKB или другой timing способен открыть сейчас.", en: "Compare future farm throughput with the objective a BKB or another timing can unlock now." },
+    href: { ru: "/dota-2/#role-lenses", en: "/en/dota-2/#role-lenses" }
+  },
+  {
     id: "midas-early",
     kind: "midas",
-    featured: true,
+    featured: false,
     media: dotaMedia.handOfMidas,
     title: { ru: "Midas на 9-й: хватит ли окна?", en: "Minute-9 Midas: is the window long enough?" },
     text: { ru: "Ранний baseline с концом на 38-й минуте и нулевой ценой Madstone.", en: "Early baseline with a minute-38 end and zero Madstone value." },
@@ -364,40 +382,22 @@ export const dotaScenarios = [
     }
   },
   {
-    id: "midas-late",
-    kind: "midas",
+    id: "initiation-access",
+    kind: "timing",
     featured: false,
-    media: dotaMedia.handOfMidas,
-    title: { ru: "Midas на 18-й: слишком поздно?", en: "Minute-18 Midas: too late?" },
-    text: { ru: "Тот же предмет и тот же конец матча, но payback window уже сильно короче.", en: "Same item and match end, but a sharply shorter payback window." },
-    href: {
-      ru: "/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=0&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=18&dota-midas.midas-end=38#midas-irr",
-      en: "/en/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=0&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=18&dota-midas.midas-end=38#midas-irr"
-    }
+    media: dotaMedia.blink,
+    title: { ru: "Blink создаёт новый action set?", en: "Does Blink create a new action set?" },
+    text: { ru: "Оцени не damage, а доступ к initiation и вероятность превратить первое появление в objective.", en: "Measure access to initiation, not damage, and the chance of turning the first reveal into an objective." },
+    href: { ru: "/dota-2/#role-lenses", en: "/en/dota-2/#role-lenses" }
   },
   {
-    id: "midas-madstone",
-    kind: "sensitivity",
+    id: "support-utility",
+    kind: "utility",
     featured: false,
-    media: dotaMedia.maelstrom,
-    title: { ru: "Сколько стоит Madstone для тебя?", en: "What is Madstone worth to you?" },
-    text: { ru: "Sensitivity: 35 gold другой ценности на use отдельно от гарантированного Transmute.", en: "Sensitivity with 35 gold of other value per use, separate from guaranteed Transmute." },
-    href: {
-      ru: "/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=35&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=12&dota-midas.midas-end=38#midas-irr",
-      en: "/en/dota-2/?dota-midas.midas-cost=2200&dota-midas.midas-gold=160&dota-midas.midas-bounty=40&dota-midas.midas-other=35&dota-midas.midas-cooldown=90&dota-midas.midas-purchase=12&dota-midas.midas-end=38#midas-irr"
-    }
-  },
-  {
-    id: "support-reserve",
-    kind: "buyback",
-    featured: false,
-    media: dotaMedia.observerWard,
-    title: { ru: "Support перед Roshan", en: "Support before Roshan" },
-    text: { ru: "9k net worth, 750 gold и две минуты до objective.", en: "9k net worth, 750 gold and two minutes to the objective." },
-    href: {
-      ru: "/dota-2/?dota-buyback.buyback-networth=9000&dota-buyback.buyback-gold=750&dota-buyback.buyback-gpm=380&dota-buyback.buyback-objective=120&dota-buyback.buyback-risk=45#buyback-reserve",
-      en: "/en/dota-2/?dota-buyback.buyback-networth=9000&dota-buyback.buyback-gold=750&dota-buyback.buyback-gpm=380&dota-buyback.buyback-objective=120&dota-buyback.buyback-risk=45#buyback-reserve"
-    }
+    media: dotaMedia.forceStaff,
+    title: { ru: "Utility или ещё один личный компонент?", en: "Utility or another personal component?" },
+    text: { ru: "Сравни личную силу со стоимостью спасённого core, позиции или cooldown в следующем fight.", en: "Compare personal power with the value of a saved core, position or cooldown in the next fight." },
+    href: { ru: "/dota-2/#role-lenses", en: "/en/dota-2/#role-lenses" }
   },
   {
     id: "core-reserve",
@@ -412,16 +412,22 @@ export const dotaScenarios = [
     }
   },
   {
-    id: "high-ground-reserve",
-    kind: "buyback",
+    id: "objective-conversion",
+    kind: "objective",
     featured: false,
     media: dotaMedia.aegis,
-    title: { ru: "High ground через минуту", en: "High ground in one minute" },
-    text: { ru: "25k net worth и узкое окно: увидишь gap, projected gold и coverage.", en: "25k net worth in a narrow window: see gap, projected gold and coverage." },
-    href: {
-      ru: "/dota-2/?dota-buyback.buyback-networth=25000&dota-buyback.buyback-gold=1800&dota-buyback.buyback-gpm=700&dota-buyback.buyback-objective=60&dota-buyback.buyback-risk=65#buyback-reserve",
-      en: "/en/dota-2/?dota-buyback.buyback-networth=25000&dota-buyback.buyback-gold=1800&dota-buyback.buyback-gpm=700&dota-buyback.buyback-objective=60&dota-buyback.buyback-risk=65#buyback-reserve"
-    }
+    title: { ru: "Как timing станет Aegis, tower или map control?", en: "How does the timing become Aegis, tower or map control?" },
+    text: { ru: "Назови способ реализации до покупки. Без него преимущество остаётся потенциальной силой.", en: "Name the conversion path before buying. Without it, the advantage remains potential power." },
+    href: { ru: "/dota-2/#economy-map", en: "/en/dota-2/#economy-map" }
+  },
+  {
+    id: "replay-review",
+    kind: "review",
+    featured: false,
+    media: dotaMedia.alchemist,
+    title: { ru: "Какая развилка изменила траекторию матча?", en: "Which fork changed the match trajectory?" },
+    text: { ru: "Проверь purchase, objective, death и buyback вместо попытки разобрать весь replay сразу.", en: "Review purchase, objective, death and buyback instead of trying to audit the whole replay at once." },
+    href: { ru: "/insights/dota-2-replay-economy-four-timestamps/", en: "/en/insights/dota-2-replay-economy-four-timestamps/" }
   }
 ] as const;
 

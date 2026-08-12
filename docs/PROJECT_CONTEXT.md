@@ -1,4 +1,4 @@
-# Money Meta — project context
+# Money Meta: project context
 
 ## Vision
 

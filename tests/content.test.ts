@@ -3,6 +3,8 @@ import { gtaEconomyNodes, gtaPlayerPaths, gtaScenarios } from "../src/data/gta-h
 import { weeklyMeta } from "../src/data/gta-businesses";
 import { dotaEconomyNodes, dotaPlayerPaths, dotaPulse, dotaRoleLenses, dotaScenarios } from "../src/data/dota-hub";
 import { dotaPatchContext } from "../src/data/dota-economy";
+import { wowEconomyNodes, wowMarketRoutes, wowPlayerPaths, wowPulse, wowScenarios } from "../src/data/wow-hub";
+import { wowPatchContext } from "../src/data/wow-economy";
 import { insights } from "../src/data/insights";
 
 describe("GTA benchmark hub content", () => {
@@ -39,7 +41,8 @@ describe("Dota living hub content", () => {
     expect(dotaEconomyNodes).toHaveLength(7);
     expect(dotaPlayerPaths).toHaveLength(3);
     expect(dotaRoleLenses).toHaveLength(3);
-    expect(dotaScenarios).toHaveLength(6);
+    expect(dotaScenarios).toHaveLength(8);
+    expect(new Set(dotaScenarios.map((scenario) => scenario.kind)).size).toBeGreaterThanOrEqual(6);
     expect(insights.filter((insight) => insight.game === "dota")).toHaveLength(6);
   });
 
@@ -64,5 +67,39 @@ describe("Dota living hub content", () => {
     expect(dotaPulse.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(dotaPulse.staleAfterDays).toBeGreaterThan(0);
     expect(dotaPulse.changes).toHaveLength(3);
+  });
+});
+
+describe("WoW living hub content", () => {
+  it("meets the living-hub depth gate", () => {
+    expect(wowEconomyNodes).toHaveLength(7);
+    expect(wowPlayerPaths).toHaveLength(3);
+    expect(wowMarketRoutes).toHaveLength(6);
+    expect(wowScenarios).toHaveLength(8);
+    expect(new Set(wowScenarios.map((scenario) => scenario.kind)).size).toBeGreaterThanOrEqual(5);
+    expect(insights.filter((insight) => insight.game === "wow")).toHaveLength(6);
+  });
+
+  it("keeps every WoW research note complete in both languages", () => {
+    const wowInsights = insights.filter((insight) => insight.game === "wow");
+
+    wowInsights.forEach((insight) => {
+      expect(insight.content.ru.sections.length).toBeGreaterThanOrEqual(3);
+      expect(insight.content.en.sections.length).toBe(insight.content.ru.sections.length);
+      expect(insight.content.ru.takeaways).toHaveLength(3);
+      expect(insight.content.en.takeaways).toHaveLength(3);
+      expect(insight.toolPath.ru).toBeTruthy();
+      expect(insight.toolPath.en).toBeTruthy();
+    });
+  });
+
+  it("ties Market Pulse to a dated primary source and freshness rule", () => {
+    expect(wowPulse.release).toContain("Curse of Ula’tek");
+    expect(wowPatchContext.release).toContain("Curse of Ula’tek");
+    expect(wowPulse.status).toBe("verified");
+    expect(wowPulse.sourceUrl).toContain("worldofwarcraft.blizzard.com");
+    expect(wowPulse.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(wowPulse.staleAfterDays).toBeGreaterThan(0);
+    expect(wowPulse.changes).toHaveLength(3);
   });
 });

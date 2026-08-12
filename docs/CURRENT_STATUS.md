@@ -27,7 +27,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Desktop and mobile browser QA passed for the WoW calculators, three-economy home and RU/EN routes.
 - v1.0 browser QA passed for desktop/mobile layout, zero horizontal overflow, cross-economy navigation, scenario URL sharing, local restore, reset and decision-state rendering.
 
-## Production release — `product/v0.4`
+## Production release: `product/v0.4`
 
 - Dota 2 RU/EN Economy Lab.
 - Hand of Midas incremental ROI and payback model.
@@ -35,7 +35,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Patch 7.41 context, editable baselines and source disclosures.
 - Home, sitemap, version and documentation updated for two active economies.
 
-## Release — `product/v0.5`
+## Release: `product/v0.5`
 
 - World of Warcraft Retail Economy Lab in RU/EN.
 - Crafting Margin model with Auction House cut, sell-through and inventory risk.
@@ -43,7 +43,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Midnight / Curse of Ula’tek context, editable assumptions and source disclosures.
 - Home, sitemap, version and documentation updated for three active economies.
 
-## Production release — `product/v1.0`
+## Production release: `product/v1.0`
 
 - Unified premium product shell and cross-economy navigation.
 - Decision-first homepage with visible model coverage and trust signals.
@@ -52,7 +52,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Positive, caution and negative result states for faster interpretation.
 - Bundled variable typography, keyboard focus treatment and reduced-motion support.
 
-## Active release candidate — `product/v1.1`
+## Active release candidate: `product/v1.1`
 
 - Rebuilt homepage around a concrete promise: stop grinding blind and get a decision in roughly 30 seconds.
 - Interactive GTA, Dota 2 and WoW baseline cases above the fold.
@@ -62,7 +62,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Article-to-tool loops, Article schema and expanded sitemap coverage.
 - Nineteen static pages pass desktop/mobile overflow and interaction QA.
 
-## Active release candidate — v1.2 GTA benchmark
+## Active release candidate: v1.2 GTA benchmark
 
 - Three original, responsive economy-world hero assets now establish a distinct GTA, Dota and WoW visual identity.
 - A shared optimized hero component keeps responsive image delivery, overlays and performance consistent across all verticals.
@@ -73,15 +73,27 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Twenty tests cover formulas, rankings, freshness and benchmark content depth. Twenty-nine static pages build with zero diagnostics.
 - GTA preview approved as the benchmark; the system is now being adapted to Dota 2 and then WoW Retail in sequence.
 
-## Active release candidate — v1.3 Dota living match hub
+## Active release candidate: v1.3 Dota living match hub
 
 - Rebuilt the Dota vertical as a nine-section decision product with a seven-stage match-economy map, three player paths and three role-specific capital lenses.
 - Added a patch 7.41e Pulse with official-source links, a 45-day freshness guard and explicit separation between cash payback and non-cash Madstone / attack-speed utility.
 - Corrected the buyback formula from the stale `100 + Net Worth / 13` baseline to the documented `200 + Net Worth / 13` formula.
-- Added six prepared Midas and buyback scenarios with shareable URL parameters and expanded Dota research from one to six substantial RU/EN analyses.
+- Added eight prepared decisions across farming, acceleration, initiation, utility, buyback, objective conversion and replay review. Midas and buyback remain deep models without defining the whole hub.
 - Added rights-aware Dota item and hero identifiers over an original Money Meta hero world; every third-party visual has a fallback and removable media record.
 - Twenty-three tests cover formulas, GTA depth and Dota living-hub depth. Thirty-nine static pages build with zero diagnostics.
-- Next gate: Dota branch preview and visual QA, then WoW Retail living hub.
+- Raised shared microcopy and control typography, then verified desktop and mobile layouts for collisions and overflow.
+
+## Release: v1.4 WoW living market hub
+
+- Rebuilt WoW Retail as a complete market operating system with a seven-stage economy map, three player paths and a dated official-source Pulse.
+- Added six ranked market routes across three conditional lenses: limited time, low capital and market specialization.
+- Added eight decision scenarios spanning gathering, crafting, inventory, pricing, orders, resets and batch sizing.
+- Expanded the model stack to crafting margin, farm liquidity and a crafting-order commission floor with twenty-two editable inputs, saved state and shareable URLs.
+- Expanded WoW research from one note to six substantial RU/EN analyses with evidence labels and article-to-tool loops.
+- Current context reflects Midnight: Curse of Ula'tek and separates official mechanics from editable market assumptions.
+- Thirty-two automated tests pass. Forty-nine static pages build with zero Astro diagnostics.
+- Desktop and mobile browser QA passes in Russian and English with zero horizontal overflow, icon/text collisions, targeted microtext violations or client errors.
+- Next game candidates: Total War and Crusader Kings. Civilization and Age of Empires remain demand-led expansion options.
 
 ## Release policy
 

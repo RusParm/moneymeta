@@ -1,4 +1,4 @@
-# Money Meta — living game hub blueprint
+# Money Meta: living game hub blueprint
 
 ## Product standard
 
@@ -75,7 +75,7 @@ The visual character is a deliberate hybrid: cinematic game-world immersion sets
 
 ## Vertical definitions
 
-### GTA Online — portfolio economy
+### GTA Online: portfolio economy
 
 **Map:** starting capital → acquisition → supply → production → storage → sale → reinvestment.
 
@@ -87,7 +87,7 @@ The visual character is a deliberate hybrid: cinematic game-world immersion sets
 
 **Tool stack:** Next Best Move, business ROI, portfolio optimizer, weekly opportunity cost, goal planner and GTA VI Economy Watch based only on verified official claims.
 
-### Dota 2 — match economy
+### Dota 2: match economy
 
 **Map:** lane and neutral income → immediate fighting power or growth investment → objective window → death cost and buyback liquidity → closing timing.
 
@@ -99,7 +99,7 @@ The visual character is a deliberate hybrid: cinematic game-world immersion sets
 
 **Tool stack:** Midas incremental ROI, buyback reserve, death cost, item timing comparison, farm allocation and post-match economy review.
 
-### World of Warcraft Retail — player market economy
+### World of Warcraft Retail: player market economy
 
 **Map:** gathering or inputs → craft transformation → listing cost → sell-through → liquid gold → inventory reinvestment.
 

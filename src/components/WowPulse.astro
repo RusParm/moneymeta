@@ -1,0 +1,92 @@
+---
+import { wowPulse } from "../data/wow-hub";
+import WowMarketMark from "./WowMarketMark.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const ageDays = Math.floor((Date.now() - new Date(`${wowPulse.checkedAt}T00:00:00Z`).getTime()) / 86_400_000);
+const stale = ageDays > wowPulse.staleAfterDays;
+
+const copy = lang === "ru" ? {
+  kicker: "Market Pulse · official change to player action",
+  title: "Что изменилось в Curse of Ula’tek: на языке капитала и ликвидности",
+  text: "Pulse не пересказывает весь update. Он выделяет только изменения, которые способны поменять profession allocation, recipe margin или операционную скорость рынка.",
+  verified: "Verified · Blizzard",
+  current: `Проверено ${wowPulse.checkedAt} · ${wowPulse.release}`,
+  stale: `Нужна повторная проверка · ${wowPulse.checkedAt}`,
+  action: "Что делать иначе",
+  source: "Открыть официальный источник",
+  guard: "Freshness guard включён",
+  currentGuard: "Контекст подтверждён официальным материалом и находится внутри 30-дневного окна проверки.",
+  staleGuard: "С даты проверки прошло больше 30 дней. Карточки остаются историческим контекстом, пока источник не будет проверен снова.",
+  separation: "Рыночные цены и sell-through не выводятся из patch notes и остаются пользовательскими inputs."
+} : {
+  kicker: "Market Pulse · official change to player action",
+  title: "What changed in Curse of Ula’tek, translated into capital and liquidity",
+  text: "Pulse does not retell the whole update. It isolates changes that can alter profession allocation, recipe margin or the operating speed of the market.",
+  verified: "Verified · Blizzard",
+  current: `Checked ${wowPulse.checkedAt} · ${wowPulse.release}`,
+  stale: `Recheck required · ${wowPulse.checkedAt}`,
+  action: "What to do differently",
+  source: "Open official source",
+  guard: "Freshness guard is on",
+  currentGuard: "The context is tied to an official source and remains inside the 30-day review window.",
+  staleGuard: "More than 30 days have passed since review. Cards remain historical context until the source is checked again.",
+  separation: "Market prices and sell-through never come from patch notes and remain user inputs."
+};
+---
+
+<section
+  id="market-pulse"
+  class={`section hub-section pulse-section wow-pulse-section ${stale ? "is-stale" : "is-current"}`}
+  data-wow-pulse
+  data-checked-at={wowPulse.checkedAt}
+  data-stale-after={wowPulse.staleAfterDays}
+  data-current-label={copy.current}
+  data-stale-label={copy.stale}
+  data-current-guard={`${copy.currentGuard} ${copy.separation}`}
+  data-stale-guard={`${copy.staleGuard} ${copy.separation}`}
+  aria-labelledby="wow-market-pulse-title"
+>
+  <div class="section-head hub-section-head">
+    <div><span class="section-kicker">{copy.kicker}</span><h2 id="wow-market-pulse-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+    <div class="pulse-status-stack"><span class="pill teal">{copy.verified}</span><span class="pulse-window" data-pulse-window>{stale ? copy.stale : copy.current}</span></div>
+  </div>
+
+  <div class="pulse-grid">
+    {wowPulse.changes.map((item, index) => (
+      <article class="pulse-card wow-pulse-card">
+        <div class="wow-pulse-card-head">
+          <div class="pulse-card-top"><span>0{index + 1}</span><strong>{item.signal[lang]}</strong></div>
+          <WowMarketMark mark={item.mark} lang={lang} />
+        </div>
+        <h3>{item.title[lang]}</h3>
+        <p>{item.summary[lang]}</p>
+        <a class="wow-pulse-source" href={item.sourceUrl} target="_blank" rel="noopener noreferrer">{lang === "ru" ? "Источник изменения" : "Change source"} ↗</a>
+        <div class="pulse-decision"><span>{copy.action}</span><p>{item.decision[lang]}</p></div>
+      </article>
+    ))}
+  </div>
+
+  <div class="pulse-guard">
+    <div class="pulse-orbit" aria-hidden="true"><span></span></div>
+    <div><strong>{copy.guard}</strong><p data-pulse-guard>{stale ? copy.staleGuard : copy.currentGuard} {copy.separation}</p></div>
+    <a class="source-link" href={wowPulse.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} ↗</a>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-wow-pulse]").forEach((root) => {
+    const checkedAt = root.dataset.checkedAt;
+    const staleAfter = Number(root.dataset.staleAfter ?? 30);
+    if (!checkedAt) return;
+    const age = (Date.now() - new Date(`${checkedAt}T00:00:00Z`).getTime()) / 86_400_000;
+    const stale = age > staleAfter;
+    root.classList.toggle("is-stale", stale);
+    root.classList.toggle("is-current", !stale);
+    const windowLabel = root.querySelector<HTMLElement>("[data-pulse-window]");
+    if (windowLabel) windowLabel.textContent = stale ? root.dataset.staleLabel ?? "Recheck" : root.dataset.currentLabel ?? "Current";
+    const guard = root.querySelector<HTMLElement>("[data-pulse-guard]");
+    if (guard) guard.textContent = stale ? root.dataset.staleGuard ?? "Recheck" : root.dataset.currentGuard ?? "Current";
+  });
+</script>

@@ -1,0 +1,102 @@
+---
+import { wowMarketRoutes, wowRankingLenses } from "../data/wow-hub";
+import { rankWowMarketRoutes } from "../lib/wow-economy";
+import WowMarketMark from "./WowMarketMark.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const rankings = Object.fromEntries(wowRankingLenses.map((lens) => [lens.id, rankWowMarketRoutes(wowMarketRoutes, lens)]));
+
+const copy = lang === "ru" ? {
+  kicker: "Conditional rankings · no universal best profession",
+  title: "Лучший market route меняется вместе с твоим ограничением",
+  text: "Рейтинг не обещает gold/hour без live prices. Он сравнивает шесть рыночных моделей по доступу к капиталу, ликвидности, time fit, moat, устойчивости цены и friction.",
+  question: "Вопрос",
+  score: "fit score",
+  liquidity: "liquidity",
+  time: "time fit",
+  moat: "moat",
+  resilience: "resilience",
+  why: "Почему так",
+  model: "Проверить route в сценариях",
+  estimated: "Estimated framework · prices stay editable"
+} : {
+  kicker: "Conditional rankings · no universal best profession",
+  title: "The best market route changes with your constraint",
+  text: "The ranking never promises gold/hour without live prices. It compares six market models across capital access, liquidity, time fit, moat, price resilience and friction.",
+  question: "Question",
+  score: "fit score",
+  liquidity: "liquidity",
+  time: "time fit",
+  moat: "moat",
+  resilience: "resilience",
+  why: "Why this result",
+  model: "Test the route in scenarios",
+  estimated: "Estimated framework · prices stay editable"
+};
+---
+
+<section id="market-rankings" class="section hub-section" aria-labelledby="wow-rankings-title">
+  <div class="section-head hub-section-head">
+    <div><span class="section-kicker">{copy.kicker}</span><h2 id="wow-rankings-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+    <span class="pill gold">{copy.estimated}</span>
+  </div>
+
+  <div class="ranking-lab wow-ranking-lab" data-wow-ranking-lab>
+    <div class="ranking-tabs" role="tablist" aria-label={lang === "ru" ? "Выбор цели WoW рейтинга" : "Choose WoW ranking objective"}>
+      {wowRankingLenses.map((lens, index) => (
+        <button type="button" role="tab" id={`wow-ranking-tab-${lens.id}`} aria-selected={index === 0 ? "true" : "false"} aria-controls={`wow-ranking-panel-${lens.id}`} tabindex={index === 0 ? "0" : "-1"} data-ranking-tab={lens.id}>
+          <small>0{index + 1}</small><strong>{lens.label[lang]}</strong>
+        </button>
+      ))}
+    </div>
+
+    {wowRankingLenses.map((lens, lensIndex) => (
+      <div class="ranking-panel" id={`wow-ranking-panel-${lens.id}`} role="tabpanel" aria-labelledby={`wow-ranking-tab-${lens.id}`} hidden={lensIndex !== 0} data-ranking-panel={lens.id}>
+        <div class="ranking-question"><div><span>{copy.question}</span><h3>{lens.question[lang]}</h3></div><code>{lens.formula[lang]}</code></div>
+        <div class="conditional-rank-grid">
+          {rankings[lens.id]!.slice(0, 3).map(({ route, score }, index) => (
+            <article class={`conditional-rank-card wow-route-card rank-${index + 1}`}>
+              <div class="conditional-rank-top"><span>0{index + 1}</span><div><span class="pill teal">{copy.score} · {score.toFixed(0)}</span><WowMarketMark mark={route.mark} lang={lang} /></div></div>
+              <h3>{route.title[lang]}</h3>
+              <p>{route.summary[lang]}</p>
+              <div class="conditional-metrics">
+                <span><small>{copy.liquidity}</small><strong>{route.metrics.liquidity}/10</strong></span>
+                <span><small>{copy.time}</small><strong>{route.metrics.timeFit}/10</strong></span>
+                <span><small>{copy.moat}</small><strong>{route.metrics.specializationMoat}/10</strong></span>
+                <span><small>{copy.resilience}</small><strong>{route.metrics.priceResilience}/10</strong></span>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div class="ranking-note"><span>{copy.why}</span><p>{lens.note[lang]}</p><a href="#decision-deck">{copy.model} →</a></div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-wow-ranking-lab]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-ranking-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-ranking-panel]")];
+    const activate = (tab: HTMLButtonElement) => {
+      const id = tab.dataset.rankingTab;
+      tabs.forEach((candidate) => {
+        const selected = candidate === tab;
+        candidate.setAttribute("aria-selected", String(selected));
+        candidate.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.rankingPanel !== id; });
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = tabs[(index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length]!;
+        activate(next);
+        next.focus();
+      });
+    });
+  });
+</script>

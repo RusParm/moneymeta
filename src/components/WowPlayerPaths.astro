@@ -1,0 +1,123 @@
+---
+import { wowPlayerPaths } from "../data/wow-hub";
+import WowMarketMark from "./WowMarketMark.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+
+const copy = lang === "ru" ? {
+  kicker: "Personal path · choose your market role",
+  title: "Один Auction House. Три совершенно разных operating plan.",
+  text: "Выбери свой режим. Каждый путь задаёт лимит капитала, последовательность действий и условие, при котором план нужно остановить или пересчитать.",
+  capital: "Капитал",
+  time: "Время",
+  complexity: "Сложность",
+  route: "Первые три действия",
+  flip: "Когда план меняется",
+  cta: "Запустить этот путь"
+} : {
+  kicker: "Personal path · choose your market role",
+  title: "One Auction House. Three completely different operating plans.",
+  text: "Choose how you play. Each path sets a capital limit, an action sequence and the condition that should stop or recalculate the plan.",
+  capital: "Capital",
+  time: "Time",
+  complexity: "Complexity",
+  route: "First three actions",
+  flip: "When the plan changes",
+  cta: "Run this path"
+};
+---
+
+<section id="player-paths" class="section hub-section" aria-labelledby="wow-player-paths-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="wow-player-paths-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count">3 market systems</span>
+  </div>
+
+  <div class="path-planner wow-path-planner" data-wow-path-planner>
+    <div class="path-tabs" role="tablist" aria-label={lang === "ru" ? "Выбор профиля WoW игрока" : "Choose WoW player profile"}>
+      {wowPlayerPaths.map((path, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`wow-path-tab-${path.id}`}
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-controls={`wow-path-panel-${path.id}`}
+          tabindex={index === 0 ? "0" : "-1"}
+          data-path-tab={path.id}
+        >
+          <WowMarketMark mark={path.mark} lang={lang} />
+          <span>0{index + 1}</span>
+          <strong>{path.label[lang]}</strong>
+          <small>{path.summary[lang]}</small>
+        </button>
+      ))}
+    </div>
+
+    <div class="path-panels">
+      {wowPlayerPaths.map((path, index) => (
+        <article
+          class="path-panel wow-path-panel"
+          id={`wow-path-panel-${path.id}`}
+          role="tabpanel"
+          aria-labelledby={`wow-path-tab-${path.id}`}
+          hidden={index !== 0}
+          data-path-panel={path.id}
+        >
+          <div class="wow-path-watermark"><WowMarketMark mark={path.mark} lang={lang} large /></div>
+          <div class="path-panel-head">
+            <div><span class="game-tag">{path.label[lang]} · Midnight</span><h3>{path.title[lang]}</h3></div>
+            <div class="path-constraints">
+              <span><small>{copy.capital}</small><strong>{path.capital[lang]}</strong></span>
+              <span><small>{copy.time}</small><strong>{path.time[lang]}</strong></span>
+              <span><small>{copy.complexity}</small><strong>{path.complexity[lang]}</strong></span>
+            </div>
+          </div>
+          <div class="path-route">
+            <span class="path-route-label">{copy.route}</span>
+            {path.steps.map((step, stepIndex) => (
+              <div class="path-step"><span>0{stepIndex + 1}</span><div><strong>{step.title[lang]}</strong><p>{step.text[lang]}</p></div></div>
+            ))}
+          </div>
+          <div class="path-panel-foot">
+            <div class="path-flip"><span>{copy.flip}</span><p>{path.flipCondition[lang]}</p></div>
+            <a class="button primary wow-primary" href={path.href[lang]}>{copy.cta} →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-wow-path-planner]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-path-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-path-panel]")];
+
+    const activate = (tab: HTMLButtonElement) => {
+      const id = tab.dataset.pathTab;
+      tabs.forEach((candidate) => {
+        const selected = candidate === tab;
+        candidate.setAttribute("aria-selected", String(selected));
+        candidate.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.pathPanel !== id; });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft" && event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        event.preventDefault();
+        const forward = event.key === "ArrowRight" || event.key === "ArrowDown";
+        const next = tabs[(index + (forward ? 1 : -1) + tabs.length) % tabs.length]!;
+        activate(next);
+        next.focus();
+      });
+    });
+  });
+</script>

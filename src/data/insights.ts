@@ -1138,6 +1138,421 @@ export const insights: Insight[] = [
         toolLabel: "Calculate my effective gold/hour"
       }
     }
+  },
+  {
+    slug: "wow-crafting-margin-after-auction-house-liquidity",
+    game: "wow",
+    updatedAt: "2026-08-12",
+    gameVersion: "WoW Retail · Curse of Ula’tek market model",
+    evidenceStatus: "estimated",
+    audiences: ["returner", "casual", "grinder"],
+    toolPath: { ru: "/wow/#crafting-margin", en: "/en/wow/#crafting-margin" },
+    content: {
+      ru: {
+        title: "Как считать реальную crafting margin после Auction House и ликвидности",
+        description: "Переходим от красивого spread к expected profit с учётом AH cut, sell-through, deposit и размера batch.",
+        kicker: "WoW Retail · Recipe economics",
+        thesis: "Recipe с положительной разницей между output и reagents всё ещё может терять gold. Сначала посчитай net revenue после AH, затем вероятность продажи и только потом решай, сколько crafts финансировать.",
+        readTime: "6 мин",
+        takeaways: [
+          "Материалы по 825 gold и output 5 × 225 дают 300 gold gross spread до комиссий.",
+          "AH cut, deposit и 70% sell-through превращают spread в expected profit, который заметно ниже profit-if-sold.",
+          "Batch масштабируется по подтверждённому спросу, а не по положительной марже одной единицы."
+        ],
+        sections: [
+          {
+            heading: "Spread является только первым фильтром",
+            paragraphs: [
+              "Если пять единиц output стоят 1 125 gold, а reagents обходятся в 825, экран показывает 300 gold разницы. Но продажа через Auction House забирает комиссию, а неудачный listing cycle добавляет deposit и время.",
+              "Поэтому Money Meta разделяет gross revenue, net revenue, profit if sold и expected profit. Эти четыре числа отвечают на разные вопросы и не должны заменять друг друга."
+            ]
+          },
+          {
+            heading: "Sell-through меняет размер разумного batch",
+            paragraphs: [
+              "Вероятность продажи не делает непроданный товар бесполезным, но превращает часть вложений в working capital. Пока stock лежит в bags или на повторном листинге, это золото нельзя направить в следующий рецепт.",
+              "Если batch из двадцати crafts продаётся только частично, inventory at risk становится отдельным ограничением. Положительная unit margin не даёт права бесконечно наращивать объём."
+            ]
+          },
+          {
+            heading: "Правило перед кнопкой Craft All",
+            paragraphs: [
+              "Сначала проверь break-even price. Затем введи наблюдаемый sell-through и сделай discovery batch, который не блокирует весь банк. Следующий batch увеличивай только после фактической продажи предыдущего.",
+              "Модель не предсказывает цену конкретного realm. Она показывает, при каких цене, комиссии и скорости продажи решение перестаёт создавать value."
+            ]
+          }
+        ],
+        toolLabel: "Проверить crafting margin"
+      },
+      en: {
+        title: "How to calculate real crafting margin after the Auction House and liquidity",
+        description: "Move from an attractive spread to expected profit after the AH cut, sell-through, deposit and batch size.",
+        kicker: "WoW Retail · Recipe economics",
+        thesis: "A recipe with a positive gap between output and reagents can still lose gold. Calculate net revenue after the AH, apply sale probability, and only then decide how many crafts to finance.",
+        readTime: "6 min",
+        takeaways: [
+          "Materials at 825 gold and output of 5 × 225 create a 300 gold gross spread before fees.",
+          "The AH cut, deposit and 70% sell-through turn that spread into expected profit well below profit-if-sold.",
+          "Scale a batch from confirmed demand, not from positive margin on one unit."
+        ],
+        sections: [
+          {
+            heading: "Spread is only the first filter",
+            paragraphs: [
+              "Five output units at 225 gold create 1,125 gold of gross revenue against 825 gold of reagents. The apparent gap is 300, but an Auction House sale carries a cut and an unsuccessful listing adds deposit cost and delay.",
+              "Money Meta therefore separates gross revenue, net revenue, profit if sold and expected profit. The four numbers answer different questions and should not replace each other."
+            ]
+          },
+          {
+            heading: "Sell-through determines a sensible batch",
+            paragraphs: [
+              "Sale probability does not make unsold goods worthless, but it turns part of the investment into working capital. Gold tied up in bags or another listing cannot fund the next recipe now.",
+              "When a twenty-craft batch sells only partially, inventory at risk becomes a separate constraint. Positive unit margin is not permission to scale without a limit."
+            ]
+          },
+          {
+            heading: "A rule before Craft All",
+            paragraphs: [
+              "Check break-even price first. Add observed sell-through and use a discovery batch that cannot lock the entire bank. Increase the next batch only after the previous one converts to cash.",
+              "The model does not forecast a specific realm price. It shows the price, fee and sale-speed conditions where the decision stops creating value."
+            ]
+          }
+        ],
+        toolLabel: "Test crafting margin"
+      }
+    }
+  },
+  {
+    slug: "wow-profession-knowledge-reset-market-role",
+    game: "wow",
+    updatedAt: "2026-08-12",
+    gameVersion: "WoW Retail · Curse of Ula’tek",
+    evidenceStatus: "verified",
+    audiences: ["returner", "grinder"],
+    toolPath: { ru: "/wow/#player-paths", en: "/en/wow/#player-paths" },
+    content: {
+      ru: {
+        title: "Profession Knowledge reset: сначала выбери рынок, потом нажимай",
+        description: "Как превратить одноразовый reset из импульсивного respec в решение о рыночной специализации.",
+        kicker: "WoW Retail · Knowledge allocation",
+        thesis: "Curse of Ula’tek даёт один reset Knowledge Points для каждой профессии. Его value зависит не от идеального дерева само по себе, а от того, открывает ли новая специализация повторяемый спрос.",
+        readTime: "6 мин",
+        takeaways: [
+          "Факт reset подтверждён официальным обновлением Blizzard для Curse of Ula’tek.",
+          "До reset нужно выбрать market role: массовый output, specialized intermediate или high-value orders.",
+          "Сильная специализация без demand proof создаёт capability, но не создаёт cash flow."
+        ],
+        sections: [
+          {
+            heading: "Reset является ограниченным option",
+            paragraphs: [
+              "Blizzard добавила один reset потраченных Knowledge Points для каждой профессии. Это полезная возможность исправить старый plan, но она не превращает специализацию в бесплатный тестовый полигон.",
+              "Если игрок сначала нажимает reset, а потом ищет рынок, он распределяет редкий ресурс без investment thesis. Правильный порядок начинается с роли и спроса."
+            ]
+          },
+          {
+            heading: "Определи market role",
+            paragraphs: [
+              "Массовый commodity craft требует throughput и ликвидности. Specialized intermediate требует устойчивого спроса со стороны других crafters. Crafting Orders требуют клиентского потока, качества исполнения и комиссии выше economic floor.",
+              "Один profession tree может выглядеть сильным в вакууме и слабым для твоего времени, капитала или канала продаж. Поэтому player path задаётся до allocation."
+            ]
+          },
+          {
+            heading: "Три доказательства перед reset",
+            paragraphs: [
+              "Запиши, кто покупатель, какой продукт он берёт и как часто это происходит. Затем оцени доступный капитал и сделай маленький market test там, где это возможно.",
+              "Reset становится обоснованным, когда новая ветка связывает проверяемый demand с твоим доступом к recipes и временем. Если старый build уже даёт положительную realised margin, изменение не обязательно."
+            ]
+          }
+        ],
+        toolLabel: "Выбрать путь до reset"
+      },
+      en: {
+        title: "Profession Knowledge reset: choose the market before clicking",
+        description: "Turn a one-time reset from an impulsive respec into a market-specialization decision.",
+        kicker: "WoW Retail · Knowledge allocation",
+        thesis: "Curse of Ula’tek provides one Knowledge Point reset for each profession. Its value comes not from a perfect tree in isolation, but from whether the new specialization unlocks repeat demand.",
+        readTime: "6 min",
+        takeaways: [
+          "The reset is confirmed in Blizzard's official Curse of Ula’tek quality-of-life update.",
+          "Choose a market role before resetting: mass output, specialized intermediates or high-value orders.",
+          "A strong specialization without demand proof creates capability, not cash flow."
+        ],
+        sections: [
+          {
+            heading: "The reset is a scarce option",
+            paragraphs: [
+              "Blizzard added one reset of spent Knowledge Points for each profession. It can repair an old plan, but it does not turn specialization into a costless testing environment.",
+              "Clicking first and searching for a market later allocates a scarce resource without an investment thesis. The correct sequence begins with role and demand."
+            ]
+          },
+          {
+            heading: "Define the market role",
+            paragraphs: [
+              "Mass commodity crafting needs throughput and liquidity. Specialized intermediates need recurring demand from other crafters. Crafting Orders need customer flow, execution quality and commission above an economic floor.",
+              "One profession tree can look strong in isolation and still fail your time, capital or sales channel. Set the player path before the allocation."
+            ]
+          },
+          {
+            heading: "Three proofs before the reset",
+            paragraphs: [
+              "Write down the buyer, the product and the expected purchase frequency. Estimate available capital and run a small market test where possible.",
+              "The reset becomes defensible when the new branch connects observed demand with your recipe access and time. If the old build already produces positive realized margin, change is not mandatory."
+            ]
+          }
+        ],
+        toolLabel: "Choose a path before resetting"
+      }
+    }
+  },
+  {
+    slug: "wow-crafting-order-commission-floor",
+    game: "wow",
+    updatedAt: "2026-08-12",
+    gameVersion: "WoW Retail · Crafting Orders model",
+    evidenceStatus: "estimated",
+    audiences: ["returner", "casual", "grinder"],
+    toolPath: { ru: "/wow/#order-floor", en: "/en/wow/#order-floor" },
+    content: {
+      ru: {
+        title: "Crafting Order commission: сколько должна стоить твоя работа",
+        description: "Строим minimum commission из crafter materials, recraft reserve и альтернативной стоимости времени.",
+        kicker: "WoW Retail · Service economics",
+        thesis: "Tip не равен profit. Order создаёт value только после материалов crafter, ожидаемого recraft reserve и времени, которое можно было монетизировать другим способом.",
+        readTime: "5 мин",
+        takeaways: [
+          "Baseline floor равен 1 430 gold: 450 materials, 180 reserve и 800 стоимости шести минут.",
+          "Commission 2 500 gold даёт 1 870 cash profit и 1 070 economic profit на order.",
+          "Order около floor требует переговоров, а не автоматического accept."
+        ],
+        sections: [
+          {
+            heading: "Cash profit не учитывает время",
+            paragraphs: [
+              "Из commission вычитаются материалы, которые предоставляет crafter, и ожидаемый reserve на recraft. Получившийся cash profit показывает денежный остаток, но ещё не стоимость работы.",
+              "Если твой target составляет 8 000 gold/hour, шесть минут имеют opportunity cost 800 gold. Эта сумма входит в economic floor даже без прямого расхода из bags."
+            ]
+          },
+          {
+            heading: "Minimum commission является переговорной опорой",
+            paragraphs: [
+              "При baseline-вводных floor составляет 1 430 gold. Commission заметно выше него создаёт положительную margin of safety. Значение рядом с floor уязвимо к дополнительному общению, recraft или ошибке в материалах.",
+              "Это не универсальный прайс-лист профессии. Игрок с другим target GPH, скоростью исполнения или reserve получит другой floor."
+            ]
+          },
+          {
+            heading: "Batch orders тоже требуют учёта",
+            paragraphs: [
+              "Пять одинаковых orders могут выглядеть как 12 500 gold revenue. Но batch economic profit масштабирует и прибыль, и скрытую стоимость времени.",
+              "Введи реальные minutes, материалы и вероятность recraft. Принимай order, когда он покрывает полную стоимость; договаривайся, когда margin слишком тонкая; отказывайся, когда commission ниже floor."
+            ]
+          }
+        ],
+        toolLabel: "Посчитать мой commission floor"
+      },
+      en: {
+        title: "Crafting Order commission: what your work needs to earn",
+        description: "Build a minimum commission from crafter materials, recraft reserve and the opportunity cost of time.",
+        kicker: "WoW Retail · Service economics",
+        thesis: "A tip is not profit. An order creates value only after crafter materials, expected recraft reserve and time that could have been monetized elsewhere.",
+        readTime: "5 min",
+        takeaways: [
+          "The baseline floor is 1,430 gold: 450 materials, 180 reserve and 800 for six minutes.",
+          "A 2,500 gold commission creates 1,870 cash profit and 1,070 economic profit per order.",
+          "An order near the floor needs negotiation, not an automatic accept."
+        ],
+        sections: [
+          {
+            heading: "Cash profit omits time",
+            paragraphs: [
+              "Subtract crafter-provided materials and expected recraft reserve from commission. The remaining cash profit measures the monetary balance, but not the full cost of the work.",
+              "At a target of 8,000 gold/hour, six minutes carry an 800 gold opportunity cost. That belongs in the economic floor even though it never leaves the bags directly."
+            ]
+          },
+          {
+            heading: "Minimum commission anchors the negotiation",
+            paragraphs: [
+              "The baseline inputs produce a 1,430 gold floor. Commission comfortably above it creates positive margin of safety. A value near the floor is vulnerable to extra messaging, a recraft or a material mistake.",
+              "This is not a universal profession price list. A different target GPH, service speed or reserve produces a different floor."
+            ]
+          },
+          {
+            heading: "Batch orders still need accounting",
+            paragraphs: [
+              "Five identical orders can look like 12,500 gold of revenue. Batch economic profit scales both earnings and the hidden cost of time.",
+              "Enter actual minutes, materials and recraft expectation. Accept when the order covers full cost, negotiate when the margin is thin, and decline when commission falls below the floor."
+            ]
+          }
+        ],
+        toolLabel: "Calculate my commission floor"
+      }
+    }
+  },
+  {
+    slug: "wow-batch-size-inventory-trap",
+    game: "wow",
+    updatedAt: "2026-08-12",
+    gameVersion: "WoW Retail · Curse of Ula’tek market model",
+    evidenceStatus: "estimated",
+    audiences: ["casual", "grinder"],
+    toolPath: { ru: "/wow/?wow-crafting.craft-count=20#crafting-margin", en: "/en/wow/?wow-crafting.craft-count=20#crafting-margin" },
+    content: {
+      ru: {
+        title: "Batch size: как прибыльный craft превращается в inventory trap",
+        description: "Почему положительная unit margin не гарантирует, что рынок поглотит двадцать, пятьдесят или сто crafts.",
+        kicker: "WoW Retail · Working capital",
+        thesis: "Margin отвечает, выгодна ли единица при заданных условиях. Batch size отвечает, сколько таких единиц можно профинансировать до того, как liquidity станет главным риском.",
+        readTime: "5 мин",
+        takeaways: [
+          "Большой batch умножает ожидаемую прибыль и капитал в непроданном stock одновременно.",
+          "Sell-through нужно измерять на выбранном listing cycle, а не угадывать по одной успешной продаже.",
+          "Scale rule: увеличивай следующий batch только после подтверждённой cash conversion."
+        ],
+        sections: [
+          {
+            heading: "Unit economics не содержит объём спроса",
+            paragraphs: [
+              "Recipe может давать положительный expected profit на один craft. Это доказывает edge только для тестируемой единицы, но ничего не говорит о покупателях на весь планируемый объём.",
+              "Когда двадцать crafts выходят на рынок одновременно, собственный supply может увеличить время продажи или заставить снижать цену."
+            ]
+          },
+          {
+            heading: "Working capital становится узким местом",
+            paragraphs: [
+              "Каждый непроданный item сохраняет некоторую стоимость, но забирает ликвидное gold. Игрок продолжает видеть богатый inventory и одновременно теряет возможность купить следующий набор reagents.",
+              "Inventory at risk показывает стоимость непроданной части при текущей цене. Это не guaranteed loss, а сумма, судьба которой ещё не определена рынком."
+            ]
+          },
+          {
+            heading: "Лестница масштабирования",
+            paragraphs: [
+              "Начни с discovery batch. Зафиксируй долю и скорость продаж, relisting и markdown. Второй batch увеличивай только там, где первый подтвердил спрос без чрезмерной скидки.",
+              "Если stock растёт быстрее realised sales, останови производство даже при положительной headline margin. Цель market operator состоит в обороте капитала, а не в максимальном количестве crafted items."
+            ]
+          }
+        ],
+        toolLabel: "Проверить риск большого batch"
+      },
+      en: {
+        title: "Batch size: how a profitable craft becomes an inventory trap",
+        description: "Why positive unit margin does not prove that the market can absorb twenty, fifty or one hundred crafts.",
+        kicker: "WoW Retail · Working capital",
+        thesis: "Margin asks whether one unit is attractive under the inputs. Batch size asks how many units can be financed before liquidity becomes the primary risk.",
+        readTime: "5 min",
+        takeaways: [
+          "A larger batch multiplies expected profit and capital in unsold stock at the same time.",
+          "Measure sell-through over a chosen listing cycle instead of guessing from one successful sale.",
+          "Scale rule: increase the next batch only after confirmed cash conversion."
+        ],
+        sections: [
+          {
+            heading: "Unit economics contains no demand volume",
+            paragraphs: [
+              "A recipe can produce positive expected profit per craft. That supports an edge for the tested unit, but says nothing about buyers for the full planned volume.",
+              "Putting twenty crafts on the market at once can increase sale time or force a markdown as your own supply meets limited demand."
+            ]
+          },
+          {
+            heading: "Working capital becomes the constraint",
+            paragraphs: [
+              "Every unsold item retains some value but removes liquid gold. A player can look wealthy in inventory while losing the ability to fund another reagent cycle.",
+              "Inventory at risk measures the current listed value of the unsold portion. It is not a guaranteed loss; it is value whose outcome the market has not settled."
+            ]
+          },
+          {
+            heading: "Use a scaling ladder",
+            paragraphs: [
+              "Start with a discovery batch. Record sale share, time, relisting and markdown. Increase the second batch only where the first confirmed demand without an excessive discount.",
+              "If stock grows faster than realized sales, stop production even with positive headline margin. A market operator manages capital turnover, not the largest pile of crafted items."
+            ]
+          }
+        ],
+        toolLabel: "Test large-batch risk"
+      }
+    }
+  },
+  {
+    slug: "wow-gathering-vs-crafting-limited-time",
+    game: "wow",
+    updatedAt: "2026-08-12",
+    gameVersion: "WoW Retail · Curse of Ula’tek market model",
+    evidenceStatus: "estimated",
+    audiences: ["returner", "casual"],
+    toolPath: { ru: "/wow/#market-rankings", en: "/en/wow/#market-rankings" },
+    content: {
+      ru: {
+        title: "Gathering или crafting, если играть несколько часов в неделю",
+        description: "Сравниваем два market route по капиталу, ликвидности, time fit, specialization moat и операционной friction.",
+        kicker: "WoW Retail · Limited-time route",
+        thesis: "При коротких сессиях лучший route определяется не максимальной theoretical margin. Побеждает цикл, который можно проверить малым капиталом и регулярно превращать в cash без растущего stock.",
+        readTime: "6 мин",
+        takeaways: [
+          "Gathering проще запустить и проверить, но его GPH всё равно требует liquidity haircut.",
+          "Commodity crafting может дать лучший throughput, если margin и объём продаж уже подтверждены.",
+          "Limited-time игрок выбирает короткий cash cycle, а не профессию с самым высоким ceiling."
+        ],
+        sections: [
+          {
+            heading: "Gathering снижает entry risk",
+            paragraphs: [
+              "Сбор материалов требует меньше working capital и позволяет быстро создать тестовый inventory. Для returner это хороший способ увидеть текущие цены и скорость продаж без большого profession bet.",
+              "Но AH sticker price нельзя называть доходом. Effective GPH появляется только после sell-through, комиссии, расходов и непроданного остатка."
+            ]
+          },
+          {
+            heading: "Crafting создаёт leverage и риск",
+            paragraphs: [
+              "Crafting превращает доступ к recipes, Knowledge и process в потенциальный moat. Положительная post-fee margin может масштабировать время лучше, чем личный фарм.",
+              "Одновременно reagents замораживают gold до продажи output. Без наблюдаемого спроса leverage превращается в inventory risk."
+            ]
+          },
+          {
+            heading: "Выбор для короткой недели",
+            paragraphs: [
+              "Начни с route, который помещается в одну законченную сессию: создать inventory, выставить, проверить продажу и зафиксировать результат. Если gathering стабильно конвертируется, он остаётся рабочей базой.",
+              "Переходи в commodity craft, когда можешь назвать break-even, ожидаемый sell-through и максимальный batch. Conditional ranking показывает fit, а calculators проверяют конкретные цены."
+            ]
+          }
+        ],
+        toolLabel: "Сравнить market routes"
+      },
+      en: {
+        title: "Gathering or crafting with only a few hours a week",
+        description: "Compare two market routes across capital, liquidity, time fit, specialization moat and operating friction.",
+        kicker: "WoW Retail · Limited-time route",
+        thesis: "With short sessions, maximum theoretical margin does not define the best route. The useful loop is easy to validate with limited capital and repeatedly converts to cash without growing stock.",
+        readTime: "6 min",
+        takeaways: [
+          "Gathering is easier to start and validate, but its GPH still needs a liquidity haircut.",
+          "Commodity crafting can produce stronger throughput once margin and sales volume are confirmed.",
+          "A limited-time player chooses a short cash cycle, not the profession with the highest ceiling."
+        ],
+        sections: [
+          {
+            heading: "Gathering reduces entry risk",
+            paragraphs: [
+              "Gathering needs less working capital and creates test inventory quickly. For a returner, it reveals current prices and sale speed without a large profession bet.",
+              "The AH sticker price is not income. Effective GPH appears only after sell-through, fees, expenses and unsold stock."
+            ]
+          },
+          {
+            heading: "Crafting creates leverage and risk",
+            paragraphs: [
+              "Crafting turns recipe access, Knowledge and process into a potential moat. Positive post-fee margin can scale time better than personal gathering.",
+              "Reagents also lock gold until output sells. Without observed demand, leverage becomes inventory risk."
+            ]
+          },
+          {
+            heading: "Choose for a short week",
+            paragraphs: [
+              "Start with a route that fits into one complete loop: create inventory, list it, check the sale and record the result. If gathering converts consistently, it remains a useful base.",
+              "Move into commodity crafting when you can state break-even, expected sell-through and maximum batch. Conditional ranking measures fit; calculators test the actual prices."
+            ]
+          }
+        ],
+        toolLabel: "Compare market routes"
+      }
+    }
   }
 ];
 
