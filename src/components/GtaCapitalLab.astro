@@ -1,0 +1,315 @@
+---
+import { gtaBusinesses } from "../data/gta-businesses";
+import ScenarioActions from "./ScenarioActions.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const copy = lang === "ru" ? {
+  kicker: "Capital Lab · three live decisions",
+  title: "Не уходи из хаба, чтобы проверить главный вопрос",
+  text: "Три модели закрывают покупку, цель по капиталу и портфель. Все значения estimated, видимы и редактируются прямо здесь.",
+  status: "Estimated · editable · checked 2026-07-01",
+  model1: "Model 01 · acquisition",
+  roiTitle: "Business ROI: во что превращается покупка",
+  roiText: "Выбери актив и проверь net, payback и месячный steady-state для своих setup, sale и supply assumptions.",
+  asset: "Бизнес",
+  setup: "Стартовые вложения, GTA$",
+  sale: "Полная продажа, GTA$",
+  supply: "Supplies, GTA$",
+  production: "Production time, ч",
+  weeklyOnline: "Online production, ч / нед.",
+  currentCase: "Текущий investment case",
+  netCycle: "Net / цикл",
+  netHour: "Net / production h",
+  payback: "Payback",
+  roi: "vROI / цикл",
+  monthly: "Потенциал / месяц",
+  active: "Active min / цикл",
+  model2: "Model 02 · goal runway",
+  goalTitle: "Hours to Goal: сколько недель до следующей покупки",
+  goalText: "Отдели стартовый банк от цели и посчитай только реализованный weekly cash flow.",
+  bank: "Банк сейчас, GTA$",
+  target: "Цель, GTA$",
+  weeklyProfit: "Реализованный net / нед.",
+  reserve: "Неснижаемый резерв, GTA$",
+  goalResult: "Маршрут до цели",
+  gap: "Осталось собрать",
+  weeks: "Недель до цели",
+  months: "Месяцев",
+  afterReserve: "Капитал сверх резерва",
+  weeklyProgress: "Прогресс / неделю",
+  targetState: "Статус",
+  ready: "Цель уже профинансирована",
+  building: "Цель требует накопления",
+  model3: "Model 03 · portfolio allocation",
+  portfolioTitle: "Portfolio: что помещается в капитал и active time",
+  portfolioText: "Оптимизатор перебирает наборы активов и выбирает максимальный baseline weekly net внутри двух ограничений.",
+  budget: "Бюджет, GTA$",
+  hours: "Active hours / нед.",
+  portfolioResult: "Оптимальная комбинация",
+  noFit: "Ни один актив не проходит оба ограничения.",
+  totalCost: "Общие вложения",
+  activeTime: "Active time",
+  weekly: "Net / нед.",
+  portfolioMonth: "Net / месяц",
+  reset: "Вернуть baseline",
+  note: "Production hours не равны active grind. Месячный результат является steady-state оценкой без простоя, лимитов доставки и риска незавершённой продажи."
+} : {
+  kicker: "Capital Lab · three live decisions",
+  title: "Do not leave the hub to test the main question",
+  text: "Three models cover the purchase, capital goal and portfolio. Every value is estimated, visible and editable here.",
+  status: "Estimated · editable · checked 2026-07-01",
+  model1: "Model 01 · acquisition",
+  roiTitle: "Business ROI: what the purchase becomes",
+  roiText: "Choose an asset and test net, payback and monthly steady state with your setup, sale and supply assumptions.",
+  asset: "Business",
+  setup: "Starting investment, GTA$",
+  sale: "Full sale, GTA$",
+  supply: "Supplies, GTA$",
+  production: "Production time, h",
+  weeklyOnline: "Online production, h / week",
+  currentCase: "Current investment case",
+  netCycle: "Net / cycle",
+  netHour: "Net / production h",
+  payback: "Payback",
+  roi: "vROI / cycle",
+  monthly: "Potential / month",
+  active: "Active min / cycle",
+  model2: "Model 02 · goal runway",
+  goalTitle: "Hours to Goal: how many weeks to the next purchase",
+  goalText: "Separate starting cash from the target and count only realized weekly cash flow.",
+  bank: "Cash now, GTA$",
+  target: "Target, GTA$",
+  weeklyProfit: "Realized net / week",
+  reserve: "Untouchable reserve, GTA$",
+  goalResult: "Route to target",
+  gap: "Remaining gap",
+  weeks: "Weeks to target",
+  months: "Months",
+  afterReserve: "Capital above reserve",
+  weeklyProgress: "Progress / week",
+  targetState: "Status",
+  ready: "The target is already funded",
+  building: "The target needs accumulation",
+  model3: "Model 03 · portfolio allocation",
+  portfolioTitle: "Portfolio: what fits capital and active time",
+  portfolioText: "The optimizer searches asset sets and maximizes baseline weekly net inside both constraints.",
+  budget: "Budget, GTA$",
+  hours: "Active hours / week",
+  portfolioResult: "Optimal combination",
+  noFit: "No asset passes both constraints.",
+  totalCost: "Total investment",
+  activeTime: "Active time",
+  weekly: "Net / week",
+  portfolioMonth: "Net / month",
+  reset: "Restore baseline",
+  note: "Production hours are not active grind. Monthly results are steady-state estimates without downtime, delivery caps or failed-sale risk."
+};
+---
+
+<section id="capital-lab" class="section hub-section gta-capital-lab" aria-labelledby="gta-capital-lab-title" data-gta-capital-lab data-lang={lang}>
+  <div class="section-head hub-section-head">
+    <div><span class="section-kicker">{copy.kicker}</span><h2 id="gta-capital-lab-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+    <span class="pill teal">{copy.status}</span>
+  </div>
+
+  <section id="business-roi" class="gta-inline-model" data-gta-roi data-scenario-root data-scenario-key="gta-inline-roi">
+    <div class="gta-inline-head"><div class="gta-business-mark">ROI</div><div><span class="section-kicker">{copy.model1}</span><h3>{copy.roiTitle}</h3><p>{copy.roiText}</p></div></div>
+    <div class="grid-2 gta-inline-grid">
+      <form class="card gta-inline-input">
+        <div class="form-grid">
+          <div class="field" style="grid-column:1/-1"><label for="gta-inline-business">{copy.asset}</label><select id="gta-inline-business" data-roi-input="business">{gtaBusinesses.map((business) => <option value={business.id}>{business.name[lang]}</option>)}</select></div>
+          <div class="field"><label for="gta-inline-setup">{copy.setup}</label><input id="gta-inline-setup" data-roi-input="setup" type="number" min="0" step="10000" /></div>
+          <div class="field"><label for="gta-inline-sale">{copy.sale}</label><input id="gta-inline-sale" data-roi-input="sale" type="number" min="0" step="5000" /></div>
+          <div class="field"><label for="gta-inline-supply">{copy.supply}</label><input id="gta-inline-supply" data-roi-input="supply" type="number" min="0" step="5000" /></div>
+          <div class="field"><label for="gta-inline-production">{copy.production}</label><input id="gta-inline-production" data-roi-input="production" type="number" min="0.1" step="0.1" /></div>
+          <div class="field" style="grid-column:1/-1"><label for="gta-inline-weekly">{copy.weeklyOnline}</label><input id="gta-inline-weekly" data-roi-input="weekly" type="number" min="1" max="168" step="1" value="8" /></div>
+        </div>
+        <button class="button ghost gta-inline-reset" data-roi-reset type="button">↺ {copy.reset}</button>
+      </form>
+      <article class="card result-panel gta-inline-result" data-roi-result aria-live="polite">
+        <span class="result-label">{copy.currentCase}</span><div class="result-name" data-roi-name>-</div><p class="result-reason" data-roi-reason>-</p>
+        <div class="result-metrics">
+          <div class="result-metric"><span>{copy.netCycle}</span><strong class="teal" data-roi-output="net">-</strong></div>
+          <div class="result-metric"><span>{copy.netHour}</span><strong data-roi-output="hourly">-</strong></div>
+          <div class="result-metric"><span>{copy.payback}</span><strong data-roi-output="payback">-</strong></div>
+          <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-roi-output="roi">-</strong></div>
+          <div class="result-metric"><span>{copy.monthly}</span><strong class="gold" data-roi-output="monthly">-</strong></div>
+          <div class="result-metric"><span>{copy.active}</span><strong data-roi-output="active">-</strong></div>
+        </div><p class="dim gta-inline-note">{copy.note}</p><ScenarioActions lang={lang} />
+      </article>
+    </div>
+  </section>
+
+  <section id="hours-to-goal" class="gta-inline-model" data-gta-goal data-scenario-root data-scenario-key="gta-hours-goal">
+    <div class="gta-inline-head"><div class="gta-business-mark">GOAL</div><div><span class="section-kicker">{copy.model2}</span><h3>{copy.goalTitle}</h3><p>{copy.goalText}</p></div></div>
+    <div class="grid-2 gta-inline-grid">
+      <form class="card gta-inline-input"><div class="form-grid">
+        <div class="field"><label for="gta-goal-bank">{copy.bank}</label><input id="gta-goal-bank" data-goal-input="bank" type="number" min="0" step="50000" value="1250000" /></div>
+        <div class="field"><label for="gta-goal-target">{copy.target}</label><input id="gta-goal-target" data-goal-input="target" type="number" min="0" step="50000" value="4000000" /></div>
+        <div class="field"><label for="gta-goal-weekly">{copy.weeklyProfit}</label><input id="gta-goal-weekly" data-goal-input="weekly" type="number" min="0" step="25000" value="650000" /></div>
+        <div class="field"><label for="gta-goal-reserve">{copy.reserve}</label><input id="gta-goal-reserve" data-goal-input="reserve" type="number" min="0" step="25000" value="250000" /></div>
+      </div></form>
+      <article class="card result-panel gta-inline-result" data-goal-result aria-live="polite"><span class="result-label">{copy.goalResult}</span><div class="result-name" data-goal-name>{copy.building}</div>
+        <div class="result-metrics">
+          <div class="result-metric"><span>{copy.gap}</span><strong data-goal-output="gap">-</strong></div><div class="result-metric"><span>{copy.weeks}</span><strong class="teal" data-goal-output="weeks">-</strong></div>
+          <div class="result-metric"><span>{copy.months}</span><strong data-goal-output="months">-</strong></div><div class="result-metric"><span>{copy.afterReserve}</span><strong data-goal-output="deployable">-</strong></div>
+          <div class="result-metric"><span>{copy.weeklyProgress}</span><strong class="gold" data-goal-output="progress">-</strong></div><div class="result-metric"><span>{copy.targetState}</span><strong data-goal-output="status">-</strong></div>
+        </div><ScenarioActions lang={lang} />
+      </article>
+    </div>
+  </section>
+
+  <section id="portfolio-allocation" class="gta-inline-model" data-gta-portfolio data-scenario-root data-scenario-key="gta-inline-portfolio">
+    <div class="gta-inline-head"><div class="gta-business-mark">PF</div><div><span class="section-kicker">{copy.model3}</span><h3>{copy.portfolioTitle}</h3><p>{copy.portfolioText}</p></div></div>
+    <div class="grid-2 gta-inline-grid">
+      <form class="card gta-inline-input"><div class="form-grid">
+        <div class="field"><label for="gta-portfolio-budget-inline">{copy.budget}</label><input id="gta-portfolio-budget-inline" data-portfolio-input="budget" type="number" min="0" step="100000" value="5000000" /></div>
+        <div class="field"><label for="gta-portfolio-hours-inline">{copy.hours}</label><input id="gta-portfolio-hours-inline" data-portfolio-input="hours" type="number" min="0" max="168" step="0.5" value="2" /></div>
+      </div></form>
+      <article class="card result-panel gta-inline-result" data-portfolio-result aria-live="polite"><span class="result-label">{copy.portfolioResult}</span><div class="gta-portfolio-picks" data-portfolio-picks>-</div>
+        <div class="result-metrics"><div class="result-metric"><span>{copy.totalCost}</span><strong data-portfolio-output="cost">-</strong></div><div class="result-metric"><span>{copy.activeTime}</span><strong data-portfolio-output="time">-</strong></div><div class="result-metric"><span>{copy.weekly}</span><strong class="teal" data-portfolio-output="weekly">-</strong></div><div class="result-metric"><span>{copy.portfolioMonth}</span><strong class="gold" data-portfolio-output="monthly">-</strong></div></div><ScenarioActions lang={lang} />
+      </article>
+    </div>
+  </section>
+</section>
+
+<script>
+  import { gtaBusinesses as businesses } from "../data/gta-businesses";
+  import { calculateBusinessMetrics, calculateGoalRunway, findBestPortfolio } from "../lib/economy";
+
+  const root = document.querySelector<HTMLElement>("[data-gta-capital-lab]");
+  const must = <T extends Element>(scope: ParentNode, selector: string): T => {
+    const element = scope.querySelector<T>(selector);
+    if (!element) throw new Error(`Missing GTA Capital Lab element: ${selector}`);
+    return element;
+  };
+  const numberValue = (input: HTMLInputElement | HTMLSelectElement) => { const value = Number(input.value); return Number.isFinite(value) ? value : 0; };
+
+  if (root) {
+    const lang = root.dataset.lang === "ru" ? "ru" : "en";
+    const labels = lang === "ru" ? { ready: "Цель уже профинансирована", building: "Цель требует накопления", weeks: "Недель до цели", noFit: "Ни один актив не проходит оба ограничения." } : { ready: "The target is already funded", building: "The target needs accumulation", weeks: "Weeks to target", noFit: "No asset passes both constraints." };
+    const money = (value: number) => `GTA$${new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 }).format(Math.round(value))}`;
+
+    const roi = must<HTMLElement>(root, "[data-gta-roi]");
+    const roiInputs = {
+      business: must<HTMLSelectElement>(roi, '[data-roi-input="business"]'),
+      setup: must<HTMLInputElement>(roi, '[data-roi-input="setup"]'),
+      sale: must<HTMLInputElement>(roi, '[data-roi-input="sale"]'),
+      supply: must<HTMLInputElement>(roi, '[data-roi-input="supply"]'),
+      production: must<HTMLInputElement>(roi, '[data-roi-input="production"]'),
+      weekly: must<HTMLInputElement>(roi, '[data-roi-input="weekly"]')
+    };
+    const roiOutputs = {
+      net: must<HTMLElement>(roi, '[data-roi-output="net"]'),
+      hourly: must<HTMLElement>(roi, '[data-roi-output="hourly"]'),
+      payback: must<HTMLElement>(roi, '[data-roi-output="payback"]'),
+      roi: must<HTMLElement>(roi, '[data-roi-output="roi"]'),
+      monthly: must<HTMLElement>(roi, '[data-roi-output="monthly"]'),
+      active: must<HTMLElement>(roi, '[data-roi-output="active"]')
+    };
+    const roiName = must<HTMLElement>(roi, "[data-roi-name]");
+    const roiReason = must<HTMLElement>(roi, "[data-roi-reason]");
+    const roiResult = must<HTMLElement>(roi, "[data-roi-result]");
+    const selectedBusiness = () => businesses.find((item) => item.id === roiInputs.business.value) ?? businesses[0]!;
+    const loadBusiness = () => {
+      const business = selectedBusiness();
+      roiInputs.setup.value = String(business.setupCost);
+      roiInputs.sale.value = String(business.fullSale);
+      roiInputs.supply.value = String(business.supplyCost);
+      roiInputs.production.value = String(business.productionHours);
+      renderRoi();
+    };
+    const renderRoi = () => {
+      const business = selectedBusiness();
+      const metrics = calculateBusinessMetrics({
+        setupCost: numberValue(roiInputs.setup),
+        fullSale: numberValue(roiInputs.sale),
+        supplyCost: numberValue(roiInputs.supply),
+        productionHours: Math.max(.1, numberValue(roiInputs.production))
+      });
+      const monthly = metrics.profitPerProductionHour * numberValue(roiInputs.weekly) * 4.345;
+      roiName.textContent = business.name[lang];
+      roiReason.textContent = business.summary[lang];
+      roiOutputs.net.textContent = money(metrics.netPerCycle);
+      roiOutputs.hourly.textContent = money(metrics.profitPerProductionHour);
+      roiOutputs.payback.textContent = Number.isFinite(metrics.paybackProductionHours) ? `${Math.round(metrics.paybackProductionHours)} h` : "∞";
+      roiOutputs.roi.textContent = `${metrics.virtualRoi.toFixed(1)}%`;
+      roiOutputs.monthly.textContent = money(monthly);
+      roiOutputs.active.textContent = `${business.activeMinutesPerCycle} min`;
+      roiResult.dataset.state = metrics.netPerCycle >= 0 ? "positive" : "negative";
+    };
+    roiInputs.business.addEventListener("change", loadBusiness);
+    Object.values(roiInputs).filter((input) => input !== roiInputs.business).forEach((input) => input.addEventListener("input", renderRoi));
+    must<HTMLButtonElement>(roi, "[data-roi-reset]").addEventListener("click", loadBusiness);
+    loadBusiness();
+
+    const goal = must<HTMLElement>(root, "[data-gta-goal]");
+    const goalInputs = {
+      bank: must<HTMLInputElement>(goal, '[data-goal-input="bank"]'),
+      target: must<HTMLInputElement>(goal, '[data-goal-input="target"]'),
+      weekly: must<HTMLInputElement>(goal, '[data-goal-input="weekly"]'),
+      reserve: must<HTMLInputElement>(goal, '[data-goal-input="reserve"]')
+    };
+    const goalOutputs = {
+      gap: must<HTMLElement>(goal, '[data-goal-output="gap"]'),
+      weeks: must<HTMLElement>(goal, '[data-goal-output="weeks"]'),
+      months: must<HTMLElement>(goal, '[data-goal-output="months"]'),
+      deployable: must<HTMLElement>(goal, '[data-goal-output="deployable"]'),
+      progress: must<HTMLElement>(goal, '[data-goal-output="progress"]'),
+      status: must<HTMLElement>(goal, '[data-goal-output="status"]')
+    };
+    const goalResult = must<HTMLElement>(goal, "[data-goal-result]");
+    const goalName = must<HTMLElement>(goal, "[data-goal-name]");
+    const renderGoal = () => {
+      const metrics = calculateGoalRunway({ bank: numberValue(goalInputs.bank), target: numberValue(goalInputs.target), weeklyProfit: numberValue(goalInputs.weekly), reserve: numberValue(goalInputs.reserve) });
+      goalOutputs.gap.textContent = money(metrics.gap);
+      goalOutputs.weeks.textContent = Number.isFinite(metrics.weeks) ? metrics.weeks.toFixed(1) : "∞";
+      goalOutputs.months.textContent = Number.isFinite(metrics.months) ? metrics.months.toFixed(1) : "∞";
+      goalOutputs.deployable.textContent = money(metrics.deployableCapital);
+      goalOutputs.progress.textContent = `${metrics.weeklyProgressPercent.toFixed(1)}%`;
+      goalOutputs.status.textContent = metrics.isFunded ? labels.ready : labels.building;
+      goalName.textContent = metrics.isFunded ? labels.ready : `${Number.isFinite(metrics.weeks) ? metrics.weeks.toFixed(1) : "∞"} ${labels.weeks.toLowerCase()}`;
+      goalResult.dataset.state = metrics.isFunded ? "positive" : "caution";
+    };
+    Object.values(goalInputs).forEach((input) => input.addEventListener("input", renderGoal));
+    renderGoal();
+
+    const portfolio = must<HTMLElement>(root, "[data-gta-portfolio]");
+    const portfolioInputs = {
+      budget: must<HTMLInputElement>(portfolio, '[data-portfolio-input="budget"]'),
+      hours: must<HTMLInputElement>(portfolio, '[data-portfolio-input="hours"]')
+    };
+    const portfolioOutputs = {
+      cost: must<HTMLElement>(portfolio, '[data-portfolio-output="cost"]'),
+      time: must<HTMLElement>(portfolio, '[data-portfolio-output="time"]'),
+      weekly: must<HTMLElement>(portfolio, '[data-portfolio-output="weekly"]'),
+      monthly: must<HTMLElement>(portfolio, '[data-portfolio-output="monthly"]')
+    };
+    const picks = must<HTMLElement>(portfolio, "[data-portfolio-picks]");
+    const portfolioResult = must<HTMLElement>(portfolio, "[data-portfolio-result]");
+    const renderPortfolio = () => {
+      const best = findBestPortfolio(businesses, numberValue(portfolioInputs.budget), numberValue(portfolioInputs.hours));
+      picks.replaceChildren();
+      if (!best) {
+        picks.textContent = labels.noFit;
+        Object.values(portfolioOutputs).forEach((output) => { output.textContent = "-"; });
+        portfolioResult.dataset.state = "negative";
+        return;
+      }
+      best.businesses.forEach((business) => {
+        const tag = document.createElement("span");
+        tag.className = "pill teal";
+        tag.textContent = business.name[lang];
+        picks.appendChild(tag);
+      });
+      portfolioOutputs.cost.textContent = money(best.setupCost);
+      portfolioOutputs.time.textContent = `${best.activeHours.toFixed(1)} h`;
+      portfolioOutputs.weekly.textContent = money(best.weeklyProfit);
+      portfolioOutputs.monthly.textContent = money(best.weeklyProfit * 4.345);
+      portfolioResult.dataset.state = "positive";
+    };
+    Object.values(portfolioInputs).forEach((input) => input.addEventListener("input", renderPortfolio));
+    renderPortfolio();
+  }
+</script>

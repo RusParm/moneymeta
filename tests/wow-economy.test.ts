@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { craftingBaseline, farmBaseline, orderBaseline } from "../src/data/wow-economy";
-import { calculateCraftingMetrics, calculateFarmMetrics, calculateWorkOrderMetrics, rankWowMarketRoutes } from "../src/lib/wow-economy";
+import { calculateCraftingMetrics, calculateFarmMetrics, calculateMarketLedger, calculateWorkOrderMetrics, rankWowMarketRoutes } from "../src/lib/wow-economy";
 
 describe("WoW crafting economics", () => {
   it("deducts the Auction House cut before measuring crafting profit", () => {
@@ -70,6 +70,24 @@ describe("WoW crafting order floor", () => {
 
     expect(metrics.minimumCommission).toBeCloseTo(980, 2);
     expect(metrics.batchEconomicProfit).toBeCloseTo(metrics.economicProfitPerOrder * 3, 2);
+  });
+});
+
+describe("WoW market ledger", () => {
+  it("separates listed inventory from expected cash", () => {
+    const metrics = calculateMarketLedger({ liquidGold: 80_000, listedInventoryValue: 120_000, sellThroughPercent: 55, auctionHouseCutPercent: 5, weeklyOperatingSpend: 25_000, cycleDays: 7 });
+
+    expect(metrics.expectedInventoryCash).toBe(62_700);
+    expect(metrics.inventoryAtRisk).toBeCloseTo(54_000, 2);
+    expect(metrics.liquidCapitalNow).toBe(55_000);
+    expect(metrics.liquidityRatioPercent).toBeCloseTo(27.5, 2);
+    expect(metrics.state).toBe("balanced");
+  });
+
+  it("flags a portfolio dominated by slow inventory", () => {
+    const metrics = calculateMarketLedger({ liquidGold: 10_000, listedInventoryValue: 150_000, sellThroughPercent: 20, auctionHouseCutPercent: 5, weeklyOperatingSpend: 8_000, cycleDays: 7 });
+    expect(metrics.state).toBe("inventory-heavy");
+    expect(metrics.inventoryAtRisk).toBeGreaterThan(metrics.expectedInventoryCash);
   });
 });
 

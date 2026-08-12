@@ -14,7 +14,7 @@ Primary promise: **Understand the economy. Make the smarter move.**
 
 ## Product principles
 
-- GTA-first, never GTA-only.
+- Depth first, never one-game only.
 - Content attracts; interactive decision tools create retention.
 - Never present estimates as verified facts.
 - Every material datum needs a game version, check date, source note and verification status.
@@ -34,6 +34,6 @@ Primary promise: **Understand the economy. Make the smarter move.**
 
 ## Current priority
 
-Ship and operate the complete GTA Online, Dota 2 and World of Warcraft Retail living hubs. Next, establish analytics, recurring data freshness, saved profiles and acquisition loops across all three active verticals. Research Total War and Crusader Kings as the next expansion candidates before implementation; keep Civilization and Age of Empires demand-led.
+Ship and operate five complete living hubs: GTA Online, Dota 2, World of Warcraft Retail, Total War: Warhammer III and Crusader Kings III. Next, validate behavior with analytics, establish recurring data freshness, deepen saved scenarios and build acquisition loops across all five verticals. Update Crusader Kings trade models only after Silk & Silver mechanics ship and can be verified. Keep Civilization and Age of Empires demand-led.
 
 Read `docs/PROJECT_CONTEXT.md`, `docs/ROADMAP.md`, `docs/DECISIONS.md` and `docs/CURRENT_STATUS.md` before changing product direction.

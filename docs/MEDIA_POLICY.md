@@ -19,6 +19,10 @@ Current original world assets:
 - `src/assets/game-worlds/gta-economy-world.webp`
 - `src/assets/game-worlds/dota-economy-world.webp`
 - `src/assets/game-worlds/wow-economy-world.webp`
+- `src/assets/game-worlds/total-war-economy-world.webp`
+- `src/assets/game-worlds/ck3-economy-world.webp`
+
+The Total War and Crusader Kings worlds are original Money Meta campaign-economy illustrations. They contain no publisher logos, character likeness requirements or readable game UI. They can be replaced without changing any calculation or information architecture.
 
 ### Dota editorial identifiers
 

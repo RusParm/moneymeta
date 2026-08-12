@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { gtaBusinesses } from "../src/data/gta-businesses";
 import {
   calculateBusinessMetrics,
+  calculateGoalRunway,
   findBestPortfolio,
   isSnapshotStale,
   rankBusinessesByLens,
@@ -54,6 +55,22 @@ describe("decision engine", () => {
 
   it("returns no portfolio when nothing fits", () => {
     expect(findBestPortfolio(gtaBusinesses, 100_000, 1)).toBeNull();
+  });
+
+  it("keeps the GTA goal reserve outside deployable capital", () => {
+    const result = calculateGoalRunway({ bank: 1_250_000, target: 4_000_000, weeklyProfit: 650_000, reserve: 250_000 });
+
+    expect(result.deployableCapital).toBe(1_000_000);
+    expect(result.gap).toBe(3_000_000);
+    expect(result.weeks).toBeCloseTo(4.615, 3);
+    expect(result.isFunded).toBe(false);
+  });
+
+  it("returns an infinite goal horizon when the gap has no cash flow", () => {
+    const result = calculateGoalRunway({ bank: 500_000, target: 2_000_000, weeklyProfit: 0, reserve: 100_000 });
+
+    expect(result.weeks).toBe(Number.POSITIVE_INFINITY);
+    expect(result.months).toBe(Number.POSITIVE_INFINITY);
   });
 
   it("keeps rankings conditional instead of producing one universal tier list", () => {

@@ -53,6 +53,17 @@
 - Dota 2 living hub: implemented in complete RU/EN parity with eight distinct decision classes.
 - WoW Retail living hub: implemented in complete RU/EN parity with three calculators, eight decision scenarios and six research notes.
 
+## P1.45: v1.5 five-economy release
+
+- Clear homepage onboarding before vertical selection: understand the product, see the three-step workflow and choose a game by player question.
+- Total War: Warhammer III campaign-capital hub in complete RU/EN parity.
+- Crusader Kings III realm-capital hub in complete RU/EN parity.
+- Three live Total War models: building payback, war reserve and conquest choice.
+- Three live Crusader Kings models: domain payback, war chest and succession buffer.
+- GTA visual system plus three inline capital models.
+- WoW market-ledger snapshot plus the existing crafting, farming and commission models.
+- Original strategy-world art, navigation, sitemap and five-economy discovery layer.
+
 ## P1.5: recurring utility
 
 - Goal Planner.
@@ -70,6 +81,6 @@
 - Live WoW Token and regional price data through Blizzard's supported APIs.
 - WoW profession portfolio, recipe comparison and saved market profiles.
 - Expanded Dota 2 match-economy tools: reliable/unreliable gold, death cost and item timing comparisons.
-- Total War as the next strategy-economy candidate, subject to selecting a title and a durable decision wedge.
-- Crusader Kings as the next grand-strategy candidate, with succession, realm capital and war-economy decisions as the likely wedge.
+- Total War scenario presets by faction and campaign phase after usage data identifies the highest-value cases.
+- Crusader Kings III Silk & Silver model update only after the Q4 2026 mechanics are released and verified.
 - Civilization and Age of Empires after search demand, repeat-use potential and reliable data workflows are validated.

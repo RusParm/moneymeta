@@ -1,0 +1,210 @@
+---
+import type { StrategyHubData, StrategyLocale } from "../data/strategy-hubs";
+import ScenarioActions from "./ScenarioActions.astro";
+import StrategyMark from "./StrategyMark.astro";
+
+interface Props { lang: StrategyLocale; data: StrategyHubData; }
+const { lang, data } = Astro.props;
+
+const copy = lang === "ru" ? {
+  kicker: "Scenario Lab · editable assumptions",
+  title: "Три модели, которые превращают кампанию в решение",
+  text: "Значения ниже являются демонстрационным baseline. Замени их цифрами из своей кампании и сразу проверь payback, runway или альтернативный сценарий.",
+  status: "Estimated · editable",
+  inputTitle: "Вводные сценария",
+  result: "Результат модели",
+  reset: "Вернуть baseline",
+  optionA: "Вариант A",
+  optionB: "Вариант B"
+} : {
+  kicker: "Scenario Lab · editable assumptions",
+  title: "Three models that turn a campaign into a decision",
+  text: "The values below are demonstration baselines. Replace them with numbers from your campaign and test payback, runway or the counterfactual immediately.",
+  status: "Estimated · editable",
+  inputTitle: "Scenario inputs",
+  result: "Model result",
+  reset: "Restore baseline",
+  optionA: "Option A",
+  optionB: "Option B"
+};
+---
+
+<section id="scenario-lab" class="section hub-section strategy-scenario-lab" aria-labelledby={`${data.id}-scenario-lab-title`}>
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id={`${data.id}-scenario-lab-title`}>{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="pill strategy-pill">{copy.status}</span>
+  </div>
+
+  {data.models.map((model, modelIndex) => (
+    <section
+      id={model.id}
+      class="strategy-model"
+      aria-labelledby={`${model.id}-title`}
+      data-strategy-model
+      data-model-kind={model.kind}
+      data-currency-unit={data.currencyUnit}
+      data-period-unit={data.periodUnit[lang]}
+      data-winner-a={model.winnerLabels?.a[lang] ?? "A"}
+      data-winner-b={model.winnerLabels?.b[lang] ?? "B"}
+      data-winner-tie={model.winnerLabels?.tie[lang] ?? "Tie"}
+      data-lang={lang}
+    >
+      <div class="strategy-model-head">
+        <StrategyMark mark={model.mark} label={`0${modelIndex + 1}`} large />
+        <div>
+          <span class="section-kicker">{model.kicker[lang]}</span>
+          <h3 id={`${model.id}-title`}>{model.title[lang]}</h3>
+          <p>{model.text[lang]}</p>
+        </div>
+        <span class="pill muted">{data.version}</span>
+      </div>
+
+      <div class="grid-2 strategy-model-grid" data-scenario-root data-scenario-key={`${data.id}-${model.id}`}>
+        <form class="card strategy-input-card">
+          <div class="strategy-input-title"><span>{copy.inputTitle}</span><strong>0{modelIndex + 1}</strong></div>
+          <div class="form-grid strategy-form-grid">
+            {model.inputs.map((input, index) => (
+              <div class:list={["field", input.group && `option-${input.group}`]}>
+                {input.group && (index === 0 || model.inputs[index - 1]?.group !== input.group) && (
+                  <span class="strategy-option-label">{input.group === "a" ? copy.optionA : copy.optionB}</span>
+                )}
+                <label for={`${data.id}-${model.id}-${input.key}`}>{input.label[lang]}</label>
+                <input
+                  id={`${data.id}-${model.id}-${input.key}`}
+                  data-model-input={input.key}
+                  type="number"
+                  value={input.value}
+                  min={input.min}
+                  max={input.max}
+                  step={input.step ?? 1}
+                />
+              </div>
+            ))}
+          </div>
+          <button class="button ghost strategy-reset" data-model-reset type="button">↺ {copy.reset}</button>
+        </form>
+
+        <article class="card result-panel strategy-result-panel" data-model-result aria-live="polite">
+          <div class="strategy-result-top"><span class="result-label">{copy.result}</span><StrategyMark mark={model.mark} /></div>
+          <div class="result-name" data-model-verdict>{model.title[lang]}</div>
+          <p class="result-reason">{model.note[lang]}</p>
+          <div class="result-metrics strategy-result-metrics">
+            {model.results.map((result) => (
+              <div class={`result-metric ${result.accent ? `is-${result.accent}` : ""}`}>
+                <span>{result.label[lang]}</span>
+                <strong data-model-output={result.key} data-output-format={result.format}>-</strong>
+              </div>
+            ))}
+          </div>
+          <ScenarioActions lang={lang} />
+        </article>
+      </div>
+    </section>
+  ))}
+</section>
+
+<script>
+  import {
+    calculateComparisonMetrics,
+    calculateInvestmentMetrics,
+    calculateReserveMetrics
+  } from "../lib/strategy-economy";
+
+  document.querySelectorAll<HTMLElement>("[data-strategy-model]").forEach((root) => {
+    const inputs = [...root.querySelectorAll<HTMLInputElement>("[data-model-input]")];
+    const outputs = [...root.querySelectorAll<HTMLElement>("[data-model-output]")];
+    const resultPanel = root.querySelector<HTMLElement>("[data-model-result]")!;
+    const verdict = root.querySelector<HTMLElement>("[data-model-verdict]")!;
+    const reset = root.querySelector<HTMLButtonElement>("[data-model-reset]")!;
+    const baselines = new Map(inputs.map((input) => [input.dataset.modelInput ?? "", input.value]));
+    const lang = root.dataset.lang === "ru" ? "ru" : "en";
+    const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+
+    const value = (key: string) => {
+      const input = inputs.find((candidate) => candidate.dataset.modelInput === key);
+      const parsed = Number(input?.value ?? 0);
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+
+    const format = (number: number, kind: string) => {
+      if (!Number.isFinite(number)) return "∞";
+      if (kind === "currency") return `${formatter.format(number)} ${root.dataset.currencyUnit ?? ""}`.trim();
+      if (kind === "percent") return `${formatter.format(number)}%`;
+      if (kind === "periods") return `${formatter.format(number)} ${root.dataset.periodUnit ?? ""}`.trim();
+      return formatter.format(number);
+    };
+
+    const render = () => {
+      const kind = root.dataset.modelKind;
+      let metrics: Record<string, number | string> = {};
+      let positive = true;
+
+      if (kind === "investment") {
+        const calculated = calculateInvestmentMetrics({
+          cost: value("cost"),
+          incomePerPeriod: value("incomePerPeriod"),
+          delayPeriods: value("delayPeriods"),
+          horizonPeriods: value("horizonPeriods"),
+          riskPercent: value("riskPercent")
+        });
+        metrics = { ...calculated };
+        positive = calculated.netValue >= 0;
+        verdict.textContent = positive
+          ? (lang === "ru" ? "Инвестиция окупается в горизонте" : "Investment pays back inside the horizon")
+          : (lang === "ru" ? "Горизонт короче окупаемости" : "The horizon is shorter than payback");
+      } else if (kind === "reserve") {
+        const calculated = calculateReserveMetrics({
+          treasury: value("treasury"),
+          incomePerPeriod: value("incomePerPeriod"),
+          currentOutflow: value("currentOutflow"),
+          newOutflow: value("newOutflow"),
+          oneOffCost: value("oneOffCost"),
+          horizonPeriods: value("horizonPeriods"),
+          reserve: value("reserve")
+        });
+        metrics = { ...calculated };
+        positive = calculated.buffer >= 0;
+        verdict.textContent = positive
+          ? (lang === "ru" ? "Резерв остаётся профинансирован" : "The reserve remains funded")
+          : (lang === "ru" ? "Сценарий пробивает резерв" : "The scenario breaks the reserve");
+      } else {
+        const calculated = calculateComparisonMetrics({
+          aImmediate: value("aImmediate"),
+          aRecurring: value("aRecurring"),
+          aDelay: value("aDelay"),
+          aRiskPercent: value("aRiskPercent"),
+          bImmediate: value("bImmediate"),
+          bRecurring: value("bRecurring"),
+          bDelay: value("bDelay"),
+          bRiskPercent: value("bRiskPercent"),
+          horizonPeriods: value("horizonPeriods")
+        });
+        const winner = calculated.winner === "a"
+          ? root.dataset.winnerA ?? "A"
+          : calculated.winner === "b"
+            ? root.dataset.winnerB ?? "B"
+            : root.dataset.winnerTie ?? "Tie";
+        metrics = { ...calculated, winner };
+        verdict.textContent = winner;
+      }
+
+      resultPanel.dataset.state = positive ? "positive" : "negative";
+      outputs.forEach((output) => {
+        const key = output.dataset.modelOutput ?? "";
+        const metric = metrics[key];
+        output.textContent = typeof metric === "string" ? metric : format(Number(metric ?? 0), output.dataset.outputFormat ?? "number");
+      });
+    };
+
+    inputs.forEach((input) => input.addEventListener("input", render));
+    reset.addEventListener("click", () => {
+      inputs.forEach((input) => { input.value = baselines.get(input.dataset.modelInput ?? "") ?? "0"; });
+      render();
+    });
+    render();
+  });
+</script>

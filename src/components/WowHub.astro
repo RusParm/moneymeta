@@ -12,6 +12,7 @@ import WowCalculators from "./WowCalculators.astro";
 import WowDecisionDeck from "./WowDecisionDeck.astro";
 import WowEconomyMap from "./WowEconomyMap.astro";
 import WowLibrary from "./WowLibrary.astro";
+import WowMarketLedger from "./WowMarketLedger.astro";
 import WowMarketMark from "./WowMarketMark.astro";
 import WowPlayerPaths from "./WowPlayerPaths.astro";
 import WowPulse from "./WowPulse.astro";
@@ -48,11 +49,11 @@ const copy = lang === "ru" ? {
   navLabel: "Навигация WoW Economy Hub",
   navBrand: "WOW / MARKET OS",
   nav: [
-    ["01", "Карта", "#economy-map"],
-    ["02", "Мой путь", "#player-paths"],
-    ["03", "Pulse", "#market-pulse"],
-    ["04", "Рейтинги", "#market-rankings"],
-    ["05", "Решения", "#decision-deck"],
+    ["01", "Snapshot", "#market-ledger"],
+    ["02", "Карта", "#economy-map"],
+    ["03", "Мой путь", "#player-paths"],
+    ["04", "Pulse", "#market-pulse"],
+    ["05", "Рейтинги", "#market-rankings"],
     ["06", "Модели", "#scenario-lab"],
     ["07", "Разборы", "#research-library"]
   ],
@@ -102,11 +103,11 @@ const copy = lang === "ru" ? {
   navLabel: "WoW Economy Hub navigation",
   navBrand: "WOW / MARKET OS",
   nav: [
-    ["01", "Map", "#economy-map"],
-    ["02", "My path", "#player-paths"],
-    ["03", "Pulse", "#market-pulse"],
-    ["04", "Rankings", "#market-rankings"],
-    ["05", "Decisions", "#decision-deck"],
+    ["01", "Snapshot", "#market-ledger"],
+    ["02", "Map", "#economy-map"],
+    ["03", "My path", "#player-paths"],
+    ["04", "Pulse", "#market-pulse"],
+    ["05", "Rankings", "#market-rankings"],
     ["06", "Models", "#scenario-lab"],
     ["07", "Research", "#research-library"]
   ],
@@ -199,6 +200,7 @@ const copy = lang === "ru" ? {
         </div>
       </section>
 
+      <WowMarketLedger lang={lang} />
       <WowEconomyMap lang={lang} />
       <WowPlayerPaths lang={lang} />
       <WowPulse lang={lang} />

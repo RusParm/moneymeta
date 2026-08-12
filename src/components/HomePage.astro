@@ -1,11 +1,15 @@
 ---
-import { dotaPatchContext, midasBaseline } from "../data/dota-economy";
-import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
+import { Image } from "astro:assets";
+import ck3EconomyWorld from "../assets/game-worlds/ck3-economy-world.webp";
+import dotaEconomyWorld from "../assets/game-worlds/dota-economy-world.webp";
+import gtaEconomyWorld from "../assets/game-worlds/gta-economy-world.webp";
+import totalWarEconomyWorld from "../assets/game-worlds/total-war-economy-world.webp";
+import wowEconomyWorld from "../assets/game-worlds/wow-economy-world.webp";
+import { dotaPatchContext } from "../data/dota-economy";
+import { weeklyMeta } from "../data/gta-businesses";
 import { insights } from "../data/insights";
-import { craftingBaseline, wowPatchContext } from "../data/wow-economy";
-import { calculateMidasMetrics } from "../lib/dota-economy";
-import { calculateBusinessMetrics } from "../lib/economy";
-import { calculateCraftingMetrics } from "../lib/wow-economy";
+import { crusaderKingsHub, totalWarHub } from "../data/strategy-hubs";
+import { wowPatchContext } from "../data/wow-economy";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
@@ -17,46 +21,54 @@ const homePath = lang === "ru" ? "/" : "/en/";
 const gtaPath = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
 const dotaPath = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
 const wowPath = lang === "ru" ? "/wow/" : "/en/wow/";
+const totalWarPath = lang === "ru" ? "/total-war/" : "/en/total-war/";
+const ck3Path = lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
 
-const acidLab = gtaBusinesses.find((business) => business.id === "acid")!;
-const gtaExample = calculateBusinessMetrics(acidLab);
-const dotaExample = calculateMidasMetrics(midasBaseline);
-const wowExample = calculateCraftingMetrics(craftingBaseline);
-const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
-
 const copy = lang === "ru" ? {
-  title: "Money Meta - что делать дальше в экономике любимой игры",
-  description: "Персональные решения для GTA Online, Dota 2 и WoW: что купить, когда окупится и сколько игровой валюты ты реально получишь.",
-  kicker: "Инструменты для игроков, которые ценят своё время",
-  headingA: "Не гринди",
-  headingB: "вслепую.",
-  lede: "Скажи, во что играешь и чего хочешь добиться. Money Meta покажет лучший следующий ход, реальную окупаемость и цену ошибки - без десяти роликов и советов «на глаз».",
-  start: "Найти мой следующий ход",
-  explore: "Открыть GTA Online Hub",
-  promises: ["Ответ за 30 секунд", "Все допущения можно изменить", "Сценарий сохраняется и отправляется ссылкой"],
-  demoLabel: "Пример решения · измени inputs внутри инструмента",
-  demoQuestion: "Что говорит модель?",
-  gtaVerdict: "Сначала - Кислотная лаборатория",
-  gtaReason: "Для solo-returner с GTA$2,5 млн и ограниченным временем baseline-модель ставит её выше более тяжёлых бизнесов.",
-  dotaVerdict: "Midas успевает окупиться",
-  dotaReason: "Покупка на 12-й минуте при ожидаемом конце на 42-й проходит break-even до завершения матча.",
-  wowVerdict: "Крафт имеет положительный edge",
-  wowReason: "Но часть прибыли остаётся в непроданном inventory - headline margin завышает доступное золото.",
-  openCase: "Открыть и пересчитать",
-  metricSetup: "Вложения",
-  metricNet: "Чистыми / цикл",
-  metricPayback: "Окупаемость",
-  metricRoi: "Realized ROI",
-  metricUses: "Transmute uses",
-  metricMinute: "Break-even",
-  metricBatch: "Прибыль batch",
-  metricRisk: "Inventory at risk",
-  metricExpectedRoi: "Expected ROI",
-  valueRail: [["30 сек", "от вопроса до action"], ["3 игры", "три разных типа экономики"], ["100%", "редактируемые inputs"], ["0", "скрытых допущений"]],
-  chooseKicker: "Начни с реального вопроса",
-  chooseTitle: "Что ты хочешь решить прямо сейчас?",
-  chooseText: "Не изучай структуру сайта. Выбери игру - и сразу переходи к нужному решению.",
+  title: "Money Meta - аналитика и инструменты для игровых экономик",
+  description: "Money Meta разбирает внутриигровые экономики и превращает их в решения: что купить, когда окупится, какой риск принять и что делать дальше.",
+  kicker: "Игры как системы решений",
+  headingA: "Пойми экономику любимой игры.",
+  headingB: "Сделай лучший ход.",
+  lede: "В каждой игре есть экономика: что покупать, на чём зарабатывать, когда рисковать и куда вкладывать время. Money Meta объясняет её без лишней сложности, а затем помогает выбрать следующий шаг под твой стиль игры.",
+  start: "Понять, как это работает",
+  explore: "Выбрать игру",
+  promises: ["Сначала объясняем систему", "Затем показываем варианты", "В конце даём инструмент для решения"],
+  atlasLabel: "Пять игровых экономик Money Meta",
+  atlasKicker: "Одна идея · пять разных миров",
+  atlasStatus: "Living economy atlas",
+  atlasTitle: "У каждой игры своя валюта. Логика решений универсальна.",
+  atlasText: "Money Meta показывает, как время, ресурсы, риск и прогресс связаны между собой.",
+  worldTypes: ["Производство", "Экономика матча", "Рынок игроков", "Экономика кампании", "Капитал династии"],
+  audienceKicker: "Для кого создан Money Meta",
+  audienceTitle: "Начни со своей ситуации",
+  audiences: [
+    ["RETURNER", "Вернулся после перерыва", "Быстро поймёшь, что изменилось и на чём сосредоточиться."],
+    ["LIMITED TIME", "Играешь несколько часов в неделю", "Выберешь маршрут с лучшей отдачей на время."],
+    ["GRINDER", "Хочешь оптимизировать глубже", "Проверишь эффективность маршрутов, покупок и запасов."]
+  ],
+  whatKicker: "Как работает Money Meta",
+  whatTitle: "Сначала понимаешь систему. Потом принимаешь решение.",
+  whatText: "Мы соединяем игровой контекст, твою ситуацию и прозрачные модели. Можно начать с короткого объяснения и углубляться только тогда, когда это действительно нужно.",
+  howSteps: [
+    ["01", "Увидеть картину целиком", "Визуальная карта объясняет, откуда приходят ресурсы, где они застревают и что двигает прогресс."],
+    ["02", "Найти свой маршрут", "Выбираешь стиль игры, доступное время и цель. Хаб показывает подходящий путь и реальные альтернативы."],
+    ["03", "Проверить следующий ход", "Рейтинги, сценарии и калькуляторы помогают сравнить решения на твоих вводных."]
+  ],
+  canKicker: "Что есть внутри каждого игрового хаба",
+  canSystem: "6 слоёв · один понятный путь",
+  capabilities: [
+    ["MAP", "Визуальная карта экономики и связей между её частями"],
+    ["PATH", "Персональный путь для returner, casual и grinder"],
+    ["PULSE", "Актуальная мета, патчи и изменения контекста"],
+    ["LIBRARY", "Большая библиотека прикладных разборов"],
+    ["RANKINGS", "Рейтинги и сравнения под разные ограничения"],
+    ["LAB", "Калькуляторы и сценарии с редактируемыми вводными"]
+  ],
+  chooseKicker: "Когда смысл понятен",
+  chooseTitle: "Теперь выбери экономику, которую хочешь освоить.",
+  chooseText: "Каждый хаб начинается с карты и твоей ситуации, а уже потом ведёт к рейтингам, сценариям и калькуляторам.",
   active: "Доступно сейчас",
   gtaTag: "Production economy",
   gtaTitle: "GTA Online",
@@ -70,6 +82,14 @@ const copy = lang === "ru" ? {
   wowTitle: "WoW Retail",
   wowText: "Цена в Auction House ещё не прибыль. Комиссия, sell-through и inventory меняют ответ.",
   wowQuestions: [["Этот крафт реально прибыльный?", `${wowPath}#crafting-margin`], ["Сколько золота фарм приносит на деле?", `${wowPath}#farm-liquidity`]],
+  totalWarTag: "Campaign economy",
+  totalWarTitle: "Total War: Warhammer III",
+  totalWarText: "Казна, провинции, армейский upkeep и захват должны работать как одна система.",
+  totalWarQuestions: [["Окупится ли income-здание?", `${totalWarPath}#building-payback`], ["Хватит ли казны на новую армию?", `${totalWarPath}#war-reserve`], ["Sack или occupy?", `${totalWarPath}#conquest-choice`]],
+  ck3Tag: "Dynasty economy",
+  ck3Title: "Crusader Kings III",
+  ck3Text: "Богатое правление важно только тогда, когда treasury переживает войну и наследование.",
+  ck3Questions: [["Окупится ли здание домена?", `${ck3Path}#domain-payback`], ["Хватит ли gold на войну?", `${ck3Path}#war-chest`], ["Какой buffer получит наследник?", `${ck3Path}#succession-buffer`]],
   featuredKicker: "Flagship analysis",
   featuredTitle: "Цифры, которые меняют решение.",
   featuredText: "Короткие разборы ведут от популярного совета к проверяемому выводу и инструменту.",
@@ -84,6 +104,8 @@ const copy = lang === "ru" ? {
   weekly: "GTA Weekly Meta",
   dota: "Dota patch context",
   wow: "WoW Retail context",
+  totalWarPulse: "Total War campaign context",
+  ck3Pulse: "CK3 dynasty context",
   compareKicker: "Почему не обычный гайд",
   compareTitle: "Гайд даёт мнение. Money Meta даёт решение.",
   generic: "Обычный гайд",
@@ -97,37 +119,49 @@ const copy = lang === "ru" ? {
   trustTitle: "Никакой выдуманной точности.",
   trustText: "Verified, estimated и community-reported никогда не смешиваются. Если данные устарели, Money Meta скажет это раньше, чем даст совет."
 } : {
-  title: "Money Meta - know what to do next in your game's economy",
-  description: "Personal decisions for GTA Online, Dota 2 and WoW: what to buy, when it pays back and how much game currency you can actually realize.",
-  kicker: "Tools for players who value their time",
-  headingA: "Stop grinding",
-  headingB: "blind.",
-  lede: "Tell us what you play and what you want to achieve. Money Meta shows the next best move, real payback and the cost of a bad decision - without ten videos or guesswork.",
-  start: "Find my next move",
-  explore: "Open GTA Online Hub",
-  promises: ["An answer in 30 seconds", "Edit every assumption", "Save and share any scenario"],
-  demoLabel: "Example decision · edit the inputs inside the tool",
-  demoQuestion: "What does the model say?",
-  gtaVerdict: "Start with the Acid Lab",
-  gtaReason: "For a solo returner with GTA$2.5m and limited time, the baseline model ranks it above heavier businesses.",
-  dotaVerdict: "Midas pays back in time",
-  dotaReason: "A minute-12 purchase with a minute-42 expected finish reaches break-even before the match ends.",
-  wowVerdict: "The craft has a positive edge",
-  wowReason: "But part of the profit remains in unsold inventory - headline margin overstates available gold.",
-  openCase: "Open and recalculate",
-  metricSetup: "Investment",
-  metricNet: "Net / cycle",
-  metricPayback: "Payback",
-  metricRoi: "Realized ROI",
-  metricUses: "Transmute uses",
-  metricMinute: "Break-even",
-  metricBatch: "Batch profit",
-  metricRisk: "Inventory at risk",
-  metricExpectedRoi: "Expected ROI",
-  valueRail: [["30 sec", "from question to action"], ["3 games", "three distinct economies"], ["100%", "editable inputs"], ["0", "hidden assumptions"]],
-  chooseKicker: "Start with a real question",
-  chooseTitle: "What do you want to solve right now?",
-  chooseText: "Do not learn the site structure. Pick your game and jump straight to the decision.",
+  title: "Money Meta - analytics and tools for in-game economies",
+  description: "Money Meta takes in-game economies apart and turns them into decisions: what to buy, when it pays back, which risk to accept and what to do next.",
+  kicker: "Games as decision systems",
+  headingA: "Understand the economy of the game you love.",
+  headingB: "Make the smarter move.",
+  lede: "Every game has an economy: what to buy, how to earn, when to take risk and where to spend your time. Money Meta explains that economy clearly, then helps you choose the next move for your play style.",
+  start: "See how it works",
+  explore: "Choose a game",
+  promises: ["First, understand the system", "Then, see the real options", "Finally, test your decision"],
+  atlasLabel: "Five Money Meta game economies",
+  atlasKicker: "One idea · five different worlds",
+  atlasStatus: "Living economy atlas",
+  atlasTitle: "Every game has its own currency. Decision logic travels.",
+  atlasText: "Money Meta shows how time, resources, risk and progression connect.",
+  worldTypes: ["Production", "Match economy", "Player market", "Campaign economy", "Dynasty capital"],
+  audienceKicker: "Who Money Meta is for",
+  audienceTitle: "Start with your situation",
+  audiences: [
+    ["RETURNER", "Back after a long break", "Catch up on what changed and where to focus first."],
+    ["LIMITED TIME", "A few hours to play each week", "Choose the route with the best return on your time."],
+    ["GRINDER", "Ready to optimize deeper", "Test the efficiency of routes, purchases and reserves."]
+  ],
+  whatKicker: "How Money Meta works",
+  whatTitle: "Understand the system first. Make the decision second.",
+  whatText: "We connect game context, your situation and transparent models. Start with a clear explanation and go deeper only when the decision calls for it.",
+  howSteps: [
+    ["01", "See the whole system", "A visual map explains where resources come from, where they get trapped and what drives progression."],
+    ["02", "Find your path", "Choose your play style, available time and goal. The hub shows a fitting route and real alternatives."],
+    ["03", "Test the next move", "Rankings, scenarios and calculators compare decisions using your own inputs."]
+  ],
+  canKicker: "What every game hub contains",
+  canSystem: "6 layers · one clear path",
+  capabilities: [
+    ["MAP", "A visual map of the economy and the links inside it"],
+    ["PATH", "A personal route for returners, casuals and grinders"],
+    ["PULSE", "Current meta, patches and context changes"],
+    ["LIBRARY", "A deep library of applied analysis"],
+    ["RANKINGS", "Rankings and comparisons for different constraints"],
+    ["LAB", "Calculators and scenarios with editable inputs"]
+  ],
+  chooseKicker: "Once the idea is clear",
+  chooseTitle: "Now choose the economy you want to master.",
+  chooseText: "Every hub begins with a map and your situation, then leads into rankings, scenarios and calculators.",
   active: "Available now",
   gtaTag: "Production economy",
   gtaTitle: "GTA Online",
@@ -141,6 +175,14 @@ const copy = lang === "ru" ? {
   wowTitle: "WoW Retail",
   wowText: "An Auction House price is not profit. Fees, sell-through and inventory change the answer.",
   wowQuestions: [["Is this craft actually profitable?", `${wowPath}#crafting-margin`], ["What does this farm really earn?", `${wowPath}#farm-liquidity`]],
+  totalWarTag: "Campaign economy",
+  totalWarTitle: "Total War: Warhammer III",
+  totalWarText: "Treasury, provinces, army upkeep and conquest need to work as one system.",
+  totalWarQuestions: [["Will the income building pay back?", `${totalWarPath}#building-payback`], ["Can the treasury fund another army?", `${totalWarPath}#war-reserve`], ["Sack or occupy?", `${totalWarPath}#conquest-choice`]],
+  ck3Tag: "Dynasty economy",
+  ck3Title: "Crusader Kings III",
+  ck3Text: "A rich reign matters only when the treasury survives war and succession.",
+  ck3Questions: [["Will the domain building pay back?", `${ck3Path}#domain-payback`], ["Can the treasury fund the war?", `${ck3Path}#war-chest`], ["What buffer will the heir receive?", `${ck3Path}#succession-buffer`]],
   featuredKicker: "Flagship analysis",
   featuredTitle: "Numbers that change the decision.",
   featuredText: "Focused field notes move from a popular claim to a testable conclusion and a tool.",
@@ -155,6 +197,8 @@ const copy = lang === "ru" ? {
   weekly: "GTA Weekly Meta",
   dota: "Dota patch context",
   wow: "WoW Retail context",
+  totalWarPulse: "Total War campaign context",
+  ck3Pulse: "CK3 dynasty context",
   compareKicker: "Why this is not another guide",
   compareTitle: "A guide gives an opinion. Money Meta gives a decision.",
   generic: "Typical guide",
@@ -185,7 +229,7 @@ const copy = lang === "ru" ? {
     inLanguage: ["ru", "en"]
   }}
 >
-  <main class="page home-v2" data-home-demo>
+  <main class="page home-v2">
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/" enPath="/en/" />
 
@@ -195,66 +239,58 @@ const copy = lang === "ru" ? {
           <h1>{copy.headingA}<br /><span class="magenta">{copy.headingB}</span></h1>
           <p class="lede">{copy.lede}</p>
           <div class="hero-actions">
-            <a class="button primary button-large" href="#choose-game">{copy.start} →</a>
-            <a class="button ghost button-large" href={gtaPath}>{copy.explore}</a>
+            <a class="button primary button-large" href="#how-it-works">{copy.start} →</a>
+            <a class="button ghost button-large" href="#choose-game">{copy.explore}</a>
           </div>
           <ul class="promise-list">
             {copy.promises.map((promise) => <li><span>✓</span>{promise}</li>)}
           </ul>
         </div>
 
-        <aside class="decision-demo" aria-label={copy.demoLabel}>
-          <div class="demo-topline"><span>{copy.demoLabel}</span><span class="live-dot">Live calculation</span></div>
-          <div class="demo-tabs" role="tablist" aria-label="Games">
-            <button class="demo-tab is-active" type="button" role="tab" aria-selected="true" data-demo-tab="gta">GTA Online</button>
-            <button class="demo-tab" type="button" role="tab" aria-selected="false" data-demo-tab="dota">Dota 2</button>
-            <button class="demo-tab" type="button" role="tab" aria-selected="false" data-demo-tab="wow">WoW</button>
+        <aside class="home-world-atlas" aria-label={copy.atlasLabel}>
+          <div class="atlas-topline"><span>{copy.atlasKicker}</span><strong><i></i>{copy.atlasStatus}</strong></div>
+          <div class="atlas-world-grid" aria-hidden="true">
+            {[
+              { key: "gta", title: "GTA Online", type: copy.worldTypes[0], image: gtaEconomyWorld },
+              { key: "dota", title: "Dota 2", type: copy.worldTypes[1], image: dotaEconomyWorld },
+              { key: "wow", title: "WoW Retail", type: copy.worldTypes[2], image: wowEconomyWorld },
+              { key: "total-war", title: "Total War", type: copy.worldTypes[3], image: totalWarEconomyWorld },
+              { key: "ck3", title: "Crusader Kings III", type: copy.worldTypes[4], image: ck3EconomyWorld }
+            ].map(({ key, title, type, image }) => (
+              <div class={`atlas-world atlas-world-${key}`}>
+                <Image src={image} alt="" widths={[320, 520]} sizes="260px" loading="eager" decoding="async" />
+                <span><strong>{title}</strong><small>{type}</small></span>
+              </div>
+            ))}
           </div>
-
-          <div class="demo-panel is-active" data-demo-panel="gta">
-            <div class="demo-game-mark game-mark-gta">GTA$</div>
-            <span class="result-label">{copy.demoQuestion}</span>
-            <h2>{copy.gtaVerdict}</h2>
-            <p>{copy.gtaReason}</p>
-            <div class="demo-metrics">
-              <div><span>{copy.metricSetup}</span><strong>GTA$ {number.format(acidLab.setupCost)}</strong></div>
-              <div><span>{copy.metricNet}</span><strong>GTA$ {number.format(gtaExample.netPerCycle)}</strong></div>
-              <div><span>{copy.metricPayback}</span><strong>≈ {number.format(gtaExample.paybackProductionHours)} h</strong></div>
-            </div>
-            <a class="demo-link" href={`${calculatorPath}#next-move`}>{copy.openCase} →</a>
-          </div>
-
-          <div class="demo-panel" data-demo-panel="dota" hidden>
-            <div class="demo-game-mark game-mark-dota">M</div>
-            <span class="result-label">{copy.demoQuestion}</span>
-            <h2>{copy.dotaVerdict}</h2>
-            <p>{copy.dotaReason}</p>
-            <div class="demo-metrics">
-              <div><span>{copy.metricRoi}</span><strong>+{dotaExample.realizedRoi.toFixed(1)}%</strong></div>
-              <div><span>{copy.metricUses}</span><strong>{dotaExample.usesRemaining}</strong></div>
-              <div><span>{copy.metricMinute}</span><strong>{dotaExample.paybackMatchMinute.toFixed(0)} min</strong></div>
-            </div>
-            <a class="demo-link" href={`${dotaPath}#midas-irr`}>{copy.openCase} →</a>
-          </div>
-
-          <div class="demo-panel" data-demo-panel="wow" hidden>
-            <div class="demo-game-mark game-mark-wow">AH</div>
-            <span class="result-label">{copy.demoQuestion}</span>
-            <h2>{copy.wowVerdict}</h2>
-            <p>{copy.wowReason}</p>
-            <div class="demo-metrics">
-              <div><span>{copy.metricBatch}</span><strong>+{number.format(wowExample.expectedBatchProfit)} g</strong></div>
-              <div><span>{copy.metricRisk}</span><strong>{number.format(wowExample.inventoryCapitalAtRisk)} g</strong></div>
-              <div><span>{copy.metricExpectedRoi}</span><strong>{wowExample.expectedRoiPercent.toFixed(1)}%</strong></div>
-            </div>
-            <a class="demo-link" href={`${wowPath}#crafting-margin`}>{copy.openCase} →</a>
+          <div class="atlas-caption">
+            <span>Money Meta / Economy Atlas</span>
+            <strong>{copy.atlasTitle}</strong>
+            <p>{copy.atlasText}</p>
           </div>
         </aside>
       </section>
 
-      <div class="value-rail" aria-label="Money Meta product value">
-        {copy.valueRail.map(([value, label]) => <div><strong>{value}</strong><span>{label}</span></div>)}
-      </div>
+      <section class="audience-strip" aria-labelledby="audience-title">
+        <div class="audience-strip-intro"><span>{copy.audienceKicker}</span><strong id="audience-title">{copy.audienceTitle}</strong></div>
+        {copy.audiences.map(([code, title, text]) => <article><span>{code}</span><strong>{title}</strong><p>{text}</p></article>)}
+      </section>
+
+      <section id="how-it-works" class="section section-roomy home-explainer" aria-labelledby="home-explainer-title">
+        <div class="home-explainer-intro">
+          <div><span class="section-kicker">{copy.whatKicker}</span><h2 id="home-explainer-title">{copy.whatTitle}</h2></div>
+          <p>{copy.whatText}</p>
+        </div>
+        <div class="home-step-grid">
+          {copy.howSteps.map(([code, title, text]) => (
+            <article><span>{code}</span><div class="home-step-line" aria-hidden="true"><i></i></div><h3>{title}</h3><p>{text}</p></article>
+          ))}
+        </div>
+        <div class="home-capability-board">
+          <div class="capability-board-head"><span>{copy.canKicker}</span><strong>{copy.canSystem}</strong></div>
+          <div>{copy.capabilities.map(([code, text], index) => <div><span>0{index + 1}</span><strong>{code}</strong><p>{text}</p></div>)}</div>
+        </div>
+      </section>
 
       <section id="choose-game" class="section section-roomy">
         <div class="section-head">
@@ -263,19 +299,22 @@ const copy = lang === "ru" ? {
             <h2>{copy.chooseTitle}</h2>
             <p class="section-copy">{copy.chooseText}</p>
           </div>
-          <span class="count">3 games · 7 decisions</span>
+          <span class="count">5 games · 15 live models</span>
         </div>
 
         <div class="game-entry-grid">
           {[
-            { key: "gta", tag: copy.gtaTag, title: copy.gtaTitle, text: copy.gtaText, questions: copy.gtaQuestions, mark: "GTA$" },
-            { key: "dota", tag: copy.dotaTag, title: copy.dotaTitle, text: copy.dotaText, questions: copy.dotaQuestions, mark: "M" },
-            { key: "wow", tag: copy.wowTag, title: copy.wowTitle, text: copy.wowText, questions: copy.wowQuestions, mark: "AH" }
+            { key: "gta", tag: copy.gtaTag, title: copy.gtaTitle, text: copy.gtaText, questions: copy.gtaQuestions, mark: "GTA$", image: gtaEconomyWorld },
+            { key: "dota", tag: copy.dotaTag, title: copy.dotaTitle, text: copy.dotaText, questions: copy.dotaQuestions, mark: "M", image: dotaEconomyWorld },
+            { key: "wow", tag: copy.wowTag, title: copy.wowTitle, text: copy.wowText, questions: copy.wowQuestions, mark: "AH", image: wowEconomyWorld },
+            { key: "total-war", tag: copy.totalWarTag, title: copy.totalWarTitle, text: copy.totalWarText, questions: copy.totalWarQuestions, mark: "TW", image: totalWarEconomyWorld, isNew: true },
+            { key: "ck3", tag: copy.ck3Tag, title: copy.ck3Title, text: copy.ck3Text, questions: copy.ck3Questions, mark: "CK", image: ck3EconomyWorld, isNew: true }
           ].map((game) => (
-            <article class={`game-entry game-entry-${game.key}`}>
+            <article class:list={["game-entry", `game-entry-${game.key}`, { "game-entry-new": game.isNew }]}>
+              <Image class="game-entry-art" src={game.image} alt="" widths={[480, 720, 960]} sizes="(max-width: 820px) calc(100vw - 40px), 560px" loading="lazy" decoding="async" />
               <div class="game-entry-head">
                 <span class={`game-sigil game-sigil-${game.key}`}>{game.mark}</span>
-                <span class="availability"><i></i>{copy.active}</span>
+                <span class="availability"><i></i>{copy.active}{game.isNew ? " · v1.5" : ""}</span>
               </div>
               <span class="game-tag">{game.tag}</span>
               <h3>{game.title}</h3>
@@ -332,6 +371,16 @@ const copy = lang === "ru" ? {
             <strong>{wowPatchContext.release}</strong>
             <div class="pulse-meta"><span>{copy.checked}</span><b>{wowPatchContext.checkedAt}</b></div>
           </a>
+          <a class="pulse-card pulse-total-war" href={totalWarPath}>
+            <div class="pulse-head"><span>{copy.totalWarPulse}</span><span class="pulse-state">verified</span></div>
+            <strong>{totalWarHub.version} · {totalWarHub.pulse.changes[0]!.title[lang]}</strong>
+            <div class="pulse-meta"><span>{copy.checked}</span><b>{totalWarHub.checkedAt}</b></div>
+          </a>
+          <a class="pulse-card pulse-ck3" href={ck3Path}>
+            <div class="pulse-head"><span>{copy.ck3Pulse}</span><span class="pulse-state">verified</span></div>
+            <strong>{crusaderKingsHub.version} · Silk & Silver Q4 watch</strong>
+            <div class="pulse-meta"><span>{copy.checked}</span><b>{crusaderKingsHub.checkedAt}</b></div>
+          </a>
         </div>
       </section>
 
@@ -357,24 +406,3 @@ const copy = lang === "ru" ? {
     </div>
   </main>
 </BaseLayout>
-
-<script>
-  const root = document.querySelector<HTMLElement>("[data-home-demo]");
-  if (root) {
-    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-demo-tab]")];
-    const panels = [...root.querySelectorAll<HTMLElement>("[data-demo-panel]")];
-    tabs.forEach((tab) => tab.addEventListener("click", () => {
-      const target = tab.dataset.demoTab;
-      tabs.forEach((item) => {
-        const active = item === tab;
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-selected", String(active));
-      });
-      panels.forEach((panel) => {
-        const active = panel.dataset.demoPanel === target;
-        panel.classList.toggle("is-active", active);
-        panel.hidden = !active;
-      });
-    }));
-  }
-</script>

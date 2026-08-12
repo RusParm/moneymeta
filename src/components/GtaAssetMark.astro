@@ -1,0 +1,6 @@
+---
+interface Props { mark: string; code?: string; tone?: "teal" | "magenta" | "gold" | "coral"; large?: boolean; }
+const { mark, code, tone = "teal", large = false } = Astro.props;
+---
+
+<span class:list={["gta-asset-mark", `tone-${tone}`, { "is-large": large }]} aria-hidden="true"><i>{mark}</i>{code && <small>{code}</small>}</span>

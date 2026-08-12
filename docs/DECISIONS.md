@@ -63,3 +63,23 @@ The WoW hub is organized around the full player-market loop: sourcing, crafting,
 ## 2026-08-12: next strategy verticals
 
 Total War and Crusader Kings are the preferred candidates after the three launch hubs. The exact Total War title and each game's first decision wedge require a demand and data audit before implementation. Civilization and Age of Empires remain follow-on options rather than commitments.
+
+## 2026-08-12: homepage explains the product before routing
+
+The homepage must answer three questions before asking a visitor to choose a game: what Money Meta is, what the player can do here and how a decision moves from context to editable model to action. Vertical cards remain the destination layer, not the opening explanation.
+
+## 2026-08-12: explanation before analytical proof
+
+The first viewport should explain the category in plain player language before showing model outputs. Original game-world imagery establishes breadth, the three audience profiles establish relevance and the six-layer hub anatomy sets expectations. Rankings, Pulse data and calculations follow only after the visitor understands the product.
+
+## 2026-08-12: Total War means Warhammer III for the first strategy release
+
+Total War: Warhammer III has the strongest current fit for a durable Money Meta wedge. The initial hub models campaign capital allocation through building payback, war reserve and conquest choice. Patch 8.1 is the verified current context. Faction-specific inputs remain editable assumptions until a supported data workflow exists.
+
+## 2026-08-12: Crusader Kings means Crusader Kings III
+
+Crusader Kings III version 1.19.0.6 is the first grand-strategy release. The hub focuses on domain investment, war liquidity and succession resilience. Silk & Silver is tracked as an official Q4 2026 release, but unreleased merchant, trade route and monopoly mechanics do not enter numeric models before verification.
+
+## 2026-08-12: parity is functional and visual
+
+A mature vertical cannot rely on a strong hero and a library of links. GTA and WoW must expose their core economic state early, provide editable decision models inside the hub and use a game-native visual grammar across maps, paths, rankings and scenarios. Dota remains the quality reference, not a layout template.

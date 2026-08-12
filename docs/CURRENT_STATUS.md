@@ -95,6 +95,21 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Desktop and mobile browser QA passes in Russian and English with zero horizontal overflow, icon/text collisions, targeted microtext violations or client errors.
 - Next game candidates: Total War and Crusader Kings. Civilization and Age of Empires remain demand-led expansion options.
 
+## Active release candidate: v1.5 five-economy platform
+
+- Rebuilt the RU/EN homepage around a plain-language product explanation before game selection: what Money Meta is, who it serves and how a player moves from understanding to action.
+- Replaced the above-the-fold calculation panel with an original five-world Economy Atlas and three clear audience paths for returners, time-limited players and advanced grinders.
+- Made the shared six-layer hub contract explicit: economy map, personal path, current Pulse, research library, rankings and comparisons, calculators and scenarios.
+- Expanded the platform to five live economies and fifteen editable decision models.
+- Added a complete Total War: Warhammer III campaign-capital hub in RU/EN with an interactive economy map, three player paths, Patch 8.1 Pulse, conditional decision lenses, six scenarios, three calculators and six applied briefs.
+- Added a complete Crusader Kings III realm-capital hub in RU/EN with an interactive economy map, three player paths, version 1.19.0.6 context, three decision lenses, six scenarios, three calculators and six applied briefs.
+- The Crusader Kings hub treats Silk & Silver as a Q4 2026 watch item and does not invent formulas for unreleased trade systems.
+- Raised GTA Online to a richer visual and functional layer with asset marks throughout the map, paths and rankings plus three inline models for business return, hours to goal and portfolio allocation.
+- Raised WoW Retail to four connected models with an early market-ledger snapshot for liquid gold, risk-adjusted inventory and capital velocity.
+- Added two original Money Meta strategy-world hero assets. Publisher logos, screenshots, personal identity and personal data are not used.
+- Forty-five automated tests pass. Fifty-three static pages build with zero Astro diagnostics.
+- Branch preview and final browser QA remain required before any production promotion.
+
 ## Release policy
 
 Every release is built and tested locally, deployed to a branch preview, checked for deployment errors and only then promoted to production.
