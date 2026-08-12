@@ -32,7 +32,7 @@ const copy = lang === "ru" ? {
   midasNote: "Other value по умолчанию равна нулю. Так гарантированное золото не смешивается с hero-specific utility и Madstone sensitivity.",
   reserveKicker: "Model 02 · liquidity reserve",
   reserveTitle: "Buyback: компонент или вторая жизнь",
-  reserveText: "Используется исправленная формула 200 + Net Worth / 13. Результат отделяет готовность сейчас от готовности к objective.",
+  reserveText: "Используется формула floor(200 + Net Worth / 13). Результат отделяет готовность сейчас от готовности к objective.",
   netWorth: "Net worth героя",
   currentGold: "Текущее золото",
   gpm: "Ожидаемый GPM",
@@ -71,7 +71,7 @@ const copy = lang === "ru" ? {
   midasNote: "Other value defaults to zero. Guaranteed gold therefore stays separate from hero-specific utility and Madstone sensitivity.",
   reserveKicker: "Model 02 · liquidity reserve",
   reserveTitle: "Buyback: component or second life",
-  reserveText: "The corrected formula is 200 + Net Worth / 13. The result separates readiness now from readiness by the objective.",
+  reserveText: "The formula is floor(200 + Net Worth / 13). The result separates readiness now from readiness by the objective.",
   netWorth: "Hero net worth",
   currentGold: "Current gold",
   gpm: "Expected GPM",
@@ -182,6 +182,9 @@ const copy = lang === "ru" ? {
   import { calculateBuybackMetrics, calculateMidasMetrics } from "../lib/dota-economy";
 
   document.querySelectorAll<HTMLElement>("[data-dota-calculators]").forEach((root) => {
+    if (root.dataset.ready === "true") return;
+    root.dataset.ready = "true";
+
     const lang = (root.dataset.lang ?? "ru") as DotaLocale;
     const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
     const gold = (value: number) => `${formatter.format(Math.round(value))} g`;

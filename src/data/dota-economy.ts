@@ -51,8 +51,8 @@ export const dotaPatchContext = {
       label: "Valve · Patch 7.29",
       url: "https://www.dota2.com/patches/7.29",
       note: {
-        ru: "Действующая документированная базовая формула buyback: 200 + Net Worth / 13.",
-        en: "The documented current baseline buyback formula: 200 + Net Worth / 13."
+        ru: "Действующая документированная базовая формула buyback: floor(200 + Net Worth / 13).",
+        en: "The documented current baseline buyback formula: floor(200 + Net Worth / 13)."
       }
     },
     {

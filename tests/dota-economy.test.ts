@@ -26,7 +26,12 @@ describe("Hand of Midas economics", () => {
 
 describe("buyback reserve", () => {
   it("uses the documented net-worth formula", () => {
-    expect(estimateBuybackCost(15_000)).toBeCloseTo(1_353.85, 2);
+    expect(estimateBuybackCost(15_000)).toBe(1_353);
+  });
+
+  it("rounds the buyback cost down and clamps invalid net worth", () => {
+    expect(estimateBuybackCost(1_000)).toBe(276);
+    expect(estimateBuybackCost(-5_000)).toBe(200);
   });
 
   it("recognizes a reserve that is already funded", () => {
