@@ -39,7 +39,7 @@ const copy = lang === "ru" ? {
         <p class="lede">{copy.lede}</p>
       </section>
       <section class="section">
-        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01—03</h2></div><span class="count">3 games · RU/EN</span></div>
+        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01—{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{insights.length} notes · 3 games · RU/EN</span></div>
         <div class="insight-card-grid">
           {insights.map((insight, index) => {
             const content = insight.content[lang];
@@ -47,7 +47,7 @@ const copy = lang === "ru" ? {
             return <a class={`insight-card insight-card-${insight.game}`} href={`${prefix}/insights/${insight.slug}/`}>
               <div class="insight-card-top"><span>{game}</span><b>0{index + 1}</b></div>
               <div><span class="game-tag">{content.kicker}</span><h2>{content.title}</h2><p>{content.description}</p></div>
-              <div class="insight-card-foot"><span>{content.readTime} · {insight.updatedAt}</span><strong>{copy.read} ↗</strong></div>
+              <div class="insight-card-foot"><span>{content.readTime} · {insight.updatedAt}<br />{insight.evidenceStatus} · {insight.gameVersion}</span><strong>{copy.read} ↗</strong></div>
             </a>;
           })}
         </div>

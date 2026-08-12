@@ -1,0 +1,100 @@
+---
+import { weeklyMeta } from "../data/gta-businesses";
+import { isSnapshotStale } from "../lib/economy";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const stale = isSnapshotStale(weeklyMeta.validThrough);
+
+const copy = lang === "ru" ? {
+  kicker: "GTA Pulse · official weekly signal",
+  title: "Что временно изменилось — и что делать иначе",
+  text: "Pulse переводит Newswire в решения. Временные выплаты живут отдельно от постоянной модели активов и автоматически теряют статус current после окончания окна.",
+  verified: "Verified · official",
+  current: `Активно до конца ${weeklyMeta.validThrough}`,
+  stale: `Архив · окно закончилось ${weeklyMeta.validThrough}`,
+  action: "Решение сейчас",
+  source: "Открыть первоисточник",
+  guardTitle: "Freshness guard включён",
+  guardCurrent: "Эти возможности подтверждены официальным источником и ещё находятся внутри указанного окна.",
+  guardStale: "Окно уже завершилось. Карточки сохранены как архивный пример и не выдаются за действующую мету.",
+  separation: "Weekly-модификаторы не применены к долгосрочным production-рейтингам без прямой связи с конкретным бизнесом."
+} : {
+  kicker: "GTA Pulse · official weekly signal",
+  title: "What changed temporarily — and what to do differently",
+  text: "Pulse translates Newswire into decisions. Temporary payouts stay separate from the permanent asset model and automatically lose current status after the window ends.",
+  verified: "Verified · official",
+  current: `Live through ${weeklyMeta.validThrough}`,
+  stale: `Archive · window ended ${weeklyMeta.validThrough}`,
+  action: "Decision now",
+  source: "Open primary source",
+  guardTitle: "Freshness guard is on",
+  guardCurrent: "These opportunities are confirmed by an official source and remain inside the stated window.",
+  guardStale: "The window has ended. Cards remain as an archived example and are not presented as current meta.",
+  separation: "Weekly modifiers are not applied to long-term production rankings unless they directly affect a modeled business."
+};
+---
+
+<section
+  id="weekly-pulse"
+  class={`section hub-section pulse-section ${stale ? "is-stale" : "is-current"}`}
+  data-gta-pulse
+  data-valid-through={weeklyMeta.validThrough}
+  data-current-label={copy.current}
+  data-stale-label={copy.stale}
+  data-current-guard={`${copy.guardCurrent} ${copy.separation}`}
+  data-stale-guard={`${copy.guardStale} ${copy.separation}`}
+  aria-labelledby="weekly-pulse-title"
+>
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="weekly-pulse-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <div class="pulse-status-stack">
+      <span class="pill teal">{copy.verified}</span>
+      <span class="pulse-window" data-pulse-window>{stale ? copy.stale : copy.current}</span>
+    </div>
+  </div>
+
+  <div class="pulse-grid">
+    {weeklyMeta.opportunities.map((item, index) => (
+      <article class="pulse-card">
+        <div class="pulse-card-top">
+          <span>0{index + 1}</span>
+          <strong>{item.signal[lang]}</strong>
+        </div>
+        <h3>{item.title[lang]}</h3>
+        <p>{item.summary[lang]}</p>
+        <div class="pulse-decision">
+          <span>{copy.action}</span>
+          <p>{item.decision[lang]}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div class="pulse-guard">
+    <div class="pulse-orbit" aria-hidden="true"><span></span></div>
+    <div>
+      <strong>{copy.guardTitle}</strong>
+      <p data-pulse-guard>{stale ? copy.guardStale : copy.guardCurrent} {copy.separation}</p>
+    </div>
+    <a class="source-link" href={weeklyMeta.sourceUrl} rel="noopener noreferrer" target="_blank">{copy.source} ↗</a>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-gta-pulse]").forEach((root) => {
+    const validThrough = root.dataset.validThrough;
+    if (!validThrough) return;
+    const stale = Date.now() > new Date(`${validThrough}T23:59:59Z`).getTime();
+    root.classList.toggle("is-stale", stale);
+    root.classList.toggle("is-current", !stale);
+    const windowLabel = root.querySelector<HTMLElement>("[data-pulse-window]");
+    if (windowLabel) windowLabel.textContent = stale ? root.dataset.staleLabel ?? "Archive" : root.dataset.currentLabel ?? "Current";
+    const guard = root.querySelector<HTMLElement>("[data-pulse-guard]");
+    if (guard) guard.textContent = stale ? root.dataset.staleGuard ?? "Archive" : root.dataset.currentGuard ?? "Current";
+  });
+</script>

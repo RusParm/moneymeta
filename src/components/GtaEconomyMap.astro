@@ -1,0 +1,113 @@
+---
+import { gtaEconomyNodes } from "../data/gta-hub";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+
+const copy = lang === "ru" ? {
+  kicker: "Economy map · portfolio loop",
+  title: "Проследи путь одного GTA$ — от банка до следующего актива",
+  text: "Экономика GTA Online — это не список бизнесов. Это цикл капитала, inventory, времени и ликвидности. Нажми на узел, чтобы увидеть решение в каждой точке.",
+  mapLabel: "Интерактивная карта экономики GTA Online",
+  now: "Ключевой сигнал",
+  decision: "Решение игрока",
+  open: "Открыть связанный инструмент"
+} : {
+  kicker: "Economy map · portfolio loop",
+  title: "Follow one GTA$ from the bank to the next asset",
+  text: "GTA Online is not a list of businesses. It is a loop of capital, inventory, time and liquidity. Select a node to see the decision at each stage.",
+  mapLabel: "Interactive GTA Online economy map",
+  now: "Key signal",
+  decision: "Player decision",
+  open: "Open the connected tool"
+};
+
+const hrefFor = (href: string) => lang === "en" && href.startsWith("/gta-online/")
+  ? `/en${href}`
+  : href;
+const first = gtaEconomyNodes[0]!;
+---
+
+<section id="economy-map" class="section hub-section hub-map-section" aria-labelledby="economy-map-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="economy-map-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count">01—07 · interactive</span>
+  </div>
+
+  <div class="economy-map" data-gta-map>
+    <div class="economy-flow" aria-label={copy.mapLabel}>
+      {gtaEconomyNodes.map((node, index) => (
+        <button
+          class="economy-node"
+          type="button"
+          aria-pressed={index === 0 ? "true" : "false"}
+          data-map-node
+          data-code={node.code}
+          data-title={node.title[lang]}
+          data-phase={node.phase[lang]}
+          data-summary={node.summary[lang]}
+          data-decision={node.decision[lang]}
+          data-signal={node.signal[lang]}
+          data-href={hrefFor(node.href)}
+        >
+          <span class="economy-node-index">{node.code}</span>
+          <span class="economy-node-copy">
+            <small>{node.phase[lang]}</small>
+            <strong>{node.title[lang]}</strong>
+          </span>
+          <span class="economy-node-pulse" aria-hidden="true"></span>
+        </button>
+      ))}
+    </div>
+
+    <article class="economy-detail" aria-live="polite">
+      <div class="economy-detail-top">
+        <span class="economy-detail-code" data-map-code>{first.code}</span>
+        <span class="pill teal" data-map-phase>{first.phase[lang]}</span>
+      </div>
+      <h3 data-map-title>{first.title[lang]}</h3>
+      <p data-map-summary>{first.summary[lang]}</p>
+      <div class="economy-detail-grid">
+        <div>
+          <span>{copy.now}</span>
+          <strong data-map-signal>{first.signal[lang]}</strong>
+        </div>
+        <div>
+          <span>{copy.decision}</span>
+          <strong data-map-decision>{first.decision[lang]}</strong>
+        </div>
+      </div>
+      <a class="map-tool-link" data-map-link href={hrefFor(first.href)}>{copy.open} →</a>
+    </article>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-gta-map]").forEach((root) => {
+    const nodes = [...root.querySelectorAll<HTMLButtonElement>("[data-map-node]")];
+    const code = root.querySelector<HTMLElement>("[data-map-code]")!;
+    const phase = root.querySelector<HTMLElement>("[data-map-phase]")!;
+    const title = root.querySelector<HTMLElement>("[data-map-title]")!;
+    const summary = root.querySelector<HTMLElement>("[data-map-summary]")!;
+    const signal = root.querySelector<HTMLElement>("[data-map-signal]")!;
+    const decision = root.querySelector<HTMLElement>("[data-map-decision]")!;
+    const link = root.querySelector<HTMLAnchorElement>("[data-map-link]")!;
+
+    const select = (node: HTMLButtonElement) => {
+      nodes.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === node)));
+      code.textContent = node.dataset.code ?? "";
+      phase.textContent = node.dataset.phase ?? "";
+      title.textContent = node.dataset.title ?? "";
+      summary.textContent = node.dataset.summary ?? "";
+      signal.textContent = node.dataset.signal ?? "";
+      decision.textContent = node.dataset.decision ?? "";
+      link.href = node.dataset.href ?? "#";
+    };
+
+    nodes.forEach((node) => node.addEventListener("click", () => select(node)));
+  });
+</script>

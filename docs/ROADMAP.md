@@ -47,6 +47,12 @@
 - Rights-aware media pipeline designed for a future commercial product.
 - Dense, responsive game identity without depending on publisher artwork.
 
+### Sequential rollout
+
+- GTA Online benchmark: implemented in complete RU/EN parity.
+- Dota 2 living hub: next.
+- WoW Retail living hub: follows Dota 2.
+
 ## P1.5 — recurring utility
 
 - Goal Planner.

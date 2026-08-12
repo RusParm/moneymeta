@@ -1,0 +1,181 @@
+---
+import { gtaBusinesses } from "../data/gta-businesses";
+import { gradeForScore, rankBusinessesByLens, type BusinessRankingLens } from "../lib/economy";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const calculator = lang === "ru" ? "/gta-online/calculators/business-roi/" : "/en/gta-online/calculators/business-roi/";
+const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
+const money = (value: number) => `GTA$${formatter.format(Math.round(value))}`;
+
+const copy = lang === "ru" ? {
+  kicker: "Conditional rankings · no universal S-tier",
+  title: "Лидер меняется вместе с вопросом",
+  text: "Один общий рейтинг скрывает trade-off. Здесь один и тот же набор данных пересчитывается под три разных решения; состав score всегда виден.",
+  score: "fit score",
+  netHour: "net / production h",
+  payback: "production payback",
+  solo: "solo fit",
+  friction: "friction",
+  model: "Открыть полную таблицу и изменить допущения",
+  estimated: "Estimated dataset · checked 2026-07-01",
+  lenses: [
+    {
+      id: "first-buy" as BusinessRankingLens,
+      label: "Первый актив",
+      question: "Куда вложить стартовый капитал?",
+      formula: "40% payback · 30% vROI · 15% low friction · 15% solo",
+      note: "Acid Lab лидирует в baseline как сочетание низкого входа, payback и solo-пригодности. Уже купленная инфраструктура может перевернуть вывод."
+    },
+    {
+      id: "solo-efficiency" as BusinessRankingLens,
+      label: "Solo / low friction",
+      question: "Что легче удерживать в ротации одному?",
+      formula: "40% solo · 35% low friction · 25% production income",
+      note: "Базовый Nightclub поднимается из-за минимальной операционки. Это не полная warehouse-модель и не аргумент покупать клуб без feeder-активов."
+    },
+    {
+      id: "production-income" as BusinessRankingLens,
+      label: "Production throughput",
+      question: "Где сильнее чистый поток на час производства?",
+      formula: "60% net/hour · 20% vROI · 10% solo · 10% low friction",
+      note: "Этот lens награждает throughput, но всё ещё оставляет небольшой штраф за сложность продажи и слабую капитальную эффективность."
+    }
+  ]
+} : {
+  kicker: "Conditional rankings · no universal S-tier",
+  title: "The leader changes with the question",
+  text: "A universal ranking hides the trade-off. The same dataset is recalculated for three decisions, with score composition always visible.",
+  score: "fit score",
+  netHour: "net / production h",
+  payback: "production payback",
+  solo: "solo fit",
+  friction: "friction",
+  model: "Open the full table and edit assumptions",
+  estimated: "Estimated dataset · checked 2026-07-01",
+  lenses: [
+    {
+      id: "first-buy" as BusinessRankingLens,
+      label: "First asset",
+      question: "Where should starting capital go?",
+      formula: "40% payback · 30% vROI · 15% low friction · 15% solo",
+      note: "Acid Lab leads the baseline through its entry cost, payback and solo fit. Existing infrastructure can reverse the conclusion."
+    },
+    {
+      id: "solo-efficiency" as BusinessRankingLens,
+      label: "Solo / low friction",
+      question: "What is easiest to keep in a solo rotation?",
+      formula: "40% solo · 35% low friction · 25% production income",
+      note: "The base Nightclub model rises on operating ease. This is not a full warehouse model and is not a case for buying a club without feeder assets."
+    },
+    {
+      id: "production-income" as BusinessRankingLens,
+      label: "Production throughput",
+      question: "Where is net flow per production hour strongest?",
+      formula: "60% net/hour · 20% vROI · 10% solo · 10% low friction",
+      note: "This lens rewards throughput while keeping a smaller penalty for difficult sales and weak capital efficiency."
+    }
+  ]
+};
+
+const rankings = Object.fromEntries(copy.lenses.map((lens) => [lens.id, rankBusinessesByLens(gtaBusinesses, lens.id)]));
+---
+
+<section id="conditional-rankings" class="section hub-section" aria-labelledby="rankings-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="rankings-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="pill gold">{copy.estimated}</span>
+  </div>
+
+  <div class="ranking-lab" data-ranking-lab>
+    <div class="ranking-tabs" role="tablist" aria-label={lang === "ru" ? "Выбор цели рейтинга" : "Choose ranking objective"}>
+      {copy.lenses.map((lens, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`ranking-tab-${lens.id}`}
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-controls={`ranking-panel-${lens.id}`}
+          tabindex={index === 0 ? "0" : "-1"}
+          data-ranking-tab={lens.id}
+        >
+          <small>0{index + 1}</small>
+          <strong>{lens.label}</strong>
+        </button>
+      ))}
+    </div>
+
+    {copy.lenses.map((lens, lensIndex) => (
+      <div
+        class="ranking-panel"
+        id={`ranking-panel-${lens.id}`}
+        role="tabpanel"
+        aria-labelledby={`ranking-tab-${lens.id}`}
+        hidden={lensIndex !== 0}
+        data-ranking-panel={lens.id}
+      >
+        <div class="ranking-question">
+          <div><span>{lang === "ru" ? "Вопрос" : "Question"}</span><h3>{lens.question}</h3></div>
+          <code>{lens.formula}</code>
+        </div>
+
+        <div class="conditional-rank-grid">
+          {rankings[lens.id]!.slice(0, 3).map(({ business, metrics, score }, index) => (
+            <article class={`conditional-rank-card rank-${index + 1}`}>
+              <div class="conditional-rank-top">
+                <span>0{index + 1}</span>
+                <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>{gradeForScore(score)} · {score.toFixed(0)}</span>
+              </div>
+              <h3>{business.name[lang]}</h3>
+              <p>{business.summary[lang]}</p>
+              <div class="conditional-metrics">
+                <span><small>{copy.netHour}</small><strong>{money(metrics.profitPerProductionHour)}</strong></span>
+                <span><small>{copy.payback}</small><strong>{formatter.format(Math.round(metrics.paybackProductionHours))}h</strong></span>
+                <span><small>{copy.solo}</small><strong>{business.soloSuitability}/10</strong></span>
+                <span><small>{copy.friction}</small><strong>{business.friction}/10</strong></span>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div class="ranking-note">
+          <span>{lang === "ru" ? "Почему так" : "Why this result"}</span>
+          <p>{lens.note}</p>
+          <a href={`${calculator}#business-comparison`}>{copy.model} →</a>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-ranking-lab]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-ranking-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-ranking-panel]")];
+
+    const activate = (tab: HTMLButtonElement) => {
+      const id = tab.dataset.rankingTab;
+      tabs.forEach((candidate) => {
+        const selected = candidate === tab;
+        candidate.setAttribute("aria-selected", String(selected));
+        candidate.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.rankingPanel !== id; });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const next = tabs[(index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length]!;
+        activate(next);
+        next.focus();
+      });
+    });
+  });
+</script>

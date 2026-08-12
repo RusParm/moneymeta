@@ -1,0 +1,104 @@
+---
+import { insights } from "../data/insights";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const prefix = lang === "ru" ? "" : "/en";
+const gtaInsights = insights.filter((insight) => insight.game === "gta");
+
+const copy = lang === "ru" ? {
+  kicker: "Research library · decision-complete field notes",
+  title: "Не лента новостей. Библиотека решений.",
+  text: "Шесть полноценных разборов GTA Online: для returner, casual и grinder. В каждом — тезис, расчёт, границы модели и переход в инструмент.",
+  filters: [
+    ["all", "Все"],
+    ["returner", "Returner"],
+    ["casual", "Solo / casual"],
+    ["grinder", "Grinder"]
+  ],
+  read: "Читать разбор",
+  updated: "Обновлено",
+  estimated: "Estimated model",
+  verified: "Verified source",
+  showing: "материалов"
+} : {
+  kicker: "Research library · decision-complete field notes",
+  title: "Not a news feed. A decision library.",
+  text: "Six complete GTA Online analyses for returners, casual players and grinders. Every note contains a thesis, calculation, model boundary and a path into a tool.",
+  filters: [
+    ["all", "All"],
+    ["returner", "Returner"],
+    ["casual", "Solo / casual"],
+    ["grinder", "Grinder"]
+  ],
+  read: "Read analysis",
+  updated: "Updated",
+  estimated: "Estimated model",
+  verified: "Verified source",
+  showing: "notes"
+};
+---
+
+<section id="research-library" class="section hub-section" aria-labelledby="research-library-title" data-research-library>
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="research-library-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count"><span data-library-count>{gtaInsights.length}</span> {copy.showing} · RU/EN</span>
+  </div>
+
+  <div class="library-filter" role="group" aria-label={lang === "ru" ? "Фильтр материалов" : "Filter research"}>
+    {copy.filters.map(([id, label], index) => (
+      <button type="button" aria-pressed={index === 0 ? "true" : "false"} data-library-filter={id}>{label}</button>
+    ))}
+  </div>
+
+  <div class="research-grid">
+    {gtaInsights.map((insight, index) => {
+      const content = insight.content[lang];
+      return (
+        <article class={`research-card ${index === 0 ? "research-featured" : ""}`} data-library-card data-audiences={insight.audiences.join(" ")}>
+          <div class="research-card-meta">
+            <span>0{index + 1}</span>
+            <span class={`pill ${insight.evidenceStatus === "verified" ? "teal" : "gold"}`}>
+              {insight.evidenceStatus === "verified" ? copy.verified : copy.estimated}
+            </span>
+          </div>
+          <div class="research-card-body">
+            <span class="game-tag">{content.kicker}</span>
+            <h3>{content.title}</h3>
+            <p>{content.description}</p>
+          </div>
+          <div class="research-card-foot">
+            <span>{content.readTime}</span>
+            <span>{copy.updated} · {insight.updatedAt}</span>
+            <span>{insight.gameVersion}</span>
+          </div>
+          <a href={`${prefix}/insights/${insight.slug}/`} aria-label={`${copy.read}: ${content.title}`}>{copy.read} →</a>
+        </article>
+      );
+    })}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-research-library]").forEach((root) => {
+    const filters = [...root.querySelectorAll<HTMLButtonElement>("[data-library-filter]")];
+    const cards = [...root.querySelectorAll<HTMLElement>("[data-library-card]")];
+    const count = root.querySelector<HTMLElement>("[data-library-count]");
+
+    filters.forEach((button) => button.addEventListener("click", () => {
+      const filter = button.dataset.libraryFilter ?? "all";
+      filters.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+      let visible = 0;
+      cards.forEach((card) => {
+        const matches = filter === "all" || (card.dataset.audiences ?? "").split(" ").includes(filter);
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      if (count) count.textContent = String(visible);
+    }));
+  });
+</script>

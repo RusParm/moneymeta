@@ -29,6 +29,8 @@ export interface PortfolioResult {
   weeklyProfit: number;
 }
 
+export type BusinessRankingLens = "first-buy" | "solo-efficiency" | "production-income";
+
 export function calculateBusinessMetrics(
   business: Pick<GtaBusiness, "setupCost" | "fullSale" | "supplyCost" | "productionHours">,
   saleBonusPercent = 0
@@ -81,6 +83,37 @@ export function scoreBusinesses(businesses: GtaBusiness[]): BusinessRecommendati
     score: (roi[index]! * 0.4 + payback[index]! * 0.4 + friction[index]! * 0.2) * 100,
     affordable: true
   }));
+}
+
+export function rankBusinessesByLens(
+  businesses: GtaBusiness[],
+  lens: BusinessRankingLens
+): BusinessRecommendation[] {
+  const metrics = businesses.map((business) => calculateBusinessMetrics(business));
+  const income = normalized(metrics.map((item) => item.profitPerProductionHour));
+  const payback = normalized(metrics.map((item) => item.paybackProductionHours), true);
+  const roi = normalized(metrics.map((item) => item.virtualRoi));
+  const friction = normalized(businesses.map((item) => item.friction), true);
+  const solo = normalized(businesses.map((item) => item.soloSuitability));
+
+  return businesses.map((business, index) => {
+    let score = 0;
+
+    if (lens === "first-buy") {
+      score = payback[index]! * 0.4 + roi[index]! * 0.3 + friction[index]! * 0.15 + solo[index]! * 0.15;
+    } else if (lens === "solo-efficiency") {
+      score = solo[index]! * 0.4 + friction[index]! * 0.35 + income[index]! * 0.25;
+    } else {
+      score = income[index]! * 0.6 + roi[index]! * 0.2 + solo[index]! * 0.1 + friction[index]! * 0.1;
+    }
+
+    return {
+      business,
+      metrics: metrics[index]!,
+      score: score * 100,
+      affordable: true
+    };
+  }).sort((a, b) => b.score - a.score);
 }
 
 export function recommendBusinesses(

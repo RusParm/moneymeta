@@ -21,9 +21,9 @@ The production repository contained three standalone HTML files with CDN Tailwin
 
 ## Validation
 
-- `npm test`: 16 tests passing across the GTA, Dota and WoW economy models.
+- `npm test`: 20 tests passing across economy formulas, ranking logic, freshness and content-depth gates.
 - `npm run build`: type check and static build pass with zero diagnostics.
-- All eleven public pages plus robots.txt and sitemap build successfully.
+- Twenty-nine public pages plus robots.txt and sitemap build successfully.
 - Desktop and mobile browser QA passed for the WoW calculators, three-economy home and RU/EN routes.
 - v1.0 browser QA passed for desktop/mobile layout, zero horizontal overflow, cross-economy navigation, scenario URL sharing, local restore, reset and decision-state rendering.
 
@@ -62,12 +62,16 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Article-to-tool loops, Article schema and expanded sitemap coverage.
 - Nineteen static pages pass desktop/mobile overflow and interaction QA.
 
-## In development — v1.2 living hubs
+## Active release candidate — v1.2 GTA benchmark
 
 - Three original, responsive economy-world hero assets now establish a distinct GTA, Dota and WoW visual identity.
 - A shared optimized hero component keeps responsive image delivery, overlays and performance consistent across all verticals.
 - The complete living-hub product anatomy and commercial media policy are documented.
-- Next gate: choose and implement the first benchmark hub end to end, then transfer the proven system to the remaining verticals.
+- GTA Online now implements the benchmark end to end: seven-node interactive economy map, three complete player paths, official-source Weekly Pulse with browser-time freshness guard, three conditional rankings and six preconfigured scenarios.
+- GTA research expanded from one flagship note to six substantial RU/EN analyses with audience filters, evidence status, game version and article-to-tool loops.
+- The benchmark dataset has explicit estimated/verified separation; weekly opportunities never silently overwrite long-horizon production scores.
+- Twenty tests cover formulas, rankings, freshness and benchmark content depth. Twenty-nine static pages build with zero diagnostics.
+- Next gate: deploy and visually approve the GTA preview, then adapt the proven standard to Dota 2 and WoW Retail in sequence.
 
 ## Release policy
 

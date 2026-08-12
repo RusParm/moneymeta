@@ -1,0 +1,141 @@
+---
+import { gtaPlayerPaths } from "../data/gta-hub";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const calculator = lang === "ru" ? "/gta-online/calculators/business-roi/" : "/en/gta-online/calculators/business-roi/";
+const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 }).format(value);
+
+const copy = lang === "ru" ? {
+  kicker: "Personal path · choose your operating system",
+  title: "Один город. Три совершенно разных плана.",
+  text: "Выбери свой режим игры. Каждый путь задаёт реальные ограничения, последовательность действий и условие, при котором рекомендацию нужно пересчитать.",
+  budget: "Капитал",
+  hours: "ч / нед.",
+  friction: "friction",
+  route: "Маршрут",
+  flip: "Когда план меняется",
+  cta: "Запустить этот профиль"
+} : {
+  kicker: "Personal path · choose your operating system",
+  title: "One city. Three completely different plans.",
+  text: "Choose how you play. Each path sets real constraints, a sequence of actions and the condition that forces a recalculation.",
+  budget: "Capital",
+  hours: "h / week",
+  friction: "friction",
+  route: "Route",
+  flip: "When the plan changes",
+  cta: "Run this profile"
+};
+
+const pathHref = (path: (typeof gtaPlayerPaths)[number]) => {
+  const params = new URLSearchParams({
+    "gta-next-move.profile": path.id,
+    "gta-next-move.budget": String(path.budget),
+    "gta-next-move.hours": String(path.weeklyHours),
+    "gta-next-move.priority": path.priority,
+    "gta-next-move.friction": String(path.maxFriction)
+  });
+  return `${calculator}?${params.toString()}#next-move`;
+};
+---
+
+<section id="player-paths" class="section hub-section" aria-labelledby="player-paths-title">
+  <div class="section-head hub-section-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="player-paths-title">{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count">3 player systems</span>
+  </div>
+
+  <div class="path-planner" data-path-planner>
+    <div class="path-tabs" role="tablist" aria-label={lang === "ru" ? "Выбор профиля игрока" : "Choose player profile"}>
+      {gtaPlayerPaths.map((path, index) => (
+        <button
+          type="button"
+          role="tab"
+          id={`path-tab-${path.id}`}
+          aria-selected={index === 0 ? "true" : "false"}
+          aria-controls={`path-panel-${path.id}`}
+          tabindex={index === 0 ? "0" : "-1"}
+          data-path-tab={path.id}
+        >
+          <span>0{index + 1}</span>
+          <strong>{path.label[lang]}</strong>
+          <small>{path.summary[lang]}</small>
+        </button>
+      ))}
+    </div>
+
+    <div class="path-panels">
+      {gtaPlayerPaths.map((path, index) => (
+        <article
+          class="path-panel"
+          id={`path-panel-${path.id}`}
+          role="tabpanel"
+          aria-labelledby={`path-tab-${path.id}`}
+          hidden={index !== 0}
+          data-path-panel={path.id}
+        >
+          <div class="path-panel-head">
+            <div>
+              <span class="game-tag">{path.label[lang]} · baseline</span>
+              <h3>{path.title[lang]}</h3>
+            </div>
+            <div class="path-constraints" aria-label={lang === "ru" ? "Ограничения сценария" : "Scenario constraints"}>
+              <span><small>{copy.budget}</small><strong>GTA${money(path.budget)}</strong></span>
+              <span><small>{copy.hours}</small><strong>{path.weeklyHours}</strong></span>
+              <span><small>{copy.friction}</small><strong>≤ {path.maxFriction}/10</strong></span>
+            </div>
+          </div>
+
+          <div class="path-route">
+            <span class="path-route-label">{copy.route}</span>
+            {path.steps.map((step, stepIndex) => (
+              <div class="path-step">
+                <span>{stepIndex + 1}</span>
+                <div><strong>{step.title[lang]}</strong><p>{step.text[lang]}</p></div>
+              </div>
+            ))}
+          </div>
+
+          <div class="path-panel-foot">
+            <div class="path-flip"><span>{copy.flip}</span><p>{path.flipCondition[lang]}</p></div>
+            <a class="button primary" href={pathHref(path)}>{copy.cta} →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-path-planner]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-path-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-path-panel]")];
+
+    const activate = (tab: HTMLButtonElement) => {
+      const id = tab.dataset.pathTab;
+      tabs.forEach((candidate) => {
+        const selected = candidate === tab;
+        candidate.setAttribute("aria-selected", String(selected));
+        candidate.tabIndex = selected ? 0 : -1;
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.pathPanel !== id; });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft" && event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        event.preventDefault();
+        const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
+        const next = tabs[(index + direction + tabs.length) % tabs.length]!;
+        activate(next);
+        next.focus();
+      });
+    });
+  });
+</script>

@@ -35,3 +35,11 @@ Each vertical becomes a standalone living product with a visual economy map, pla
 ## 2026-08-12 — commercial media safety
 
 Absence of a visible prohibition is not permission. Publisher screenshots and promotional assets are limited to specific editorial use after rights review; original or explicitly licensed visuals remain the default for commercial surfaces.
+
+## 2026-08-12 — GTA benchmark before horizontal expansion
+
+GTA Online is the first hub implemented to the full living-product quality gate. Its economy map, player paths, Pulse, conditional rankings, scenario deck and research library establish the interaction and evidence standard. Dota 2 and WoW inherit the standard sequentially, but their layouts and decisions remain native to their own economies.
+
+## 2026-08-12 — weekly opportunity is not permanent asset value
+
+Official weekly events change action order and short-term opportunity cost. They remain a dated Pulse layer and do not automatically alter long-horizon production rankings unless the bonus directly changes a modeled asset.
