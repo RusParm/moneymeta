@@ -109,7 +109,31 @@ The visual character is a deliberate hybrid: cinematic game-world immersion sets
 
 **Rankings:** crafts by risk-adjusted margin, farms by effective GPH, recipes by capital lock-up, professions by time profile.
 
-**Tool stack:** crafting margin, farm liquidity, break-even price, expected time-to-sale, profession portfolio and supported live-price scenarios later.
+**Tool stack:** market ledger, crafting margin, farm liquidity, crafting-order commission floor, profession portfolio and supported live-price scenarios later.
+
+### Total War: Warhammer III: campaign capital economy
+
+**Map:** treasury and income base -> province growth -> buildings -> army upkeep -> war reserve -> conquest return -> reinvestment.
+
+**Player paths:** campaign returner, constrained-turn stabilizer and advanced expansion optimizer.
+
+**Pulse:** verified official patch changes translated into growth, defense, recruitment and expansion implications.
+
+**Rankings:** choices are conditional on campaign horizon, border risk, treasury runway and the value of the next conquest.
+
+**Tool stack:** building payback, war reserve and conquest choice. Faction presets come only after demand and data validation.
+
+### Crusader Kings III: realm capital economy
+
+**Map:** domain income -> holdings -> men-at-arms and court costs -> war chest -> inheritance shock -> succession recovery -> reinvestment.
+
+**Player paths:** returning ruler, stable-dynasty builder and advanced realm allocator.
+
+**Pulse:** current version changes plus an explicit watch layer for announced but unreleased economic systems.
+
+**Rankings:** choices are conditional on reign horizon, control, war timing, claimant risk and expected partition pressure.
+
+**Tool stack:** domain payback, war chest and succession buffer. Silk & Silver trade models remain blocked until release mechanics are verified.
 
 ## Quality gate for a benchmark hub
 

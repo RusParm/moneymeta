@@ -62,6 +62,26 @@ export interface WorkOrderMetrics {
   state: "accept" | "negotiate" | "decline";
 }
 
+export interface MarketLedgerInput {
+  liquidGold: number;
+  listedInventoryValue: number;
+  sellThroughPercent: number;
+  auctionHouseCutPercent: number;
+  weeklyOperatingSpend: number;
+  cycleDays: number;
+}
+
+export interface MarketLedgerMetrics {
+  expectedInventoryCash: number;
+  inventoryAtRisk: number;
+  totalMarketCapital: number;
+  liquidCapitalNow: number;
+  liquidityRatioPercent: number;
+  postCycleCash: number;
+  capitalVelocityPerWeek: number;
+  state: "liquid" | "balanced" | "inventory-heavy";
+}
+
 export type WowRouteMetric = "capitalAccess" | "liquidity" | "timeFit" | "specializationMoat" | "priceResilience" | "lowFriction";
 
 export interface WowMarketRouteMetrics {
@@ -200,6 +220,38 @@ export function calculateWorkOrderMetrics(input: WorkOrderInput): WorkOrderMetri
     effectiveGoldPerHour,
     batchEconomicProfit,
     marginOfSafetyPercent,
+    state
+  };
+}
+
+export function calculateMarketLedger(input: MarketLedgerInput): MarketLedgerMetrics {
+  const liquidGold = positive(input.liquidGold);
+  const listedInventoryValue = positive(input.listedInventoryValue);
+  const sellThrough = percentage(input.sellThroughPercent);
+  const auctionHouseCut = percentage(input.auctionHouseCutPercent);
+  const weeklyOperatingSpend = positive(input.weeklyOperatingSpend);
+  const cycleDays = Math.max(0.1, positive(input.cycleDays));
+  const expectedInventoryCash = listedInventoryValue * sellThrough * (1 - auctionHouseCut);
+  const inventoryAtRisk = listedInventoryValue * (1 - sellThrough);
+  const totalMarketCapital = liquidGold + listedInventoryValue;
+  const liquidCapitalNow = Math.max(0, liquidGold - weeklyOperatingSpend);
+  const liquidityRatioPercent = totalMarketCapital > 0 ? liquidCapitalNow / totalMarketCapital * 100 : 0;
+  const postCycleCash = Math.max(0, liquidCapitalNow + expectedInventoryCash);
+  const capitalVelocityPerWeek = totalMarketCapital > 0
+    ? expectedInventoryCash / totalMarketCapital * (7 / cycleDays)
+    : 0;
+  const state = liquidityRatioPercent >= 55
+    ? "liquid"
+    : liquidityRatioPercent >= 25 ? "balanced" : "inventory-heavy";
+
+  return {
+    expectedInventoryCash,
+    inventoryAtRisk,
+    totalMarketCapital,
+    liquidCapitalNow,
+    liquidityRatioPercent,
+    postCycleCash,
+    capitalVelocityPerWeek,
     state
   };
 }

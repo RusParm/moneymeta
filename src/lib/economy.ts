@@ -29,6 +29,22 @@ export interface PortfolioResult {
   weeklyProfit: number;
 }
 
+export interface GoalRunwayInput {
+  bank: number;
+  target: number;
+  weeklyProfit: number;
+  reserve: number;
+}
+
+export interface GoalRunwayMetrics {
+  deployableCapital: number;
+  gap: number;
+  weeks: number;
+  months: number;
+  weeklyProgressPercent: number;
+  isFunded: boolean;
+}
+
 export type BusinessRankingLens = "first-buy" | "solo-efficiency" | "production-income";
 
 export function calculateBusinessMetrics(
@@ -186,6 +202,25 @@ export function findBestPortfolio(
   }
 
   return best;
+}
+
+export function calculateGoalRunway(input: GoalRunwayInput): GoalRunwayMetrics {
+  const bank = Math.max(0, input.bank);
+  const target = Math.max(0, input.target);
+  const weeklyProfit = Math.max(0, input.weeklyProfit);
+  const reserve = Math.max(0, input.reserve);
+  const deployableCapital = Math.max(0, bank - reserve);
+  const gap = Math.max(0, target - deployableCapital);
+  const weeks = gap <= 0 ? 0 : weeklyProfit > 0 ? gap / weeklyProfit : Number.POSITIVE_INFINITY;
+
+  return {
+    deployableCapital,
+    gap,
+    weeks,
+    months: Number.isFinite(weeks) ? weeks / 4.345 : Number.POSITIVE_INFINITY,
+    weeklyProgressPercent: target > 0 ? Math.min(100, (weeklyProfit / target) * 100) : 100,
+    isFunded: gap <= 0
+  };
 }
 
 export function isSnapshotStale(validThrough: string, asOf = new Date()): boolean {

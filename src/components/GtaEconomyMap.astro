@@ -1,5 +1,6 @@
 ---
 import { gtaEconomyNodes } from "../data/gta-hub";
+import GtaAssetMark from "./GtaAssetMark.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
@@ -26,6 +27,9 @@ const hrefFor = (href: string) => lang === "en" && href.startsWith("/gta-online/
   ? `/en${href}`
   : href;
 const first = gtaEconomyNodes[0]!;
+const marks: Record<string, [string, "teal" | "magenta" | "gold" | "coral"]> = {
+  capital: ["$", "teal"], acquisition: ["A", "magenta"], supply: ["S", "gold"], production: ["P", "teal"], storage: ["I", "gold"], sale: ["$", "magenta"], reinvest: ["↻", "coral"]
+};
 ---
 
 <section id="economy-map" class="section hub-section hub-map-section" aria-labelledby="economy-map-title">
@@ -53,7 +57,10 @@ const first = gtaEconomyNodes[0]!;
           data-decision={node.decision[lang]}
           data-signal={node.signal[lang]}
           data-href={hrefFor(node.href)}
+          data-mark={marks[node.id]?.[0] ?? node.code}
+          data-tone={marks[node.id]?.[1] ?? "teal"}
         >
+          <GtaAssetMark mark={marks[node.id]?.[0] ?? node.code} tone={marks[node.id]?.[1] ?? "teal"} />
           <span class="economy-node-index">{node.code}</span>
           <span class="economy-node-copy">
             <small>{node.phase[lang]}</small>
@@ -67,6 +74,7 @@ const first = gtaEconomyNodes[0]!;
     <article class="economy-detail" aria-live="polite">
       <div class="economy-detail-top">
         <span class="economy-detail-code" data-map-code>{first.code}</span>
+        <GtaAssetMark mark={marks[first.id]?.[0] ?? first.code} tone={marks[first.id]?.[1] ?? "teal"} large />
         <span class="pill teal" data-map-phase>{first.phase[lang]}</span>
       </div>
       <h3 data-map-title>{first.title[lang]}</h3>
@@ -96,6 +104,8 @@ const first = gtaEconomyNodes[0]!;
     const signal = root.querySelector<HTMLElement>("[data-map-signal]")!;
     const decision = root.querySelector<HTMLElement>("[data-map-decision]")!;
     const link = root.querySelector<HTMLAnchorElement>("[data-map-link]")!;
+    const detailMark = root.querySelector<HTMLElement>(".economy-detail-top > .gta-asset-mark")!;
+    const detailMarkText = detailMark.querySelector<HTMLElement>("i")!;
 
     const select = (node: HTMLButtonElement) => {
       nodes.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === node)));
@@ -106,6 +116,9 @@ const first = gtaEconomyNodes[0]!;
       signal.textContent = node.dataset.signal ?? "";
       decision.textContent = node.dataset.decision ?? "";
       link.href = node.dataset.href ?? "#";
+      detailMarkText.textContent = node.dataset.mark ?? "";
+      detailMark.classList.remove("tone-teal", "tone-magenta", "tone-gold", "tone-coral");
+      detailMark.classList.add(`tone-${node.dataset.tone ?? "teal"}`);
     };
 
     nodes.forEach((node) => node.addEventListener("click", () => select(node)));

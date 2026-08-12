@@ -1,0 +1,120 @@
+---
+import ScenarioActions from "./ScenarioActions.astro";
+import WowMarketMark from "./WowMarketMark.astro";
+import { wowMarks } from "../data/wow-hub";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const copy = lang === "ru" ? {
+  kicker: "Market Ledger · portfolio snapshot",
+  title: "Узнай, сколько у тебя gold, а сколько только выглядит как gold",
+  text: "Один snapshot разделяет cash в bags, listed inventory и ожидаемую реализацию. Это первый шаг перед новым batch, reset или масштабированием профессии.",
+  status: "Model 00 · editable",
+  input: "Market balance sheet",
+  liquidGold: "Gold в bags",
+  inventory: "Listed inventory value",
+  sellThrough: "Ожидаемый sell-through, %",
+  ahCut: "Auction House cut, %",
+  operating: "Operating spend / нед.",
+  cycle: "Listing cycle, дней",
+  result: "Рыночная позиция",
+  liquid: "Ликвидный оператор",
+  balanced: "Сбалансированный капитал",
+  heavy: "Inventory-heavy",
+  expectedCash: "Ожидаемый cash из inventory",
+  atRisk: "Inventory at risk",
+  total: "Total market capital",
+  cashNow: "Cash после operating spend",
+  ratio: "Liquidity ratio",
+  postCycle: "Cash после цикла",
+  velocity: "Capital velocity / нед.",
+  note: "Listed value не является cash. Sell-through и AH cut применяются только к ожидаемой реализации; непроданный stock остаётся working capital at risk.",
+  reset: "Вернуть baseline",
+  marks: [[wowMarks.liquidity, "CASH", "Gold now"], [wowMarks.capital, "STOCK", "Capital at risk"], [wowMarks.reinvest, "FLOW", "Velocity"]] as const
+} : {
+  kicker: "Market Ledger · portfolio snapshot",
+  title: "See how much gold you own and how much merely looks like gold",
+  text: "One snapshot separates cash in bags, listed inventory and expected realization. This is the first step before a new batch, reset or profession scale-up.",
+  status: "Model 00 · editable",
+  input: "Market balance sheet",
+  liquidGold: "Gold in bags",
+  inventory: "Listed inventory value",
+  sellThrough: "Expected sell-through, %",
+  ahCut: "Auction House cut, %",
+  operating: "Operating spend / week",
+  cycle: "Listing cycle, days",
+  result: "Market position",
+  liquid: "Liquid operator",
+  balanced: "Balanced capital",
+  heavy: "Inventory-heavy",
+  expectedCash: "Expected inventory cash",
+  atRisk: "Inventory at risk",
+  total: "Total market capital",
+  cashNow: "Cash after operating spend",
+  ratio: "Liquidity ratio",
+  postCycle: "Cash after cycle",
+  velocity: "Capital velocity / week",
+  note: "Listed value is not cash. Sell-through and the AH cut apply only to expected realization; unsold stock remains working capital at risk.",
+  reset: "Restore baseline",
+  marks: [[wowMarks.liquidity, "CASH", "Gold now"], [wowMarks.capital, "STOCK", "Capital at risk"], [wowMarks.reinvest, "FLOW", "Velocity"]] as const
+};
+---
+
+<section id="market-ledger" class="section hub-section wow-market-ledger" aria-labelledby="wow-market-ledger-title" data-wow-ledger data-lang={lang} data-scenario-root data-scenario-key="wow-market-ledger">
+  <div class="section-head hub-section-head">
+    <div><span class="section-kicker">{copy.kicker}</span><h2 id="wow-market-ledger-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+    <span class="pill wow-frost-pill">{copy.status}</span>
+  </div>
+  <div class="wow-ledger-loadout" aria-label={copy.kicker}>{copy.marks.map(([mark, label, value]) => <div><WowMarketMark mark={mark} lang={lang} /><span>{label}</span><strong>{value}</strong></div>)}</div>
+  <div class="grid-2 wow-ledger-grid">
+    <form class="card wow-ledger-input">
+      <div class="wow-ledger-form-head"><span>{copy.input}</span><strong>00</strong></div>
+      <div class="form-grid">
+        <div class="field"><label for="wow-ledger-cash">{copy.liquidGold}</label><input id="wow-ledger-cash" data-ledger-input="liquidGold" type="number" min="0" step="1000" value="80000" /></div>
+        <div class="field"><label for="wow-ledger-stock">{copy.inventory}</label><input id="wow-ledger-stock" data-ledger-input="listedInventoryValue" type="number" min="0" step="1000" value="120000" /></div>
+        <div class="field"><label for="wow-ledger-through">{copy.sellThrough}</label><input id="wow-ledger-through" data-ledger-input="sellThroughPercent" type="number" min="0" max="100" step="5" value="55" /></div>
+        <div class="field"><label for="wow-ledger-cut">{copy.ahCut}</label><input id="wow-ledger-cut" data-ledger-input="auctionHouseCutPercent" type="number" min="0" max="100" step="0.5" value="5" /></div>
+        <div class="field"><label for="wow-ledger-spend">{copy.operating}</label><input id="wow-ledger-spend" data-ledger-input="weeklyOperatingSpend" type="number" min="0" step="1000" value="25000" /></div>
+        <div class="field"><label for="wow-ledger-cycle">{copy.cycle}</label><input id="wow-ledger-cycle" data-ledger-input="cycleDays" type="number" min="0.1" step="0.5" value="7" /></div>
+      </div>
+      <button class="button ghost wow-ledger-reset" data-ledger-reset type="button">↺ {copy.reset}</button>
+    </form>
+    <article class="card result-panel wow-ledger-result" data-ledger-result aria-live="polite">
+      <div class="wow-ledger-result-head"><span class="result-label">{copy.result}</span><WowMarketMark mark={wowMarks.liquidity} lang={lang} large /></div>
+      <div class="result-name" data-ledger-verdict>{copy.balanced}</div><p class="result-reason">{copy.note}</p>
+      <div class="result-metrics wow-ledger-metrics">
+        <div class="result-metric"><span>{copy.expectedCash}</span><strong class="teal" data-ledger-output="expectedInventoryCash">-</strong></div>
+        <div class="result-metric"><span>{copy.atRisk}</span><strong class="gold" data-ledger-output="inventoryAtRisk">-</strong></div>
+        <div class="result-metric"><span>{copy.total}</span><strong data-ledger-output="totalMarketCapital">-</strong></div>
+        <div class="result-metric"><span>{copy.cashNow}</span><strong data-ledger-output="liquidCapitalNow">-</strong></div>
+        <div class="result-metric"><span>{copy.ratio}</span><strong data-ledger-output="liquidityRatioPercent">-</strong></div>
+        <div class="result-metric"><span>{copy.postCycle}</span><strong data-ledger-output="postCycleCash">-</strong></div>
+        <div class="result-metric" style="grid-column:1/-1"><span>{copy.velocity}</span><strong data-ledger-output="capitalVelocityPerWeek">-</strong></div>
+      </div><ScenarioActions lang={lang} />
+    </article>
+  </div>
+</section>
+
+<script>
+  import { calculateMarketLedger } from "../lib/wow-economy";
+  document.querySelectorAll<HTMLElement>("[data-wow-ledger]").forEach((root) => {
+    const inputs = [...root.querySelectorAll<HTMLInputElement>("[data-ledger-input]")];
+    const outputs = [...root.querySelectorAll<HTMLElement>("[data-ledger-output]")];
+    const baselines = new Map(inputs.map((input) => [input.dataset.ledgerInput ?? "", input.value]));
+    const result = root.querySelector<HTMLElement>("[data-ledger-result]")!;
+    const verdict = root.querySelector<HTMLElement>("[data-ledger-verdict]")!;
+    const lang = root.dataset.lang === "ru" ? "ru" : "en";
+    const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+    const value = (key: string) => Number(inputs.find((input) => input.dataset.ledgerInput === key)?.value ?? 0) || 0;
+    const render = () => {
+      const metrics = calculateMarketLedger({ liquidGold: value("liquidGold"), listedInventoryValue: value("listedInventoryValue"), sellThroughPercent: value("sellThroughPercent"), auctionHouseCutPercent: value("auctionHouseCutPercent"), weeklyOperatingSpend: value("weeklyOperatingSpend"), cycleDays: value("cycleDays") });
+      const labels = lang === "ru" ? { liquid: "Ликвидный оператор", balanced: "Сбалансированный капитал", heavy: "Inventory-heavy" } : { liquid: "Liquid operator", balanced: "Balanced capital", heavy: "Inventory-heavy" };
+      verdict.textContent = metrics.state === "liquid" ? labels.liquid : metrics.state === "balanced" ? labels.balanced : labels.heavy;
+      result.dataset.state = metrics.state === "inventory-heavy" ? "negative" : metrics.state === "balanced" ? "caution" : "positive";
+      outputs.forEach((output) => { const key = output.dataset.ledgerOutput as keyof typeof metrics; const metric = metrics[key]; if (typeof metric !== "number") return; output.textContent = key === "liquidityRatioPercent" ? `${formatter.format(metric)}%` : key === "capitalVelocityPerWeek" ? `${formatter.format(metric)}x` : `${formatter.format(metric)} g`; });
+    };
+    inputs.forEach((input) => input.addEventListener("input", render));
+    root.querySelector<HTMLButtonElement>("[data-ledger-reset]")!.addEventListener("click", () => { inputs.forEach((input) => { input.value = baselines.get(input.dataset.ledgerInput ?? "") ?? "0"; }); render(); });
+    render();
+  });
+</script>

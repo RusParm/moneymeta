@@ -1,6 +1,7 @@
 ---
 import { gtaBusinesses } from "../data/gta-businesses";
 import { gradeForScore, rankBusinessesByLens, type BusinessRankingLens } from "../lib/economy";
+import GtaAssetMark from "./GtaAssetMark.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
@@ -79,6 +80,7 @@ const copy = lang === "ru" ? {
 };
 
 const rankings = Object.fromEntries(copy.lenses.map((lens) => [lens.id, rankBusinessesByLens(gtaBusinesses, lens.id)]));
+const assetMarks: Record<string, string> = { acid: "AL", coke: "CO", bunker: "BK", nightclub: "NC", cash: "CC", meth: "ME", weed: "WE" };
 ---
 
 <section id="conditional-rankings" class="section hub-section" aria-labelledby="rankings-title">
@@ -128,7 +130,7 @@ const rankings = Object.fromEntries(copy.lenses.map((lens) => [lens.id, rankBusi
             <article class={`conditional-rank-card rank-${index + 1}`}>
               <div class="conditional-rank-top">
                 <span>0{index + 1}</span>
-                <span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>{gradeForScore(score)} · {score.toFixed(0)}</span>
+                <div class="gta-rank-mark"><GtaAssetMark mark={assetMarks[business.id] ?? business.id.slice(0, 2).toUpperCase()} tone={index === 0 ? "teal" : index === 1 ? "gold" : "magenta"} /><span class={`pill ${index === 0 ? "teal" : index === 1 ? "gold" : "muted"}`}>{gradeForScore(score)} · {score.toFixed(0)}</span></div>
               </div>
               <h3>{business.name[lang]}</h3>
               <p>{business.summary[lang]}</p>

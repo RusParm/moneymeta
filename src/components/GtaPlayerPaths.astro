@@ -1,5 +1,6 @@
 ---
 import { gtaPlayerPaths } from "../data/gta-hub";
+import GtaAssetMark from "./GtaAssetMark.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
@@ -38,6 +39,7 @@ const pathHref = (path: (typeof gtaPlayerPaths)[number]) => {
   });
   return `${calculator}?${params.toString()}#next-move`;
 };
+const pathMarks = { returner: ["R", "teal"], casual: ["C", "gold"], grinder: ["G", "magenta"] } as const;
 ---
 
 <section id="player-paths" class="section hub-section" aria-labelledby="player-paths-title">
@@ -62,6 +64,7 @@ const pathHref = (path: (typeof gtaPlayerPaths)[number]) => {
           tabindex={index === 0 ? "0" : "-1"}
           data-path-tab={path.id}
         >
+          <GtaAssetMark mark={pathMarks[path.id][0]} tone={pathMarks[path.id][1]} />
           <span>0{index + 1}</span>
           <strong>{path.label[lang]}</strong>
           <small>{path.summary[lang]}</small>
@@ -79,6 +82,7 @@ const pathHref = (path: (typeof gtaPlayerPaths)[number]) => {
           hidden={index !== 0}
           data-path-panel={path.id}
         >
+          <GtaAssetMark mark={pathMarks[path.id][0]} tone={pathMarks[path.id][1]} large />
           <div class="path-panel-head">
             <div>
               <span class="game-tag">{path.label[lang]} · baseline</span>

@@ -5,6 +5,7 @@ import { dotaEconomyNodes, dotaPlayerPaths, dotaPulse, dotaRoleLenses, dotaScena
 import { dotaPatchContext } from "../src/data/dota-economy";
 import { wowEconomyNodes, wowMarketRoutes, wowPlayerPaths, wowPulse, wowScenarios } from "../src/data/wow-hub";
 import { wowPatchContext } from "../src/data/wow-economy";
+import { crusaderKingsHub, totalWarHub } from "../src/data/strategy-hubs";
 import { insights } from "../src/data/insights";
 
 describe("GTA benchmark hub content", () => {
@@ -101,5 +102,33 @@ describe("WoW living hub content", () => {
     expect(wowPulse.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(wowPulse.staleAfterDays).toBeGreaterThan(0);
     expect(wowPulse.changes).toHaveLength(3);
+  });
+});
+
+describe.each([
+  ["Total War", totalWarHub],
+  ["Crusader Kings III", crusaderKingsHub]
+])("%s living hub content", (_label, hub) => {
+  it("meets the launch depth gate", () => {
+    expect(hub.economyNodes).toHaveLength(7);
+    expect(hub.paths).toHaveLength(3);
+    expect(hub.pulse.changes).toHaveLength(3);
+    expect(hub.lenses).toHaveLength(3);
+    expect(hub.scenarios).toHaveLength(6);
+    expect(hub.models).toHaveLength(3);
+    expect(hub.briefs).toHaveLength(6);
+  });
+
+  it("keeps sources, freshness and editable model metadata visible", () => {
+    expect(hub.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(hub.version).toBeTruthy();
+    expect(hub.methodology.sources.length).toBeGreaterThanOrEqual(2);
+    hub.methodology.sources.forEach((source) => expect(source.url).toMatch(/^https:\/\//));
+    hub.models.forEach((model) => {
+      expect(model.inputs.length).toBeGreaterThanOrEqual(5);
+      expect(model.results.length).toBeGreaterThanOrEqual(4);
+      expect(model.title.ru).toBeTruthy();
+      expect(model.title.en).toBeTruthy();
+    });
   });
 });

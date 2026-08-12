@@ -1,0 +1,14 @@
+---
+interface Props {
+  mark: string;
+  label?: string;
+  large?: boolean;
+}
+
+const { mark, label, large = false } = Astro.props;
+---
+
+<span class:list={["strategy-mark", { "is-large": large }]} aria-hidden="true">
+  <i>{mark}</i>
+  {label && <small>{label}</small>}
+</span>

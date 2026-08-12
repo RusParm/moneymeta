@@ -4,6 +4,8 @@ import { gtaBusinesses, weeklyMeta } from "../data/gta-businesses";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GameWorldHero from "./GameWorldHero.astro";
+import GtaAssetMark from "./GtaAssetMark.astro";
+import GtaCapitalLab from "./GtaCapitalLab.astro";
 import GtaDecisionDeck from "./GtaDecisionDeck.astro";
 import GtaEconomyMap from "./GtaEconomyMap.astro";
 import GtaLibrary from "./GtaLibrary.astro";
@@ -32,6 +34,8 @@ const copy = lang === "ru" ? {
     ["6", "полных разборов"],
     ["Auto", "freshness guard"]
   ],
+  loadoutLabel: "Ключевые системы GTA-хаба",
+  loadout: [["$", "CAPITAL", "Next move"], ["B", "BUSINESS", "Asset ROI"], ["T", "TIME", "Hours to goal"], ["PF", "PORTFOLIO", "Allocation"]],
   navLabel: "Навигация по GTA Economy Hub",
   nav: [
     ["Карта", "#economy-map"],
@@ -39,6 +43,7 @@ const copy = lang === "ru" ? {
     ["Pulse", "#weekly-pulse"],
     ["Рейтинги", "#conditional-rankings"],
     ["Сценарии", "#scenario-deck"],
+    ["Модели", "#capital-lab"],
     ["Библиотека", "#research-library"]
   ],
   manifestoEyebrow: "The Money Meta difference",
@@ -93,6 +98,8 @@ const copy = lang === "ru" ? {
     ["6", "complete analyses"],
     ["Auto", "freshness guard"]
   ],
+  loadoutLabel: "Key systems in the GTA hub",
+  loadout: [["$", "CAPITAL", "Next move"], ["B", "BUSINESS", "Asset ROI"], ["T", "TIME", "Hours to goal"], ["PF", "PORTFOLIO", "Allocation"]],
   navLabel: "GTA Economy Hub navigation",
   nav: [
     ["Map", "#economy-map"],
@@ -100,6 +107,7 @@ const copy = lang === "ru" ? {
     ["Pulse", "#weekly-pulse"],
     ["Rankings", "#conditional-rankings"],
     ["Scenarios", "#scenario-deck"],
+    ["Models", "#capital-lab"],
     ["Library", "#research-library"]
   ],
   manifestoEyebrow: "The Money Meta difference",
@@ -181,6 +189,9 @@ const copy = lang === "ru" ? {
         <div class="proof-strip">
           {copy.heroProof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label}</span></div>)}
         </div>
+        <div class="gta-hero-loadout" aria-label={copy.loadoutLabel}>
+          {copy.loadout.map(([mark, label, value], index) => <div><GtaAssetMark mark={mark ?? ""} code={`0${index + 1}`} tone={index === 0 ? "teal" : index === 1 ? "magenta" : index === 2 ? "gold" : "coral"} /><span>{label}</span><strong>{value}</strong></div>)}
+        </div>
       </GameWorldHero>
 
       <nav class="hub-jump-nav" aria-label={copy.navLabel}>
@@ -208,6 +219,7 @@ const copy = lang === "ru" ? {
       <GtaPulse lang={lang} />
       <GtaRankings lang={lang} />
       <GtaDecisionDeck lang={lang} />
+      <GtaCapitalLab lang={lang} />
       <GtaLibrary lang={lang} />
 
       <section id="methodology" class="section hub-section trust-rail" aria-labelledby="trust-rail-title">
