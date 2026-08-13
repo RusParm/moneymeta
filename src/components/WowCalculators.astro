@@ -8,77 +8,77 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const copy = lang === "ru" ? {
-  kicker: "Scenario Lab · three market engines",
-  title: "Три модели для трёх разных способов зарабатывать gold",
-  text: "Auction House craft, material farm и Crafting Order нельзя сравнивать одной headline margin. Каждый engine показывает свой cash flow, риск и точку отказа.",
-  count: "22 inputs · local save · shareable URL",
-  craftKicker: "Model 01 · recipe economics",
-  craftTitle: "Crafting Margin: прибыль после ликвидности",
-  craftText: "Модель учитывает Auction House cut, sell-through и потерю deposit при неудачном listing cycle.",
-  materialCost: "Материалы / craft",
-  outputUnits: "Выход товара / craft",
+  kicker: "Калькуляторы · три способа заработка",
+  title: "Три модели для трёх разных способов зарабатывать золото",
+  text: "Изготовление для аукциона, фарм материалов и заказы на изготовление нельзя сравнивать по одной красивой марже. Каждая модель показывает свой денежный поток, риск и границу выгодности.",
+  count: "22 вводных · локальное сохранение · ссылка на сценарий",
+  craftKicker: "Модель 01 · экономика рецепта",
+  craftTitle: "Маржа изготовления: прибыль после поправки на ликвидность",
+  craftText: "Модель учитывает комиссию аукциона, вероятность продажи и потерю залога при неудачном размещении.",
+  materialCost: "Материалы на изготовление",
+  outputUnits: "Количество товара",
   salePrice: "Цена продажи / ед.",
-  ahCut: "Комиссия AH, %",
-  deposit: "Deposit / listing",
-  sellThrough: "Sell-through / цикл, %",
-  crafts: "Размер batch, crafts",
-  craftResult: "Crafting investment case",
-  craftNote: "Sell-through является сценарием одного listing cycle. Непроданный товар сохраняет стоимость, но блокирует капитал и требует нового листинга.",
-  gross: "Gross revenue / sold craft",
-  netRevenue: "Net revenue после AH",
+  ahCut: "Комиссия аукциона, %",
+  deposit: "Залог за размещение",
+  sellThrough: "Доля продаж за цикл, %",
+  crafts: "Размер партии",
+  craftResult: "Результат изготовления",
+  craftNote: "Доля продаж задаётся для одного цикла размещения. Непроданный товар сохраняет стоимость, но блокирует капитал и требует нового листинга.",
+  gross: "Выручка с проданного изделия",
+  netRevenue: "Выручка после комиссии",
   soldProfit: "Прибыль если продано",
-  expectedProfit: "Expected profit / цикл",
-  batchProfit: "Expected batch profit",
-  roi: "Expected ROI / цикл",
-  breakEven: "Break-even / ед.",
+  expectedProfit: "Ожидаемая прибыль за цикл",
+  batchProfit: "Ожидаемая прибыль партии",
+  roi: "Ожидаемая доходность за цикл",
+  breakEven: "Цена безубыточности за единицу",
   inventoryRisk: "Капитал в непроданном",
-  farmKicker: "Model 02 · liquidity haircut",
-  farmTitle: "Farm Liquidity: настоящий gold/hour",
-  farmText: "Listed price превращается в effective GPH только после sell-through, AH cut, расходов и relisting losses.",
+  farmKicker: "Модель 02 · поправка на ликвидность",
+  farmTitle: "Ликвидность фарма: настоящий доход в час",
+  farmText: "Цена на аукционе превращается в реальный доход в час только после учёта вероятности продажи, комиссии, расходов и потерь от повторных размещений.",
   unitsHour: "Единиц добычи / час",
-  marketPrice: "Market price / ед.",
-  farmSellThrough: "Sell-through, %",
-  farmAhCut: "Комиссия AH, %",
+  marketPrice: "Рыночная цена за единицу",
+  farmSellThrough: "Ожидаемая доля продаж, %",
+  farmAhCut: "Комиссия аукциона, %",
   hourlyExpenses: "Расходы / час",
-  relistingLoss: "Relisting losses / час",
+  relistingLoss: "Потери от повторных размещений за час",
   sessionHours: "Длина сессии, часов",
-  targetGold: "Цель, gold",
-  farmResult: "Farm liquidity case",
-  listedGph: "Quoted / listed GPH",
-  effectiveGph: "Effective GPH",
-  monetization: "Monetization rate",
-  liquidityHaircut: "Liquidity haircut / час",
-  farmInventory: "Inventory at risk / сессия",
-  sessionGold: "Expected gold / сессия",
+  targetGold: "Цель в золоте",
+  farmResult: "Реальный результат фарма",
+  listedGph: "Доход в час по цене аукциона",
+  effectiveGph: "Реальный доход в час",
+  monetization: "Доля превращения в золото",
+  liquidityHaircut: "Поправка на ликвидность за час",
+  farmInventory: "Непроданный товар за сессию",
+  sessionGold: "Ожидаемое золото за сессию",
   targetHours: "Часов до цели",
-  orderKicker: "Model 03 · service economics",
-  orderTitle: "Crafting Order Floor: сколько должна стоить твоя работа",
-  orderText: "Commission должна покрывать materials crafter, expected recraft reserve и время, которое можно было монетизировать другим способом.",
-  commission: "Commission / order",
-  orderMaterials: "Материалы crafter",
-  recraft: "Expected recraft reserve",
-  serviceMinutes: "Время / order, мин",
-  targetGph: "Твой target gold/hour",
-  orders: "Количество orders",
-  orderResult: "Crafting Order case",
-  orderNote: "Модель не назначает универсальную цену skill. Target GPH является твоей альтернативной стоимостью времени, а recraft reserve остаётся редактируемым ожиданием.",
-  cashProfit: "Cash profit / order",
+  orderKicker: "Модель 03 · стоимость услуги",
+  orderTitle: "Минимальная комиссия за заказ: сколько должна стоить твоя работа",
+  orderText: "Комиссия должна покрывать материалы исполнителя, запас на повторное изготовление и время, которое можно было использовать для другого заработка.",
+  commission: "Комиссия за заказ",
+  orderMaterials: "Материалы исполнителя",
+  recraft: "Запас на повторное изготовление",
+  serviceMinutes: "Время на заказ, мин.",
+  targetGph: "Твой целевой доход в час",
+  orders: "Количество заказов",
+  orderResult: "Результат заказа",
+  orderNote: "Модель не назначает универсальную цену навыка. Целевой доход в час отражает ценность твоего времени, а запас на повторное изготовление можно изменить.",
+  cashProfit: "Денежная прибыль с заказа",
   timeCost: "Стоимость времени",
-  economicProfit: "Economic profit / order",
-  minimumCommission: "Minimum commission",
-  orderGph: "Effective gold/hour",
-  orderBatch: "Batch economic profit",
-  safety: "Margin of safety",
+  economicProfit: "Экономическая прибыль с заказа",
+  minimumCommission: "Минимальная комиссия",
+  orderGph: "Реальный доход в час",
+  orderBatch: "Экономическая прибыль всех заказов",
+  safety: "Запас прочности",
   states: {
-    positiveEdge: "Положительный market edge",
+    positiveEdge: "Положительное рыночное преимущество",
     thinEdge: "Маржа слишком тонкая",
-    negativeEdge: "Отрицательная expected margin",
+    negativeEdge: "Отрицательная ожидаемая маржа",
     liquid: "Рынок поглощает объём",
-    discounted: "GPH требует дисконта",
-    inventoryTrap: "Фарм превращается в inventory trap",
-    accept: "Order выше экономического floor",
-    negotiate: "Комиссия слишком близко к floor",
-    decline: "Order не покрывает полную стоимость"
+    discounted: "Доход требует поправки на ликвидность",
+    inventoryTrap: "Фарм создаёт ловушку непроданных товаров",
+    accept: "Заказ выше минимально разумной комиссии",
+    negotiate: "Комиссия слишком близка к минимуму",
+    decline: "Заказ не покрывает полную стоимость"
   },
   hours: "ч"
 } : {
@@ -165,7 +165,7 @@ const copy = lang === "ru" ? {
   </div>
 
   <div id="crafting-margin" class="wow-model">
-    <div class="wow-model-head"><WowMarketMark mark={wowMarks.craft} lang={lang} large /><div><span class="game-tag">{copy.craftKicker}</span><h3>{copy.craftTitle}</h3><p>{copy.craftText}</p></div><span class="pill gold">Editable baseline</span></div>
+    <div class="wow-model-head"><WowMarketMark mark={wowMarks.craft} lang={lang} large /><div><span class="game-tag">{copy.craftKicker}</span><h3>{copy.craftTitle}</h3><p>{copy.craftText}</p></div><span class="pill gold">{lang === "ru" ? "Исходные значения можно менять" : "Editable baseline"}</span></div>
     <div class="grid-2 wow-model-grid" data-scenario-root data-scenario-key="wow-crafting">
       <form class="card wow-input-card" data-role="craft-form">
         <div class="form-grid">
@@ -196,7 +196,7 @@ const copy = lang === "ru" ? {
   </div>
 
   <div id="farm-liquidity" class="wow-model">
-    <div class="wow-model-head"><WowMarketMark mark={wowMarks.gather} lang={lang} large /><div><span class="game-tag">{copy.farmKicker}</span><h3>{copy.farmTitle}</h3><p>{copy.farmText}</p></div><span class="pill teal">Time + liquidity</span></div>
+    <div class="wow-model-head"><WowMarketMark mark={wowMarks.gather} lang={lang} large /><div><span class="game-tag">{copy.farmKicker}</span><h3>{copy.farmTitle}</h3><p>{copy.farmText}</p></div><span class="pill teal">{lang === "ru" ? "Время и ликвидность" : "Time + liquidity"}</span></div>
     <div class="grid-2 wow-model-grid" data-scenario-root data-scenario-key="wow-farm">
       <form class="card wow-input-card" data-role="farm-form">
         <div class="form-grid">
@@ -227,7 +227,7 @@ const copy = lang === "ru" ? {
   </div>
 
   <div id="order-floor" class="wow-model">
-    <div class="wow-model-head"><WowMarketMark mark={wowMarks.orders} lang={lang} large /><div><span class="game-tag">{copy.orderKicker}</span><h3>{copy.orderTitle}</h3><p>{copy.orderText}</p></div><span class="pill muted">Opportunity cost</span></div>
+    <div class="wow-model-head"><WowMarketMark mark={wowMarks.orders} lang={lang} large /><div><span class="game-tag">{copy.orderKicker}</span><h3>{copy.orderTitle}</h3><p>{copy.orderText}</p></div><span class="pill muted">{lang === "ru" ? "Цена упущенного времени" : "Opportunity cost"}</span></div>
     <div class="grid-2 wow-model-grid" data-scenario-root data-scenario-key="wow-order">
       <form class="card wow-input-card" data-role="order-form">
         <div class="form-grid">
@@ -265,14 +265,14 @@ const copy = lang === "ru" ? {
     root.dataset.calculatorsReady = "true";
     const lang = (root.dataset.lang ?? "ru") as WowLocale;
     const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
-    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(Math.round(value))} g` : "∞";
+    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(Math.round(value))} ${lang === "ru" ? "зол." : "g"}` : "∞";
     const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
     const target = (role: string) => root.querySelector<HTMLElement>(`[data-role='${role}']`)!;
     const value = (role: string) => Math.max(0, Number(input(role).value) || 0);
     const labels = lang === "ru" ? {
-      positiveEdge: "Положительный market edge", thinEdge: "Маржа слишком тонкая", negativeEdge: "Отрицательная expected margin",
-      liquid: "Рынок поглощает объём", discounted: "GPH требует дисконта", inventoryTrap: "Фарм превращается в inventory trap",
-      accept: "Order выше экономического floor", negotiate: "Комиссия слишком близко к floor", decline: "Order не покрывает полную стоимость", hours: "ч"
+      positiveEdge: "Положительное рыночное преимущество", thinEdge: "Маржа слишком тонкая", negativeEdge: "Отрицательная ожидаемая маржа",
+      liquid: "Рынок поглощает объём", discounted: "Доход требует поправки на ликвидность", inventoryTrap: "Фарм создаёт ловушку непроданных товаров",
+      accept: "Заказ выше минимально разумной комиссии", negotiate: "Комиссия слишком близка к минимуму", decline: "Заказ не покрывает полную стоимость", hours: "ч"
     } : {
       positiveEdge: "Positive market edge", thinEdge: "The margin is too thin", negativeEdge: "Negative expected margin",
       liquid: "The market absorbs this volume", discounted: "GPH needs a liquidity discount", inventoryTrap: "The farm becomes an inventory trap",

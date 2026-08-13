@@ -6,9 +6,9 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const copy = lang === "ru" ? {
-  kicker: "Economy map · portfolio loop",
-  title: "Проследи путь одного GTA$ - от банка до следующего актива",
-  text: "Экономика GTA Online - это не список бизнесов. Это цикл капитала, inventory, времени и ликвидности. Нажми на узел, чтобы увидеть решение в каждой точке.",
+  kicker: "Карта экономики · движение капитала",
+  title: "Проследи путь одного GTA$: от банка до следующего актива",
+  text: "Экономика GTA Online состоит не из списка бизнесов, а из цикла капитала, запасов, времени и продаж. Нажми на этап, чтобы увидеть главное решение в этой точке.",
   mapLabel: "Интерактивная карта экономики GTA Online",
   now: "Ключевой сигнал",
   decision: "Решение игрока",
@@ -27,7 +27,9 @@ const hrefFor = (href: string) => lang === "en" && href.startsWith("/gta-online/
   ? `/en${href}`
   : href;
 const first = gtaEconomyNodes[0]!;
-const marks: Record<string, [string, "teal" | "magenta" | "gold" | "coral"]> = {
+const marks: Record<string, [string, "teal" | "magenta" | "gold" | "coral"]> = lang === "ru" ? {
+  capital: ["$", "teal"], acquisition: ["П", "magenta"], supply: ["Р", "gold"], production: ["ПР", "teal"], storage: ["З", "gold"], sale: ["$", "magenta"], reinvest: ["↻", "coral"]
+} : {
   capital: ["$", "teal"], acquisition: ["A", "magenta"], supply: ["S", "gold"], production: ["P", "teal"], storage: ["I", "gold"], sale: ["$", "magenta"], reinvest: ["↻", "coral"]
 };
 ---
@@ -39,7 +41,7 @@ const marks: Record<string, [string, "teal" | "magenta" | "gold" | "coral"]> = {
       <h2 id="economy-map-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">01-07 · interactive</span>
+    <span class="count">{lang === "ru" ? "01-07 · интерактивная карта" : "01-07 · interactive"}</span>
   </div>
 
   <div class="economy-map" data-gta-map>

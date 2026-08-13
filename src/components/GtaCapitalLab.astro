@@ -5,32 +5,34 @@ import ScenarioActions from "./ScenarioActions.astro";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const copy = lang === "ru" ? {
-  kicker: "Capital Lab · three live decisions",
+  kicker: "Три модели капитала",
   title: "Не уходи из хаба, чтобы проверить главный вопрос",
-  text: "Три модели закрывают покупку, цель по капиталу и портфель. Все значения estimated, видимы и редактируются прямо здесь.",
-  status: "Estimated · editable · checked 2026-07-01",
-  model1: "Model 01 · acquisition",
-  roiTitle: "Business ROI: во что превращается покупка",
-  roiText: "Выбери актив и проверь net, payback и месячный steady-state для своих setup, sale и supply assumptions.",
+  text: "Три модели помогают оценить покупку, срок накопления и набор бизнесов. Все рабочие значения видны и редактируются прямо здесь.",
+  status: "Рабочая оценка · проверено 2026-07-01",
+  model1: "Модель 01 · покупка",
+  mark1: "ДОХ",
+  roiTitle: "Доходность бизнеса: во что превращается покупка",
+  roiText: "Выбери актив и проверь чистый доход, окупаемость и месячный результат со своими вводными по запуску, продаже и расходникам.",
   asset: "Бизнес",
   setup: "Стартовые вложения, GTA$",
   sale: "Полная продажа, GTA$",
-  supply: "Supplies, GTA$",
-  production: "Production time, ч",
-  weeklyOnline: "Online production, ч / нед.",
-  currentCase: "Текущий investment case",
-  netCycle: "Net / цикл",
-  netHour: "Net / production h",
-  payback: "Payback",
-  roi: "vROI / цикл",
+  supply: "Расходники, GTA$",
+  production: "Время производства, ч",
+  weeklyOnline: "Работа производства, ч / нед.",
+  currentCase: "Результат покупки",
+  netCycle: "Чистыми за цикл",
+  netHour: "Чистыми за час производства",
+  payback: "Окупаемость",
+  roi: "Доходность за цикл",
   monthly: "Потенциал / месяц",
-  active: "Active min / цикл",
-  model2: "Model 02 · goal runway",
-  goalTitle: "Hours to Goal: сколько недель до следующей покупки",
-  goalText: "Отдели стартовый банк от цели и посчитай только реализованный weekly cash flow.",
+  active: "Ручная работа за цикл, мин.",
+  model2: "Модель 02 · срок до цели",
+  mark2: "ЦЕЛЬ",
+  goalTitle: "Сколько недель осталось до следующей покупки",
+  goalText: "Отдели текущий банк от цели и учитывай только реально получаемый доход за неделю.",
   bank: "Банк сейчас, GTA$",
   target: "Цель, GTA$",
-  weeklyProfit: "Реализованный net / нед.",
+  weeklyProfit: "Чистый доход за неделю",
   reserve: "Неснижаемый резерв, GTA$",
   goalResult: "Маршрут до цели",
   gap: "Осталось собрать",
@@ -41,25 +43,27 @@ const copy = lang === "ru" ? {
   targetState: "Статус",
   ready: "Цель уже профинансирована",
   building: "Цель требует накопления",
-  model3: "Model 03 · portfolio allocation",
-  portfolioTitle: "Portfolio: что помещается в капитал и active time",
-  portfolioText: "Оптимизатор перебирает наборы активов и выбирает максимальный baseline weekly net внутри двух ограничений.",
+  model3: "Модель 03 · набор бизнесов",
+  mark3: "НАБ",
+  portfolioTitle: "Что помещается в твой капитал и свободное время",
+  portfolioText: "Модель перебирает сочетания активов и выбирает максимальный чистый доход с учётом бюджета и доступного времени.",
   budget: "Бюджет, GTA$",
-  hours: "Active hours / нед.",
+  hours: "Часов ручной работы в неделю",
   portfolioResult: "Оптимальная комбинация",
   noFit: "Ни один актив не проходит оба ограничения.",
   totalCost: "Общие вложения",
-  activeTime: "Active time",
-  weekly: "Net / нед.",
-  portfolioMonth: "Net / месяц",
-  reset: "Вернуть baseline",
-  note: "Production hours не равны active grind. Месячный результат является steady-state оценкой без простоя, лимитов доставки и риска незавершённой продажи."
+  activeTime: "Ручная работа",
+  weekly: "Чистыми за неделю",
+  portfolioMonth: "Чистыми за месяц",
+  reset: "Вернуть исходные значения",
+  note: "Часы производства не равны времени ручной игры. Месячный результат является рабочей оценкой без простоев, ограничений доставки и риска незавершённой продажи."
 } : {
   kicker: "Capital Lab · three live decisions",
   title: "Do not leave the hub to test the main question",
   text: "Three models cover the purchase, capital goal and portfolio. Every value is estimated, visible and editable here.",
   status: "Estimated · editable · checked 2026-07-01",
   model1: "Model 01 · acquisition",
+  mark1: "ROI",
   roiTitle: "Business ROI: what the purchase becomes",
   roiText: "Choose an asset and test net, payback and monthly steady state with your setup, sale and supply assumptions.",
   asset: "Business",
@@ -76,6 +80,7 @@ const copy = lang === "ru" ? {
   monthly: "Potential / month",
   active: "Active min / cycle",
   model2: "Model 02 · goal runway",
+  mark2: "GOAL",
   goalTitle: "Hours to Goal: how many weeks to the next purchase",
   goalText: "Separate starting cash from the target and count only realized weekly cash flow.",
   bank: "Cash now, GTA$",
@@ -92,6 +97,7 @@ const copy = lang === "ru" ? {
   ready: "The target is already funded",
   building: "The target needs accumulation",
   model3: "Model 03 · portfolio allocation",
+  mark3: "PF",
   portfolioTitle: "Portfolio: what fits capital and active time",
   portfolioText: "The optimizer searches asset sets and maximizes baseline weekly net inside both constraints.",
   budget: "Budget, GTA$",
@@ -114,7 +120,7 @@ const copy = lang === "ru" ? {
   </div>
 
   <section id="business-roi" class="gta-inline-model" data-gta-roi data-scenario-root data-scenario-key="gta-inline-roi">
-    <div class="gta-inline-head"><div class="gta-business-mark">ROI</div><div><span class="section-kicker">{copy.model1}</span><h3>{copy.roiTitle}</h3><p>{copy.roiText}</p></div></div>
+    <div class="gta-inline-head"><div class="gta-business-mark">{copy.mark1}</div><div><span class="section-kicker">{copy.model1}</span><h3>{copy.roiTitle}</h3><p>{copy.roiText}</p></div></div>
     <div class="grid-2 gta-inline-grid">
       <form class="card gta-inline-input">
         <div class="form-grid">
@@ -142,7 +148,7 @@ const copy = lang === "ru" ? {
   </section>
 
   <section id="hours-to-goal" class="gta-inline-model" data-gta-goal data-scenario-root data-scenario-key="gta-hours-goal">
-    <div class="gta-inline-head"><div class="gta-business-mark">GOAL</div><div><span class="section-kicker">{copy.model2}</span><h3>{copy.goalTitle}</h3><p>{copy.goalText}</p></div></div>
+    <div class="gta-inline-head"><div class="gta-business-mark">{copy.mark2}</div><div><span class="section-kicker">{copy.model2}</span><h3>{copy.goalTitle}</h3><p>{copy.goalText}</p></div></div>
     <div class="grid-2 gta-inline-grid">
       <form class="card gta-inline-input"><div class="form-grid">
         <div class="field"><label for="gta-goal-bank">{copy.bank}</label><input id="gta-goal-bank" data-goal-input="bank" type="number" min="0" step="50000" value="1250000" /></div>
@@ -161,7 +167,7 @@ const copy = lang === "ru" ? {
   </section>
 
   <section id="portfolio-allocation" class="gta-inline-model" data-gta-portfolio data-scenario-root data-scenario-key="gta-inline-portfolio">
-    <div class="gta-inline-head"><div class="gta-business-mark">PF</div><div><span class="section-kicker">{copy.model3}</span><h3>{copy.portfolioTitle}</h3><p>{copy.portfolioText}</p></div></div>
+    <div class="gta-inline-head"><div class="gta-business-mark">{copy.mark3}</div><div><span class="section-kicker">{copy.model3}</span><h3>{copy.portfolioTitle}</h3><p>{copy.portfolioText}</p></div></div>
     <div class="grid-2 gta-inline-grid">
       <form class="card gta-inline-input"><div class="form-grid">
         <div class="field"><label for="gta-portfolio-budget-inline">{copy.budget}</label><input id="gta-portfolio-budget-inline" data-portfolio-input="budget" type="number" min="0" step="100000" value="5000000" /></div>
@@ -233,10 +239,10 @@ const copy = lang === "ru" ? {
       roiReason.textContent = business.summary[lang];
       roiOutputs.net.textContent = money(metrics.netPerCycle);
       roiOutputs.hourly.textContent = money(metrics.profitPerProductionHour);
-      roiOutputs.payback.textContent = Number.isFinite(metrics.paybackProductionHours) ? `${Math.round(metrics.paybackProductionHours)} h` : "∞";
+      roiOutputs.payback.textContent = Number.isFinite(metrics.paybackProductionHours) ? `${Math.round(metrics.paybackProductionHours)} ${lang === "ru" ? "ч" : "h"}` : "∞";
       roiOutputs.roi.textContent = `${metrics.virtualRoi.toFixed(1)}%`;
       roiOutputs.monthly.textContent = money(monthly);
-      roiOutputs.active.textContent = `${business.activeMinutesPerCycle} min`;
+      roiOutputs.active.textContent = `${business.activeMinutesPerCycle} ${lang === "ru" ? "мин" : "min"}`;
       roiResult.dataset.state = metrics.netPerCycle >= 0 ? "positive" : "negative";
     };
     roiInputs.business.addEventListener("change", loadBusiness);
@@ -304,7 +310,7 @@ const copy = lang === "ru" ? {
         picks.appendChild(tag);
       });
       portfolioOutputs.cost.textContent = money(best.setupCost);
-      portfolioOutputs.time.textContent = `${best.activeHours.toFixed(1)} h`;
+      portfolioOutputs.time.textContent = `${best.activeHours.toFixed(1)} ${lang === "ru" ? "ч" : "h"}`;
       portfolioOutputs.weekly.textContent = money(best.weeklyProfit);
       portfolioOutputs.monthly.textContent = money(best.weeklyProfit * 4.345);
       portfolioResult.dataset.state = "positive";

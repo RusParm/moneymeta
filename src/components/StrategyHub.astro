@@ -18,49 +18,49 @@ const firstNode = data.economyNodes[0]!;
 
 const copy = lang === "ru" ? {
   back: "← Все экономики",
-  nav: [["01", "Карта", "#economy-map"], ["02", "Мой путь", "#player-paths"], ["03", "Pulse", data.id === "ck3" ? "#dynasty-pulse" : "#campaign-pulse"], ["04", "Решения", "#economy-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Библиотека", "#research-library"]],
-  navLabel: `Навигация ${data.name} Economy Hub`,
-  mapKicker: "Economy map · capital flow",
-  mapTitle: data.id === "ck3" ? "Проследи один gold через всё правление" : "Проследи один gold через всю кампанию",
+  nav: [["01", "Карта", "#economy-map"], ["02", "Мой путь", "#player-paths"], ["03", "Обновления", data.id === "ck3" ? "#dynasty-pulse" : "#campaign-pulse"], ["04", "Решения", "#economy-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Библиотека", "#research-library"]],
+  navLabel: `Навигация по экономике ${data.name}`,
+  mapKicker: "Карта экономики · движение ресурсов",
+  mapTitle: data.id === "ck3" ? "Проследи путь монеты через всё правление" : "Проследи путь монеты через всю кампанию",
   mapText: "Нажми на узел, чтобы увидеть ключевой сигнал, решение и инструмент для этой точки системы.",
   mapLabel: `Интерактивная карта экономики ${data.name}`,
   signal: "Ключевой сигнал",
   decision: "Решение игрока",
   openTool: "Открыть связанный инструмент",
-  pathKicker: "Personal path · choose your campaign system",
-  pathTitle: "Одна игра. Три разных operating system.",
+  pathKicker: "Путь игрока · выбери свой подход",
+  pathTitle: "Одна игра. Три разных способа вести кампанию.",
   pathText: "Выбери профиль, который ближе к твоей кампании. Получишь ограничения, порядок действий и условие, которое переворачивает план.",
   pathLabel: "Выбор профиля игрока",
   route: "Маршрут",
   flip: "Когда план меняется",
   runPath: "Открыть связанную модель",
-  pulseKicker: data.id === "ck3" ? "Dynasty Pulse · official context" : "Campaign Pulse · official context",
+  pulseKicker: data.id === "ck3" ? "Обновления династии · официальный контекст" : "Обновления кампании · официальный контекст",
   action: "Что делать иначе",
   source: "Первоисточник",
-  verified: "Verified · official",
-  lensKicker: "Decision lenses · no universal tier list",
+  verified: "Проверено по официальным источникам",
+  lensKicker: "Решения зависят от цели",
   lensTitle: data.id === "ck3" ? "Лучший ход меняется вместе с правлением" : "Лучший ход меняется вместе с фазой кампании",
-  lensText: "Переключай цель и смотри, почему лидер меняется. Это decision order, а не обещание одной правильной стратегии для всех.",
+  lensText: "Переключай цель и смотри, почему лучший вариант меняется. Здесь нет одной стратегии, которая подходит любой кампании.",
   question: "Вопрос",
   why: "Почему так",
-  deckKicker: "Decision deck · prepared questions",
+  deckKicker: "Готовые сценарии · начни со своего вопроса",
   deckTitle: "Не начинай с пустого калькулятора. Начни со своей ситуации.",
-  deckText: "Каждая карточка ведёт в уже подходящую модель или слой хаба. Затем замени baseline цифрами своей кампании.",
+  deckText: "Каждая карточка ведёт к подходящей модели или разделу. Останется заменить исходные значения цифрами своей кампании.",
   openScenario: "Открыть сценарий",
-  libraryKicker: "Decision library · first release",
+  libraryKicker: "Библиотека решений · первый выпуск",
   libraryTitle: "Не энциклопедия механик. Библиотека решений.",
-  libraryText: `Шесть прикладных briefs для ${data.name}: тезис, граница модели и прямой переход к действию.`,
-  filters: [["all", "Все"], ["returner", "Returner"], ["casual", "Solo / casual"], ["grinder", "Optimizer"]],
-  showing: "briefs",
+  libraryText: `Шесть прикладных разборов по ${data.name}: главный вывод, границы расчёта и понятный следующий шаг.`,
+  filters: [["all", "Все"], ["returner", "После перерыва"], ["casual", "Играю понемногу"], ["grinder", "Оптимизирую всё"]],
+  showing: "материалов",
   takeaway: "Ключевой вывод",
   openBrief: "Проверить в модели",
-  methodKicker: "Methodology · sources · independence",
-  context: "Verified context",
-  model: "Editable model",
-  independent: "Independent product",
+  methodKicker: "Методика · источники · независимость",
+  context: "Проверенный контекст",
+  model: "Настраиваемая модель",
+  independent: "Независимый проект",
   checked: "Проверено",
   sources: "Источники и границы модели",
-  dataLabel: "Baseline numbers"
+  dataLabel: "Исходные значения"
 } : {
   back: "← All economies",
   nav: [["01", "Map", "#economy-map"], ["02", "My path", "#player-paths"], ["03", "Pulse", data.id === "ck3" ? "#dynasty-pulse" : "#campaign-pulse"], ["04", "Decisions", "#economy-lenses"], ["05", "Scenarios", "#decision-deck"], ["06", "Models", "#scenario-lab"], ["07", "Library", "#research-library"]],
@@ -109,6 +109,7 @@ const copy = lang === "ru" ? {
 };
 
 const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
+const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв." : value;
 ---
 
 <BaseLayout
@@ -137,7 +138,8 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       <GameWorldHero
         image={image}
         alt={lang === "ru" ? `Оригинальная иллюстрация Money Meta: экономика ${data.name}` : `Original Money Meta illustration of the ${data.name} economy`}
-        worldCode={data.worldCode}
+        worldCode={data.worldCode[lang]}
+        originalLabel={lang === "ru" ? "Оригинал Money Meta" : "Money Meta original"}
       >
         <div class="hero-live-line"><span></span>{data.hero.live[lang]}</div>
         <p class="eyebrow">{data.hero.eyebrow[lang]}</p>
@@ -148,17 +150,17 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
           <a class="button ghost button-large" href={data.id === "ck3" ? "#succession-buffer" : "#war-reserve"}>{data.hero.secondary[lang]}</a>
         </div>
         <div class="proof-strip">
-          {data.hero.proof.map(([value, label]) => <div class="proof-item"><strong>{value}</strong><span>{label[lang]}</span></div>)}
+          {data.hero.proof.map(([value, label]) => <div class="proof-item"><strong>{proofValue(value)}</strong><span>{label[lang]}</span></div>)}
         </div>
-        <div class="strategy-hero-loadout" aria-label={`${data.name} systems`}>
+        <div class="strategy-hero-loadout" aria-label={lang === "ru" ? `Системы ${data.name}` : `${data.name} systems`}>
           {data.hero.loadout.map((item) => (
-            <div><StrategyMark mark={item.mark} /><span>{item.label}</span><strong>{item.value[lang]}</strong></div>
+            <div><StrategyMark mark={item.mark} lang={lang} /><span>{item.label[lang]}</span><strong>{item.value[lang]}</strong></div>
           ))}
         </div>
       </GameWorldHero>
 
       <nav class="hub-jump-nav strategy-jump-nav" aria-label={copy.navLabel}>
-        <span class="hub-jump-brand"><i aria-hidden="true"></i>{data.id === "ck3" ? "CK3 / DYNASTY LEDGER" : "TOTAL WAR / CAMPAIGN OS"}</span>
+        <span class="hub-jump-brand"><i aria-hidden="true"></i>{lang === "ru" ? (data.id === "ck3" ? "CK3 / КАЗНА ДИНАСТИИ" : "TOTAL WAR / ЭКОНОМИКА КАМПАНИИ") : (data.id === "ck3" ? "CK3 / DYNASTY LEDGER" : "TOTAL WAR / CAMPAIGN OS")}</span>
         <div>{copy.nav.map(([code, label, href]) => <a href={href}><span>{code}</span>{label}</a>)}</div>
       </nav>
 
@@ -170,7 +172,7 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
         </div>
         <div class="manifesto-grid">
           {data.manifesto.principles.map((principle, index) => (
-            <div><span>0{index + 1} / {principle.title}</span><strong>{principle.title}</strong><p>{principle.text[lang]}</p></div>
+            <div><span>0{index + 1} / {principle.title[lang]}</span><strong>{principle.title[lang]}</strong><p>{principle.text[lang]}</p></div>
           ))}
         </div>
       </section>
@@ -178,7 +180,7 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       <section id="economy-map" class="section hub-section hub-map-section strategy-map-section" aria-labelledby={`${data.id}-map-title`}>
         <div class="section-head hub-section-head">
           <div><span class="section-kicker">{copy.mapKicker}</span><h2 id={`${data.id}-map-title`}>{copy.mapTitle}</h2><p class="section-copy">{copy.mapText}</p></div>
-          <span class="count">01-07 · interactive</span>
+          <span class="count">{lang === "ru" ? "01-07 · интерактивная карта" : "01-07 · interactive"}</span>
         </div>
         <div class="economy-map strategy-economy-map" data-strategy-map>
           <div class="economy-flow" aria-label={copy.mapLabel}>
@@ -195,9 +197,8 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
                 data-signal={node.signal[lang]}
                 data-decision={node.decision[lang]}
                 data-href={node.href}
-                data-mark={node.mark}
               >
-                <StrategyMark mark={node.mark} />
+                <StrategyMark mark={node.mark} lang={lang} />
                 <span class="economy-node-index">{node.code}</span>
                 <span class="economy-node-copy"><small>{node.phase[lang]}</small><strong>{node.title[lang]}</strong></span>
                 <span class="economy-node-pulse" aria-hidden="true"></span>
@@ -205,7 +206,7 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
             ))}
           </div>
           <article class="economy-detail strategy-economy-detail" aria-live="polite">
-            <div class="economy-detail-top"><span class="economy-detail-code" data-map-code>{firstNode.code}</span><StrategyMark mark={firstNode.mark} large /><span class="pill strategy-pill" data-map-phase>{firstNode.phase[lang]}</span></div>
+            <div class="economy-detail-top"><span class="economy-detail-code" data-map-code>{firstNode.code}</span><StrategyMark mark={firstNode.mark} lang={lang} large /><span class="pill strategy-pill" data-map-phase>{firstNode.phase[lang]}</span></div>
             <h3 data-map-title>{firstNode.title[lang]}</h3>
             <p data-map-summary>{firstNode.summary[lang]}</p>
             <div class="economy-detail-grid">
@@ -220,22 +221,22 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       <section id="player-paths" class="section hub-section strategy-path-section" aria-labelledby={`${data.id}-paths-title`}>
         <div class="section-head hub-section-head">
           <div><span class="section-kicker">{copy.pathKicker}</span><h2 id={`${data.id}-paths-title`}>{copy.pathTitle}</h2><p class="section-copy">{copy.pathText}</p></div>
-          <span class="count">3 player systems</span>
+          <span class="count">{lang === "ru" ? "3 подхода к игре" : "3 player systems"}</span>
         </div>
         <div class="path-planner strategy-path-planner" data-strategy-paths>
           <div class="path-tabs" role="tablist" aria-label={copy.pathLabel}>
             {data.paths.map((path, index) => (
               <button type="button" role="tab" id={`${data.id}-path-tab-${path.id}`} aria-selected={index === 0 ? "true" : "false"} aria-controls={`${data.id}-path-panel-${path.id}`} tabindex={index === 0 ? "0" : "-1"} data-path-tab={path.id}>
-                <StrategyMark mark={path.mark} /><span>0{index + 1}</span><strong>{path.label[lang]}</strong><small>{path.summary[lang]}</small>
+                <StrategyMark mark={path.mark} lang={lang} /><span>0{index + 1}</span><strong>{path.label[lang]}</strong><small>{path.summary[lang]}</small>
               </button>
             ))}
           </div>
           <div class="path-panels">
             {data.paths.map((path, index) => (
               <article class="path-panel strategy-path-panel" id={`${data.id}-path-panel-${path.id}`} role="tabpanel" aria-labelledby={`${data.id}-path-tab-${path.id}`} hidden={index !== 0} data-path-panel={path.id}>
-                <StrategyMark mark={path.mark} large />
+                <StrategyMark mark={path.mark} lang={lang} large />
                 <div class="path-panel-head">
-                  <div><span class="game-tag">{path.label[lang]} · baseline</span><h3>{path.title[lang]}</h3></div>
+                  <div><span class="game-tag">{path.label[lang]} · {lang === "ru" ? "исходный сценарий" : "baseline"}</span><h3>{path.title[lang]}</h3></div>
                   <div class="path-constraints">{path.constraints.map((constraint) => <span><small>{constraint.label[lang]}</small><strong>{constraint.value[lang]}</strong></span>)}</div>
                 </div>
                 <div class="path-route">
@@ -252,14 +253,14 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       <section id={pulseId} class="section hub-section pulse-section strategy-pulse-section" aria-labelledby={`${data.id}-pulse-title`}>
         <div class="section-head hub-section-head">
           <div><span class="section-kicker">{copy.pulseKicker}</span><h2 id={`${data.id}-pulse-title`}>{data.pulse.title[lang]}</h2><p class="section-copy">{data.pulse.text[lang]}</p></div>
-          <div class="pulse-status-stack"><span class="pill strategy-pill">{copy.verified}</span><span class="pulse-window">{data.version} · {data.checkedAt}</span></div>
+          <div class="pulse-status-stack"><span class="pill strategy-pill">{copy.verified}</span><span class="pulse-window">{data.version[lang]} · {data.checkedAt}</span></div>
         </div>
         <div class="pulse-grid">
           {data.pulse.changes.map((change, index) => (
             <article class="pulse-card strategy-pulse-card">
-              <div class="strategy-pulse-head"><div class="pulse-card-top"><span>0{index + 1}</span><strong>{change.signal[lang]}</strong></div><StrategyMark mark={change.mark} /></div>
+              <div class="strategy-pulse-head"><div class="pulse-card-top"><span>0{index + 1}</span><strong>{change.signal[lang]}</strong></div><StrategyMark mark={change.mark} lang={lang} /></div>
               <h3>{change.title[lang]}</h3><p>{change.summary[lang]}</p>
-              <a class="strategy-source-link" href={change.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} · {change.sourceLabel} ↗</a>
+              <a class="strategy-source-link" href={change.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} · {change.sourceLabel[lang]} ↗</a>
               <div class="pulse-decision"><span>{copy.action}</span><p>{change.decision[lang]}</p></div>
             </article>
           ))}
@@ -267,7 +268,7 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       </section>
 
       <section id="economy-lenses" class="section hub-section" aria-labelledby={`${data.id}-lenses-title`}>
-        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.lensKicker}</span><h2 id={`${data.id}-lenses-title`}>{copy.lensTitle}</h2><p class="section-copy">{copy.lensText}</p></div><span class="pill strategy-pill">Contextual · estimated</span></div>
+        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.lensKicker}</span><h2 id={`${data.id}-lenses-title`}>{copy.lensTitle}</h2><p class="section-copy">{copy.lensText}</p></div><span class="pill strategy-pill">{lang === "ru" ? "Зависит от ситуации · оценка" : "Contextual · estimated"}</span></div>
         <div class="ranking-lab strategy-ranking-lab" data-strategy-lenses>
           <div class="ranking-tabs" role="tablist" aria-label={copy.lensKicker}>
             {data.lenses.map((lens, index) => <button type="button" role="tab" aria-selected={index === 0 ? "true" : "false"} tabindex={index === 0 ? "0" : "-1"} data-lens-tab={lens.id}><small>0{index + 1}</small><strong>{lens.label[lang]}</strong></button>)}
@@ -278,7 +279,7 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
               <div class="conditional-rank-grid">
                 {lens.cards.map((card, index) => (
                   <article class={`conditional-rank-card strategy-rank-card rank-${index + 1}`}>
-                    <div class="conditional-rank-top"><span>0{index + 1}</span><div><StrategyMark mark={card.mark} /><span class={`pill ${index === 0 ? "strategy-pill" : "muted"}`}>{card.grade} · {card.fit}</span></div></div>
+                    <div class="conditional-rank-top"><span>0{index + 1}</span><div><StrategyMark mark={card.mark} lang={lang} /><span class={`pill ${index === 0 ? "strategy-pill" : "muted"}`}>{card.grade} · {card.fit}</span></div></div>
                     <h3>{card.title[lang]}</h3><p>{card.text[lang]}</p>
                     <div class="conditional-metrics">{card.metrics.map((metric) => <span><small>{metric.label[lang]}</small><strong>{metric.value[lang]}</strong></span>)}</div>
                   </article>
@@ -291,11 +292,11 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       </section>
 
       <section id="decision-deck" class="section hub-section" aria-labelledby={`${data.id}-deck-title`}>
-        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.deckKicker}</span><h2 id={`${data.id}-deck-title`}>{copy.deckTitle}</h2><p class="section-copy">{copy.deckText}</p></div><span class="count">6 entry points</span></div>
+        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.deckKicker}</span><h2 id={`${data.id}-deck-title`}>{copy.deckTitle}</h2><p class="section-copy">{copy.deckText}</p></div><span class="count">{lang === "ru" ? "6 готовых ситуаций" : "6 entry points"}</span></div>
         <div class="decision-deck-grid strategy-decision-deck">
           {data.scenarios.map((scenario, index) => (
             <a class:list={["decision-deck-card", "strategy-decision-card", { "is-featured": index === 1 }]} href={scenario.href}>
-              <div class="decision-deck-top"><span>0{index + 1} · {scenario.mode[lang]}</span><StrategyMark mark={scenario.mark} /></div>
+              <div class="decision-deck-top"><span>0{index + 1} · {scenario.mode[lang]}</span><StrategyMark mark={scenario.mark} lang={lang} /></div>
               <div><span class="game-tag">{scenario.eyebrow[lang]}</span><h3>{scenario.question[lang]}</h3><p>{scenario.outcome[lang]}</p></div>
               <strong>{copy.openScenario} →</strong>
             </a>
@@ -306,12 +307,12 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       <StrategyCalculators lang={lang} data={data} />
 
       <section id="research-library" class="section hub-section" aria-labelledby={`${data.id}-library-title`} data-strategy-library>
-        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.libraryKicker}</span><h2 id={`${data.id}-library-title`}>{copy.libraryTitle}</h2><p class="section-copy">{copy.libraryText}</p></div><span class="count"><span data-library-count>{data.briefs.length}</span> {copy.showing} · RU/EN</span></div>
+        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.libraryKicker}</span><h2 id={`${data.id}-library-title`}>{copy.libraryTitle}</h2><p class="section-copy">{copy.libraryText}</p></div><span class="count"><span data-library-count>{data.briefs.length}</span> {copy.showing} · {lang === "ru" ? "на двух языках" : "RU/EN"}</span></div>
         <div class="library-filter" role="group" aria-label={copy.libraryKicker}>{copy.filters.map(([id, label], index) => <button type="button" aria-pressed={index === 0 ? "true" : "false"} data-library-filter={id}>{label}</button>)}</div>
         <div class="research-grid strategy-research-grid">
           {data.briefs.map((brief, index) => (
             <article class:list={["research-card", "strategy-research-card", { "research-featured": index === 0 }]} data-library-card data-audience={brief.audience}>
-              <div class="research-card-meta"><span>0{index + 1}</span><div><StrategyMark mark={brief.mark} /><span class={`pill ${brief.status === "verified" ? "strategy-pill" : "muted"}`}>{brief.status}</span></div></div>
+              <div class="research-card-meta"><span>0{index + 1}</span><div><StrategyMark mark={brief.mark} lang={lang} /><span class={`pill ${brief.status === "verified" ? "strategy-pill" : "muted"}`}>{lang === "ru" ? (brief.status === "verified" ? "проверено" : "модель") : brief.status}</span></div></div>
               <div class="research-card-body"><span class="game-tag">{brief.kicker[lang]}</span><h3>{brief.title[lang]}</h3><p>{brief.text[lang]}</p></div>
               <div class="strategy-brief-takeaway"><span>{copy.takeaway}</span><strong>{brief.takeaway[lang]}</strong></div>
               <a href={brief.href}>{copy.openBrief} →</a>
@@ -323,11 +324,11 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       <section id="methodology" class="section hub-section trust-rail strategy-trust-rail" aria-labelledby={`${data.id}-methodology-title`}>
         <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.methodKicker}</span><h2 id={`${data.id}-methodology-title`}>{data.methodology.title[lang]}</h2><p class="section-copy">{data.methodology.text[lang]}</p></div><span class="count">{copy.checked} · {data.checkedAt}</span></div>
         <div class="trust-grid">
-          <article class="trust-card"><div><span>01 · {copy.context}</span><span class="pill strategy-pill">verified</span></div><h3>{data.version}</h3><p>{data.methodology.sources.map((source) => source.note[lang]).join(" ")}</p></article>
-          <article class="trust-card"><div><span>02 · {copy.model}</span><span class="pill gold">estimated</span></div><h3>{copy.dataLabel}</h3><p>{data.methodology.modelNote[lang]}</p></article>
-          <article class="trust-card"><div><span>03 · {copy.independent}</span><span class="pill muted">independent</span></div><h3>Money Meta</h3><p>{data.methodology.disclaimer[lang]}</p></article>
+          <article class="trust-card"><div><span>01 · {copy.context}</span><span class="pill strategy-pill">{lang === "ru" ? "проверено" : "verified"}</span></div><h3>{data.version[lang]}</h3><p>{data.methodology.sources.map((source) => source.note[lang]).join(" ")}</p></article>
+          <article class="trust-card"><div><span>02 · {copy.model}</span><span class="pill gold">{lang === "ru" ? "оценка" : "estimated"}</span></div><h3>{copy.dataLabel}</h3><p>{data.methodology.modelNote[lang]}</p></article>
+          <article class="trust-card"><div><span>03 · {copy.independent}</span><span class="pill muted">{lang === "ru" ? "независимо" : "independent"}</span></div><h3>Money Meta</h3><p>{data.methodology.disclaimer[lang]}</p></article>
         </div>
-        <details class="strategy-method-details"><summary>{copy.sources} ↓</summary><div>{data.methodology.sources.map((source) => <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label} ↗</strong></a>: {source.note[lang]}</p>)}<p>{data.methodology.modelNote[lang]}</p><p>{data.methodology.disclaimer[lang]}</p><p>{data.methodology.roadmap[lang]}</p></div></details>
+        <details class="strategy-method-details"><summary>{copy.sources} ↓</summary><div>{data.methodology.sources.map((source) => <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label[lang]} ↗</strong></a>: {source.note[lang]}</p>)}<p>{data.methodology.modelNote[lang]}</p><p>{data.methodology.disclaimer[lang]}</p><p>{data.methodology.roadmap[lang]}</p></div></details>
       </section>
 
       <SiteFooter lang={lang} />
@@ -345,7 +346,8 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       summary: root.querySelector<HTMLElement>("[data-map-summary]")!,
       signal: root.querySelector<HTMLElement>("[data-map-signal]")!,
       decision: root.querySelector<HTMLElement>("[data-map-decision]")!,
-      link: root.querySelector<HTMLAnchorElement>("[data-map-link]")!
+      link: root.querySelector<HTMLAnchorElement>("[data-map-link]")!,
+      mark: root.querySelector<HTMLElement>(".strategy-economy-detail .strategy-mark i")!
     };
     nodes.forEach((node) => node.addEventListener("click", () => {
       nodes.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === node)));
@@ -356,6 +358,7 @@ const pulseId = data.id === "ck3" ? "dynasty-pulse" : "campaign-pulse";
       targets.signal.textContent = node.dataset.signal ?? "";
       targets.decision.textContent = node.dataset.decision ?? "";
       targets.link.href = node.dataset.href ?? "#";
+      targets.mark.textContent = node.querySelector<HTMLElement>(".strategy-mark i")?.textContent ?? "";
     }));
   });
 

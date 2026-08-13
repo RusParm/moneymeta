@@ -6,31 +6,31 @@ import { wowMarks } from "../data/wow-hub";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const copy = lang === "ru" ? {
-  kicker: "Market Ledger · portfolio snapshot",
-  title: "Узнай, сколько у тебя gold, а сколько только выглядит как gold",
-  text: "Один snapshot разделяет cash в bags, listed inventory и ожидаемую реализацию. Это первый шаг перед новым batch, reset или масштабированием профессии.",
-  status: "Model 00 · editable",
-  input: "Market balance sheet",
-  liquidGold: "Gold в bags",
-  inventory: "Listed inventory value",
-  sellThrough: "Ожидаемый sell-through, %",
-  ahCut: "Auction House cut, %",
-  operating: "Operating spend / нед.",
-  cycle: "Listing cycle, дней",
+  kicker: "Рыночный баланс · состояние капитала",
+  title: "Узнай, сколько у тебя золота, а сколько только выглядит как золото",
+  text: "Один расчёт разделяет золото в сумках, товары на продаже и ожидаемую выручку. Это первый шаг перед новой партией, сменой специализации или расширением профессии.",
+  status: "Модель 00 · можно изменить",
+  input: "Баланс рыночного капитала",
+  liquidGold: "Золото в сумках",
+  inventory: "Стоимость выставленных товаров",
+  sellThrough: "Ожидаемая доля продаж, %",
+  ahCut: "Комиссия аукциона, %",
+  operating: "Текущие расходы за неделю",
+  cycle: "Цикл продаж, дней",
   result: "Рыночная позиция",
   liquid: "Ликвидный оператор",
   balanced: "Сбалансированный капитал",
-  heavy: "Inventory-heavy",
-  expectedCash: "Ожидаемый cash из inventory",
-  atRisk: "Inventory at risk",
-  total: "Total market capital",
-  cashNow: "Cash после operating spend",
-  ratio: "Liquidity ratio",
-  postCycle: "Cash после цикла",
-  velocity: "Capital velocity / нед.",
-  note: "Listed value не является cash. Sell-through и AH cut применяются только к ожидаемой реализации; непроданный stock остаётся working capital at risk.",
-  reset: "Вернуть baseline",
-  marks: [[wowMarks.liquidity, "CASH", "Gold now"], [wowMarks.capital, "STOCK", "Capital at risk"], [wowMarks.reinvest, "FLOW", "Velocity"]] as const
+  heavy: "Слишком много товаров",
+  expectedCash: "Ожидаемая выручка от товаров",
+  atRisk: "Капитал в непроданных товарах",
+  total: "Весь рыночный капитал",
+  cashNow: "Золото после текущих расходов",
+  ratio: "Доля ликвидного капитала",
+  postCycle: "Золото после цикла",
+  velocity: "Оборот капитала за неделю",
+  note: "Цена выставленного товара ещё не является деньгами. Комиссия и вероятность продажи применяются только к ожидаемой выручке, а непроданный товар остаётся капиталом под риском.",
+  reset: "Вернуть исходные значения",
+  marks: [[wowMarks.liquidity, "ЗОЛОТО", "Доступно сейчас"], [wowMarks.capital, "ТОВАР", "Капитал под риском"], [wowMarks.reinvest, "ОБОРОТ", "Скорость"]] as const
 } : {
   kicker: "Market Ledger · portfolio snapshot",
   title: "See how much gold you own and how much merely looks like gold",
@@ -108,10 +108,10 @@ const copy = lang === "ru" ? {
     const value = (key: string) => Number(inputs.find((input) => input.dataset.ledgerInput === key)?.value ?? 0) || 0;
     const render = () => {
       const metrics = calculateMarketLedger({ liquidGold: value("liquidGold"), listedInventoryValue: value("listedInventoryValue"), sellThroughPercent: value("sellThroughPercent"), auctionHouseCutPercent: value("auctionHouseCutPercent"), weeklyOperatingSpend: value("weeklyOperatingSpend"), cycleDays: value("cycleDays") });
-      const labels = lang === "ru" ? { liquid: "Ликвидный оператор", balanced: "Сбалансированный капитал", heavy: "Inventory-heavy" } : { liquid: "Liquid operator", balanced: "Balanced capital", heavy: "Inventory-heavy" };
+      const labels = lang === "ru" ? { liquid: "Ликвидная позиция", balanced: "Сбалансированный капитал", heavy: "Слишком много товаров" } : { liquid: "Liquid operator", balanced: "Balanced capital", heavy: "Inventory-heavy" };
       verdict.textContent = metrics.state === "liquid" ? labels.liquid : metrics.state === "balanced" ? labels.balanced : labels.heavy;
       result.dataset.state = metrics.state === "inventory-heavy" ? "negative" : metrics.state === "balanced" ? "caution" : "positive";
-      outputs.forEach((output) => { const key = output.dataset.ledgerOutput as keyof typeof metrics; const metric = metrics[key]; if (typeof metric !== "number") return; output.textContent = key === "liquidityRatioPercent" ? `${formatter.format(metric)}%` : key === "capitalVelocityPerWeek" ? `${formatter.format(metric)}x` : `${formatter.format(metric)} g`; });
+      outputs.forEach((output) => { const key = output.dataset.ledgerOutput as keyof typeof metrics; const metric = metrics[key]; if (typeof metric !== "number") return; output.textContent = key === "liquidityRatioPercent" ? `${formatter.format(metric)}%` : key === "capitalVelocityPerWeek" ? `${formatter.format(metric)}×` : `${formatter.format(metric)} ${lang === "ru" ? "зол." : "g"}`; });
     };
     inputs.forEach((input) => input.addEventListener("input", render));
     root.querySelector<HTMLButtonElement>("[data-ledger-reset]")!.addEventListener("click", () => { inputs.forEach((input) => { input.value = baselines.get(input.dataset.ledgerInput ?? "") ?? "0"; }); render(); });

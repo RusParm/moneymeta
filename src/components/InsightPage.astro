@@ -27,9 +27,9 @@ const labels = lang === "ru" ? {
   takeaways: "Главное за 30 секунд",
   model: "Открыть модель",
   related: "Следующие разборы",
-  relatedText: "Три экономики, один принцип: сначала понять trade-off, затем действовать.",
-  disclosure: "Data note",
-  disclosureText: "Все числовые примеры являются прозрачными baseline-сценариями. Они не выдаются за официальные данные издателя и могут быть пересчитаны в связанном инструменте."
+  relatedText: "Три экономики, один принцип: сначала понять цену выбора, затем действовать.",
+  disclosure: "О данных",
+  disclosureText: "Все числовые примеры являются прозрачными рабочими сценариями. Они не выдаются за официальные данные издателя, а исходные значения можно заменить в связанном инструменте."
 } : {
   back: "← All field notes",
   updated: "Updated",
@@ -73,8 +73,8 @@ const labels = lang === "ru" ? {
             <span class="insight-game">{gameLabel}</span>
             <span>{labels.updated} · {insight.updatedAt}</span>
             <span>{labels.read} · {content.readTime}</span>
-            <span>{labels.evidence} · {insight.evidenceStatus}</span>
-            <span>{labels.version} · {insight.gameVersion}</span>
+            <span>{labels.evidence} · {lang === "ru" ? (insight.evidenceStatus === "verified" ? "проверено" : "рабочая оценка") : insight.evidenceStatus}</span>
+            <span>{labels.version} · {insight.gameVersion[lang]}</span>
           </div>
           <p class="eyebrow">{content.kicker}</p>
           <h1>{content.title}</h1>
@@ -99,7 +99,7 @@ const labels = lang === "ru" ? {
             ))}
             <div class="article-cta">
               <span class="game-sigil">MM</span>
-              <div><strong>{content.toolLabel}</strong><p>{lang === "ru" ? "Замени baseline своими вводными и получи ответ для своего сценария." : "Replace the baseline with your inputs and get an answer for your scenario."}</p></div>
+              <div><strong>{content.toolLabel}</strong><p>{lang === "ru" ? "Замени исходные значения своими и получи ответ для своей ситуации." : "Replace the baseline with your inputs and get an answer for your scenario."}</p></div>
               <a class="button primary" href={insight.toolPath[lang]}>{labels.model} →</a>
             </div>
             <div class="callout"><p><strong>{labels.disclosure}.</strong> {labels.disclosureText}</p></div>
@@ -108,7 +108,7 @@ const labels = lang === "ru" ? {
       </article>
 
       <section class="section section-roomy">
-        <div class="section-head"><div><span class="section-kicker">Money Meta Field Notes</span><h2>{labels.related}</h2><p class="section-copy">{labels.relatedText}</p></div></div>
+        <div class="section-head"><div><span class="section-kicker">{lang === "ru" ? "Разборы Money Meta" : "Money Meta Field Notes"}</span><h2>{labels.related}</h2><p class="section-copy">{labels.relatedText}</p></div></div>
         <div class="related-grid">
           {related.map((item) => {
             const itemContent = item.content[lang];

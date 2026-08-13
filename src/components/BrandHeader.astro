@@ -23,13 +23,13 @@ const active = currentPath.includes("insights") ? "insights" : currentPath.inclu
 
 <div class="site-chrome">
   <header class="topbar">
-    <a class="brand" href={lang === "ru" ? "/" : "/en/"} aria-label="Money Meta home">
+    <a class="brand" href={lang === "ru" ? "/" : "/en/"} aria-label={lang === "ru" ? "Главная Money Meta" : "Money Meta home"}>
       <span class="brand-mark" aria-hidden="true">$</span>
       <span class="brand-name">Money<span class="magenta">Meta</span></span>
     </a>
     <div class="topbar-actions">
       {backPath && <a class="version back-link" href={backPath}>{backLabel}</a>}
-      <nav class="lang-switch" aria-label="Language">
+      <nav class="lang-switch" aria-label={lang === "ru" ? "Язык" : "Language"}>
         <a href={ruPath} aria-current={lang === "ru" ? "page" : undefined}>RU</a>
         <a href={enPath} aria-current={lang === "en" ? "page" : undefined}>EN</a>
       </nav>

@@ -1,14 +1,37 @@
 ---
 interface Props {
   mark: string;
+  lang?: "ru" | "en";
   label?: string;
   large?: boolean;
 }
 
-const { mark, label, large = false } = Astro.props;
+const { mark, lang = "en", label, large = false } = Astro.props;
+const russianMarks: Record<string, string> = {
+  A: "А",
+  B: "С",
+  C: "С",
+  D: "Д",
+  F: "Г",
+  I: "Д",
+  L: "Л",
+  M: "П",
+  O: "О",
+  P: "П",
+  R: "Р",
+  S: "Н",
+  T: "Т",
+  V: "В",
+  W: "В",
+  AI: "ИИ",
+  LM: "ОС",
+  CT: "КТ",
+  Q4: "IV"
+};
+const displayMark = lang === "ru" ? (russianMarks[mark] ?? mark) : mark;
 ---
 
 <span class:list={["strategy-mark", { "is-large": large }]} aria-hidden="true">
-  <i>{mark}</i>
+  <i>{displayMark}</i>
   {label && <small>{label}</small>}
 </span>

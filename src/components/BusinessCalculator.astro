@@ -9,7 +9,7 @@ const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { max
 const money = (value: number) => `$${formatter.format(Math.round(value))}`;
 
 const copy = lang === "ru" ? {
-  kicker: "Model Lab · все допущения открыты",
+  kicker: "Подробная модель · все допущения открыты",
   title: "Проверь экономику под свои условия",
   text: "Выбери бизнес, измени исходные данные и сразу увидишь, как бонусы, закупка ресурсов и время производства влияют на решение.",
   asset: "Бизнес",
@@ -25,10 +25,10 @@ const copy = lang === "ru" ? {
   net: "Чистыми за цикл",
   hourly: "Чистыми / ч производства",
   payback: "Окупаемость",
-  roi: "vROI за цикл",
+  roi: "Доходность за цикл",
   month: "Месячный потенциал",
   hours: "ч производства",
-  estimateNote: "Месячный потенциал - steady-state оценка: доход в час × указанные онлайн-часы × 4,345 недели. Лимиты доставки и простои не учтены.",
+  estimateNote: "Месячный потенциал рассчитан для стабильной работы: доход в час × указанные часы работы производства × 4,345 недели. Ограничения доставки и простои не учтены.",
   compare: "Сравнение базовых сценариев",
   compareCopy: "Единая методика для всех активов. Изменения формы влияют только на выбранный сценарий выше.",
   portfolio: "Собери портфель под бюджет и время",
@@ -41,9 +41,9 @@ const copy = lang === "ru" ? {
   activeTime: "Активное время",
   weeklyProfit: "Чистыми / неделя",
   monthlyProfit: "Чистыми / месяц",
-  dataTitle: "Статус данных: estimated",
+  dataTitle: "Статус данных: рабочая оценка",
   dataText: "Набор проверен 1 июля 2026 года как рабочая модель, но требует повторной проверки в игре. Здесь нет скрытой точности: исходные значения редактируются, а архивные бонусы не выдаются за текущие.",
-  table: { asset: "Актив", net: "Чистыми / цикл", hourly: "Чистыми / ч", payback: "Окупаемость", roi: "vROI" }
+  table: { asset: "Актив", net: "Чистыми / цикл", hourly: "Чистыми / ч", payback: "Окупаемость", roi: "Доходность" }
 } : {
   kicker: "Model Lab · every assumption is visible",
   title: "Test the economy against your conditions",
@@ -90,7 +90,7 @@ const copy = lang === "ru" ? {
       <h2>{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="pill gold">Estimated · editable</span>
+    <span class="pill gold">{lang === "ru" ? "Рабочая оценка · можно изменить" : "Estimated · editable"}</span>
   </div>
 
   <div class="grid-2" data-scenario-root data-scenario-key="gta-business">
@@ -150,11 +150,11 @@ const copy = lang === "ru" ? {
   <section id="business-comparison" class="section" aria-labelledby="baseline-comparison-title">
     <div class="section-head">
       <div>
-        <span class="section-kicker">Cross-asset view</span>
+        <span class="section-kicker">{lang === "ru" ? "Сравнение бизнесов" : "Cross-asset view"}</span>
         <h2 id="baseline-comparison-title">{copy.compare}</h2>
         <p class="section-copy">{copy.compareCopy}</p>
       </div>
-      <span class="count">{gtaBusinesses.length} assets · baseline</span>
+      <span class="count">{lang === "ru" ? `${gtaBusinesses.length} бизнесов · исходный сценарий` : `${gtaBusinesses.length} assets · baseline`}</span>
     </div>
     <div class="data-table">
       <table>
@@ -180,7 +180,7 @@ const copy = lang === "ru" ? {
   <section id="portfolio" class="section" aria-labelledby="portfolio-title">
     <div class="section-head">
       <div>
-        <span class="section-kicker">Portfolio Optimizer v1</span>
+        <span class="section-kicker">{lang === "ru" ? "Оптимизатор портфеля · версия 1" : "Portfolio Optimizer v1"}</span>
         <h2 id="portfolio-title">{copy.portfolio}</h2>
         <p class="section-copy">{copy.portfolioCopy}</p>
       </div>

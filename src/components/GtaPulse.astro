@@ -7,18 +7,18 @@ const { lang } = Astro.props;
 const stale = isSnapshotStale(weeklyMeta.validThrough);
 
 const copy = lang === "ru" ? {
-  kicker: "GTA Pulse · official weekly signal",
-  title: "Что временно изменилось - и что делать иначе",
-  text: "Pulse переводит Newswire в решения. Временные выплаты живут отдельно от постоянной модели активов и автоматически теряют статус current после окончания окна.",
-  verified: "Verified · official",
+  kicker: "Еженедельные события GTA · официальный источник",
+  title: "Что временно изменилось и как этим воспользоваться",
+  text: "Здесь новости Rockstar превращаются в конкретные действия. Временные выплаты не смешиваются с постоянной ценностью бизнесов и автоматически перестают считаться актуальными после окончания события.",
+  verified: "Проверено · официальный источник",
   current: `Активно до конца ${weeklyMeta.validThrough}`,
   stale: `Архив · окно закончилось ${weeklyMeta.validThrough}`,
   action: "Решение сейчас",
   source: "Открыть первоисточник",
-  guardTitle: "Freshness guard включён",
+  guardTitle: "Проверка актуальности включена",
   guardCurrent: "Эти возможности подтверждены официальным источником и ещё находятся внутри указанного окна.",
   guardStale: "Окно уже завершилось. Карточки сохранены как архивный пример и не выдаются за действующую мету.",
-  separation: "Weekly-модификаторы не применены к долгосрочным production-рейтингам без прямой связи с конкретным бизнесом."
+  separation: "Недельные бонусы не меняют долгосрочный рейтинг бизнесов, если не влияют напрямую на расчёт конкретного актива."
 } : {
   kicker: "GTA Pulse · official weekly signal",
   title: "What changed temporarily - and what to do differently",

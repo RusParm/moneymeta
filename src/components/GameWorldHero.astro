@@ -6,9 +6,10 @@ interface Props {
   image: ImageMetadata;
   alt?: string;
   worldCode: string;
+  originalLabel?: string;
 }
 
-const { image, alt = "", worldCode } = Astro.props;
+const { image, alt = "", worldCode, originalLabel = "Money Meta original" } = Astro.props;
 ---
 
 <section class="hero vertical-hero cinematic-hero">
@@ -26,7 +27,7 @@ const { image, alt = "", worldCode } = Astro.props;
     <slot />
   </div>
   <div class="world-stamp" aria-hidden="true">
-    <span>Money Meta original</span>
+    <span>{originalLabel}</span>
     <strong>{worldCode}</strong>
   </div>
 </section>

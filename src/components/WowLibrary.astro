@@ -10,14 +10,14 @@ const wowInsights = insights.filter((insight) => insight.game === "wow");
 const marks = [wowMarks.liquidity, wowMarks.craft, wowMarks.knowledge, wowMarks.orders, wowMarks.capital, wowMarks.gather];
 
 const copy = lang === "ru" ? {
-  kicker: "Market research · from signal to action",
-  title: "Не советы про gold. Разборы рыночных решений.",
-  text: "Шесть материалов для returner, casual и market operator. В каждом есть тезис, модель, граница применимости и готовый переход в сценарий.",
-  filters: [["all", "Все"], ["returner", "Returner"], ["casual", "Мало времени"], ["grinder", "Market operator"]],
+  kicker: "Рыночные разборы · от сигнала к действию",
+  title: "Не советы про золото, а разборы рыночных решений.",
+  text: "Шесть материалов для вернувшихся игроков, людей с ограниченным временем и опытных участников рынка. В каждом есть тезис, модель, граница применимости и готовый переход в сценарий.",
+  filters: [["all", "Все"], ["returner", "После перерыва"], ["casual", "Мало времени"], ["grinder", "Опытный торговец"]],
   read: "Читать разбор",
   updated: "Проверено",
-  estimated: "Estimated model",
-  verified: "Verified source",
+  estimated: "Рабочая модель",
+  verified: "Проверенный источник",
   showing: "разборов"
 } : {
   kicker: "Market research · from signal to action",
@@ -39,7 +39,7 @@ const copy = lang === "ru" ? {
       <h2 id="wow-research-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count"><span data-library-count>{wowInsights.length}</span> {copy.showing} · RU/EN</span>
+    <span class="count"><span data-library-count>{wowInsights.length}</span> {copy.showing} · {lang === "ru" ? "на двух языках" : "RU/EN"}</span>
   </div>
 
   <div class="library-filter" role="group" aria-label={lang === "ru" ? "Фильтр WoW-разборов" : "Filter WoW analyses"}>
@@ -71,7 +71,7 @@ const copy = lang === "ru" ? {
           <div class="research-card-foot">
             <span>{content.readTime}</span>
             <span>{copy.updated} · {insight.updatedAt}</span>
-            <span>{insight.gameVersion}</span>
+            <span>{insight.gameVersion[lang]}</span>
           </div>
           <a href={`${prefix}/insights/${insight.slug}/`} aria-label={`${copy.read}: ${content.title}`}>{copy.read} →</a>
         </article>

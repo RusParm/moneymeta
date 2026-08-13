@@ -20,39 +20,39 @@ const { lang } = Astro.props;
 const root = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
 
 const copy = lang === "ru" ? {
-  title: "Dota 2 Economy Hub: timing, Midas ROI и buyback | Money Meta",
-  description: `Интерактивная экономика Dota 2: путь золота, role-specific решения, patch ${dotaPatchContext.patch} Pulse, Midas ROI, buyback reserve и replay-разборы.`,
+  title: "Экономика Dota 2: окупаемость Midas и запас на выкуп | Money Meta",
+  description: `Интерактивная экономика Dota 2: путь золота, решения для разных ролей, изменения патча ${dotaPatchContext.patch}, окупаемость Hand of Midas, запас на выкуп и разборы повторов.`,
   back: "← Все экономики",
-  eyebrow: "Dota 2 · Living Match Economy",
+  eyebrow: "Dota 2 · Живая экономика матча",
   heading: "Золото не выигрывает матч. Но момент траты может.",
-  lede: "Money Meta связывает last hits, item timings, Roshan и buyback в одну экономическую систему. Выбери момент матча и посмотри, где greed превращается в потерю tempo.",
+  lede: "Money Meta связывает добивания крипов, время покупки предметов, Рошана и выкуп в одну экономическую систему. Выбери момент матча и посмотри, где жадная покупка начинает мешать команде.",
   primary: "Открыть карту матча",
-  secondary: "Проверить Midas ROI",
-  live: `Patch ${dotaPatchContext.patch} · checked ${dotaPatchContext.checkedAt}`,
-  proof: [["7", "узлов match economy"], ["3", "role lenses"], ["2", "живые модели"], ["8", "разных решений"]],
-  navBrand: "DOTA / MATCH SYSTEM",
-  nav: [["01", "Карта", "#economy-map"], ["02", "Пути", "#player-paths"], ["03", "Pulse", "#patch-pulse"], ["04", "Роли", "#role-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Разборы", "#research-library"]],
-  manifestoKicker: "Money Meta doctrine · Dota edition",
+  secondary: "Проверить окупаемость Midas",
+  live: `Патч ${dotaPatchContext.patch} · проверено ${dotaPatchContext.checkedAt}`,
+  proof: [["7", "этапов движения золота"], ["3", "ролевых подхода"], ["2", "живые модели"], ["8", "разных решений"]],
+  navBrand: "DOTA / ЭКОНОМИКА МАТЧА",
+  nav: [["01", "Карта", "#economy-map"], ["02", "Пути", "#player-paths"], ["03", "Патч", "#patch-pulse"], ["04", "Роли", "#role-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Разборы", "#research-library"]],
+  manifestoKicker: "Подход Money Meta к Dota 2",
   manifestoTitle: "Каждая цифра должна заканчиваться игровым действием.",
-  manifestoText: "GPM без момента покупки, item timing без objective и buyback без пути обратно в fight остаются неполными метриками. Хаб строится вокруг цепочки решений, а не вокруг ещё одного статичного build guide.",
+  manifestoText: "Среднее золото в минуту без времени покупки, предмет без конкретной цели и выкуп без пути обратно в бой дают неполную картину. Хаб строится вокруг цепочки решений, а не вокруг ещё одного статичного гайда по сборке.",
   principles: [
-    ["TIME VALUE", "Одна и та же покупка на 10-й и 30-й минутах работает по-разному."],
-    ["OPTIONALITY", "Непотраченное золото может быть ликвидностью, а не ошибкой."],
-    ["CONVERSION", "Timing ценен только если превращается в objective или пространство."],
-    ["COUNTERFACTUAL", "Replay полезен, когда показывает, где другой ход менял бы результат."]
+    ["ЦЕНА ВРЕМЕНИ", "Одна и та же покупка на 10-й и 30-й минутах работает по-разному."],
+    ["СВОБОДА ВЫБОРА", "Непотраченное золото может быть полезным запасом, а не ошибкой."],
+    ["РЕАЛИЗАЦИЯ", "Своевременная покупка ценна, только если помогает забрать цель или пространство на карте."],
+    ["ДРУГОЙ СЦЕНАРИЙ", "Повтор полезен, когда показывает момент, в котором другой ход мог изменить результат."]
   ],
-  trustKicker: "Methodology · sources · media boundary",
-  trustTitle: "Видно, что взято из patch notes, что посчитано и где начинается judgement",
+  trustKicker: "Методология · источники · изображения",
+  trustTitle: "Показываем, что взято из описания патча, что рассчитано и где начинается наша оценка",
   trustText: "Money Meta не связан с Valve. Изображения предметов и героев используются только для редакционной идентификации механик и могут быть удалены независимо от продукта.",
   trustCards: [
-    ["01", "Verified layer", "Версия патча, документированная формула buyback и изменения предметов ведут к официальным notes Valve.", "official source"],
-    ["02", "Estimated layer", "Bounty для Midas, неденежная ценность и ожидаемый конец матча остаются редактируемыми допущениями.", "user scenario"],
-    ["03", "Visual layer", "Оригинальный мир Money Meta задаёт атмосферу; официальные значки идентифицируют обсуждаемую механику.", "rights-aware"],
+    ["01", "Проверенные данные", "Версия патча, опубликованная формула выкупа и изменения предметов ведут к официальным материалам Valve.", "официальный источник"],
+    ["02", "Рабочие оценки", "Золото упущенного крипа, неденежная ценность и ожидаемый конец матча остаются редактируемыми допущениями.", "сценарий игрока"],
+    ["03", "Изображения", "Оригинальная иллюстрация Money Meta задаёт атмосферу, а официальные значки помогают определить обсуждаемую механику.", "редакционное использование"],
   ],
   methodology: "Открыть методологию и первоисточники",
-  media: "Media record",
-  disclaimer: "Dota, Dota 2 and related artwork are trademarks or property of Valve. Money Meta is an independent analytical product.",
-  roadmap: "Следующий слой Dota: death cost, reliable/unreliable gold и post-match timeline import после проверки спроса."
+  media: "Сведения об изображениях",
+  disclaimer: "Dota, Dota 2 и связанные изображения являются товарными знаками или собственностью Valve. Money Meta является независимым аналитическим продуктом.",
+  roadmap: "Следующий этап Dota 2: стоимость смерти, надёжное и ненадёжное золото, а затем загрузка хронологии матча после проверки спроса."
 } : {
   title: "Dota 2 Economy Hub: timings, Midas ROI and buyback | Money Meta",
   description: `Interactive Dota 2 economy: the path of gold, role-specific decisions, patch ${dotaPatchContext.patch} Pulse, Midas ROI, buyback reserve and replay research.`,
@@ -89,7 +89,12 @@ const copy = lang === "ru" ? {
   roadmap: "Next Dota layer: death cost, reliable/unreliable gold and post-match timeline import after demand validation."
 };
 
-const heroLoadout = [
+const heroLoadout = lang === "ru" ? [
+  { asset: dotaMedia.handOfMidas, label: "РОСТ", value: "Окупаемость Midas" },
+  { asset: dotaMedia.bkb, label: "СИЛА", value: "Готовность к драке" },
+  { asset: dotaMedia.aegis, label: "ЦЕЛЬ", value: "Преимущество на карте" },
+  { asset: dotaMedia.tp, label: "ЗАПАС", value: "Золото на выкуп" }
+] : [
   { asset: dotaMedia.handOfMidas, label: "GROWTH", value: "Midas ROI" },
   { asset: dotaMedia.bkb, label: "TIMING", value: "Fight power" },
   { asset: dotaMedia.aegis, label: "OBJECTIVE", value: "Map conversion" },
@@ -118,7 +123,7 @@ const heroLoadout = [
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/dota-2/" enPath="/en/dota-2/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
 
-      <GameWorldHero image={dotaEconomyWorld} worldCode={`MATCH ECONOMY / ${dotaPatchContext.patch}`}>
+      <GameWorldHero image={dotaEconomyWorld} worldCode={lang === "ru" ? `ЭКОНОМИКА МАТЧА / ${dotaPatchContext.patch}` : `MATCH ECONOMY / ${dotaPatchContext.patch}`} originalLabel={lang === "ru" ? "Оригинал Money Meta" : "Money Meta original"}>
         <div class="hero-live-line"><span></span>{copy.live}</div>
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.heading}</h1>
@@ -188,9 +193,9 @@ const heroLoadout = [
           <div>
             <p>{dotaPatchContext.note[lang]}</p>
             {dotaPatchContext.sources.map((source) => (
-              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label} ↗</strong></a>: {source.note[lang]}</p>
+              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label[lang]} ↗</strong></a>: {source.note[lang]}</p>
             ))}
-            <p><strong>{copy.media}:</strong> {dotaMediaPolicy.owner} · {dotaMediaPolicy.placement} · checked {dotaMediaPolicy.checkedAt}. {dotaMediaPolicy.licenseBasis}.</p>
+            <p><strong>{copy.media}:</strong> {dotaMediaPolicy.owner} · {dotaMediaPolicy.placement[lang]} · {lang === "ru" ? "проверено" : "checked"} {dotaMediaPolicy.checkedAt}. {dotaMediaPolicy.licenseBasis[lang]}.</p>
             <p>{copy.disclaimer}</p>
             <p>{copy.roadmap}</p>
           </div>

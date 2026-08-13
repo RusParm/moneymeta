@@ -8,18 +8,18 @@ const ageDays = Math.floor((Date.now() - new Date(`${wowPulse.checkedAt}T00:00:0
 const stale = ageDays > wowPulse.staleAfterDays;
 
 const copy = lang === "ru" ? {
-  kicker: "Market Pulse · official change to player action",
+  kicker: "Изменения рынка · официальный источник",
   title: "Что изменилось в Curse of Ula’tek: на языке капитала и ликвидности",
-  text: "Pulse не пересказывает весь update. Он выделяет только изменения, которые способны поменять profession allocation, recipe margin или операционную скорость рынка.",
-  verified: "Verified · Blizzard",
+  text: "Мы не пересказываем всё обновление. Здесь собраны изменения, которые способны повлиять на распределение знаний профессии, маржу рецептов и скорость работы рынка.",
+  verified: "Проверено · Blizzard",
   current: `Проверено ${wowPulse.checkedAt} · ${wowPulse.release}`,
   stale: `Нужна повторная проверка · ${wowPulse.checkedAt}`,
   action: "Что делать иначе",
   source: "Открыть официальный источник",
-  guard: "Freshness guard включён",
+  guard: "Проверка актуальности включена",
   currentGuard: "Контекст подтверждён официальным материалом и находится внутри 30-дневного окна проверки.",
   staleGuard: "С даты проверки прошло больше 30 дней. Карточки остаются историческим контекстом, пока источник не будет проверен снова.",
-  separation: "Рыночные цены и sell-through не выводятся из patch notes и остаются пользовательскими inputs."
+  separation: "Рыночные цены и вероятность продажи не берутся из описания патча и остаются пользовательскими вводными."
 } : {
   kicker: "Market Pulse · official change to player action",
   title: "What changed in Curse of Ula’tek, translated into capital and liquidity",

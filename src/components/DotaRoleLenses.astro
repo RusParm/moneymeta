@@ -6,13 +6,13 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const copy = lang === "ru" ? {
-  kicker: "Role lenses · conditional priority stack",
-  title: "Одинаковые 1 000 gold имеют разную работу",
-  text: "У каждой роли своя работа для золота. Carry покупает throughput и timing, initiator получает доступ и надёжность, support сохраняет информацию и командную ценность. Это conditional framework, а не единый tier list.",
+  kicker: "Приоритеты разных ролей",
+  title: "Одна и та же тысяча золота решает разные задачи",
+  text: "У каждой роли своя задача для золота. Керри ускоряет фарм и покупает силу к нужной минуте, инициатор получает доступ к цели и надёжность, а поддержка сохраняет информацию и ценность команды. Это система приоритетов, а не единый рейтинг предметов.",
   question: "Главный вопрос",
   priority: "Приоритет",
   caveat: "Граница модели",
-  open: "Проверить gold decision"
+  open: "Проверить решение о покупке"
 } : {
   kicker: "Role lenses · conditional priority stack",
   title: "The same 1,000 gold has a different job",
@@ -31,7 +31,7 @@ const copy = lang === "ru" ? {
       <h2 id="dota-role-lenses-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">3 roles · 9 priorities</span>
+    <span class="count">{lang === "ru" ? "3 роли · 9 приоритетов" : "3 roles · 9 priorities"}</span>
   </div>
 
   <div class="ranking-lab dota-role-lab" data-dota-role-lab>
@@ -65,7 +65,7 @@ const copy = lang === "ru" ? {
         <div class="dota-role-hero">
           <DotaMedia asset={lens.hero} lang={lang} eager={lensIndex === 0} />
           <div>
-            <span>{lens.label[lang]} · example lens</span>
+            <span>{lens.label[lang]} · {lang === "ru" ? "пример роли" : "example lens"}</span>
             <h3>{lens.title[lang]}</h3>
             <p><strong>{copy.question}:</strong> {lens.question[lang]}</p>
           </div>

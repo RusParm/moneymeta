@@ -7,9 +7,9 @@ const { lang } = Astro.props;
 const first = dotaEconomyNodes[0]!;
 
 const copy = lang === "ru" ? {
-  kicker: "Match economy map · one gold timeline",
-  title: "Проследи путь одного gold: от last hit до трона",
-  text: "Экономика Dota живёт по дедлайну. Доход превращается в предмет, предмет открывает objective, а преимущество должно закончить матч до следующего вражеского timing.",
+  kicker: "Карта экономики матча · путь одной монеты",
+  title: "Проследи путь одной единицы золота: от добивания крипа до трона",
+  text: "Экономика Dota живёт по таймеру. Доход превращается в предмет, предмет помогает забрать цель, а преимущество нужно реализовать до следующего усиления соперника.",
   mapLabel: "Интерактивная карта экономики матча Dota 2",
   signal: "Ключевой сигнал",
   decision: "Решение игрока",
@@ -32,7 +32,7 @@ const copy = lang === "ru" ? {
       <h2 id="dota-economy-map-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">00:00 → GG · interactive</span>
+    <span class="count">{lang === "ru" ? "00:00 → GG · интерактивная карта" : "00:00 → GG · interactive"}</span>
   </div>
 
   <div class="economy-map dota-economy-map" data-dota-map>
