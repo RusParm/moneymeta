@@ -5,13 +5,13 @@ const { lang } = Astro.props;
 
 <footer class="footer">
   <div class="footer-status">
-    <span class="console-signal">Money Meta · Live</span>
-    <span>{lang === "ru" ? "5 экономик · 15 живых моделей · RU/EN" : "5 economies · 15 live models · RU/EN"}</span>
+    <span class="console-signal">Money Meta · {lang === "ru" ? "Работает" : "Live"}</span>
+    <span>{lang === "ru" ? "5 экономик · 15 живых моделей · русский и английский" : "5 economies · 15 live models · RU/EN"}</span>
   </div>
   <div class="footer-grid">
     <p>
       {lang === "ru"
-        ? "Money Meta - независимый аналитический проект. Не связан с Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment, Creative Assembly, SEGA, Paradox Interactive или другими издателями. Расчёты являются оценками игровых механик, а не официальными данными."
+        ? "Money Meta является независимым аналитическим проектом. Он не связан с Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment, Creative Assembly, SEGA, Paradox Interactive или другими издателями. Расчёты являются оценками игровых механик, а не официальными данными."
         : "Money Meta is an independent analytics project. It is not affiliated with Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment, Creative Assembly, SEGA, Paradox Interactive or other publishers. Calculations are estimates of game mechanics, not official publisher data."}
     </p>
     <nav class="footer-nav" aria-label={lang === "ru" ? "Экономики" : "Economies"}>
@@ -23,5 +23,5 @@ const { lang } = Astro.props;
       <a href={lang === "ru" ? "/insights/" : "/en/insights/"}>{lang === "ru" ? "Разборы" : "Field Notes"}</a>
     </nav>
   </div>
-  <div class="footer-signature mono">Understand the economy. Make the smarter move.</div>
+  <div class="footer-signature mono">{lang === "ru" ? "Пойми экономику. Сделай более разумный ход." : "Understand the economy. Make the smarter move."}</div>
 </footer>

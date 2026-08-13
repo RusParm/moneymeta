@@ -7,13 +7,13 @@ interface Props { lang: StrategyLocale; data: StrategyHubData; }
 const { lang, data } = Astro.props;
 
 const copy = lang === "ru" ? {
-  kicker: "Scenario Lab · editable assumptions",
+  kicker: "Модели сценариев · значения можно менять",
   title: "Три модели, которые превращают кампанию в решение",
-  text: "Значения ниже являются демонстрационным baseline. Замени их цифрами из своей кампании и сразу проверь payback, runway или альтернативный сценарий.",
-  status: "Estimated · editable",
+  text: "Ниже стоят демонстрационные значения. Замени их цифрами из своей кампании и сразу проверь срок окупаемости, запас прочности или другой вариант развития событий.",
+  status: "Расчёт · можно настроить",
   inputTitle: "Вводные сценария",
   result: "Результат модели",
-  reset: "Вернуть baseline",
+  reset: "Вернуть исходные значения",
   optionA: "Вариант A",
   optionB: "Вариант B"
 } : {
@@ -46,7 +46,7 @@ const copy = lang === "ru" ? {
       aria-labelledby={`${model.id}-title`}
       data-strategy-model
       data-model-kind={model.kind}
-      data-currency-unit={data.currencyUnit}
+      data-currency-unit={data.currencyUnit[lang]}
       data-period-unit={data.periodUnit[lang]}
       data-winner-a={model.winnerLabels?.a[lang] ?? "A"}
       data-winner-b={model.winnerLabels?.b[lang] ?? "B"}
@@ -54,13 +54,13 @@ const copy = lang === "ru" ? {
       data-lang={lang}
     >
       <div class="strategy-model-head">
-        <StrategyMark mark={model.mark} label={`0${modelIndex + 1}`} large />
+        <StrategyMark mark={model.mark} lang={lang} label={`0${modelIndex + 1}`} large />
         <div>
           <span class="section-kicker">{model.kicker[lang]}</span>
           <h3 id={`${model.id}-title`}>{model.title[lang]}</h3>
           <p>{model.text[lang]}</p>
         </div>
-        <span class="pill muted">{data.version}</span>
+        <span class="pill muted">{data.version[lang]}</span>
       </div>
 
       <div class="grid-2 strategy-model-grid" data-scenario-root data-scenario-key={`${data.id}-${model.id}`}>
@@ -89,7 +89,7 @@ const copy = lang === "ru" ? {
         </form>
 
         <article class="card result-panel strategy-result-panel" data-model-result aria-live="polite">
-          <div class="strategy-result-top"><span class="result-label">{copy.result}</span><StrategyMark mark={model.mark} /></div>
+          <div class="strategy-result-top"><span class="result-label">{copy.result}</span><StrategyMark mark={model.mark} lang={lang} /></div>
           <div class="result-name" data-model-verdict>{model.title[lang]}</div>
           <p class="result-reason">{model.note[lang]}</p>
           <div class="result-metrics strategy-result-metrics">

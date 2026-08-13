@@ -7,19 +7,19 @@ const prefix = lang === "ru" ? "" : "/en";
 const gtaInsights = insights.filter((insight) => insight.game === "gta");
 
 const copy = lang === "ru" ? {
-  kicker: "Research library · decision-complete field notes",
+  kicker: "Библиотека прикладных разборов",
   title: "Не лента новостей. Библиотека решений.",
-  text: "Шесть полноценных разборов GTA Online: для returner, casual и grinder. В каждом - тезис, расчёт, границы модели и переход в инструмент.",
+  text: "Шесть полноценных разборов GTA Online для вернувшихся игроков, людей с ограниченным временем и любителей глубокой оптимизации. В каждом есть тезис, расчёт, границы применимости и переход к инструменту.",
   filters: [
     ["all", "Все"],
-    ["returner", "Returner"],
-    ["casual", "Solo / casual"],
-    ["grinder", "Grinder"]
+    ["returner", "После перерыва"],
+    ["casual", "Один или мало времени"],
+    ["grinder", "Глубокая оптимизация"]
   ],
   read: "Читать разбор",
   updated: "Обновлено",
-  estimated: "Estimated model",
-  verified: "Verified source",
+  estimated: "Рабочая модель",
+  verified: "Проверенный источник",
   showing: "материалов"
 } : {
   kicker: "Research library · decision-complete field notes",
@@ -46,7 +46,7 @@ const copy = lang === "ru" ? {
       <h2 id="research-library-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count"><span data-library-count>{gtaInsights.length}</span> {copy.showing} · RU/EN</span>
+    <span class="count"><span data-library-count>{gtaInsights.length}</span> {copy.showing} · {lang === "ru" ? "на двух языках" : "RU/EN"}</span>
   </div>
 
   <div class="library-filter" role="group" aria-label={lang === "ru" ? "Фильтр материалов" : "Filter research"}>
@@ -74,7 +74,7 @@ const copy = lang === "ru" ? {
           <div class="research-card-foot">
             <span>{content.readTime}</span>
             <span>{copy.updated} · {insight.updatedAt}</span>
-            <span>{insight.gameVersion}</span>
+            <span>{insight.gameVersion[lang]}</span>
           </div>
           <a href={`${prefix}/insights/${insight.slug}/`} aria-label={`${copy.read}: ${content.title}`}>{copy.read} →</a>
         </article>

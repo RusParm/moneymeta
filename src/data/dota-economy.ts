@@ -1,7 +1,7 @@
 export type DotaLocale = "ru" | "en";
 
 export interface EconomySource {
-  label: string;
+  label: Record<DotaLocale, string>;
   url: string;
   note: Record<DotaLocale, string>;
 }
@@ -11,28 +11,28 @@ export const dotaPatchContext = {
   checkedAt: "2026-08-12",
   status: "mixed" as const,
   note: {
-    ru: "Patch context и формула buyback подтверждены официальными notes Valve. Текущие характеристики Midas дополнительно сверены по community-источнику; все числовые defaults остаются редактируемым baseline.",
+    ru: "Контекст патча и формула выкупа подтверждены официальными примечаниями Valve. Текущие характеристики Hand of Midas дополнительно сверены с данными игрового сообщества. Все исходные значения можно изменить в калькуляторе.",
     en: "Patch context and the buyback formula are confirmed by Valve's official notes. Current Midas stats are additionally community-cross-checked; every numeric default remains editable."
   },
   sources: [
     {
-      label: "Valve · Patch 7.41e",
+      label: { ru: "Valve · патч 7.41e", en: "Valve · Patch 7.41e" },
       url: "https://www.dota2.com/patches/7.41e",
       note: {
-        ru: "Текущий patch context; бонус attack speed Hand of Midas увеличен с 35 до 40.",
+        ru: "Актуальный патч: прибавка Hand of Midas к скорости атаки увеличена с 35 до 40.",
         en: "Current patch context; Hand of Midas attack speed increased from 35 to 40."
       }
     },
     {
-      label: "Valve · Patch 7.41",
+      label: { ru: "Valve · патч 7.41", en: "Valve · Patch 7.41" },
       url: "https://www.dota2.com/patches/7.41",
       note: {
-        ru: "Контекст новой neutral-item экономики и стоимости Madstone для Tier 1.",
+        ru: "Изменения экономики нейтральных предметов и стоимости Madstone первого уровня.",
         en: "Context for the new neutral-item economy and Tier 1 Madstone cost."
       }
     },
     {
-      label: "Valve · Patch 7.40",
+      label: { ru: "Valve · патч 7.40", en: "Valve · Patch 7.40" },
       url: "https://www.dota2.com/patches/7.40",
       note: {
         ru: "Восстановление заряда Transmute было снижено до 90 секунд.",
@@ -40,26 +40,26 @@ export const dotaPatchContext = {
       }
     },
     {
-      label: "Valve · Patch 7.38",
+      label: { ru: "Valve · патч 7.38", en: "Valve · Patch 7.38" },
       url: "https://www.dota2.com/patches/7.38",
       note: {
-        ru: "Официальное введение Madstone Bundle при neutral Transmute.",
+        ru: "Официальное введение набора Madstone при применении Transmute к нейтральному крипу.",
         en: "Official introduction of a Madstone Bundle on neutral Transmute."
       }
     },
     {
-      label: "Valve · Patch 7.29",
+      label: { ru: "Valve · патч 7.29", en: "Valve · Patch 7.29" },
       url: "https://www.dota2.com/patches/7.29",
       note: {
-        ru: "Действующая документированная базовая формула buyback: floor(200 + Net Worth / 13).",
+        ru: "Официально опубликованная базовая формула выкупа: целая часть от 200 + общая стоимость героя / 13.",
         en: "The documented current baseline buyback formula: floor(200 + Net Worth / 13)."
       }
     },
     {
-      label: "Dotabuff · Hand of Midas",
+      label: { ru: "Dotabuff · Hand of Midas", en: "Dotabuff · Hand of Midas" },
       url: "https://www.dotabuff.com/items/hand-of-midas",
       note: {
-        ru: "Community cross-check стоимости предмета и золота Transmute на дату проверки.",
+        ru: "Дополнительная сверка стоимости предмета и золота за Transmute по данным игрового сообщества.",
         en: "Community cross-check for item cost and Transmute gold on the check date."
       }
     }

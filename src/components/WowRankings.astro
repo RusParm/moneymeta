@@ -8,18 +8,18 @@ const { lang } = Astro.props;
 const rankings = Object.fromEntries(wowRankingLenses.map((lens) => [lens.id, rankWowMarketRoutes(wowMarketRoutes, lens)]));
 
 const copy = lang === "ru" ? {
-  kicker: "Conditional rankings · no universal best profession",
-  title: "Лучший market route меняется вместе с твоим ограничением",
-  text: "Рейтинг не обещает gold/hour без live prices. Он сравнивает шесть рыночных моделей по доступу к капиталу, ликвидности, time fit, moat, устойчивости цены и friction.",
+  kicker: "Рейтинги под разные ограничения",
+  title: "Лучший способ заработка зависит от твоей ситуации",
+  text: "Рейтинг не обещает золото в час без актуальных цен. Он сравнивает шесть рыночных моделей по требуемому капиталу, ликвидности, затратам времени, преимуществу специализации, устойчивости цены и сложности.",
   question: "Вопрос",
-  score: "fit score",
-  liquidity: "liquidity",
-  time: "time fit",
-  moat: "moat",
-  resilience: "resilience",
+  score: "оценка соответствия",
+  liquidity: "ликвидность",
+  time: "затраты времени",
+  moat: "преимущество",
+  resilience: "устойчивость цены",
   why: "Почему так",
-  model: "Проверить route в сценариях",
-  estimated: "Estimated framework · prices stay editable"
+  model: "Проверить маршрут в сценариях",
+  estimated: "Рабочая система оценки · цены можно изменить"
 } : {
   kicker: "Conditional rankings · no universal best profession",
   title: "The best market route changes with your constraint",

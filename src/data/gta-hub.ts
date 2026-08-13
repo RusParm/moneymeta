@@ -18,7 +18,7 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     title: { ru: "Капитал", en: "Capital" },
     phase: { ru: "Точка входа", en: "Entry point" },
     summary: {
-      ru: "Банк - это запас вариантов. Потраченный GTA$ становится неликвидным активом, пока бизнес не вернёт вложения.",
+      ru: "Банк является запасом вариантов. Потраченный GTA$ становится неликвидным активом, пока бизнес не вернёт вложения.",
       en: "Cash is optionality. Once spent, GTA$ becomes an illiquid asset until the business earns the capital back."
     },
     decision: {
@@ -32,7 +32,7 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     id: "acquisition",
     code: "02",
     title: { ru: "Покупка", en: "Acquire" },
-    phase: { ru: "Capital lock-up", en: "Capital lock-up" },
+    phase: { ru: "Заморозка капитала", en: "Capital lock-up" },
     summary: {
       ru: "Цена недвижимости и обязательных улучшений определяет реальный вход, а не рекламная цена одного объекта.",
       en: "Property plus required upgrades define the real entry cost - not the headline property price alone."
@@ -48,13 +48,13 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     id: "supply",
     code: "03",
     title: { ru: "Ресурсы", en: "Supply" },
-    phase: { ru: "Cash или время", en: "Cash or time" },
+    phase: { ru: "Деньги или время", en: "Cash or time" },
     summary: {
-      ru: "Закупка supplies уменьшает маржу, а добыча вручную превращает экономию денег в активный grind.",
+      ru: "Покупка расходников уменьшает маржу, а самостоятельная добыча заменяет денежные затраты личным временем.",
       en: "Buying supplies reduces margin; sourcing them manually converts saved cash into active grind."
     },
     decision: {
-      ru: "Оцени supplies как trade-off между чистой прибылью и ценой собственного времени.",
+      ru: "Сравни стоимость расходников с ценой собственного времени и выбери более выгодный вариант.",
       en: "Treat supplies as a trade-off between net profit and the value of your time."
     },
     signal: { ru: "Маржа ↔ время", en: "Margin ↔ time" },
@@ -66,30 +66,30 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     title: { ru: "Производство", en: "Produce" },
     phase: { ru: "Время в онлайне", en: "Online time" },
     summary: {
-      ru: "Товар создаётся во время работы игры. Production hours нельзя выдавать за количество ручного grind.",
+      ru: "Товар создаётся, пока работает производство. Это время нельзя выдавать за количество часов ручной игры.",
       en: "Stock is created while the game is running. Production hours are not the same as manual grind hours."
     },
     decision: {
-      ru: "Смотри одновременно profit per production hour и active minutes per cycle.",
+      ru: "Смотри одновременно на чистый доход за час производства и количество минут ручной работы за цикл.",
       en: "Read profit per production hour together with active minutes per cycle."
     },
-    signal: { ru: "Пассивный compounding", en: "Passive compounding" },
+    signal: { ru: "Пассивное накопление", en: "Passive compounding" },
     href: "#conditional-rankings"
   },
   {
     id: "storage",
     code: "05",
     title: { ru: "Запас", en: "Store" },
-    phase: { ru: "Inventory risk", en: "Inventory risk" },
+    phase: { ru: "Риск запасов", en: "Inventory risk" },
     summary: {
-      ru: "Готовый товар ещё не деньги. Большой склад увеличивает потенциальную продажу, но может усложнить solo-доставку.",
+      ru: "Готовый товар ещё не стал деньгами. Большой склад увеличивает потенциальную выручку, но может усложнить доставку в одиночку.",
       en: "Finished stock is not cash yet. A fuller warehouse increases the sale value but can make solo delivery harder."
     },
     decision: {
-      ru: "Не накапливай объём выше своего реального окна продажи и допустимого friction.",
+      ru: "Не накапливай больше товара, чем можешь спокойно продать за доступное время.",
       en: "Do not build stock beyond your realistic sale window and friction tolerance."
     },
-    signal: { ru: "Inventory at risk", en: "Inventory at risk" },
+    signal: { ru: "Товар под риском", en: "Inventory at risk" },
     href: "#player-paths"
   },
   {
@@ -98,14 +98,14 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     title: { ru: "Продажа", en: "Sell" },
     phase: { ru: "Момент ликвидности", en: "Liquidity event" },
     summary: {
-      ru: "Только завершённая продажа превращает inventory в GTA$. Машины, сессия и бонусы меняют реальный результат.",
+      ru: "Только завершённая продажа превращает товар в GTA$. Транспорт, выбранная сессия и бонусы меняют реальный результат.",
       en: "Only a completed sale turns inventory into GTA$. Vehicles, lobby conditions and bonuses change the realized result."
     },
     decision: {
-      ru: "Считай net после supplies и проверяй, выполнима ли доставка твоим составом.",
+      ru: "Считай чистый результат после расходников и проверяй, выполнима ли доставка твоим составом.",
       en: "Calculate net after supplies and confirm the delivery is realistic for your group size."
     },
-    signal: { ru: "Headline → net", en: "Headline → net" },
+    signal: { ru: "Сумма продажи → чистый результат", en: "Headline → net" },
     href: "#scenario-deck"
   },
   {
@@ -114,14 +114,14 @@ export const gtaEconomyNodes: GtaEconomyNode[] = [
     title: { ru: "Реинвест", en: "Reinvest" },
     phase: { ru: "Портфель", en: "Portfolio" },
     summary: {
-      ru: "Следующая покупка должна дополнять текущий цикл, а не просто повторять самый популярный tier list.",
+      ru: "Следующая покупка должна дополнять текущий цикл, а не просто повторять самый популярный рейтинг.",
       en: "The next purchase should complement the existing loop instead of copying the most popular tier list."
     },
     decision: {
       ru: "Оптимизируй набор активов под общий бюджет и активные часы, а не каждый бизнес по отдельности.",
       en: "Optimize the asset set for total budget and active hours, not each business in isolation."
     },
-    signal: { ru: "Cash flow → рост", en: "Cash flow → growth" },
+    signal: { ru: "Денежный поток → рост", en: "Cash flow → growth" },
     href: "/gta-online/calculators/business-roi/#portfolio"
   }
 ];
@@ -148,9 +148,9 @@ export const gtaPlayerPaths: GtaPlayerPath[] = [
   {
     id: "returner",
     label: { ru: "Вернулся", en: "Returner" },
-    title: { ru: "Восстановить cash flow без дорогой ошибки", en: "Rebuild cash flow without an expensive mistake" },
+    title: { ru: "Восстановить денежный поток без дорогой ошибки", en: "Rebuild cash flow without an expensive mistake" },
     summary: {
-      ru: "Baseline: GTA$2,5 млн, 6 часов в неделю, средняя терпимость к операционке.",
+      ru: "Исходный сценарий: GTA$2,5 млн, 6 часов в неделю и средняя готовность заниматься рутиной.",
       en: "Baseline: GTA$2.5m, six hours a week and medium operating tolerance."
     },
     budget: 2_500_000,
@@ -159,29 +159,29 @@ export const gtaPlayerPaths: GtaPlayerPath[] = [
     maxFriction: 6,
     steps: [
       {
-        title: { ru: "Проверь Pulse", en: "Check the Pulse" },
+        title: { ru: "Проверь текущие события", en: "Check the Pulse" },
         text: { ru: "Сначала забери ограниченные по времени выплаты и только затем фиксируй бюджет.", en: "Claim time-limited value first, then lock the budget you can actually deploy." }
       },
       {
         title: { ru: "Начни с обратимого сравнения", en: "Start with a reversible comparison" },
-        text: { ru: "Сопоставь Acid Lab, Bunker и уже имеющиеся активы по net, payback и friction.", en: "Compare Acid Lab, Bunker and assets you already own by net, payback and friction." }
+        text: { ru: "Сопоставь кислотную лабораторию, бункер и уже имеющиеся активы по чистому доходу, окупаемости и объёму ручной работы.", en: "Compare Acid Lab, Bunker and assets you already own by net, payback and friction." }
       },
       {
         title: { ru: "Сохрани резерв", en: "Keep a reserve" },
-        text: { ru: "Не вкладывай весь банк: следующий цикл требует supplies и свободы для временных возможностей.", en: "Do not deploy the entire bank; the next cycle needs supplies and room for temporary opportunities." }
+        text: { ru: "Не вкладывай весь банк. Следующий цикл потребует расходников, а временные события могут создать новую возможность.", en: "Do not deploy the entire bank; the next cycle needs supplies and room for temporary opportunities." }
       }
     ],
     flipCondition: {
-      ru: "Ответ меняется, если ключевая инфраструктура уже куплена или weekly-бонус прямо усиливает другой актив.",
+      ru: "Ответ меняется, если ключевая инфраструктура уже куплена или недельный бонус напрямую усиливает другой актив.",
       en: "The answer changes when key infrastructure is already owned or a weekly bonus directly boosts another asset."
     }
   },
   {
     id: "casual",
-    label: { ru: "Solo / casual", en: "Solo / casual" },
+    label: { ru: "Играю один и понемногу", en: "Solo / casual" },
     title: { ru: "Максимум ценности за четыре спокойных часа", en: "Maximize value across four calm hours" },
     summary: {
-      ru: "Baseline: GTA$2,5 млн, 4 часа в неделю, friction не выше 4/10.",
+      ru: "Исходный сценарий: GTA$2,5 млн, 4 часа в неделю и не более 4/10 по объёму ручной работы.",
       en: "Baseline: GTA$2.5m, four hours a week and friction capped at 4/10."
     },
     budget: 2_500_000,
@@ -190,29 +190,29 @@ export const gtaPlayerPaths: GtaPlayerPath[] = [
     maxFriction: 4,
     steps: [
       {
-        title: { ru: "Поставь friction ceiling", en: "Set a friction ceiling" },
-        text: { ru: "Сразу убери циклы, которые регулярно требуют неприятной solo-логистики.", en: "Remove loops that routinely require uncomfortable solo logistics." }
+        title: { ru: "Ограничь ручную работу", en: "Set a friction ceiling" },
+        text: { ru: "Сразу убери циклы, которые регулярно требуют неудобной доставки в одиночку.", en: "Remove loops that routinely require uncomfortable solo logistics." }
       },
       {
-        title: { ru: "Один production loop", en: "Run one production loop" },
+        title: { ru: "Один производственный цикл", en: "Run one production loop" },
         text: { ru: "Выбери актив, который реально обслуживать каждую неделю, а не идеальный портфель на бумаге.", en: "Choose one asset you can service every week, not a theoretical perfect portfolio." }
       },
       {
-        title: { ru: "Активные деньги - по Pulse", en: "Use the Pulse for active cash" },
-        text: { ru: "Свободное время направляй в текущий boosted route, не меняя долгосрочную модель бизнеса.", en: "Put spare time into the current boosted route without distorting the long-term business model." }
+        title: { ru: "Активный заработок по текущим событиям", en: "Use the Pulse for active cash" },
+        text: { ru: "Свободное время направляй в маршрут с повышенными выплатами, не меняя из-за него долгосрочную оценку бизнеса.", en: "Put spare time into the current boosted route without distorting the long-term business model." }
       }
     ],
     flipCondition: {
-      ru: "Если готов терпеть friction 5-6/10, Bunker и более широкий набор активов возвращаются в выборку.",
+      ru: "Если готов к ручной работе на уровне 5-6/10, бункер и более широкий набор активов снова становятся подходящими.",
       en: "If you accept friction of 5-6/10, Bunker and a wider asset set re-enter the shortlist."
     }
   },
   {
     id: "grinder",
-    label: { ru: "Grinder", en: "Grinder" },
+    label: { ru: "Оптимизирую всё", en: "Grinder" },
     title: { ru: "Оптимизировать не бизнес, а недельный портфель", en: "Optimize the weekly portfolio, not one business" },
     summary: {
-      ru: "Baseline: GTA$6 млн, 15 часов в неделю, высокий допуск к ручной работе.",
+      ru: "Исходный сценарий: GTA$6 млн, 15 часов в неделю и высокая готовность к ручной работе.",
       en: "Baseline: GTA$6m, 15 hours a week and high tolerance for active work."
     },
     budget: 6_000_000,
@@ -221,16 +221,16 @@ export const gtaPlayerPaths: GtaPlayerPath[] = [
     maxFriction: 10,
     steps: [
       {
-        title: { ru: "Раздели active и passive", en: "Separate active and passive" },
-        text: { ru: "Не сравнивай heist-час и production-hour как одну и ту же единицу времени.", en: "Do not treat a heist hour and a production hour as the same unit of time." }
+        title: { ru: "Раздели активный и пассивный доход", en: "Separate active and passive" },
+        text: { ru: "Не сравнивай час в ограблении и час работы производства как одну и ту же единицу времени.", en: "Do not treat a heist hour and a production hour as the same unit of time." }
       },
       {
         title: { ru: "Ищи портфельную роль", en: "Assign a portfolio role" },
-        text: { ru: "Каждому активу нужна функция: cash engine, low-touch layer или weekly-bonus option.", en: "Every asset needs a job: cash engine, low-touch layer or weekly-bonus option." }
+        text: { ru: "Каждому активу нужна функция: основной источник денег, почти пассивный доход или возможность заработать на недельном бонусе.", en: "Every asset needs a job: cash engine, low-touch layer or weekly-bonus option." }
       },
       {
-        title: { ru: "Проверь sensitivity", en: "Test sensitivity" },
-        text: { ru: "Меняй supplies, бонус и производство в Model Lab до покупки, а не после.", en: "Change supplies, bonus and production assumptions in Model Lab before buying, not after." }
+        title: { ru: "Проверь разные допущения", en: "Test sensitivity" },
+        text: { ru: "Меняй расходники, бонус и время производства в подробной модели до покупки, а не после.", en: "Change supplies, bonus and production assumptions in Model Lab before buying, not after." }
       }
     ],
     flipCondition: {
@@ -257,8 +257,8 @@ export const gtaScenarios: GtaScenario[] = [
     id: "first-million",
     mode: "next-move",
     eyebrow: { ru: "GTA$1,1 млн", en: "GTA$1.1m" },
-    question: { ru: "Какой первый production-актив помещается в бюджет?", en: "Which first production asset fits the budget?" },
-    outcome: { ru: "Фильтр оставляет доступный low-entry сценарий и показывает, почему он проходит.", en: "The filter keeps an affordable low-entry scenario and explains why it qualifies." },
+    question: { ru: "Какой первый производственный актив помещается в бюджет?", en: "Which first production asset fits the budget?" },
+    outcome: { ru: "Фильтр оставляет доступный сценарий с низким порогом входа и объясняет, почему он подходит.", en: "The filter keeps an affordable low-entry scenario and explains why it qualifies." },
     hash: "next-move",
     parameters: {
       "gta-next-move.profile": "returner",
@@ -271,7 +271,7 @@ export const gtaScenarios: GtaScenario[] = [
   {
     id: "returner-2-5m",
     mode: "next-move",
-    eyebrow: { ru: "Returner · GTA$2,5 млн", en: "Returner · GTA$2.5m" },
+    eyebrow: { ru: "После перерыва · GTA$2,5 млн", en: "Returner · GTA$2.5m" },
     question: { ru: "Что купить после долгого перерыва?", en: "What should I buy after a long break?" },
     outcome: { ru: "Один следующий ход, две альтернативы и условие, при котором лидер меняется.", en: "One next move, two alternatives and the condition that changes the leader." },
     hash: "next-move",
@@ -287,8 +287,8 @@ export const gtaScenarios: GtaScenario[] = [
     id: "four-hours",
     mode: "next-move",
     eyebrow: { ru: "4 часа / неделя", en: "4 hours / week" },
-    question: { ru: "Что оставить в ротации solo/casual игроку?", en: "What should a solo/casual player keep in rotation?" },
-    outcome: { ru: "Сценарий ставит friction ceiling 4/10 и снижает ценность тяжёлой операционки.", en: "The scenario caps friction at 4/10 and discounts heavy operating work." },
+    question: { ru: "Что оставить в ротации, если играешь один и времени мало?", en: "What should a solo/casual player keep in rotation?" },
+    outcome: { ru: "Сценарий ограничивает ручную работу уровнем 4/10 и снижает оценку сложных циклов.", en: "The scenario caps friction at 4/10 and discounts heavy operating work." },
     hash: "next-move",
     parameters: {
       "gta-next-move.profile": "casual",
@@ -301,7 +301,7 @@ export const gtaScenarios: GtaScenario[] = [
   {
     id: "five-million-portfolio",
     mode: "portfolio",
-    eyebrow: { ru: "GTA$5 млн · portfolio", en: "GTA$5m · portfolio" },
+    eyebrow: { ru: "GTA$5 млн · набор бизнесов", en: "GTA$5m · portfolio" },
     question: { ru: "Какой набор активов помещается в два активных часа?", en: "Which asset set fits two active hours?" },
     outcome: { ru: "Оптимизатор перебирает комбинации по капиталу и активному времени.", en: "The optimizer searches combinations under capital and active-time constraints." },
     hash: "portfolio",
@@ -315,7 +315,7 @@ export const gtaScenarios: GtaScenario[] = [
     mode: "model",
     eyebrow: { ru: "+50% к продаже", en: "+50% sale bonus" },
     question: { ru: "Как временный бонус меняет окупаемость?", en: "How does a temporary bonus change payback?" },
-    outcome: { ru: "Model Lab пересчитает gross, net, vROI и payback, не меняя baseline-данные.", en: "Model Lab recalculates gross, net, vROI and payback without mutating baseline data." },
+    outcome: { ru: "Подробная модель пересчитает выручку, чистый результат, доходность и окупаемость, не изменяя исходные данные.", en: "Model Lab recalculates gross, net, vROI and payback without mutating baseline data." },
     hash: "model-lab",
     parameters: {
       "gta-business.business": "acid",
@@ -330,9 +330,9 @@ export const gtaScenarios: GtaScenario[] = [
   {
     id: "bunker-owned",
     mode: "model",
-    eyebrow: { ru: "Уже есть Bunker", en: "Bunker already owned" },
-    question: { ru: "Почему setup cost меняет весь вывод?", en: "Why does setup cost change the whole conclusion?" },
-    outcome: { ru: "Обнули стартовые вложения и увидишь разницу между buy decision и run decision.", en: "Set setup cost to zero to separate the buy decision from the run decision." },
+    eyebrow: { ru: "Бункер уже куплен", en: "Bunker already owned" },
+    question: { ru: "Почему стоимость запуска меняет весь вывод?", en: "Why does setup cost change the whole conclusion?" },
+    outcome: { ru: "Обнули стартовые вложения и увидишь разницу между решением купить бизнес и решением продолжать его использовать.", en: "Set setup cost to zero to separate the buy decision from the run decision." },
     hash: "model-lab",
     parameters: {
       "gta-business.business": "bunker",

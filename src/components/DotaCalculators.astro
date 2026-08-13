@@ -8,44 +8,44 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const copy = lang === "ru" ? {
-  labKicker: "Scenario lab · editable assumptions",
+  labKicker: "Калькуляторы · редактируемые допущения",
   labTitle: "Два решения, которые меняют траекторию матча",
-  labText: "Сначала проверь greed window, затем оцени ликвидность перед objective. Формулы показывают measurable layer и не прячут hero judgement за ложной точностью.",
-  patch: `Patch ${dotaPatchContext.patch} · checked ${dotaPatchContext.checkedAt}`,
-  modelKicker: "Model 01 · growth capex",
+  labText: "Сначала проверь срок окупаемости жадной покупки, затем оцени запас золота перед важной целью. Формулы показывают измеримую часть решения и не скрывают игровую оценку за ложной точностью.",
+  patch: `Патч ${dotaPatchContext.patch} · проверено ${dotaPatchContext.checkedAt}`,
+  modelKicker: "Модель 01 · вложение в рост",
   midasTitle: "Hand of Midas: реальная окупаемость",
-  midasText: "Transmute payout показывает gross value. Модель вычитает bounty крипа, считает оставшиеся uses и показывает минуту break-even.",
+  midasText: "Transmute даёт фиксированное золото, но крип без Midas тоже принёс бы награду. Модель вычитает упущенное золото, считает оставшиеся применения и показывает минуту окупаемости.",
   itemCost: "Стоимость Midas",
   transmuteGold: "Золото Transmute",
-  foregoneBounty: "Упущенный bounty",
-  otherValue: "Madstone / AS value",
-  cooldown: "Recharge, сек",
+  foregoneBounty: "Упущенная награда за крипа",
+  otherValue: "Ценность Madstone и скорости атаки",
+  cooldown: "Перезарядка, сек.",
   purchaseMinute: "Минута покупки",
   endMinute: "Ожидаемый конец",
-  result: "Midas investment case",
-  uses: "Оставшиеся uses",
-  incremental: "Incremental / use",
-  gross: "Value до конца",
-  net: "Net после цены",
-  payback: "Payback minute",
-  roi: "Realized ROI",
-  midasNote: "Other value по умолчанию равна нулю. Так гарантированное золото не смешивается с hero-specific utility и Madstone sensitivity.",
-  reserveKicker: "Model 02 · liquidity reserve",
-  reserveTitle: "Buyback: компонент или вторая жизнь",
-  reserveText: "Используется формула floor(200 + Net Worth / 13). Результат отделяет готовность сейчас от готовности к objective.",
-  netWorth: "Net worth героя",
+  result: "Результат вложения в Midas",
+  uses: "Оставшиеся применения",
+  incremental: "Прирост за применение",
+  gross: "Ценность до конца матча",
+  net: "Результат после стоимости предмета",
+  payback: "Минута окупаемости",
+  roi: "Фактическая доходность",
+  midasNote: "Дополнительная ценность по умолчанию равна нулю. Так гарантированное золото не смешивается с пользой для конкретного героя и ценностью Madstone.",
+  reserveKicker: "Модель 02 · запас золота",
+  reserveTitle: "Выкуп: компонент или вторая жизнь",
+  reserveText: "Используется формула: целая часть от 200 + общая стоимость героя / 13. Результат показывает, хватает ли золота сейчас и хватит ли его к следующей цели.",
+  netWorth: "Общая стоимость героя",
   currentGold: "Текущее золото",
-  gpm: "Ожидаемый GPM",
-  objective: "До objective, сек",
+  gpm: "Ожидаемое золото в минуту",
+  objective: "До следующей цели, сек.",
   deathRisk: "Вероятность смерти, %",
-  reserveResult: "Reserve position",
-  cost: "Оценка buyback",
+  reserveResult: "Состояние запаса",
+  cost: "Стоимость выкупа",
   gap: "Дефицит",
   surplus: "Сверх резерва",
-  coverage: "Coverage",
+  coverage: "Покрытие",
   farmTime: "Время до резерва",
-  atObjective: "Gold к objective",
-  riskWeighted: "Risk-weighted reserve"
+  atObjective: "Золото к следующей цели",
+  riskWeighted: "Запас с учётом риска смерти"
 } : {
   labKicker: "Scenario lab · editable assumptions",
   labTitle: "Two decisions that change the match trajectory",
@@ -106,7 +106,7 @@ const copy = lang === "ru" ? {
         <h3 id="midas-model-title">{copy.midasTitle}</h3>
         <p>{copy.midasText}</p>
       </div>
-      <span class="pill gold">Editable baseline</span>
+      <span class="pill gold">{lang === "ru" ? "Исходные значения можно изменить" : "Editable baseline"}</span>
     </div>
 
     <div class="grid-2 dota-model-grid" data-scenario-root data-scenario-key="dota-midas">
@@ -146,7 +146,7 @@ const copy = lang === "ru" ? {
         <h3 id="buyback-model-title">{copy.reserveTitle}</h3>
         <p>{copy.reserveText}</p>
       </div>
-      <span class="pill dota-dire">Formula + scenario</span>
+      <span class="pill dota-dire">{lang === "ru" ? "Формула и сценарий" : "Formula + scenario"}</span>
     </div>
 
     <div class="grid-2 dota-model-grid" data-scenario-root data-scenario-key="dota-buyback">
@@ -187,7 +187,7 @@ const copy = lang === "ru" ? {
 
     const lang = (root.dataset.lang ?? "ru") as DotaLocale;
     const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
-    const gold = (value: number) => `${formatter.format(Math.round(value))} g`;
+    const gold = (value: number) => `${formatter.format(Math.round(value))} ${lang === "ru" ? "зол." : "g"}`;
     const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
     const target = (role: string) => root.querySelector<HTMLElement>(`[data-role='${role}']`)!;
     const value = (role: string) => Math.max(0, Number(input(role).value) || 0);
@@ -195,8 +195,8 @@ const copy = lang === "ru" ? {
     const labels = lang === "ru" ? {
       breakEvenYes: "Окупается в заданном окне",
       breakEvenNo: "Не окупается в заданном окне",
-      readyNow: "Buyback профинансирован сейчас",
-      readyLater: "Резерв будет готов к objective",
+      readyNow: "Золота на выкуп уже хватает",
+      readyLater: "Запас будет готов к следующей цели",
       underfunded: "Резерв не успевает сформироваться",
       minutes: "мин"
     } : {

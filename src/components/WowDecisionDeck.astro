@@ -6,11 +6,11 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const labels: Record<WowScenarioKind, string> = lang === "ru" ? {
-  craft: "Recipe margin",
-  farm: "Farm liquidity",
-  order: "Order floor",
-  allocation: "Knowledge allocation",
-  event: "Demand window"
+  craft: "Маржа рецепта",
+  farm: "Ликвидность фарма",
+  order: "Минимальная комиссия",
+  allocation: "Распределение знаний",
+  event: "Временный спрос"
 } : {
   craft: "Recipe margin",
   farm: "Farm liquidity",
@@ -20,9 +20,9 @@ const labels: Record<WowScenarioKind, string> = lang === "ru" ? {
 };
 
 const copy = lang === "ru" ? {
-  kicker: "Decision deck · eight market questions",
+  kicker: "Восемь рыночных вопросов",
   title: "Начни не с профессии. Начни с решения, которое нужно принять сегодня.",
-  text: "Recipe margin, liquid farming, order commission, profession reset и новый demand window требуют разных моделей. Каждая карточка открывает готовый сценарий или playbook.",
+  text: "Маржа рецепта, ликвидность фарма, комиссия за заказ, сброс профессии и временный рост спроса требуют разных моделей. Каждая карточка открывает готовый сценарий или разбор.",
   cta: "Открыть сценарий"
 } : {
   kicker: "Decision deck · eight market questions",
@@ -35,7 +35,7 @@ const copy = lang === "ru" ? {
 <section id="decision-deck" class="section hub-section" aria-labelledby="wow-decision-deck-title">
   <div class="section-head hub-section-head">
     <div><span class="section-kicker">{copy.kicker}</span><h2 id="wow-decision-deck-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
-    <span class="count">8 entry points · 3 live models</span>
+    <span class="count">{lang === "ru" ? "8 точек входа · 3 живые модели" : "8 entry points · 3 live models"}</span>
   </div>
 
   <div class="decision-deck-grid wow-decision-deck">

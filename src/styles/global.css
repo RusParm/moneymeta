@@ -1443,7 +1443,7 @@ details p { margin: 0 0 10px; }
 }
 .dota-hero-loadout .dota-media { grid-row: 1 / 3; width: 46px; height: 34px; border-radius: 7px; }
 .dota-hero-loadout span { color: rgba(231,185,91,.58); font: 700 8px "JetBrains Mono", monospace; letter-spacing: .07em; }
-.dota-hero-loadout strong { overflow: hidden; font: 700 12px "Roboto Condensed", sans-serif; text-overflow: ellipsis; white-space: nowrap; }
+.dota-hero-loadout strong { min-width: 0; font: 700 12px/1.12 "Roboto Condensed", sans-serif; overflow-wrap: anywhere; white-space: normal; }
 
 .dota-jump-nav { border-color: rgba(231,185,91,.22); background: rgba(9,9,14,.87); }
 .dota-jump-nav .hub-jump-brand i { border-color: var(--dota-dire); box-shadow: inset 0 0 8px rgba(225,100,83,.36), 0 0 13px rgba(225,100,83,.25); }

@@ -24,59 +24,59 @@ const root = lang === "ru" ? "/wow/" : "/en/wow/";
 const wowInsightCount = insights.filter((insight) => insight.game === "wow").length;
 
 const copy = lang === "ru" ? {
-  title: "WoW Retail Economy Hub: Auction House, профессии и gold | Money Meta",
+  title: "Экономика WoW Retail: аукцион, профессии и золото | Money Meta",
   description: "Живая модель экономики WoW Retail: карта рынка, персональные пути, актуальные изменения, рейтинги способов заработка, сценарии и калькуляторы.",
   back: "← Все экономики",
-  live: "Retail market model · checked 2026-08-12",
-  eyebrow: "World of Warcraft Retail · Living Market Hub",
-  heading: "Не фарми цену. Управляй потоком gold.",
-  lede: "Проследи путь капитала от reagent до реализованной прибыли. Выбери рыночную роль, проверь ликвидность и узнай, где твоя margin перестаёт быть настоящей.",
-  primary: "Найти мой market path",
-  secondary: "Открыть Scenario Lab",
+  live: "Модель рынка Retail · проверено 2026-08-12",
+  eyebrow: "World of Warcraft Retail · Живой рынок",
+  heading: "Не фарми красивую цену. Управляй потоком золота.",
+  lede: "Проследи путь капитала от материалов до полученной прибыли. Выбери свою роль на рынке, проверь ликвидность и узнай, где привлекательная маржа перестаёт быть реальной.",
+  primary: "Найти мой путь на рынке",
+  secondary: "Открыть калькуляторы",
   proof: [
     [String(wowEconomyNodes.length), "звеньев экономики"],
-    [String(wowMarketRoutes.length), "market routes"],
+    [String(wowMarketRoutes.length), "рыночных маршрутов"],
     [String(wowScenarios.length), "готовых решений"],
     [String(wowInsightCount), "полных разборов"]
   ],
   loadoutLabel: "Ключевые системы WoW-хаба",
   loadout: [
-    [wowMarks.knowledge, "ALLOCATION", "Knowledge reset"],
-    [wowMarks.craft, "MARGIN", "Recipe economics"],
-    [wowMarks.orders, "SERVICE", "Order floor"],
-    [wowMarks.liquidity, "CASH", "Realized GPH"]
+    [wowMarks.knowledge, "ЗНАНИЯ", "Сброс специализации"],
+    [wowMarks.craft, "МАРЖА", "Экономика рецепта"],
+    [wowMarks.orders, "ЗАКАЗЫ", "Минимальная комиссия"],
+    [wowMarks.liquidity, "ЗОЛОТО", "Реальный доход в час"]
   ] as const,
-  navLabel: "Навигация WoW Economy Hub",
-  navBrand: "WOW / MARKET OS",
+  navLabel: "Навигация по экономике WoW",
+  navBrand: "WOW / РЫНОК",
   nav: [
-    ["01", "Snapshot", "#market-ledger"],
+    ["01", "Баланс", "#market-ledger"],
     ["02", "Карта", "#economy-map"],
     ["03", "Мой путь", "#player-paths"],
-    ["04", "Pulse", "#market-pulse"],
+    ["04", "Изменения", "#market-pulse"],
     ["05", "Рейтинги", "#market-rankings"],
     ["06", "Модели", "#scenario-lab"],
     ["07", "Разборы", "#research-library"]
   ],
-  manifestoKicker: "The Money Meta difference",
+  manifestoKicker: "Подход Money Meta",
   manifestoTitle: "В WoW есть три разных вида богатства. Не смешивай их.",
-  manifestoText: "Gold в bags, inventory по цене листинга и доступ профессии к рынку имеют разную ликвидность. Хаб показывает, как одно превращается в другое и где цепочка ломается.",
+  manifestoText: "Золото в сумках, товары по цене выставления и доступ профессии к рынку имеют разную ликвидность. Хаб показывает, как одно превращается в другое и где цепочка ломается.",
   principles: [
-    ["CASH", "Только реализованный gold финансирует следующий ход."],
-    ["INVENTORY", "Непроданный stock является working capital, а не прибылью."],
-    ["KNOWLEDGE", "Специализация создаёт moat только при повторяемом спросе."],
-    ["TIME", "Фарм, craft и service имеют разную opportunity cost."]
+    ["ЗОЛОТО", "Только полученное золото финансирует следующий ход."],
+    ["ЗАПАСЫ", "Непроданный товар является вложенным капиталом, а не прибылью."],
+    ["ЗНАНИЯ", "Специализация создаёт преимущество только при повторяемом спросе."],
+    ["ВРЕМЯ", "Фарм, изготовление и работа с заказами по-разному расходуют твоё время."]
   ],
-  trustKicker: "Methodology · evidence · independence",
+  trustKicker: "Методика · источники · независимость",
   trustTitle: "Официальный контекст отдельно. Рыночная модель отдельно.",
-  trustText: "Money Meta связывает изменения Blizzard с решениями игрока, но не выдаёт редактируемые цены или sell-through за данные издателя.",
+  trustText: "Money Meta связывает изменения Blizzard с решениями игрока, но не выдаёт редактируемые цены и вероятность продажи за данные издателя.",
   trustCards: [
-    ["01", "Verified context", "Curse of Ula’tek, profession reset, decor costs и persistent AH filters привязаны к официальным материалам Blizzard.", "official"],
-    ["02", "Editable market layer", "Prices, AH cut, sell-through, deposits, recraft reserve и target GPH остаются пользовательскими допущениями.", "model"],
-    ["03", "Independent analysis", "Money Meta не связан с Blizzard Entertainment. Визуальный язык и market marks созданы для этого продукта.", "independent"]
+    ["01", "Проверенный контекст", "Curse of Ula’tek, сброс знаний профессии, стоимость декора и сохранение фильтров аукциона привязаны к официальным материалам Blizzard.", "официальный источник"],
+    ["02", "Редактируемая модель рынка", "Цены, комиссия аукциона, вероятность продажи, залоги, запас на повторное изготовление и целевой доход в час остаются допущениями игрока.", "рабочая модель"],
+    ["03", "Независимый анализ", "Money Meta не связан с Blizzard Entertainment. Визуальный язык и знаки рынка созданы специально для этого продукта.", "независимый проект"]
   ],
   methodology: "Открыть методологию и источники",
   disclaimer: "World of Warcraft и связанные названия являются собственностью Blizzard Entertainment. Money Meta является независимым аналитическим продуктом.",
-  roadmap: "Следующий WoW-слой после проверки спроса: live region data, Token context, profession-specific ledgers и сохранённый портфель market routes."
+  roadmap: "Следующий этап WoW после проверки спроса: актуальные региональные цены, контекст WoW Token, отдельные балансы профессий и сохранённый набор рыночных маршрутов."
 } : {
   title: "WoW Retail Economy Hub: Auction House, professions and gold | Money Meta",
   description: "A living WoW Retail economy model with a market map, personal paths, current changes, conditional route rankings, scenarios and calculators.",
@@ -162,7 +162,8 @@ const copy = lang === "ru" ? {
       <GameWorldHero
         image={wowEconomyWorld}
         alt={lang === "ru" ? "Оригинальная иллюстрация Money Meta: магический рынок и потоки капитала WoW Retail" : "Original Money Meta illustration of an arcane market and WoW Retail capital flows"}
-        worldCode="MARKET FLYWHEEL / 03"
+        worldCode={lang === "ru" ? "РЫНОЧНЫЙ ЦИКЛ / 03" : "MARKET FLYWHEEL / 03"}
+        originalLabel={lang === "ru" ? "Оригинал Money Meta" : "Money Meta original"}
       >
         <div class="hero-live-line"><span></span>{copy.live}</div>
         <p class="eyebrow">{copy.eyebrow}</p>
@@ -234,7 +235,7 @@ const copy = lang === "ru" ? {
           <div>
             <p>{wowPatchContext.note[lang]}</p>
             {wowPatchContext.sources.map((source) => (
-              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label} ↗</strong></a>: {source.note[lang]}</p>
+              <p><a class="source-link" href={source.url} target="_blank" rel="noopener noreferrer"><strong>{source.label[lang]} ↗</strong></a>: {source.note[lang]}</p>
             ))}
             <p>{copy.disclaimer}</p>
             <p>{copy.roadmap}</p>

@@ -8,12 +8,12 @@ const calculator = lang === "ru" ? "/gta-online/calculators/business-roi/" : "/e
 const money = (value: number) => new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 }).format(value);
 
 const copy = lang === "ru" ? {
-  kicker: "Personal path · choose your operating system",
+  kicker: "Путь игрока · выбери свой подход",
   title: "Один город. Три совершенно разных плана.",
   text: "Выбери свой режим игры. Каждый путь задаёт реальные ограничения, последовательность действий и условие, при котором рекомендацию нужно пересчитать.",
   budget: "Капитал",
   hours: "ч / нед.",
-  friction: "friction",
+  friction: "ручная работа",
   route: "Маршрут",
   flip: "Когда план меняется",
   cta: "Запустить этот профиль"
@@ -39,7 +39,9 @@ const pathHref = (path: (typeof gtaPlayerPaths)[number]) => {
   });
   return `${calculator}?${params.toString()}#next-move`;
 };
-const pathMarks = { returner: ["R", "teal"], casual: ["C", "gold"], grinder: ["G", "magenta"] } as const;
+const pathMarks = lang === "ru"
+  ? ({ returner: ["В", "teal"], casual: ["С", "gold"], grinder: ["О", "magenta"] } as const)
+  : ({ returner: ["R", "teal"], casual: ["C", "gold"], grinder: ["G", "magenta"] } as const);
 ---
 
 <section id="player-paths" class="section hub-section" aria-labelledby="player-paths-title">
@@ -49,7 +51,7 @@ const pathMarks = { returner: ["R", "teal"], casual: ["C", "gold"], grinder: ["G
       <h2 id="player-paths-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">3 player systems</span>
+    <span class="count">{lang === "ru" ? "3 подхода к игре" : "3 player systems"}</span>
   </div>
 
   <div class="path-planner" data-path-planner>
@@ -85,7 +87,7 @@ const pathMarks = { returner: ["R", "teal"], casual: ["C", "gold"], grinder: ["G
           <GtaAssetMark mark={pathMarks[path.id][0]} tone={pathMarks[path.id][1]} large />
           <div class="path-panel-head">
             <div>
-              <span class="game-tag">{path.label[lang]} · baseline</span>
+              <span class="game-tag">{path.label[lang]} · {lang === "ru" ? "исходный сценарий" : "baseline"}</span>
               <h3>{path.title[lang]}</h3>
             </div>
             <div class="path-constraints" aria-label={lang === "ru" ? "Ограничения сценария" : "Scenario constraints"}>

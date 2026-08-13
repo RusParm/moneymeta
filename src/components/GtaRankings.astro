@@ -10,37 +10,37 @@ const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { max
 const money = (value: number) => `GTA$${formatter.format(Math.round(value))}`;
 
 const copy = lang === "ru" ? {
-  kicker: "Conditional rankings · no universal S-tier",
+  kicker: "Рейтинги под разные задачи",
   title: "Лидер меняется вместе с вопросом",
-  text: "Один общий рейтинг скрывает trade-off. Здесь один и тот же набор данных пересчитывается под три разных решения; состав score всегда виден.",
-  score: "fit score",
-  netHour: "net / production h",
-  payback: "production payback",
-  solo: "solo fit",
-  friction: "friction",
+  text: "Один общий рейтинг скрывает цену выбора. Здесь один и тот же набор данных пересчитывается под три разных задачи, а состав оценки всегда виден.",
+  score: "оценка соответствия",
+  netHour: "чистыми за час производства",
+  payback: "окупаемость производства",
+  solo: "удобство для одного игрока",
+  friction: "ручная работа",
   model: "Открыть полную таблицу и изменить допущения",
-  estimated: "Estimated dataset · checked 2026-07-01",
+  estimated: "Рабочие оценки · проверено 2026-07-01",
   lenses: [
     {
       id: "first-buy" as BusinessRankingLens,
       label: "Первый актив",
       question: "Куда вложить стартовый капитал?",
-      formula: "40% payback · 30% vROI · 15% low friction · 15% solo",
-      note: "Acid Lab лидирует в baseline как сочетание низкого входа, payback и solo-пригодности. Уже купленная инфраструктура может перевернуть вывод."
+      formula: "40% окупаемость · 30% доходность · 15% простота · 15% удобство одному",
+      note: "Кислотная лаборатория лидирует в исходном сценарии благодаря низкому порогу входа, быстрой окупаемости и удобству для одного игрока. Уже купленная инфраструктура может изменить вывод."
     },
     {
       id: "solo-efficiency" as BusinessRankingLens,
-      label: "Solo / low friction",
+      label: "Для одного игрока",
       question: "Что легче удерживать в ротации одному?",
-      formula: "40% solo · 35% low friction · 25% production income",
-      note: "Базовый Nightclub поднимается из-за минимальной операционки. Это не полная warehouse-модель и не аргумент покупать клуб без feeder-активов."
+      formula: "40% удобство одному · 35% простота · 25% доход производства",
+      note: "Базовая модель ночного клуба поднимается благодаря минимальному объёму ручной работы. Она не учитывает полноценный склад и не означает, что клуб стоит покупать без связанных бизнесов."
     },
     {
       id: "production-income" as BusinessRankingLens,
-      label: "Production throughput",
+      label: "Доход производства",
       question: "Где сильнее чистый поток на час производства?",
-      formula: "60% net/hour · 20% vROI · 10% solo · 10% low friction",
-      note: "Этот lens награждает throughput, но всё ещё оставляет небольшой штраф за сложность продажи и слабую капитальную эффективность."
+      formula: "60% чистый доход · 20% доходность · 10% удобство одному · 10% простота",
+      note: "Этот подход ставит на первое место чистый поток, но учитывает сложность продажи и эффективность вложенного капитала."
     }
   ]
 } : {
@@ -80,7 +80,9 @@ const copy = lang === "ru" ? {
 };
 
 const rankings = Object.fromEntries(copy.lenses.map((lens) => [lens.id, rankBusinessesByLens(gtaBusinesses, lens.id)]));
-const assetMarks: Record<string, string> = { acid: "AL", coke: "CO", bunker: "BK", nightclub: "NC", cash: "CC", meth: "ME", weed: "WE" };
+const assetMarks: Record<string, string> = lang === "ru"
+  ? { acid: "КЛ", coke: "КС", bunker: "Б", club: "НК", cash: "ФД", meth: "МЛ", weed: "ПЛ" }
+  : { acid: "AL", coke: "CO", bunker: "BK", nightclub: "NC", cash: "CC", meth: "ME", weed: "WE" };
 ---
 
 <section id="conditional-rankings" class="section hub-section" aria-labelledby="rankings-title">
@@ -136,7 +138,7 @@ const assetMarks: Record<string, string> = { acid: "AL", coke: "CO", bunker: "BK
               <p>{business.summary[lang]}</p>
               <div class="conditional-metrics">
                 <span><small>{copy.netHour}</small><strong>{money(metrics.profitPerProductionHour)}</strong></span>
-                <span><small>{copy.payback}</small><strong>{formatter.format(Math.round(metrics.paybackProductionHours))}h</strong></span>
+                <span><small>{copy.payback}</small><strong>{formatter.format(Math.round(metrics.paybackProductionHours))}{lang === "ru" ? " ч" : "h"}</strong></span>
                 <span><small>{copy.solo}</small><strong>{business.soloSuitability}/10</strong></span>
                 <span><small>{copy.friction}</small><strong>{business.friction}/10</strong></span>
               </div>

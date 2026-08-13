@@ -9,13 +9,13 @@ const { lang } = Astro.props;
 const prefix = lang === "ru" ? "" : "/en";
 const path = `${prefix}/insights/`;
 const copy = lang === "ru" ? {
-  title: "Money Meta Field Notes - разборы игровых экономик",
+  title: "Разборы игровых экономик Money Meta",
   description: "Практические разборы GTA Online, Dota 2 и WoW с цифрами, моделями и конкретным следующим действием.",
   back: "← Главная",
-  kicker: "Field Notes · решения, а не новости",
+  kicker: "Прикладные разборы · решения, а не новости",
   heading: "Разбираем экономику игры до конкретного действия.",
   lede: "Каждый материал отвечает на один вопрос игрока, показывает расчёт и заканчивается моделью, которую можно пересчитать под себя.",
-  featured: "Flagship analysis",
+  featured: "Главные разборы",
   read: "Читать разбор"
 } : {
   title: "Money Meta Field Notes - game economy analysis",
@@ -39,7 +39,7 @@ const copy = lang === "ru" ? {
         <p class="lede">{copy.lede}</p>
       </section>
       <section class="section">
-        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01-{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{insights.length} notes · 3 games · RU/EN</span></div>
+        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01-{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{lang === "ru" ? `${insights.length} материалов · 3 игры · русский и английский` : `${insights.length} notes · 3 games · RU/EN`}</span></div>
         <div class="insight-card-grid">
           {insights.map((insight, index) => {
             const content = insight.content[lang];
@@ -47,7 +47,7 @@ const copy = lang === "ru" ? {
             return <a class={`insight-card insight-card-${insight.game}`} href={`${prefix}/insights/${insight.slug}/`}>
               <div class="insight-card-top"><span>{game}</span><b>0{index + 1}</b></div>
               <div><span class="game-tag">{content.kicker}</span><h2>{content.title}</h2><p>{content.description}</p></div>
-              <div class="insight-card-foot"><span>{content.readTime} · {insight.updatedAt}<br />{insight.evidenceStatus} · {insight.gameVersion}</span><strong>{copy.read} ↗</strong></div>
+              <div class="insight-card-foot"><span>{content.readTime} · {insight.updatedAt}<br />{lang === "ru" ? (insight.evidenceStatus === "verified" ? "проверено" : "оценка") : insight.evidenceStatus} · {insight.gameVersion[lang]}</span><strong>{copy.read} ↗</strong></div>
             </a>;
           })}
         </div>

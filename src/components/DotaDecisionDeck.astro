@@ -7,14 +7,14 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const kindLabel = lang === "ru" ? {
-  farm: "Farm capacity",
-  timing: "Timing allocation",
-  utility: "Team utility",
-  objective: "Objective conversion",
-  review: "Replay review",
-  midas: "Greed window",
-  sensitivity: "Sensitivity",
-  buyback: "Liquidity reserve"
+  farm: "Возможности фарма",
+  timing: "Время покупки",
+  utility: "Польза для команды",
+  objective: "Реализация преимущества",
+  review: "Разбор повтора",
+  midas: "Окно для жадной покупки",
+  sensitivity: "Проверка допущений",
+  buyback: "Запас на выкуп"
 } : {
   farm: "Farm capacity",
   timing: "Timing allocation",
@@ -27,9 +27,9 @@ const kindLabel = lang === "ru" ? {
 };
 
 const copy = lang === "ru" ? {
-  kicker: "Decision deck · eight match decisions",
+  kicker: "Восемь решений во время матча",
   title: "В Dota нет одного экономического вопроса.",
-  text: "Выбери реальную развилку матча: где фармить, когда закончить greed, чем реализовать timing, сохранять ли buyback или что проверить в replay.",
+  text: "Выбери реальную развилку матча: где фармить, когда перестать жадничать, как использовать новый предмет, сохранять ли золото на выкуп и что проверить в повторе.",
   cta: "Открыть сценарий"
 } : {
   kicker: "Decision deck · eight match decisions",
@@ -46,7 +46,7 @@ const copy = lang === "ru" ? {
       <h2 id="dota-decision-deck-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">8 decisions · calculators + playbooks</span>
+    <span class="count">{lang === "ru" ? "8 решений · калькуляторы и разборы" : "8 decisions · calculators + playbooks"}</span>
   </div>
 
   <div class="decision-deck-grid dota-decision-deck">

@@ -6,8 +6,8 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const copy = lang === "ru" ? {
-  kicker: "Personal path · choose your market role",
-  title: "Один Auction House. Три совершенно разных operating plan.",
+  kicker: "Персональный путь · выбери роль на рынке",
+  title: "Один аукцион. Три совершенно разных плана.",
   text: "Выбери свой режим. Каждый путь задаёт лимит капитала, последовательность действий и условие, при котором план нужно остановить или пересчитать.",
   capital: "Капитал",
   time: "Время",
@@ -35,7 +35,7 @@ const copy = lang === "ru" ? {
       <h2 id="wow-player-paths-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">3 market systems</span>
+    <span class="count">{lang === "ru" ? "3 рыночных подхода" : "3 market systems"}</span>
   </div>
 
   <div class="path-planner wow-path-planner" data-wow-path-planner>

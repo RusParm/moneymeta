@@ -6,11 +6,11 @@ const { lang } = Astro.props;
 const calculator = lang === "ru" ? "/gta-online/calculators/business-roi/" : "/en/gta-online/calculators/business-roi/";
 
 const copy = lang === "ru" ? {
-  kicker: "Decision deck · prebuilt scenarios",
+  kicker: "Готовые сценарии",
   title: "Не начинай с пустой формы. Начни со своего вопроса.",
   text: "Каждая карточка открывает уже настроенный сценарий. Дальше меняй цифры, сохраняй результат или отправляй ссылку другу.",
   open: "Открыть сценарий",
-  modes: { "next-move": "Next Best Move", model: "Model Lab", portfolio: "Portfolio Optimizer" }
+  modes: { "next-move": "Следующий ход", model: "Подробный расчёт", portfolio: "Подбор набора бизнесов" }
 } : {
   kicker: "Decision deck · prebuilt scenarios",
   title: "Do not start with an empty form. Start with your question.",
@@ -32,7 +32,7 @@ const scenarioHref = (scenario: (typeof gtaScenarios)[number]) => {
       <h2 id="scenario-deck-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">6 entry points · shareable</span>
+    <span class="count">{lang === "ru" ? "6 готовых точек входа · можно поделиться" : "6 entry points · shareable"}</span>
   </div>
 
   <div class="decision-deck-grid">

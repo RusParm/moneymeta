@@ -7,16 +7,16 @@ interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const copy = lang === "ru" ? {
-  kicker: "Personal path · learn the economy your way",
+  kicker: "Персональный путь игрока",
   title: "Один патч. Три разных способа стать сильнее.",
-  text: "Returner восстанавливает карту решений, игрок с малым числом матчей тренирует один repeatable question, а grinder ищет counterfactual в replay.",
+  text: "Вернувшийся игрок заново осваивает ключевые решения, игрок с малым числом матчей тренирует один понятный вопрос, а опытный игрок ищет в повторе момент, где другой ход мог изменить результат.",
   matches: "Объём",
   focus: "Фокус",
   tolerance: "Сложность",
   route: "Экономический маршрут",
   flip: "Когда вывод меняется",
   cta: "Открыть готовый сценарий",
-  note: "Портреты обозначают role lens, а не hero tier или build recommendation."
+  note: "Портреты показывают пример роли, а не рейтинг героев или рекомендацию по сборке."
 } : {
   kicker: "Personal path · learn the economy your way",
   title: "One patch. Three different ways to improve.",
@@ -38,7 +38,7 @@ const copy = lang === "ru" ? {
       <h2 id="dota-player-paths-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">3 learning systems</span>
+    <span class="count">{lang === "ru" ? "3 пути обучения" : "3 learning systems"}</span>
   </div>
 
   <div class="path-planner dota-path-planner" data-dota-path-planner>

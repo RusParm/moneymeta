@@ -20,69 +20,69 @@ const root = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
 const calculator = root + "calculators/business-roi/";
 
 const copy = lang === "ru" ? {
-  title: "GTA Online Economy Hub - карта экономики, мета и калькуляторы | Money Meta",
-  description: "Полноценная карта экономики GTA Online: персональные маршруты, официальный Weekly Pulse, условные рейтинги бизнесов, сценарии и библиотека разборов.",
+  title: "Экономика GTA Online: карта, мета и калькуляторы | Money Meta",
+  description: "Полная карта экономики GTA Online: персональные маршруты, актуальные недельные события, рейтинги бизнесов под разные задачи, сценарии и библиотека разборов.",
   back: "← Все экономики",
-  eyebrow: "GTA Online · Living Economy Hub",
-  heading: "Los Santos - это портфель. Управляй им как системой.",
-  lede: "Проследи путь капитала, выбери маршрут под свой стиль и проверь следующий ход на цифрах. Не ещё один tier list - живая модель того, где деньги входят, застревают и возвращаются.",
+  eyebrow: "GTA Online · Живая экономика",
+  heading: "Лос-Сантос похож на портфель активов. Управляй им как системой.",
+  lede: "Проследи путь капитала, выбери маршрут под свой стиль и проверь следующий ход на цифрах. Здесь видно, откуда приходят деньги, где они застревают и когда возвращают вложения.",
   primary: "Выбрать мой путь",
   secondary: "Увидеть карту экономики",
   heroProof: [
     ["7", "активов в модели"],
     ["3", "пути игрока"],
     ["6", "полных разборов"],
-    ["Auto", "freshness guard"]
+    ["Авто", "проверка актуальности"]
   ],
   loadoutLabel: "Ключевые системы GTA-хаба",
-  loadout: [["$", "CAPITAL", "Next move"], ["B", "BUSINESS", "Asset ROI"], ["T", "TIME", "Hours to goal"], ["PF", "PORTFOLIO", "Allocation"]],
-  navLabel: "Навигация по GTA Economy Hub",
+  loadout: [["$", "КАПИТАЛ", "Следующий ход"], ["Б", "БИЗНЕС", "Окупаемость"], ["В", "ВРЕМЯ", "Срок до цели"], ["П", "ПОРТФЕЛЬ", "Распределение"]],
+  navLabel: "Навигация по экономике GTA Online",
   nav: [
     ["Карта", "#economy-map"],
     ["Мой путь", "#player-paths"],
-    ["Pulse", "#weekly-pulse"],
+    ["События", "#weekly-pulse"],
     ["Рейтинги", "#conditional-rankings"],
     ["Сценарии", "#scenario-deck"],
     ["Модели", "#capital-lab"],
     ["Библиотека", "#research-library"]
   ],
-  manifestoEyebrow: "The Money Meta difference",
+  manifestoEyebrow: "Подход Money Meta",
   manifestoTitle: "Каждая цифра должна закончиться действием.",
-  manifestoText: "Гайд говорит, что популярно. Money Meta показывает, что подходит твоему банку, времени и допустимой возне - и где ответ перестаёт быть верным.",
+  manifestoText: "Гайд говорит, что популярно. Money Meta показывает, что подходит твоему капиталу, времени и готовности заниматься рутиной, а также где рекомендация перестаёт работать.",
   manifestoPoints: [
-    ["Capital", "Сколько GTA$ реально можно заморозить"],
-    ["Time", "Production-hours отдельно от active grind"],
-    ["Friction", "Сможешь ли ты повторять цикл каждую неделю"],
-    ["Freshness", "Бонус исчезает из current, когда окно закрыто"]
+    ["КАПИТАЛ", "Сколько GTA$ реально можно вложить надолго"],
+    ["ВРЕМЯ", "Работа производства отдельно от ручной игры"],
+    ["РУТИНА", "Сможешь ли ты повторять цикл каждую неделю"],
+    ["АКТУАЛЬНОСТЬ", "Бонус перестаёт считаться действующим после окончания события"]
   ],
-  trustKicker: "Trust rail · method before confidence",
+  trustKicker: "Методика и источники",
   trustTitle: "Где факт, где модель и где твоё решение",
   trustText: "Money Meta не маскирует рабочие оценки под официальные цифры. Источник, дата, версия и ограничение остаются рядом с выводом.",
   trustCards: [
     {
-      label: "Production dataset",
-      status: "Estimated",
+      label: "Данные по бизнесам",
+      status: "Рабочая оценка",
       title: "Редактируемая рабочая модель",
-      text: "Семь активов проверены как единый estimate set. Setup, sale, supplies и production time можно заменить своими значениями.",
-      meta: "Checked · 2026-07-01"
+      text: "Семь активов собраны в единую рабочую модель. Стоимость запуска, продажу, расходники и время производства можно заменить своими значениями.",
+      meta: "Проверено · 2026-07-01"
     },
     {
-      label: "Weekly Pulse",
-      status: "Verified",
+      label: "Недельные события",
+      status: "Проверено",
       title: "Официальный источник и срок",
-      text: "Текущие события привязаны к конкретному Rockstar Newswire и автоматически переходят в архив после valid-through.",
-      meta: "Checked · " + weeklyMeta.checkedAt
+      text: "Текущие события привязаны к конкретной публикации Rockstar и автоматически переходят в архив после указанной даты.",
+      meta: "Проверено · " + weeklyMeta.checkedAt
     },
     {
-      label: "Independence",
-      status: "Independent",
+      label: "Независимость",
+      status: "Независимый проект",
       title: "Никакой скрытой аффилиации",
-      text: "Money Meta - независимый аналитический продукт. Он не связан с Rockstar Games и не строится на читах, продаже аккаунтов или нарушении правил.",
-      meta: "Owned visuals · transparent models"
+      text: "Money Meta является независимым аналитическим продуктом. Он не связан с Rockstar Games и не строится на читах, продаже аккаунтов или нарушении правил.",
+      meta: "Оригинальные иллюстрации · прозрачные модели"
     }
   ],
-  source: "Официальный Weekly-источник",
-  fullModel: "Открыть полный Calculator Suite"
+  source: "Официальный источник событий",
+  fullModel: "Открыть все калькуляторы"
 } : {
   title: "GTA Online Economy Hub - economy map, meta and calculators | Money Meta",
   description: "A complete GTA Online economy map with personal routes, official Weekly Pulse, conditional business rankings, scenarios and a deep research library.",
@@ -176,9 +176,10 @@ const copy = lang === "ru" ? {
       <GameWorldHero
         image={gtaEconomyWorld}
         alt={lang === "ru" ? "Оригинальная иллюстрация Money Meta: ночной город и сеть денежных потоков GTA Online" : "Original Money Meta illustration of a night city and GTA Online cash-flow network"}
-        worldCode="CITY NETWORK / 01"
+        worldCode={lang === "ru" ? "ГОРОДСКАЯ СЕТЬ / 01" : "CITY NETWORK / 01"}
+        originalLabel={lang === "ru" ? "Оригинал Money Meta" : "Money Meta original"}
       >
-        <div class="hero-live-line"><span></span>Portfolio economy · active model</div>
+        <div class="hero-live-line"><span></span>{lang === "ru" ? "Экономика портфеля · рабочая модель" : "Portfolio economy · active model"}</div>
         <p class="eyebrow">{copy.eyebrow}</p>
         <h1>{copy.heading}</h1>
         <p class="lede">{copy.lede}</p>
@@ -195,7 +196,7 @@ const copy = lang === "ru" ? {
       </GameWorldHero>
 
       <nav class="hub-jump-nav" aria-label={copy.navLabel}>
-        <span class="hub-jump-brand"><i aria-hidden="true"></i>GTA / ECONOMY OS</span>
+        <span class="hub-jump-brand"><i aria-hidden="true"></i>{lang === "ru" ? "GTA / ЭКОНОМИКА ГОРОДА" : "GTA / ECONOMY OS"}</span>
         <div>
           {copy.nav.map(([label, href], index) => <a href={href}><span>0{index + 1}</span>{label}</a>)}
         </div>

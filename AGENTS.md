@@ -20,6 +20,9 @@ Primary promise: **Understand the economy. Make the smarter move.**
 - Every material datum needs a game version, check date, source note and verification status.
 - Prefer ranges and editable assumptions to invented precision.
 - English-first distribution with complete Russian product parity.
+- Treat Russian as an original editorial edition, not a literal translation. Russian interface and prose must use natural Russian wording; keep English only for established in-game proper names, abbreviations and player terms that would sound less natural when translated.
+- Avoid generic AI-style copy: no stacked slogans, unnecessary abstractions, repetitive three-part constructions or English product jargon inside Russian sentences. Prefer a concrete player situation, a clear conclusion and one direct action.
+- Avoid em dashes in published copy. Use ordinary Russian punctuation and short sentences where possible.
 - Do not imply affiliation with game publishers.
 - Do not build around cheats, botting, account selling or violations of game rules.
 

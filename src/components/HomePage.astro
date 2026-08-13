@@ -26,7 +26,7 @@ const ck3Path = lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
 
 const copy = lang === "ru" ? {
-  title: "Money Meta - аналитика и инструменты для игровых экономик",
+  title: "Money Meta | аналитика и инструменты для игровых экономик",
   description: "Money Meta разбирает внутриигровые экономики и превращает их в решения: что купить, когда окупится, какой риск принять и что делать дальше.",
   kicker: "Игры как системы решений",
   headingA: "Пойми экономику любимой игры.",
@@ -37,16 +37,16 @@ const copy = lang === "ru" ? {
   promises: ["Сначала объясняем систему", "Затем показываем варианты", "В конце даём инструмент для решения"],
   atlasLabel: "Пять игровых экономик Money Meta",
   atlasKicker: "Одна идея · пять разных миров",
-  atlasStatus: "Living economy atlas",
+  atlasStatus: "Атлас игровых экономик",
   atlasTitle: "У каждой игры своя валюта. Логика решений универсальна.",
   atlasText: "Money Meta показывает, как время, ресурсы, риск и прогресс связаны между собой.",
   worldTypes: ["Производство", "Экономика матча", "Рынок игроков", "Экономика кампании", "Капитал династии"],
   audienceKicker: "Для кого создан Money Meta",
   audienceTitle: "Начни со своей ситуации",
   audiences: [
-    ["RETURNER", "Вернулся после перерыва", "Быстро поймёшь, что изменилось и на чём сосредоточиться."],
-    ["LIMITED TIME", "Играешь несколько часов в неделю", "Выберешь маршрут с лучшей отдачей на время."],
-    ["GRINDER", "Хочешь оптимизировать глубже", "Проверишь эффективность маршрутов, покупок и запасов."]
+    ["ВОЗВРАЩЕНИЕ", "Вернулся после перерыва", "Быстро поймёшь, что изменилось и на чём сосредоточиться."],
+    ["МАЛО ВРЕМЕНИ", "Играешь несколько часов в неделю", "Выберешь маршрут с лучшей отдачей на время."],
+    ["ОПТИМИЗАЦИЯ", "Хочешь разобраться глубже", "Проверишь эффективность маршрутов, покупок и запасов."]
   ],
   whatKicker: "Как работает Money Meta",
   whatTitle: "Сначала понимаешь систему. Потом принимаешь решение.",
@@ -59,65 +59,65 @@ const copy = lang === "ru" ? {
   canKicker: "Что есть внутри каждого игрового хаба",
   canSystem: "6 слоёв · один понятный путь",
   capabilities: [
-    ["MAP", "Визуальная карта экономики и связей между её частями"],
-    ["PATH", "Персональный путь для returner, casual и grinder"],
-    ["PULSE", "Актуальная мета, патчи и изменения контекста"],
-    ["LIBRARY", "Большая библиотека прикладных разборов"],
-    ["RANKINGS", "Рейтинги и сравнения под разные ограничения"],
-    ["LAB", "Калькуляторы и сценарии с редактируемыми вводными"]
+    ["КАРТА", "Визуальная карта экономики и связей между её частями"],
+    ["ПУТЬ", "Персональный маршрут для разных стилей игры"],
+    ["МЕТА", "Актуальная мета, патчи и важные изменения"],
+    ["РАЗБОРЫ", "Большая библиотека прикладных материалов"],
+    ["РЕЙТИНГИ", "Рейтинги и сравнения с учётом ограничений"],
+    ["МОДЕЛИ", "Калькуляторы и сценарии с редактируемыми вводными"]
   ],
   chooseKicker: "Когда смысл понятен",
   chooseTitle: "Теперь выбери экономику, которую хочешь освоить.",
   chooseText: "Каждый хаб начинается с карты и твоей ситуации, а уже потом ведёт к рейтингам, сценариям и калькуляторам.",
   active: "Доступно сейчас",
-  gtaTag: "Production economy",
+  gtaTag: "Экономика производства",
   gtaTitle: "GTA Online",
   gtaText: "Покупки на миллионы должны окупаться, а не просто красиво выглядеть в гараже.",
   gtaQuestions: [["Что купить следующим?", `${calculatorPath}#next-move`], ["Какой бизнес быстрее окупится?", gtaPath], ["Как собрать портфель под мой бюджет?", `${calculatorPath}#portfolio`]],
-  dotaTag: "Match economy",
+  dotaTag: "Экономика матча",
   dotaTitle: "Dota 2",
-  dotaText: "Каждая покупка обменивает tempo сейчас на ценность позже. Посчитай этот trade-off.",
-  dotaQuestions: [["Окупится ли Hand of Midas?", `${dotaPath}#midas-irr`], ["Хватит ли золота на buyback?", `${dotaPath}#buyback-reserve`]],
-  wowTag: "Market economy",
+  dotaText: "Каждая покупка меняет силу героя сейчас и его возможности позже. Сравни оба варианта на цифрах.",
+  dotaQuestions: [["Окупится ли Hand of Midas?", `${dotaPath}#midas-irr`], ["Хватит ли золота на выкуп?", `${dotaPath}#buyback-reserve`]],
+  wowTag: "Рыночная экономика",
   wowTitle: "WoW Retail",
-  wowText: "Цена в Auction House ещё не прибыль. Комиссия, sell-through и inventory меняют ответ.",
+  wowText: "Цена на аукционе ещё не означает прибыль. Комиссия, скорость продаж и непроданные запасы меняют итог.",
   wowQuestions: [["Этот крафт реально прибыльный?", `${wowPath}#crafting-margin`], ["Сколько золота фарм приносит на деле?", `${wowPath}#farm-liquidity`]],
-  totalWarTag: "Campaign economy",
+  totalWarTag: "Экономика кампании",
   totalWarTitle: "Total War: Warhammer III",
-  totalWarText: "Казна, провинции, армейский upkeep и захват должны работать как одна система.",
-  totalWarQuestions: [["Окупится ли income-здание?", `${totalWarPath}#building-payback`], ["Хватит ли казны на новую армию?", `${totalWarPath}#war-reserve`], ["Sack или occupy?", `${totalWarPath}#conquest-choice`]],
-  ck3Tag: "Dynasty economy",
+  totalWarText: "Казна, провинции, содержание армий и завоевания должны работать как одна система.",
+  totalWarQuestions: [["Окупится ли доходное здание?", `${totalWarPath}#building-payback`], ["Хватит ли казны на новую армию?", `${totalWarPath}#war-reserve`], ["Разграбить или занять?", `${totalWarPath}#conquest-choice`]],
+  ck3Tag: "Экономика династии",
   ck3Title: "Crusader Kings III",
-  ck3Text: "Богатое правление важно только тогда, когда treasury переживает войну и наследование.",
-  ck3Questions: [["Окупится ли здание домена?", `${ck3Path}#domain-payback`], ["Хватит ли gold на войну?", `${ck3Path}#war-chest`], ["Какой buffer получит наследник?", `${ck3Path}#succession-buffer`]],
-  featuredKicker: "Flagship analysis",
+  ck3Text: "Богатство правителя имеет смысл, только если казна переживёт войну и смену наследника.",
+  ck3Questions: [["Окупится ли здание домена?", `${ck3Path}#domain-payback`], ["Хватит ли золота на войну?", `${ck3Path}#war-chest`], ["Какой запас получит наследник?", `${ck3Path}#succession-buffer`]],
+  featuredKicker: "Главные разборы",
   featuredTitle: "Цифры, которые меняют решение.",
   featuredText: "Короткие разборы ведут от популярного совета к проверяемому выводу и инструменту.",
   allNotes: "Все разборы",
   readNote: "Читать",
-  signalKicker: "Money Meta pulse",
+  signalKicker: "Проверка актуальности",
   signalTitle: "Контекст меняется. Модели это показывают.",
-  signalText: "Каждый инструмент отделяет проверенный контекст от редактируемых baseline-оценок.",
+  signalText: "Каждый инструмент отделяет проверенные данные от рабочих оценок, которые можно изменить.",
   validThrough: "Действует до",
   checked: "Проверено",
   sourceState: "Статус данных",
-  weekly: "GTA Weekly Meta",
-  dota: "Dota patch context",
-  wow: "WoW Retail context",
-  totalWarPulse: "Total War campaign context",
-  ck3Pulse: "CK3 dynasty context",
+  weekly: "Еженедельные события GTA",
+  dota: "Актуальный патч Dota 2",
+  wow: "Актуальный контекст WoW Retail",
+  totalWarPulse: "Контекст кампании Total War",
+  ck3Pulse: "Контекст династии CK3",
   compareKicker: "Почему не обычный гайд",
   compareTitle: "Гайд даёт мнение. Money Meta даёт решение.",
   generic: "Обычный гайд",
   moneyMeta: "Money Meta",
   compareRows: [
     ["Показывает теоретический доход", "Считает чистый результат после расходов"],
-    ["Один tier list для всех", "Учитывает бюджет, время и стиль игры"],
-    ["Скрытые или устаревшие допущения", "Inputs, дата и статус видны и редактируются"],
+    ["Один рейтинг для всех", "Учитывает бюджет, время и стиль игры"],
+    ["Скрытые или устаревшие допущения", "Вводные, дата и статус видны и редактируются"],
     ["Посмотрел и забыл", "Сохранил сценарий, сравнил и отправил ссылкой"]
   ],
   trustTitle: "Никакой выдуманной точности.",
-  trustText: "Verified, estimated и community-reported никогда не смешиваются. Если данные устарели, Money Meta скажет это раньше, чем даст совет."
+  trustText: "Проверенные данные, рабочие оценки и сведения от сообщества не смешиваются. Если информация устарела, Money Meta предупредит об этом до рекомендации."
 } : {
   title: "Money Meta - analytics and tools for in-game economies",
   description: "Money Meta takes in-game economies apart and turns them into decisions: what to buy, when it pays back, which risk to accept and what to do next.",
@@ -264,7 +264,7 @@ const copy = lang === "ru" ? {
             ))}
           </div>
           <div class="atlas-caption">
-            <span>Money Meta / Economy Atlas</span>
+            <span>{lang === "ru" ? "Money Meta / Атлас экономики" : "Money Meta / Economy Atlas"}</span>
             <strong>{copy.atlasTitle}</strong>
             <p>{copy.atlasText}</p>
           </div>
@@ -299,14 +299,14 @@ const copy = lang === "ru" ? {
             <h2>{copy.chooseTitle}</h2>
             <p class="section-copy">{copy.chooseText}</p>
           </div>
-          <span class="count">5 games · 15 live models</span>
+          <span class="count">{lang === "ru" ? "5 игр · 15 рабочих моделей" : "5 games · 15 live models"}</span>
         </div>
 
         <div class="game-entry-grid">
           {[
             { key: "gta", tag: copy.gtaTag, title: copy.gtaTitle, text: copy.gtaText, questions: copy.gtaQuestions, mark: "GTA$", image: gtaEconomyWorld },
             { key: "dota", tag: copy.dotaTag, title: copy.dotaTitle, text: copy.dotaText, questions: copy.dotaQuestions, mark: "M", image: dotaEconomyWorld },
-            { key: "wow", tag: copy.wowTag, title: copy.wowTitle, text: copy.wowText, questions: copy.wowQuestions, mark: "AH", image: wowEconomyWorld },
+            { key: "wow", tag: copy.wowTag, title: copy.wowTitle, text: copy.wowText, questions: copy.wowQuestions, mark: lang === "ru" ? "АУК" : "AH", image: wowEconomyWorld },
             { key: "total-war", tag: copy.totalWarTag, title: copy.totalWarTitle, text: copy.totalWarText, questions: copy.totalWarQuestions, mark: "TW", image: totalWarEconomyWorld, isNew: true },
             { key: "ck3", tag: copy.ck3Tag, title: copy.ck3Title, text: copy.ck3Text, questions: copy.ck3Questions, mark: "CK", image: ck3EconomyWorld, isNew: true }
           ].map((game) => (
@@ -319,7 +319,7 @@ const copy = lang === "ru" ? {
               <span class="game-tag">{game.tag}</span>
               <h3>{game.title}</h3>
               <p>{game.text}</p>
-              <nav class="question-list" aria-label={`${game.title} decisions`}>
+              <nav class="question-list" aria-label={lang === "ru" ? `Решения по ${game.title}` : `${game.title} decisions`}>
                 {game.questions.map(([label, href]) => <a href={href}><span>{label}</span><strong>↗</strong></a>)}
               </nav>
             </article>
@@ -357,28 +357,28 @@ const copy = lang === "ru" ? {
         </div>
         <div class="pulse-grid">
           <a class="pulse-card pulse-gta" href={gtaPath}>
-            <div class="pulse-head"><span>{copy.weekly}</span><span class="pulse-state">{weeklyMeta.status}</span></div>
+            <div class="pulse-head"><span>{copy.weekly}</span><span class="pulse-state">{lang === "ru" ? (weeklyMeta.status === "verified" ? "проверено" : "оценка") : weeklyMeta.status}</span></div>
             <strong>{weeklyMeta.items[lang][0]}</strong>
             <div class="pulse-meta"><span>{copy.validThrough}</span><b>{weeklyMeta.validThrough}</b></div>
           </a>
           <a class="pulse-card pulse-dota" href={dotaPath}>
-            <div class="pulse-head"><span>{copy.dota}</span><span class="pulse-state">{dotaPatchContext.status}</span></div>
-            <strong>Patch {dotaPatchContext.patch} · Midas + buyback models</strong>
+            <div class="pulse-head"><span>{copy.dota}</span><span class="pulse-state">{lang === "ru" ? "частично проверено" : dotaPatchContext.status}</span></div>
+            <strong>{lang === "ru" ? `Патч ${dotaPatchContext.patch} · модели Midas и выкупа` : `Patch ${dotaPatchContext.patch} · Midas + buyback models`}</strong>
             <div class="pulse-meta"><span>{copy.checked}</span><b>{dotaPatchContext.checkedAt}</b></div>
           </a>
           <a class="pulse-card pulse-wow" href={wowPath}>
-            <div class="pulse-head"><span>{copy.wow}</span><span class="pulse-state">{wowPatchContext.status}</span></div>
+            <div class="pulse-head"><span>{copy.wow}</span><span class="pulse-state">{lang === "ru" ? "частично проверено" : wowPatchContext.status}</span></div>
             <strong>{wowPatchContext.release}</strong>
             <div class="pulse-meta"><span>{copy.checked}</span><b>{wowPatchContext.checkedAt}</b></div>
           </a>
           <a class="pulse-card pulse-total-war" href={totalWarPath}>
-            <div class="pulse-head"><span>{copy.totalWarPulse}</span><span class="pulse-state">verified</span></div>
-            <strong>{totalWarHub.version} · {totalWarHub.pulse.changes[0]!.title[lang]}</strong>
+            <div class="pulse-head"><span>{copy.totalWarPulse}</span><span class="pulse-state">{lang === "ru" ? "проверено" : "verified"}</span></div>
+            <strong>{totalWarHub.version[lang]} · {totalWarHub.pulse.changes[0]!.title[lang]}</strong>
             <div class="pulse-meta"><span>{copy.checked}</span><b>{totalWarHub.checkedAt}</b></div>
           </a>
           <a class="pulse-card pulse-ck3" href={ck3Path}>
-            <div class="pulse-head"><span>{copy.ck3Pulse}</span><span class="pulse-state">verified</span></div>
-            <strong>{crusaderKingsHub.version} · Silk & Silver Q4 watch</strong>
+            <div class="pulse-head"><span>{copy.ck3Pulse}</span><span class="pulse-state">{lang === "ru" ? "проверено" : "verified"}</span></div>
+            <strong>{crusaderKingsHub.version[lang]} · {lang === "ru" ? "следим за Silk & Silver в IV квартале" : "Silk & Silver Q4 watch"}</strong>
             <div class="pulse-meta"><span>{copy.checked}</span><b>{crusaderKingsHub.checkedAt}</b></div>
           </a>
         </div>

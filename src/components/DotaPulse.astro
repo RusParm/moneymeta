@@ -8,18 +8,18 @@ const checkedAt = new Date(`${dotaPulse.checkedAt}T00:00:00Z`).getTime();
 const stale = Date.now() - checkedAt > dotaPulse.staleAfterDays * 86_400_000;
 
 const copy = lang === "ru" ? {
-  kicker: "Patch Pulse · official delta → decision",
-  title: `Что изменилось в ${dotaPulse.patch}: на языке золота и timing`,
-  text: "Не пересказываем весь patch. Pulse показывает только изменения, которые способны сдвинуть payback, item utility или buyback decision.",
-  verified: "Verified · Valve notes",
+  kicker: "Изменения патча · от факта к решению",
+  title: `Что изменилось в ${dotaPulse.patch}: на языке золота и решений`,
+  text: "Мы не пересказываем весь патч. Здесь собраны только изменения, которые способны повлиять на окупаемость, пользу предметов и решение о выкупе.",
+  verified: "Проверено · материалы Valve",
   current: `Проверено ${dotaPulse.checkedAt} · ${dotaPulse.patch}`,
-  stale: `Требует перепроверки · последний check ${dotaPulse.checkedAt}`,
+  stale: `Требует перепроверки · последняя проверка ${dotaPulse.checkedAt}`,
   action: "Что делать иначе",
   evidence: "Источник изменения",
-  source: "Открыть patch notes",
-  guardTitle: "Patch freshness guard",
-  guardCurrent: `Контекст ${dotaPulse.patch} проверен. Числовые модели отделяют official changes от community-cross-checked defaults.`,
-  guardStale: "С момента проверки прошло более 45 дней. Данные сохранены как baseline, но current-статус снят до повторной сверки."
+  source: "Открыть описание патча",
+  guardTitle: "Проверка актуальности патча",
+  guardCurrent: `Контекст ${dotaPulse.patch} проверен. Числовые модели отделяют официальные изменения от исходных значений, сверенных с игровым сообществом.`,
+  guardStale: "С момента проверки прошло более 45 дней. Исходные значения сохранены, но отметка актуальности снята до повторной сверки."
 } : {
   kicker: "Patch Pulse · official delta → decision",
   title: `What changed in ${dotaPulse.patch}: gold and timing`,

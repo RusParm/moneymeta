@@ -10,14 +10,14 @@ const dotaInsights = insights.filter((insight) => insight.game === "dota");
 const media = [dotaMedia.handOfMidas, dotaMedia.tp, dotaMedia.bkb, dotaMedia.aegis, dotaMedia.observerWard, dotaMedia.maelstrom];
 
 const copy = lang === "ru" ? {
-  kicker: "Replay library · from result to decision",
-  title: "Не build-гайды. Разборы экономических развилок.",
-  text: "Каждый материал начинаетcя с игрового момента, отделяет измеримое от judgement и заканчивается готовым сценарием в модели.",
-  filters: [["all", "Все"], ["returner", "Returner"], ["casual", "Limited matches"], ["grinder", "Replay grinder"]],
+  kicker: "Библиотека повторов · от результата к решению",
+  title: "Не готовые сборки, а разборы экономических развилок.",
+  text: "Каждый материал начинается с игрового момента, отделяет измеримое от экспертной оценки и заканчивается готовым сценарием в модели.",
+  filters: [["all", "Все"], ["returner", "После перерыва"], ["casual", "Мало матчей"], ["grinder", "Разбор повторов"]],
   read: "Читать разбор",
   updated: "Проверено",
-  estimated: "Estimated model",
-  verified: "Verified source",
+  estimated: "Рабочая модель",
+  verified: "Проверенный источник",
   showing: "разборов"
 } : {
   kicker: "Replay library · from result to decision",
@@ -39,7 +39,7 @@ const copy = lang === "ru" ? {
       <h2 id="dota-library-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count"><span data-library-count>{dotaInsights.length}</span> {copy.showing} · RU/EN</span>
+    <span class="count"><span data-library-count>{dotaInsights.length}</span> {copy.showing} · {lang === "ru" ? "на двух языках" : "RU/EN"}</span>
   </div>
 
   <div class="library-filter" role="group" aria-label={lang === "ru" ? "Фильтр Dota-разборов" : "Filter Dota research"}>
@@ -71,7 +71,7 @@ const copy = lang === "ru" ? {
           <div class="research-card-foot">
             <span>{content.readTime}</span>
             <span>{copy.updated} · {insight.updatedAt}</span>
-            <span>{insight.gameVersion}</span>
+            <span>{insight.gameVersion[lang]}</span>
           </div>
           <a href={`${prefix}/insights/${insight.slug}/`} aria-label={`${copy.read}: ${content.title}`}>{copy.read} →</a>
         </article>

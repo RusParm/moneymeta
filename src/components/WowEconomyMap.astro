@@ -7,9 +7,9 @@ const { lang } = Astro.props;
 const first = wowEconomyNodes[0]!;
 
 const copy = lang === "ru" ? {
-  kicker: "Economy map · market flywheel",
-  title: "Проследи путь одного gold: от reagent до следующего market cycle",
-  text: "WoW Retail работает как цепочка working capital. Материалы становятся stock, stock проходит через рынок, а только реализованный cash финансирует следующий ход.",
+  kicker: "Карта экономики · оборот капитала",
+  title: "Проследи путь одной монеты: от материала до следующего рыночного цикла",
+  text: "Экономика WoW Retail работает как цепочка оборотного капитала. Материалы становятся товаром, товар проходит через рынок, а следующий ход финансирует только реально полученное золото.",
   label: "Интерактивная карта экономики WoW Retail",
   signal: "Ключевой сигнал",
   decision: "Решение игрока",
@@ -32,7 +32,7 @@ const copy = lang === "ru" ? {
       <h2 id="wow-economy-map-title">{copy.title}</h2>
       <p class="section-copy">{copy.text}</p>
     </div>
-    <span class="count">01-07 · interactive</span>
+    <span class="count">{lang === "ru" ? "01-07 · интерактивная карта" : "01-07 · interactive"}</span>
   </div>
 
   <div class="economy-map wow-economy-map" data-wow-map>
@@ -50,7 +50,7 @@ const copy = lang === "ru" ? {
           data-decision={node.decision[lang]}
           data-signal={node.signal[lang]}
           data-href={node.href}
-          data-mark={node.mark.code}
+          data-mark={node.mark.code[lang]}
           data-tone={node.mark.tone}
           data-glyph={node.mark.glyph}
           data-mark-label={node.mark.label[lang]}
