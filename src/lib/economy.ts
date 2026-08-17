@@ -1,4 +1,5 @@
 import type { DecisionPriority, GtaBusiness } from "../data/gta-businesses";
+import { isExpired } from "./freshness";
 
 export interface BusinessMetrics {
   grossSale: number;
@@ -224,8 +225,7 @@ export function calculateGoalRunway(input: GoalRunwayInput): GoalRunwayMetrics {
 }
 
 export function isSnapshotStale(validThrough: string, asOf = new Date()): boolean {
-  const endOfValidity = new Date(`${validThrough}T23:59:59Z`);
-  return asOf.getTime() > endOfValidity.getTime();
+  return isExpired(validThrough, asOf);
 }
 
 export function gradeForScore(score: number): string {

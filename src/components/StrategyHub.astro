@@ -2,6 +2,7 @@
 import type { ImageMetadata } from "astro";
 import type { StrategyHubData, StrategyLocale } from "../data/strategy-hubs";
 import "../styles/strategy-hub.css";
+import { isOlderThanDays } from "../lib/freshness";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GameWorldHero from "./GameWorldHero.astro";
@@ -15,6 +16,7 @@ const prefix = lang === "ru" ? "" : "/en";
 const root = `${prefix}/${data.slug}/`;
 const alternatePath = `${lang === "ru" ? "/en" : ""}/${data.slug}/`;
 const firstNode = data.economyNodes[0]!;
+const pulseStale = isOlderThanDays(data.checkedAt, data.staleAfterDays);
 
 const copy = lang === "ru" ? {
   back: "← Все экономики",
@@ -38,6 +40,10 @@ const copy = lang === "ru" ? {
   action: "Что делать иначе",
   source: "Первоисточник",
   verified: "Проверено по официальным источникам",
+  recheck: "Нужна повторная проверка",
+  freshnessTitle: "Проверка актуальности включена",
+  freshnessCurrent: `Контекст проверен ${data.checkedAt} и находится внутри ${data.staleAfterDays}-дневного окна. Числа конкретной кампании по-прежнему вводит игрок.`,
+  freshnessStale: `С последней проверки прошло ${data.staleAfterDays} дней. Материалы остаются историческим контекстом до повторной сверки источников.`,
   lensKicker: "Решения зависят от цели",
   lensTitle: data.id === "ck3" ? "Лучший ход меняется вместе с правлением" : "Лучший ход меняется вместе с фазой кампании",
   lensText: "Переключай цель и смотри, почему лучший вариант меняется. Здесь нет одной стратегии, которая подходит любой кампании.",
@@ -83,6 +89,10 @@ const copy = lang === "ru" ? {
   action: "What changes now",
   source: "Primary source",
   verified: "Verified · official",
+  recheck: "Recheck required",
+  freshnessTitle: "Freshness guard is on",
+  freshnessCurrent: `Context was checked ${data.checkedAt} and remains inside the ${data.staleAfterDays}-day review window. Campaign values still come from the player.`,
+  freshnessStale: `${data.staleAfterDays} days have passed since the last review. Cards remain historical context until the sources are checked again.`,
   lensKicker: "Decision lenses · no universal tier list",
   lensTitle: data.id === "ck3" ? "The best move changes with the reign" : "The best move changes with the campaign phase",
   lensText: "Switch the objective and see why the leader changes. This is a decision order, not one strategy promised to every player.",
@@ -250,10 +260,21 @@ const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв
         </div>
       </section>
 
-      <section id={pulseId} class="section hub-section pulse-section strategy-pulse-section" aria-labelledby={`${data.id}-pulse-title`}>
+      <section
+        id={pulseId}
+        class={`section hub-section pulse-section strategy-pulse-section ${pulseStale ? "is-stale" : "is-current"}`}
+        data-strategy-pulse
+        data-checked-at={data.checkedAt}
+        data-stale-after={data.staleAfterDays}
+        data-current-status={copy.verified}
+        data-stale-status={copy.recheck}
+        data-current-guard={copy.freshnessCurrent}
+        data-stale-guard={copy.freshnessStale}
+        aria-labelledby={`${data.id}-pulse-title`}
+      >
         <div class="section-head hub-section-head">
           <div><span class="section-kicker">{copy.pulseKicker}</span><h2 id={`${data.id}-pulse-title`}>{data.pulse.title[lang]}</h2><p class="section-copy">{data.pulse.text[lang]}</p></div>
-          <div class="pulse-status-stack"><span class="pill strategy-pill">{copy.verified}</span><span class="pulse-window">{data.version[lang]} · {data.checkedAt}</span></div>
+          <div class="pulse-status-stack"><span class="pill strategy-pill" data-pulse-status>{pulseStale ? copy.recheck : copy.verified}</span><span class="pulse-window">{data.version[lang]} · {data.checkedAt}</span></div>
         </div>
         <div class="pulse-grid">
           {data.pulse.changes.map((change, index) => (
@@ -264,6 +285,11 @@ const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв
               <div class="pulse-decision"><span>{copy.action}</span><p>{change.decision[lang]}</p></div>
             </article>
           ))}
+        </div>
+        <div class="pulse-guard">
+          <div class="pulse-orbit" aria-hidden="true"><span></span></div>
+          <div><strong>{copy.freshnessTitle}</strong><p data-pulse-guard>{pulseStale ? copy.freshnessStale : copy.freshnessCurrent}</p></div>
+          <a class="source-link" href={data.pulse.changes[0]!.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} ↗</a>
         </div>
       </section>
 
@@ -337,6 +363,21 @@ const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв
 </BaseLayout>
 
 <script>
+  import { isOlderThanDays } from "../lib/freshness";
+
+  document.querySelectorAll<HTMLElement>("[data-strategy-pulse]").forEach((root) => {
+    const checkedAt = root.dataset.checkedAt;
+    const staleAfterDays = Number(root.dataset.staleAfter ?? 45);
+    if (!checkedAt) return;
+    const stale = isOlderThanDays(checkedAt, staleAfterDays);
+    root.classList.toggle("is-stale", stale);
+    root.classList.toggle("is-current", !stale);
+    const status = root.querySelector<HTMLElement>("[data-pulse-status]");
+    if (status) status.textContent = stale ? root.dataset.staleStatus ?? "Recheck" : root.dataset.currentStatus ?? "Verified";
+    const guard = root.querySelector<HTMLElement>("[data-pulse-guard]");
+    if (guard) guard.textContent = stale ? root.dataset.staleGuard ?? "Recheck" : root.dataset.currentGuard ?? "Current";
+  });
+
   document.querySelectorAll<HTMLElement>("[data-strategy-map]").forEach((root) => {
     const nodes = [...root.querySelectorAll<HTMLButtonElement>("[data-map-node]")];
     const targets = {
