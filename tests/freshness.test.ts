@@ -18,4 +18,3 @@ describe("freshness guards", () => {
     expect(isOlderThanDays("2026-08-12", -1, new Date("2026-08-12T00:00:00Z"))).toBe(true);
   });
 });
-

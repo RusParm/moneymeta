@@ -22,4 +22,3 @@ export function isOlderThanDays(
   if (start === null || !Number.isFinite(staleAfterDays) || staleAfterDays < 0) return true;
   return asOf.getTime() >= start + staleAfterDays * DAY_MS;
 }
-
