@@ -1111,7 +1111,9 @@ details p { margin: 0 0 10px; }
     radial-gradient(230px 150px at 95% -10%, rgba(0,230,202,.1), transparent 68%),
     linear-gradient(155deg, rgba(20,29,39,.95), rgba(9,14,22,.99));
 }
-.is-stale .pulse-card { filter: saturate(.46); border-color: var(--line); }
+.is-stale .pulse-card,
+.pulse-card.is-stale { filter: saturate(.46); border-color: var(--line); }
+.pulse-card.is-stale .pulse-state { color: var(--gold); }
 .pulse-card-top { display: flex; justify-content: space-between; gap: 12px; color: var(--muted-dim); font: 700 10px "JetBrains Mono", monospace; }
 .pulse-card-top strong { color: var(--teal); font-size: 11px; }
 .is-stale .pulse-card-top strong { color: var(--gold); }

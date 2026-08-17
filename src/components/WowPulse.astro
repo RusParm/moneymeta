@@ -1,11 +1,11 @@
 ---
 import { wowPulse } from "../data/wow-hub";
+import { isOlderThanDays } from "../lib/freshness";
 import WowMarketMark from "./WowMarketMark.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
-const ageDays = Math.floor((Date.now() - new Date(`${wowPulse.checkedAt}T00:00:00Z`).getTime()) / 86_400_000);
-const stale = ageDays > wowPulse.staleAfterDays;
+const stale = isOlderThanDays(wowPulse.checkedAt, wowPulse.staleAfterDays);
 
 const copy = lang === "ru" ? {
   kicker: "Изменения рынка · официальный источник",
@@ -76,12 +76,13 @@ const copy = lang === "ru" ? {
 </section>
 
 <script>
+  import { isOlderThanDays } from "../lib/freshness";
+
   document.querySelectorAll<HTMLElement>("[data-wow-pulse]").forEach((root) => {
     const checkedAt = root.dataset.checkedAt;
     const staleAfter = Number(root.dataset.staleAfter ?? 30);
     if (!checkedAt) return;
-    const age = (Date.now() - new Date(`${checkedAt}T00:00:00Z`).getTime()) / 86_400_000;
-    const stale = age > staleAfter;
+    const stale = isOlderThanDays(checkedAt, staleAfter);
     root.classList.toggle("is-stale", stale);
     root.classList.toggle("is-current", !stale);
     const windowLabel = root.querySelector<HTMLElement>("[data-pulse-window]");

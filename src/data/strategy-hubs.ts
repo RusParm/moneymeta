@@ -108,6 +108,7 @@ export interface StrategyHubData {
   publisher: string;
   worldCode: Localized;
   checkedAt: string;
+  staleAfterDays: number;
   version: Localized;
   currencyUnit: Localized;
   periodUnit: Localized;
@@ -159,6 +160,7 @@ export const totalWarHub: StrategyHubData = {
   publisher: "SEGA / Creative Assembly",
   worldCode: ruEn("КАПИТАЛ КАМПАНИИ / 8.1", "CAMPAIGN CAPITAL / 8.1"),
   checkedAt: "2026-08-12",
+  staleAfterDays: 45,
   version: ruEn("Патч 8.1", "Patch 8.1"),
   currencyUnit: ruEn("зол.", "gold"),
   periodUnit: ruEn("ход.", "turns"),
@@ -359,6 +361,7 @@ export const crusaderKingsHub: StrategyHubData = {
   publisher: "Paradox Interactive",
   worldCode: ruEn("КАЗНА ДИНАСТИИ / 1.19.0.6", "DYNASTY LEDGER / 1.19.0.6"),
   checkedAt: "2026-08-12",
+  staleAfterDays: 45,
   version: ruEn("1.19.0.6", "1.19.0.6"),
   currencyUnit: ruEn("зол.", "gold"),
   periodUnit: ruEn("мес.", "months"),

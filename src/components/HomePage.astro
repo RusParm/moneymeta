@@ -6,10 +6,13 @@ import gtaEconomyWorld from "../assets/game-worlds/gta-economy-world.webp";
 import totalWarEconomyWorld from "../assets/game-worlds/total-war-economy-world.webp";
 import wowEconomyWorld from "../assets/game-worlds/wow-economy-world.webp";
 import { dotaPatchContext } from "../data/dota-economy";
+import { dotaPulse } from "../data/dota-hub";
 import { weeklyMeta } from "../data/gta-businesses";
 import { insights } from "../data/insights";
 import { crusaderKingsHub, totalWarHub } from "../data/strategy-hubs";
 import { wowPatchContext } from "../data/wow-economy";
+import { wowPulse } from "../data/wow-hub";
+import { isExpired, isOlderThanDays } from "../lib/freshness";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
@@ -24,6 +27,13 @@ const wowPath = lang === "ru" ? "/wow/" : "/en/wow/";
 const totalWarPath = lang === "ru" ? "/total-war/" : "/en/total-war/";
 const ck3Path = lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
+const pulseFreshness = {
+  gta: isExpired(weeklyMeta.validThrough),
+  dota: isOlderThanDays(dotaPulse.checkedAt, dotaPulse.staleAfterDays),
+  wow: isOlderThanDays(wowPulse.checkedAt, wowPulse.staleAfterDays),
+  totalWar: isOlderThanDays(totalWarHub.checkedAt, totalWarHub.staleAfterDays),
+  ck3: isOlderThanDays(crusaderKingsHub.checkedAt, crusaderKingsHub.staleAfterDays)
+};
 
 const copy = lang === "ru" ? {
   title: "Money Meta | аналитика и инструменты для игровых экономик",
@@ -100,6 +110,15 @@ const copy = lang === "ru" ? {
   signalText: "Каждый инструмент отделяет проверенные данные от рабочих оценок, которые можно изменить.",
   validThrough: "Действует до",
   checked: "Проверено",
+  lastChecked: "Последняя проверка",
+  ended: "Действовало до",
+  archive: "архив",
+  recheck: "нужна проверка",
+  gtaExpired: "Событие завершилось. В хабе сохранён архив, а постоянные модели работают с твоими вводными.",
+  dotaStale: `Патч ${dotaPatchContext.patch} требует повторной проверки перед использованием как актуального контекста.`,
+  wowStale: `${wowPatchContext.release} требует повторной проверки перед использованием как актуального контекста.`,
+  totalWarStale: `${totalWarHub.version.ru} требует повторной проверки по официальному источнику.`,
+  ck3Stale: `${crusaderKingsHub.version.ru} требует повторной проверки по официальному источнику.`,
   sourceState: "Статус данных",
   weekly: "Еженедельные события GTA",
   dota: "Актуальный патч Dota 2",
@@ -193,6 +212,15 @@ const copy = lang === "ru" ? {
   signalText: "Every tool separates verified context from editable baseline estimates.",
   validThrough: "Valid through",
   checked: "Checked",
+  lastChecked: "Last checked",
+  ended: "Ended",
+  archive: "archive",
+  recheck: "recheck required",
+  gtaExpired: "The event has ended. The hub keeps an archive while permanent models continue to use player inputs.",
+  dotaStale: `Patch ${dotaPatchContext.patch} needs a source recheck before it is treated as current context.`,
+  wowStale: `${wowPatchContext.release} needs a source recheck before it is treated as current context.`,
+  totalWarStale: `${totalWarHub.version.en} needs another check against the official source.`,
+  ck3Stale: `${crusaderKingsHub.version.en} needs another check against the official source.`,
   sourceState: "Data status",
   weekly: "GTA Weekly Meta",
   dota: "Dota patch context",
@@ -314,7 +342,7 @@ const copy = lang === "ru" ? {
               <Image class="game-entry-art" src={game.image} alt="" widths={[480, 720, 960]} sizes="(max-width: 820px) calc(100vw - 40px), 560px" loading="lazy" decoding="async" />
               <div class="game-entry-head">
                 <span class={`game-sigil game-sigil-${game.key}`}>{game.mark}</span>
-                <span class="availability"><i></i>{copy.active}{game.isNew ? " · v1.5" : ""}</span>
+                <span class="availability"><i></i>{copy.active}{game.isNew ? (lang === "ru" ? " · новое" : " · new") : ""}</span>
               </div>
               <span class="game-tag">{game.tag}</span>
               <h3>{game.title}</h3>
@@ -356,30 +384,94 @@ const copy = lang === "ru" ? {
           </div>
         </div>
         <div class="pulse-grid">
-          <a class="pulse-card pulse-gta" href={gtaPath}>
-            <div class="pulse-head"><span>{copy.weekly}</span><span class="pulse-state">{lang === "ru" ? (weeklyMeta.status === "verified" ? "проверено" : "оценка") : weeklyMeta.status}</span></div>
-            <strong>{weeklyMeta.items[lang][0]}</strong>
-            <div class="pulse-meta"><span>{copy.validThrough}</span><b>{weeklyMeta.validThrough}</b></div>
+          <a
+            class:list={["pulse-card", "pulse-gta", { "is-stale": pulseFreshness.gta }]}
+            href={gtaPath}
+            data-home-pulse-card
+            data-freshness-mode="expires"
+            data-valid-through={weeklyMeta.validThrough}
+            data-current-status={lang === "ru" ? (weeklyMeta.status === "verified" ? "проверено" : "оценка") : weeklyMeta.status}
+            data-stale-status={copy.archive}
+            data-current-copy={weeklyMeta.items[lang][0]}
+            data-stale-copy={copy.gtaExpired}
+            data-current-label={copy.validThrough}
+            data-stale-label={copy.ended}
+          >
+            <div class="pulse-head"><span>{copy.weekly}</span><span class="pulse-state" data-freshness-state>{pulseFreshness.gta ? copy.archive : (lang === "ru" ? (weeklyMeta.status === "verified" ? "проверено" : "оценка") : weeklyMeta.status)}</span></div>
+            <strong data-freshness-copy>{pulseFreshness.gta ? copy.gtaExpired : weeklyMeta.items[lang][0]}</strong>
+            <div class="pulse-meta"><span data-freshness-label>{pulseFreshness.gta ? copy.ended : copy.validThrough}</span><b>{weeklyMeta.validThrough}</b></div>
           </a>
-          <a class="pulse-card pulse-dota" href={dotaPath}>
-            <div class="pulse-head"><span>{copy.dota}</span><span class="pulse-state">{lang === "ru" ? "частично проверено" : dotaPatchContext.status}</span></div>
-            <strong>{lang === "ru" ? `Патч ${dotaPatchContext.patch} · модели Midas и выкупа` : `Patch ${dotaPatchContext.patch} · Midas + buyback models`}</strong>
-            <div class="pulse-meta"><span>{copy.checked}</span><b>{dotaPatchContext.checkedAt}</b></div>
+          <a
+            class:list={["pulse-card", "pulse-dota", { "is-stale": pulseFreshness.dota }]}
+            href={dotaPath}
+            data-home-pulse-card
+            data-freshness-mode="age"
+            data-checked-at={dotaPulse.checkedAt}
+            data-stale-after={dotaPulse.staleAfterDays}
+            data-current-status={lang === "ru" ? "частично проверено" : dotaPatchContext.status}
+            data-stale-status={copy.recheck}
+            data-current-copy={lang === "ru" ? `Патч ${dotaPatchContext.patch} · модели Midas и выкупа` : `Patch ${dotaPatchContext.patch} · Midas + buyback models`}
+            data-stale-copy={copy.dotaStale}
+            data-current-label={copy.checked}
+            data-stale-label={copy.lastChecked}
+          >
+            <div class="pulse-head"><span>{copy.dota}</span><span class="pulse-state" data-freshness-state>{pulseFreshness.dota ? copy.recheck : (lang === "ru" ? "частично проверено" : dotaPatchContext.status)}</span></div>
+            <strong data-freshness-copy>{pulseFreshness.dota ? copy.dotaStale : (lang === "ru" ? `Патч ${dotaPatchContext.patch} · модели Midas и выкупа` : `Patch ${dotaPatchContext.patch} · Midas + buyback models`)}</strong>
+            <div class="pulse-meta"><span data-freshness-label>{pulseFreshness.dota ? copy.lastChecked : copy.checked}</span><b>{dotaPatchContext.checkedAt}</b></div>
           </a>
-          <a class="pulse-card pulse-wow" href={wowPath}>
-            <div class="pulse-head"><span>{copy.wow}</span><span class="pulse-state">{lang === "ru" ? "частично проверено" : wowPatchContext.status}</span></div>
-            <strong>{wowPatchContext.release}</strong>
-            <div class="pulse-meta"><span>{copy.checked}</span><b>{wowPatchContext.checkedAt}</b></div>
+          <a
+            class:list={["pulse-card", "pulse-wow", { "is-stale": pulseFreshness.wow }]}
+            href={wowPath}
+            data-home-pulse-card
+            data-freshness-mode="age"
+            data-checked-at={wowPulse.checkedAt}
+            data-stale-after={wowPulse.staleAfterDays}
+            data-current-status={lang === "ru" ? "частично проверено" : wowPatchContext.status}
+            data-stale-status={copy.recheck}
+            data-current-copy={wowPatchContext.release}
+            data-stale-copy={copy.wowStale}
+            data-current-label={copy.checked}
+            data-stale-label={copy.lastChecked}
+          >
+            <div class="pulse-head"><span>{copy.wow}</span><span class="pulse-state" data-freshness-state>{pulseFreshness.wow ? copy.recheck : (lang === "ru" ? "частично проверено" : wowPatchContext.status)}</span></div>
+            <strong data-freshness-copy>{pulseFreshness.wow ? copy.wowStale : wowPatchContext.release}</strong>
+            <div class="pulse-meta"><span data-freshness-label>{pulseFreshness.wow ? copy.lastChecked : copy.checked}</span><b>{wowPatchContext.checkedAt}</b></div>
           </a>
-          <a class="pulse-card pulse-total-war" href={totalWarPath}>
-            <div class="pulse-head"><span>{copy.totalWarPulse}</span><span class="pulse-state">{lang === "ru" ? "проверено" : "verified"}</span></div>
-            <strong>{totalWarHub.version[lang]} · {totalWarHub.pulse.changes[0]!.title[lang]}</strong>
-            <div class="pulse-meta"><span>{copy.checked}</span><b>{totalWarHub.checkedAt}</b></div>
+          <a
+            class:list={["pulse-card", "pulse-total-war", { "is-stale": pulseFreshness.totalWar }]}
+            href={totalWarPath}
+            data-home-pulse-card
+            data-freshness-mode="age"
+            data-checked-at={totalWarHub.checkedAt}
+            data-stale-after={totalWarHub.staleAfterDays}
+            data-current-status={lang === "ru" ? "проверено" : "verified"}
+            data-stale-status={copy.recheck}
+            data-current-copy={`${totalWarHub.version[lang]} · ${totalWarHub.pulse.changes[0]!.title[lang]}`}
+            data-stale-copy={copy.totalWarStale}
+            data-current-label={copy.checked}
+            data-stale-label={copy.lastChecked}
+          >
+            <div class="pulse-head"><span>{copy.totalWarPulse}</span><span class="pulse-state" data-freshness-state>{pulseFreshness.totalWar ? copy.recheck : (lang === "ru" ? "проверено" : "verified")}</span></div>
+            <strong data-freshness-copy>{pulseFreshness.totalWar ? copy.totalWarStale : `${totalWarHub.version[lang]} · ${totalWarHub.pulse.changes[0]!.title[lang]}`}</strong>
+            <div class="pulse-meta"><span data-freshness-label>{pulseFreshness.totalWar ? copy.lastChecked : copy.checked}</span><b>{totalWarHub.checkedAt}</b></div>
           </a>
-          <a class="pulse-card pulse-ck3" href={ck3Path}>
-            <div class="pulse-head"><span>{copy.ck3Pulse}</span><span class="pulse-state">{lang === "ru" ? "проверено" : "verified"}</span></div>
-            <strong>{crusaderKingsHub.version[lang]} · {lang === "ru" ? "следим за Silk & Silver в IV квартале" : "Silk & Silver Q4 watch"}</strong>
-            <div class="pulse-meta"><span>{copy.checked}</span><b>{crusaderKingsHub.checkedAt}</b></div>
+          <a
+            class:list={["pulse-card", "pulse-ck3", { "is-stale": pulseFreshness.ck3 }]}
+            href={ck3Path}
+            data-home-pulse-card
+            data-freshness-mode="age"
+            data-checked-at={crusaderKingsHub.checkedAt}
+            data-stale-after={crusaderKingsHub.staleAfterDays}
+            data-current-status={lang === "ru" ? "проверено" : "verified"}
+            data-stale-status={copy.recheck}
+            data-current-copy={`${crusaderKingsHub.version[lang]} · ${lang === "ru" ? "следим за Silk & Silver в IV квартале" : "Silk & Silver Q4 watch"}`}
+            data-stale-copy={copy.ck3Stale}
+            data-current-label={copy.checked}
+            data-stale-label={copy.lastChecked}
+          >
+            <div class="pulse-head"><span>{copy.ck3Pulse}</span><span class="pulse-state" data-freshness-state>{pulseFreshness.ck3 ? copy.recheck : (lang === "ru" ? "проверено" : "verified")}</span></div>
+            <strong data-freshness-copy>{pulseFreshness.ck3 ? copy.ck3Stale : `${crusaderKingsHub.version[lang]} · ${lang === "ru" ? "следим за Silk & Silver в IV квартале" : "Silk & Silver Q4 watch"}`}</strong>
+            <div class="pulse-meta"><span data-freshness-label>{pulseFreshness.ck3 ? copy.lastChecked : copy.checked}</span><b>{crusaderKingsHub.checkedAt}</b></div>
           </a>
         </div>
       </section>
@@ -406,3 +498,20 @@ const copy = lang === "ru" ? {
     </div>
   </main>
 </BaseLayout>
+
+<script>
+  import { isExpired, isOlderThanDays } from "../lib/freshness";
+
+  document.querySelectorAll<HTMLElement>("[data-home-pulse-card]").forEach((root) => {
+    const stale = root.dataset.freshnessMode === "expires"
+      ? isExpired(root.dataset.validThrough ?? "")
+      : isOlderThanDays(root.dataset.checkedAt ?? "", Number(root.dataset.staleAfter ?? 0));
+    root.classList.toggle("is-stale", stale);
+    const state = root.querySelector<HTMLElement>("[data-freshness-state]");
+    const summary = root.querySelector<HTMLElement>("[data-freshness-copy]");
+    const label = root.querySelector<HTMLElement>("[data-freshness-label]");
+    if (state) state.textContent = stale ? root.dataset.staleStatus ?? "Recheck" : root.dataset.currentStatus ?? "Current";
+    if (summary) summary.textContent = stale ? root.dataset.staleCopy ?? "" : root.dataset.currentCopy ?? "";
+    if (label) label.textContent = stale ? root.dataset.staleLabel ?? "Last checked" : root.dataset.currentLabel ?? "Checked";
+  });
+</script>

@@ -1,10 +1,10 @@
 ---
 import { weeklyMeta } from "../data/gta-businesses";
-import { isSnapshotStale } from "../lib/economy";
+import { isExpired } from "../lib/freshness";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
-const stale = isSnapshotStale(weeklyMeta.validThrough);
+const stale = isExpired(weeklyMeta.validThrough);
 
 const copy = lang === "ru" ? {
   kicker: "Еженедельные события GTA · официальный источник",
@@ -86,10 +86,12 @@ const copy = lang === "ru" ? {
 </section>
 
 <script>
+  import { isExpired } from "../lib/freshness";
+
   document.querySelectorAll<HTMLElement>("[data-gta-pulse]").forEach((root) => {
     const validThrough = root.dataset.validThrough;
     if (!validThrough) return;
-    const stale = Date.now() > new Date(`${validThrough}T23:59:59Z`).getTime();
+    const stale = isExpired(validThrough);
     root.classList.toggle("is-stale", stale);
     root.classList.toggle("is-current", !stale);
     const windowLabel = root.querySelector<HTMLElement>("[data-pulse-window]");

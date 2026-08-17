@@ -121,6 +121,7 @@ describe.each([
 
   it("keeps sources, freshness and editable model metadata visible", () => {
     expect(hub.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(hub.staleAfterDays).toBeGreaterThan(0);
     expect(hub.version).toBeTruthy();
     expect(hub.methodology.sources.length).toBeGreaterThanOrEqual(2);
     hub.methodology.sources.forEach((source) => expect(source.url).toMatch(/^https:\/\//));
