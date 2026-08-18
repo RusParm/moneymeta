@@ -83,3 +83,7 @@ Crusader Kings III version 1.19.0.6 is the first grand-strategy release. The hub
 ## 2026-08-12: parity is functional and visual
 
 A mature vertical cannot rely on a strong hero and a library of links. GTA and WoW must expose their core economic state early, provide editable decision models inside the hub and use a game-native visual grammar across maps, paths, rankings and scenarios. Dota remains the quality reference, not a layout template.
+
+## 2026-08-18: every hub starts with a decision
+
+The depth of a living hub should not make the first useful action harder to find. Every economy begins with the same compact interaction contract: three questions, an immediate recommendation, three checks and direct links to the next model or analysis. The interface grammar is shared, but questions, scoring and outcomes remain native to each game. State stays local to the device and does not require an account or personal data.

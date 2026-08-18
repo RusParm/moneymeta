@@ -12,6 +12,7 @@ import GtaLibrary from "./GtaLibrary.astro";
 import GtaPlayerPaths from "./GtaPlayerPaths.astro";
 import GtaPulse from "./GtaPulse.astro";
 import GtaRankings from "./GtaRankings.astro";
+import HubDecisionGateway from "./HubDecisionGateway.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -38,6 +39,7 @@ const copy = lang === "ru" ? {
   loadout: [["$", "КАПИТАЛ", "Следующий ход"], ["Б", "БИЗНЕС", "Окупаемость"], ["В", "ВРЕМЯ", "Срок до цели"], ["П", "ПОРТФЕЛЬ", "Распределение"]],
   navLabel: "Навигация по экономике GTA Online",
   nav: [
+    ["Старт", "#quick-start"],
     ["Карта", "#economy-map"],
     ["Мой путь", "#player-paths"],
     ["События", "#weekly-pulse"],
@@ -102,6 +104,7 @@ const copy = lang === "ru" ? {
   loadout: [["$", "CAPITAL", "Next move"], ["B", "BUSINESS", "Asset ROI"], ["T", "TIME", "Hours to goal"], ["PF", "PORTFOLIO", "Allocation"]],
   navLabel: "GTA Economy Hub navigation",
   nav: [
+    ["Start", "#quick-start"],
     ["Map", "#economy-map"],
     ["My path", "#player-paths"],
     ["Pulse", "#weekly-pulse"],
@@ -215,6 +218,7 @@ const copy = lang === "ru" ? {
         </div>
       </section>
 
+      <HubDecisionGateway hub="gta" lang={lang} />
       <GtaEconomyMap lang={lang} />
       <GtaPlayerPaths lang={lang} />
       <GtaPulse lang={lang} />

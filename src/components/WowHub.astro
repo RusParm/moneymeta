@@ -7,6 +7,7 @@ import "../styles/wow-hub.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GameWorldHero from "./GameWorldHero.astro";
+import HubDecisionGateway from "./HubDecisionGateway.astro";
 import SiteFooter from "./SiteFooter.astro";
 import WowCalculators from "./WowCalculators.astro";
 import WowDecisionDeck from "./WowDecisionDeck.astro";
@@ -49,13 +50,14 @@ const copy = lang === "ru" ? {
   navLabel: "Навигация по экономике WoW",
   navBrand: "WOW / РЫНОК",
   nav: [
-    ["01", "Баланс", "#market-ledger"],
-    ["02", "Карта", "#economy-map"],
-    ["03", "Мой путь", "#player-paths"],
-    ["04", "Изменения", "#market-pulse"],
-    ["05", "Рейтинги", "#market-rankings"],
-    ["06", "Модели", "#scenario-lab"],
-    ["07", "Разборы", "#research-library"]
+    ["01", "Старт", "#quick-start"],
+    ["02", "Баланс", "#market-ledger"],
+    ["03", "Карта", "#economy-map"],
+    ["04", "Мой путь", "#player-paths"],
+    ["05", "Изменения", "#market-pulse"],
+    ["06", "Рейтинги", "#market-rankings"],
+    ["07", "Модели", "#scenario-lab"],
+    ["08", "Разборы", "#research-library"]
   ],
   manifestoKicker: "Подход Money Meta",
   manifestoTitle: "В WoW есть три разных вида богатства. Не смешивай их.",
@@ -103,13 +105,14 @@ const copy = lang === "ru" ? {
   navLabel: "WoW Economy Hub navigation",
   navBrand: "WOW / MARKET OS",
   nav: [
-    ["01", "Snapshot", "#market-ledger"],
-    ["02", "Map", "#economy-map"],
-    ["03", "My path", "#player-paths"],
-    ["04", "Pulse", "#market-pulse"],
-    ["05", "Rankings", "#market-rankings"],
-    ["06", "Models", "#scenario-lab"],
-    ["07", "Research", "#research-library"]
+    ["01", "Start", "#quick-start"],
+    ["02", "Snapshot", "#market-ledger"],
+    ["03", "Map", "#economy-map"],
+    ["04", "My path", "#player-paths"],
+    ["05", "Pulse", "#market-pulse"],
+    ["06", "Rankings", "#market-rankings"],
+    ["07", "Models", "#scenario-lab"],
+    ["08", "Research", "#research-library"]
   ],
   manifestoKicker: "The Money Meta difference",
   manifestoTitle: "WoW has three kinds of wealth. Do not mix them.",
@@ -201,6 +204,7 @@ const copy = lang === "ru" ? {
         </div>
       </section>
 
+      <HubDecisionGateway hub="wow" lang={lang} />
       <WowMarketLedger lang={lang} />
       <WowEconomyMap lang={lang} />
       <WowPlayerPaths lang={lang} />
