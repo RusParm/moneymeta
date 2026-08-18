@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-08-12
+Updated: 2026-08-18
 
 ## Baseline
 
@@ -109,6 +109,24 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Added two original Money Meta strategy-world hero assets. Publisher logos, screenshots, personal identity and personal data are not used.
 - Forty-five automated tests pass. Fifty-three static pages build with zero Astro diagnostics.
 - Branch preview and final browser QA remain required before any production promotion.
+
+## Production release: v1.6 trust and measurement layer
+
+- Reworked the homepage proof and trust sequence so the product explains its evidence model before asking for a decision.
+- Added shared freshness handling for dated GTA, Dota 2, WoW, Total War and Crusader Kings III context.
+- Added Vercel Analytics and Speed Insights through first-party Astro integrations.
+- Kept verified facts, working estimates and player-entered assumptions visibly separate.
+
+## Active release candidate: v1.7 hub decision gateways
+
+- Added a three-question quick start to all five hubs in complete RU/EN parity.
+- Each gateway uses game-specific questions and weighted outcomes instead of a generic recommendation template.
+- GTA routes players toward return, goal or portfolio decisions; Dota 2 toward growth, timing or buyback liquidity; WoW toward farming, crafting, orders or inventory recovery.
+- Total War routes campaign capital toward buildings, war reserve or conquest; Crusader Kings III routes realm capital toward domain, war chest or succession resilience.
+- Choices stay on the device and require no account or personal data.
+- Fifty-three automated tests pass. Fifty-three static pages build with zero Astro diagnostics.
+- The built HTML for all ten localized hub routes contains three questions, nine choices, one initial result and valid links to the next model or analysis.
+- HTTPS preview deployment and final visual browser QA remain required before production promotion.
 
 ## Release policy
 

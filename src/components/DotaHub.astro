@@ -13,6 +13,7 @@ import DotaPlayerPaths from "./DotaPlayerPaths.astro";
 import DotaPulse from "./DotaPulse.astro";
 import DotaRoleLenses from "./DotaRoleLenses.astro";
 import GameWorldHero from "./GameWorldHero.astro";
+import HubDecisionGateway from "./HubDecisionGateway.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -31,7 +32,7 @@ const copy = lang === "ru" ? {
   live: `Патч ${dotaPatchContext.patch} · проверено ${dotaPatchContext.checkedAt}`,
   proof: [["7", "этапов движения золота"], ["3", "ролевых подхода"], ["2", "живые модели"], ["8", "разных решений"]],
   navBrand: "DOTA / ЭКОНОМИКА МАТЧА",
-  nav: [["01", "Карта", "#economy-map"], ["02", "Пути", "#player-paths"], ["03", "Патч", "#patch-pulse"], ["04", "Роли", "#role-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Разборы", "#research-library"]],
+  nav: [["01", "Старт", "#quick-start"], ["02", "Карта", "#economy-map"], ["03", "Пути", "#player-paths"], ["04", "Патч", "#patch-pulse"], ["05", "Роли", "#role-lenses"], ["06", "Сценарии", "#decision-deck"], ["07", "Модели", "#scenario-lab"], ["08", "Разборы", "#research-library"]],
   manifestoKicker: "Подход Money Meta к Dota 2",
   manifestoTitle: "Каждая цифра должна заканчиваться игровым действием.",
   manifestoText: "Среднее золото в минуту без времени покупки, предмет без конкретной цели и выкуп без пути обратно в бой дают неполную картину. Хаб строится вокруг цепочки решений, а не вокруг ещё одного статичного гайда по сборке.",
@@ -65,7 +66,7 @@ const copy = lang === "ru" ? {
   live: `Patch ${dotaPatchContext.patch} · checked ${dotaPatchContext.checkedAt}`,
   proof: [["7", "match-economy nodes"], ["3", "role lenses"], ["2", "live models"], ["8", "different decisions"]],
   navBrand: "DOTA / MATCH SYSTEM",
-  nav: [["01", "Map", "#economy-map"], ["02", "Paths", "#player-paths"], ["03", "Pulse", "#patch-pulse"], ["04", "Roles", "#role-lenses"], ["05", "Scenarios", "#decision-deck"], ["06", "Models", "#scenario-lab"], ["07", "Research", "#research-library"]],
+  nav: [["01", "Start", "#quick-start"], ["02", "Map", "#economy-map"], ["03", "Paths", "#player-paths"], ["04", "Pulse", "#patch-pulse"], ["05", "Roles", "#role-lenses"], ["06", "Scenarios", "#decision-deck"], ["07", "Models", "#scenario-lab"], ["08", "Research", "#research-library"]],
   manifestoKicker: "Money Meta doctrine · Dota edition",
   manifestoTitle: "Every number should end in an in-game action.",
   manifestoText: "GPM without a purchase minute, an item timing without an objective, and buyback without a route back into the fight are incomplete metrics. This hub is a chain of decisions, not another static build guide.",
@@ -160,6 +161,7 @@ const heroLoadout = lang === "ru" ? [
         </div>
       </section>
 
+      <HubDecisionGateway hub="dota" lang={lang} />
       <DotaEconomyMap lang={lang} />
       <DotaPlayerPaths lang={lang} />
       <DotaPulse lang={lang} />

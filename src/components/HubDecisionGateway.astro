@@ -1,0 +1,200 @@
+---
+import { getHubGateway, type HubGatewayId, type HubGatewayLocale } from "../data/hub-gateways";
+import { chooseGatewayOutcome } from "../lib/hub-gateway";
+import "../styles/hub-gateway.css";
+
+interface Props {
+  hub: HubGatewayId;
+  lang: HubGatewayLocale;
+}
+
+const { hub, lang } = Astro.props;
+const config = getHubGateway(hub);
+const outcomeIds = config.outcomes.map((outcome) => outcome.id);
+const defaultOutcomeId = chooseGatewayOutcome(
+  outcomeIds,
+  config.questions.map((question) => question.choices[0]?.weights ?? {})
+) ?? outcomeIds[0];
+
+const scoreValue = (weights: Record<string, number>) =>
+  Object.entries(weights).map(([id, score]) => `${id}:${score}`).join(",");
+
+const copy = lang === "ru" ? {
+  route: "Твой маршрут",
+  why: "Почему этот маршрут",
+  checks: "Что проверить перед решением",
+  reset: "Сбросить выбор",
+  live: "Рекомендация обновляется сразу после выбора."
+} : {
+  route: "Your route",
+  why: "Why this route",
+  checks: "What to check before acting",
+  reset: "Reset choices",
+  live: "The recommendation updates after each choice."
+};
+---
+
+<section
+  id="quick-start"
+  class={`section hub-section hub-decision-gateway gateway-${hub}`}
+  data-decision-gateway
+  data-gateway-id={hub}
+  data-default-outcome={defaultOutcomeId}
+  aria-labelledby={`${hub}-gateway-title`}
+>
+  <div class="gateway-head">
+    <div>
+      <span class="section-kicker">{config.kicker[lang]}</span>
+      <h2 id={`${hub}-gateway-title`}>{config.title[lang]}</h2>
+      <p>{config.text[lang]}</p>
+    </div>
+    <div class="gateway-status">
+      <span aria-hidden="true"></span>
+      <strong>{config.status[lang]}</strong>
+    </div>
+  </div>
+
+  <div class="gateway-layout">
+    <div class="gateway-questions">
+      {config.questions.map((question, questionIndex) => (
+        <fieldset data-gateway-question={question.id}>
+          <legend>
+            <span>{question.label[lang]}</span>
+            <strong>{question.prompt[lang]}</strong>
+          </legend>
+          <div class="gateway-choice-grid">
+            {question.choices.map((choice, choiceIndex) => (
+              <button
+                type="button"
+                aria-pressed={choiceIndex === 0 ? "true" : "false"}
+                data-gateway-choice={choice.id}
+                data-scores={scoreValue(choice.weights)}
+              >
+                <span>{String(questionIndex + 1).padStart(2, "0")}.{choiceIndex + 1}</span>
+                <strong>{choice.label[lang]}</strong>
+                <small>{choice.hint[lang]}</small>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+
+      <div class="gateway-controls">
+        <span><i aria-hidden="true"></i>{copy.live}</span>
+        <button type="button" data-gateway-reset>{copy.reset}</button>
+      </div>
+    </div>
+
+    <div class="gateway-results" aria-live="polite" aria-atomic="true">
+      {config.outcomes.map((outcome, outcomeIndex) => (
+        <article
+          class="gateway-result"
+          data-gateway-outcome={outcome.id}
+          hidden={outcome.id !== defaultOutcomeId}
+        >
+          <div class="gateway-result-top">
+            <span class="gateway-result-mark" aria-hidden="true">{outcome.mark}</span>
+            <div>
+              <small>{copy.route} · 0{outcomeIndex + 1}</small>
+              <strong>{outcome.label[lang]}</strong>
+            </div>
+          </div>
+
+          <h3>{outcome.title[lang]}</h3>
+          <p class="gateway-result-summary">{outcome.summary[lang]}</p>
+
+          <div class="gateway-reason">
+            <span>{copy.why}</span>
+            <p>{outcome.reason[lang]}</p>
+          </div>
+
+          <div class="gateway-checks">
+            <span>{copy.checks}</span>
+            <ul>
+              {outcome.checks.map((check) => <li><i aria-hidden="true"></i>{check[lang]}</li>)}
+            </ul>
+          </div>
+
+          <div class="gateway-actions">
+            <a class="button primary gateway-primary" href={outcome.primary.href[lang]}>{outcome.primary.label[lang]} →</a>
+            <a class="gateway-secondary" href={outcome.secondary.href[lang]}>{outcome.secondary.label[lang]} ↗</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { chooseGatewayOutcome, parseGatewayScores } from "../lib/hub-gateway";
+
+  document.querySelectorAll<HTMLElement>("[data-decision-gateway]").forEach((root) => {
+    const questions = [...root.querySelectorAll<HTMLElement>("[data-gateway-question]")];
+    const outcomes = [...root.querySelectorAll<HTMLElement>("[data-gateway-outcome]")];
+    const reset = root.querySelector<HTMLButtonElement>("[data-gateway-reset]");
+    const outcomeIds = outcomes.map((outcome) => outcome.dataset.gatewayOutcome ?? "").filter(Boolean);
+    const storageKey = `money-meta:gateway:${root.dataset.gatewayId ?? "hub"}`;
+
+    const selectButton = (question: HTMLElement, button: HTMLButtonElement) => {
+      question.querySelectorAll<HTMLButtonElement>("[data-gateway-choice]").forEach((candidate) => {
+        candidate.setAttribute("aria-pressed", String(candidate === button));
+      });
+    };
+
+    const showOutcome = (id: string | null) => {
+      const nextId = id ?? root.dataset.defaultOutcome ?? outcomeIds[0];
+      outcomes.forEach((outcome) => {
+        outcome.hidden = outcome.dataset.gatewayOutcome !== nextId;
+      });
+      root.dataset.activeOutcome = nextId;
+    };
+
+    const selectedScores = () => questions.map((question) => {
+      const selected = question.querySelector<HTMLButtonElement>('[data-gateway-choice][aria-pressed="true"]');
+      return parseGatewayScores(selected?.dataset.scores ?? "");
+    });
+
+    const save = () => {
+      const state = Object.fromEntries(questions.map((question) => [
+        question.dataset.gatewayQuestion ?? "",
+        question.querySelector<HTMLButtonElement>('[data-gateway-choice][aria-pressed="true"]')?.dataset.gatewayChoice ?? ""
+      ]));
+      try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch { /* storage is optional */ }
+    };
+
+    const update = (persist = true) => {
+      showOutcome(chooseGatewayOutcome(outcomeIds, selectedScores()));
+      if (persist) save();
+    };
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) ?? "{}") as Record<string, string>;
+      questions.forEach((question) => {
+        const choiceId = saved[question.dataset.gatewayQuestion ?? ""];
+        const match = [...question.querySelectorAll<HTMLButtonElement>("[data-gateway-choice]")]
+          .find((button) => button.dataset.gatewayChoice === choiceId);
+        if (match) selectButton(question, match);
+      });
+    } catch { /* invalid or unavailable storage falls back to defaults */ }
+
+    questions.forEach((question) => {
+      question.querySelectorAll<HTMLButtonElement>("[data-gateway-choice]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectButton(question, button);
+          update();
+        });
+      });
+    });
+
+    reset?.addEventListener("click", () => {
+      questions.forEach((question) => {
+        const first = question.querySelector<HTMLButtonElement>("[data-gateway-choice]");
+        if (first) selectButton(question, first);
+      });
+      try { localStorage.removeItem(storageKey); } catch { /* storage is optional */ }
+      update(false);
+    });
+
+    update(false);
+  });
+</script>

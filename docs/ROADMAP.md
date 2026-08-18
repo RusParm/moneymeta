@@ -64,7 +64,22 @@
 - WoW market-ledger snapshot plus the existing crafting, farming and commission models.
 - Original strategy-world art, navigation, sitemap and five-economy discovery layer.
 
-## P1.5: recurring utility
+## P1.55: v1.6 trust and measurement release
+
+- Evidence-first homepage proof and trust sequence.
+- Shared freshness guards for dated context across all five economies.
+- First-party analytics and performance measurement.
+- Clear separation between verified facts, working estimates and player assumptions.
+
+## P1.6: v1.7 personalized hub entry
+
+- Three-question decision gateway in every RU/EN hub.
+- Game-native scoring and outcomes for all five economies.
+- Direct routes from player context to the relevant calculator, scenario or applied analysis.
+- Local persistence without accounts, personal data or backend state.
+- Preview browser QA across desktop and mobile before production promotion.
+
+## Next: recurring utility
 
 - Goal Planner.
 - Weekly Meta with freshness guard.

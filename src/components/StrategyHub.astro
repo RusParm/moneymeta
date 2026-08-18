@@ -6,6 +6,7 @@ import { isOlderThanDays } from "../lib/freshness";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GameWorldHero from "./GameWorldHero.astro";
+import HubDecisionGateway from "./HubDecisionGateway.astro";
 import SiteFooter from "./SiteFooter.astro";
 import StrategyCalculators from "./StrategyCalculators.astro";
 import StrategyMark from "./StrategyMark.astro";
@@ -20,7 +21,7 @@ const pulseStale = isOlderThanDays(data.checkedAt, data.staleAfterDays);
 
 const copy = lang === "ru" ? {
   back: "← Все экономики",
-  nav: [["01", "Карта", "#economy-map"], ["02", "Мой путь", "#player-paths"], ["03", "Обновления", data.id === "ck3" ? "#dynasty-pulse" : "#campaign-pulse"], ["04", "Решения", "#economy-lenses"], ["05", "Сценарии", "#decision-deck"], ["06", "Модели", "#scenario-lab"], ["07", "Библиотека", "#research-library"]],
+  nav: [["01", "Старт", "#quick-start"], ["02", "Карта", "#economy-map"], ["03", "Мой путь", "#player-paths"], ["04", "Обновления", data.id === "ck3" ? "#dynasty-pulse" : "#campaign-pulse"], ["05", "Решения", "#economy-lenses"], ["06", "Сценарии", "#decision-deck"], ["07", "Модели", "#scenario-lab"], ["08", "Библиотека", "#research-library"]],
   navLabel: `Навигация по экономике ${data.name}`,
   mapKicker: "Карта экономики · движение ресурсов",
   mapTitle: data.id === "ck3" ? "Проследи путь монеты через всё правление" : "Проследи путь монеты через всю кампанию",
@@ -69,7 +70,7 @@ const copy = lang === "ru" ? {
   dataLabel: "Исходные значения"
 } : {
   back: "← All economies",
-  nav: [["01", "Map", "#economy-map"], ["02", "My path", "#player-paths"], ["03", "Pulse", data.id === "ck3" ? "#dynasty-pulse" : "#campaign-pulse"], ["04", "Decisions", "#economy-lenses"], ["05", "Scenarios", "#decision-deck"], ["06", "Models", "#scenario-lab"], ["07", "Library", "#research-library"]],
+  nav: [["01", "Start", "#quick-start"], ["02", "Map", "#economy-map"], ["03", "My path", "#player-paths"], ["04", "Pulse", data.id === "ck3" ? "#dynasty-pulse" : "#campaign-pulse"], ["05", "Decisions", "#economy-lenses"], ["06", "Scenarios", "#decision-deck"], ["07", "Models", "#scenario-lab"], ["08", "Library", "#research-library"]],
   navLabel: `${data.name} Economy Hub navigation`,
   mapKicker: "Economy map · capital flow",
   mapTitle: data.id === "ck3" ? "Follow one gold through an entire reign" : "Follow one gold through the entire campaign",
@@ -187,6 +188,7 @@ const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв
         </div>
       </section>
 
+      <HubDecisionGateway hub={data.id} lang={lang} />
       <section id="economy-map" class="section hub-section hub-map-section strategy-map-section" aria-labelledby={`${data.id}-map-title`}>
         <div class="section-head hub-section-head">
           <div><span class="section-kicker">{copy.mapKicker}</span><h2 id={`${data.id}-map-title`}>{copy.mapTitle}</h2><p class="section-copy">{copy.mapText}</p></div>

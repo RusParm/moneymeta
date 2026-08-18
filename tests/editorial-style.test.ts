@@ -4,6 +4,7 @@ import { gtaEconomyNodes, gtaPlayerPaths, gtaScenarios } from "../src/data/gta-h
 import { dotaPatchContext } from "../src/data/dota-economy";
 import { dotaEconomyNodes, dotaPlayerPaths, dotaPulse, dotaRoleLenses, dotaScenarios } from "../src/data/dota-hub";
 import { insights } from "../src/data/insights";
+import { hubGateways } from "../src/data/hub-gateways";
 import { crusaderKingsHub, totalWarHub } from "../src/data/strategy-hubs";
 import { wowPatchContext } from "../src/data/wow-economy";
 import { wowEconomyNodes, wowMarketRoutes, wowMarks, wowPlayerPaths, wowPulse, wowScenarios } from "../src/data/wow-hub";
@@ -48,14 +49,15 @@ describe("editorial style", () => {
       wowScenarios,
       totalWarHub,
       crusaderKingsHub,
-      insights
+      insights,
+      hubGateways
     };
     const forbidden = /\b(?:buyback|GPM|GPH|vROI|ROI|Net Worth|Business ROI|Profession Knowledge|Knowledge Points|Crafting Orders?|Capital lock-up|Editable baseline|Opportunity cost|Time \+ liquidity|Cross-asset|baseline|friction|inventory risk|Money Meta original|Craft All|Ledger|LIQ|CAP|ORD|CRF|KNO|GOAL|PF)\b/iu;
     const offenders: Array<{ path: string; text: string }> = [];
 
     const collectRussian = (value: unknown, path: string, inRussian = false): void => {
       if (typeof value === "string") {
-        if (inRussian && !/^(?:https?:|\/)/u.test(value) && forbidden.test(value)) offenders.push({ path, text: value });
+        if (inRussian && !/^(?:https?:|\/|#)/u.test(value) && forbidden.test(value)) offenders.push({ path, text: value });
         return;
       }
       if (Array.isArray(value)) {
