@@ -166,65 +166,65 @@ export interface WeeklyMetaSnapshot {
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  checkedAt: "2026-08-12",
-  validThrough: "2026-08-12",
+  checkedAt: "2026-08-18",
+  validThrough: "2026-08-26",
   status: "verified",
-  sourceUrl: "https://www.rockstargames.com/newswire/article/4k1k9k1581aa43/plan-the-perfect-getaway-during-the-summer-heist-event",
-  sourceLabel: "Rockstar Newswire · Summer Heist Event",
+  sourceUrl: "https://www.rockstargames.com/newswire/article/9k2kok31k3a8k9/declare-your-allegiance-and-determine-who-owns-los-santos-in-the-brand",
+  sourceLabel: "Rockstar Newswire · Brand Wars",
   items: {
     ru: [
-      "До 12 августа: GTA$1,000,000 за вход (доставка может занять до 72 часов).",
-      "На первом новом прохождении Cayo Perico гарантирована Panther Statue; 3X GTA$/RP действует в Community Mission Series, а 2X в A Superyacht Life и Assault on Cayo Perico.",
-      "Эти бонусы не применяются автоматически к долгосрочным моделям бизнесов ниже."
+      "До 26 августа: бесплатно забери Declasse Hotring Sabre и отдели эту экономию от дохода бизнеса.",
+      "4X GTA$/RP действует в испытаниях и событиях свободного режима; 21-23 августа VIP Work приносит 5X GTA$/RP.",
+      "Временные множители не применяются автоматически к долгосрочным моделям производственных активов."
     ],
     en: [
-      "Through August 12: GTA$1,000,000 login bonus (delivery may take up to 72 hours).",
-      "The first fresh Cayo Perico playthrough guarantees the Panther Statue; Community Mission Series pays 3X GTA$/RP, while A Superyacht Life and Assault on Cayo Perico pay 2X.",
-      "These bonuses are not automatically applied to the production-business models below."
+      "Through August 26: claim the Declasse Hotring Sabre for free and keep that acquisition saving separate from business income.",
+      "Freemode Challenges and Events pay 4X GTA$/RP; VIP Work pays 5X GTA$/RP from August 21 through 23.",
+      "Temporary multipliers are not automatically applied to long-horizon production-asset models."
     ]
   },
   opportunities: [
     {
-      id: "login-capital",
+      id: "free-hotring-sabre",
       status: "verified",
-      title: { ru: "Забери входной капитал", en: "Claim the login capital" },
+      title: { ru: "Забери бесплатный автомобиль", en: "Claim the free vehicle" },
       summary: {
-        ru: "Вход в GTA Online до конца 12 августа даёт GTA$1 млн; начисление может занять до 72 часов.",
-        en: "Log into GTA Online by the end of August 12 for GTA$1m; delivery can take up to 72 hours."
+        ru: "Declasse Hotring Sabre доступен бесплатно до 26 августа.",
+        en: "The Declasse Hotring Sabre is free through August 26."
       },
       decision: {
-        ru: "Сначала войди в игру, затем принимай необратимое решение о покупке.",
-        en: "Log in before making an irreversible purchase decision."
+        ru: "Забери актив, если он тебе нужен, но не записывай сэкономленную цену в регулярную прибыль.",
+        en: "Claim it if it fits your garage, but do not count the saved purchase price as recurring profit."
       },
-      signal: { ru: "+GTA$1 млн", en: "+GTA$1m" }
+      signal: { ru: "Бесплатно", en: "Free" }
     },
     {
-      id: "panther-statue",
+      id: "freemode-boost",
       status: "verified",
-      title: { ru: "Одно редкое прохождение Cayo Perico", en: "One rare Cayo run" },
+      title: { ru: "Проверь свободный режим", en: "Test the Freemode boost" },
       summary: {
-        ru: "Первое новое прохождение Cayo Perico в окне 6-12 августа гарантирует Panther Statue.",
-        en: "The first fresh Cayo Perico playthrough in the August 6-12 window guarantees the Panther Statue."
+        ru: "Испытания и события свободного режима приносят 4X GTA$/RP до 26 августа.",
+        en: "Freemode Challenges and Events pay 4X GTA$/RP through August 26."
       },
       decision: {
-        ru: "Заверши старую подготовку, если она мешает новому первому прохождению. Не откладывай ограниченное событие на потом.",
-        en: "Resolve an old setup if it blocks a fresh first playthrough; do not treat the window as permanent."
+        ru: "Сравни фактическую выплату и время двух-трёх событий со своим обычным маршрутом, прежде чем менять всю неделю.",
+        en: "Compare the realized payout and time from two or three events with your normal route before changing the whole week."
       },
-      signal: { ru: "До 12 авг.", en: "Ends Aug 12" }
+      signal: { ru: "4X до 26 авг.", en: "4X through Aug 26" }
     },
     {
-      id: "boosted-routes",
+      id: "vip-work-weekend",
       status: "verified",
-      title: { ru: "Временный источник активного заработка", en: "Temporary active-cash layer" },
+      title: { ru: "Подготовь короткое окно VIP Work", en: "Prepare the VIP Work window" },
       summary: {
-        ru: "3X действует в Community Mission Series; 2X действует в A Superyacht Life и Assault on Cayo Perico.",
-        en: "Community Mission Series pays 3X; A Superyacht Life and Assault on Cayo Perico pay 2X."
+        ru: "С 21 по 23 августа VIP Work приносит 5X GTA$/RP.",
+        en: "VIP Work pays 5X GTA$/RP from August 21 through 23."
       },
       decision: {
-        ru: "Используй повышенные выплаты как временный маршрут заработка, но не меняй из-за них базовую оценку окупаемости производственных активов.",
-        en: "Use boosts as a temporary cash-flow route without rewriting baseline production-asset payback."
+        ru: "Выдели один короткий сеанс, если у тебя уже есть доступ. Не покупай дорогую инфраструктуру только ради трёхдневного множителя.",
+        en: "Reserve one short session when access already exists. Do not buy expensive infrastructure only for a three-day multiplier."
       },
-      signal: { ru: "2X-3X", en: "2X-3X" }
+      signal: { ru: "5X · 21-23 авг.", en: "5X · Aug 21-23" }
     }
   ]
 };

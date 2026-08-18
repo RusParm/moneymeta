@@ -8,7 +8,6 @@ import { hubGateways } from "../src/data/hub-gateways";
 import { crusaderKingsHub, totalWarHub } from "../src/data/strategy-hubs";
 import { wowPatchContext } from "../src/data/wow-economy";
 import { wowEconomyNodes, wowMarketRoutes, wowMarks, wowPlayerPaths, wowPulse, wowScenarios } from "../src/data/wow-hub";
-
 const sourceFiles = import.meta.glob("../src/**/*.{astro,ts}", {
   eager: true,
   import: "default",
@@ -86,5 +85,17 @@ describe("editorial style", () => {
     });
 
     expect(offenders).toEqual([]);
+  });
+
+  it("keeps decorative path media out of the reading layer", () => {
+    const gtaPaths = sourceFiles["../src/components/GtaPlayerPaths.astro"] ?? "";
+    const dotaPaths = sourceFiles["../src/components/DotaPlayerPaths.astro"] ?? "";
+    const wowPaths = sourceFiles["../src/components/WowPlayerPaths.astro"] ?? "";
+    const strategyHub = sourceFiles["../src/components/StrategyHub.astro"] ?? "";
+
+    expect(gtaPaths).not.toMatch(/<GtaAssetMark[^>]*large\s*\/>/u);
+    expect(wowPaths).not.toContain("wow-path-watermark");
+    expect(strategyHub).not.toMatch(/<StrategyMark[^>]*large\s*\/>\s*<div class="path-panel-head">/u);
+    expect(dotaPaths).toMatch(/<div class="path-panel-head">[\s\S]*?<div class="dota-path-portrait"/u);
   });
 });

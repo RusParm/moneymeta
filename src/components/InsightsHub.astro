@@ -1,5 +1,5 @@
 ---
-import { insights, type InsightLocale } from "../data/insights";
+import { insightGameLabels, insights, type InsightLocale } from "../data/insights";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
@@ -10,7 +10,7 @@ const prefix = lang === "ru" ? "" : "/en";
 const path = `${prefix}/insights/`;
 const copy = lang === "ru" ? {
   title: "Разборы игровых экономик Money Meta",
-  description: "Практические разборы GTA Online, Dota 2 и WoW с цифрами, моделями и конкретным следующим действием.",
+  description: "Практические разборы пяти игровых экономик с цифрами, официальным контекстом, моделями и конкретным следующим действием.",
   back: "← Главная",
   kicker: "Прикладные разборы · решения, а не новости",
   heading: "Разбираем экономику игры до конкретного действия.",
@@ -19,7 +19,7 @@ const copy = lang === "ru" ? {
   read: "Читать разбор"
 } : {
   title: "Money Meta Field Notes - game economy analysis",
-  description: "Practical GTA Online, Dota 2 and WoW analysis with numbers, models and a concrete next action.",
+  description: "Practical analysis across five game economies with numbers, primary context, models and a concrete next action.",
   back: "← Home",
   kicker: "Field Notes · decisions, not news",
   heading: "Take a game economy all the way to an action.",
@@ -39,11 +39,11 @@ const copy = lang === "ru" ? {
         <p class="lede">{copy.lede}</p>
       </section>
       <section class="section">
-        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01-{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{lang === "ru" ? `${insights.length} материалов · 3 игры · русский и английский` : `${insights.length} notes · 3 games · RU/EN`}</span></div>
+        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01-{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{lang === "ru" ? `${insights.length} материалов · 5 игр · русский и английский` : `${insights.length} notes · 5 games · RU/EN`}</span></div>
         <div class="insight-card-grid">
           {insights.map((insight, index) => {
             const content = insight.content[lang];
-            const game = insight.game === "gta" ? "GTA Online" : insight.game === "dota" ? "Dota 2" : "WoW Retail";
+            const game = insightGameLabels[insight.game];
             return <a class={`insight-card insight-card-${insight.game}`} href={`${prefix}/insights/${insight.slug}/`}>
               <div class="insight-card-top"><span>{game}</span><b>0{index + 1}</b></div>
               <div><span class="game-tag">{content.kicker}</span><h2>{content.title}</h2><p>{content.description}</p></div>

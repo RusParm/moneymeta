@@ -8,7 +8,7 @@ import wowEconomyWorld from "../assets/game-worlds/wow-economy-world.webp";
 import { dotaPatchContext } from "../data/dota-economy";
 import { dotaPulse } from "../data/dota-hub";
 import { weeklyMeta } from "../data/gta-businesses";
-import { insights } from "../data/insights";
+import { insightGameLabels, insights } from "../data/insights";
 import { crusaderKingsHub, totalWarHub } from "../data/strategy-hubs";
 import { wowPatchContext } from "../data/wow-economy";
 import { wowPulse } from "../data/wow-hub";
@@ -27,6 +27,7 @@ const wowPath = lang === "ru" ? "/wow/" : "/en/wow/";
 const totalWarPath = lang === "ru" ? "/total-war/" : "/en/total-war/";
 const ck3Path = lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
+const featuredInsights = insights.filter((insight) => insight.featuredInHub);
 const pulseFreshness = {
   gta: isExpired(weeklyMeta.validThrough),
   dota: isOlderThanDays(dotaPulse.checkedAt, dotaPulse.staleAfterDays),
@@ -361,9 +362,9 @@ const copy = lang === "ru" ? {
           <a class="count count-link" href={lang === "ru" ? "/insights/" : "/en/insights/"}>{copy.allNotes} →</a>
         </div>
         <div class="home-insight-grid">
-          {insights.map((insight, index) => {
+          {featuredInsights.map((insight, index) => {
             const content = insight.content[lang];
-            const game = insight.game === "gta" ? "GTA Online" : insight.game === "dota" ? "Dota 2" : "WoW Retail";
+            const game = insightGameLabels[insight.game];
             const href = `${lang === "ru" ? "" : "/en"}/insights/${insight.slug}/`;
             return <a class={`home-insight-card home-insight-${insight.game}`} href={href}>
               <div class="home-insight-meta"><span>{game}</span><b>0{index + 1}</b></div>

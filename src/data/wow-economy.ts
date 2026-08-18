@@ -8,7 +8,7 @@ export interface WowEconomySource {
 
 export const wowPatchContext = {
   release: "Midnight · Curse of Ula’tek",
-  checkedAt: "2026-08-12",
+  checkedAt: "2026-08-18",
   status: "mixed evidence" as const,
   note: {
     ru: "Текущий контекст Retail подтверждён материалами Blizzard. Рыночные цены, вероятность продажи, комиссия аукциона и исходные значения остаются редактируемой моделью. Их нужно сверять со своим регионом, сервером и категорией товара.",
@@ -17,10 +17,18 @@ export const wowPatchContext = {
   sources: [
     {
       label: { ru: "Blizzard · Curse of Ula’tek", en: "Blizzard · Curse of Ula’tek" },
-      url: "https://worldofwarcraft.blizzard.com/news/24294370/curse-of-ulatek-goes-live-august-11-journey-to-the-coiled-isle",
+      url: "https://worldofwarcraft.blizzard.com/news/24294370/curse-of-ulatek-now-live-journey-to-the-coiled-isle",
       note: {
         ru: "Текущий контентный контекст Midnight на дату проверки.",
         en: "Current Midnight content context on the check date."
+      }
+    },
+    {
+      label: { ru: "Blizzard · исправления от 17 августа", en: "Blizzard · August 17 hotfixes" },
+      url: "https://worldofwarcraft.blizzard.com/news/24296142/hotfixes-august-17-2026",
+      note: {
+        ru: "Последняя официальная проверка исправлений. В опубликованном списке не заявлена новая универсальная формула рыночной прибыли.",
+        en: "Latest official hotfix review. The published list does not establish a new universal market-profit formula."
       }
     },
     {

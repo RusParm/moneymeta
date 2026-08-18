@@ -7,6 +7,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GameWorldHero from "./GameWorldHero.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
+import HubGuideFeature from "./HubGuideFeature.astro";
 import SiteFooter from "./SiteFooter.astro";
 import StrategyCalculators from "./StrategyCalculators.astro";
 import StrategyMark from "./StrategyMark.astro";
@@ -56,7 +57,7 @@ const copy = lang === "ru" ? {
   openScenario: "Открыть сценарий",
   libraryKicker: "Библиотека решений · первый выпуск",
   libraryTitle: "Не энциклопедия механик. Библиотека решений.",
-  libraryText: `Шесть прикладных разборов по ${data.name}: главный вывод, границы расчёта и понятный следующий шаг.`,
+  libraryText: `Шесть коротких разборов по ${data.name} дополняют большой гайд хаба: главный вывод, границы расчёта и понятный следующий шаг.`,
   filters: [["all", "Все"], ["returner", "После перерыва"], ["casual", "Играю понемногу"], ["grinder", "Оптимизирую всё"]],
   showing: "материалов",
   takeaway: "Ключевой вывод",
@@ -105,7 +106,7 @@ const copy = lang === "ru" ? {
   openScenario: "Open scenario",
   libraryKicker: "Decision library · first release",
   libraryTitle: "Not a mechanics encyclopedia. A decision library.",
-  libraryText: `Six practical ${data.name} briefs with a thesis, model boundary and direct path to action.`,
+  libraryText: `Six practical ${data.name} briefs extend the hub's full guide with a thesis, model boundary and direct path to action.`,
   filters: [["all", "All"], ["returner", "Returner"], ["casual", "Solo / casual"], ["grinder", "Optimizer"]],
   showing: "briefs",
   takeaway: "Key takeaway",
@@ -189,6 +190,7 @@ const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв
       </section>
 
       <HubDecisionGateway hub={data.id} lang={lang} />
+      <HubGuideFeature hub={data.id} lang={lang} />
       <section id="economy-map" class="section hub-section hub-map-section strategy-map-section" aria-labelledby={`${data.id}-map-title`}>
         <div class="section-head hub-section-head">
           <div><span class="section-kicker">{copy.mapKicker}</span><h2 id={`${data.id}-map-title`}>{copy.mapTitle}</h2><p class="section-copy">{copy.mapText}</p></div>
@@ -246,7 +248,6 @@ const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв
           <div class="path-panels">
             {data.paths.map((path, index) => (
               <article class="path-panel strategy-path-panel" id={`${data.id}-path-panel-${path.id}`} role="tabpanel" aria-labelledby={`${data.id}-path-tab-${path.id}`} hidden={index !== 0} data-path-panel={path.id}>
-                <StrategyMark mark={path.mark} lang={lang} large />
                 <div class="path-panel-head">
                   <div><span class="game-tag">{path.label[lang]} · {lang === "ru" ? "исходный сценарий" : "baseline"}</span><h3>{path.title[lang]}</h3></div>
                   <div class="path-constraints">{path.constraints.map((constraint) => <span><small>{constraint.label[lang]}</small><strong>{constraint.value[lang]}</strong></span>)}</div>

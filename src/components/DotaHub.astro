@@ -14,6 +14,7 @@ import DotaPulse from "./DotaPulse.astro";
 import DotaRoleLenses from "./DotaRoleLenses.astro";
 import GameWorldHero from "./GameWorldHero.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
+import HubGuideFeature from "./HubGuideFeature.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -162,6 +163,7 @@ const heroLoadout = lang === "ru" ? [
       </section>
 
       <HubDecisionGateway hub="dota" lang={lang} />
+      <HubGuideFeature hub="dota" lang={lang} />
       <DotaEconomyMap lang={lang} />
       <DotaPlayerPaths lang={lang} />
       <DotaPulse lang={lang} />

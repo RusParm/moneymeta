@@ -13,7 +13,7 @@ describe("GTA benchmark hub content", () => {
     expect(gtaEconomyNodes).toHaveLength(7);
     expect(gtaPlayerPaths).toHaveLength(3);
     expect(gtaScenarios).toHaveLength(6);
-    expect(insights.filter((insight) => insight.game === "gta")).toHaveLength(6);
+    expect(insights.filter((insight) => insight.game === "gta")).toHaveLength(7);
   });
 
   it("keeps every GTA research note complete in both languages", () => {
@@ -44,7 +44,7 @@ describe("Dota living hub content", () => {
     expect(dotaRoleLenses).toHaveLength(3);
     expect(dotaScenarios).toHaveLength(8);
     expect(new Set(dotaScenarios.map((scenario) => scenario.kind)).size).toBeGreaterThanOrEqual(6);
-    expect(insights.filter((insight) => insight.game === "dota")).toHaveLength(6);
+    expect(insights.filter((insight) => insight.game === "dota")).toHaveLength(7);
   });
 
   it("keeps every Dota research note complete in both languages", () => {
@@ -78,7 +78,7 @@ describe("WoW living hub content", () => {
     expect(wowMarketRoutes).toHaveLength(6);
     expect(wowScenarios).toHaveLength(8);
     expect(new Set(wowScenarios.map((scenario) => scenario.kind)).size).toBeGreaterThanOrEqual(5);
-    expect(insights.filter((insight) => insight.game === "wow")).toHaveLength(6);
+    expect(insights.filter((insight) => insight.game === "wow")).toHaveLength(7);
   });
 
   it("keeps every WoW research note complete in both languages", () => {
@@ -131,5 +131,31 @@ describe.each([
       expect(model.title.ru).toBeTruthy();
       expect(model.title.en).toBeTruthy();
     });
+  });
+});
+
+describe("five-hub guide edition", () => {
+  it("publishes one complete featured guide for every economy", () => {
+    const games = ["gta", "dota", "wow", "totalwar", "ck3"] as const;
+
+    games.forEach((game) => {
+      const guides = insights.filter((insight) => insight.game === game && insight.format === "guide" && insight.featuredInHub);
+      expect(guides).toHaveLength(1);
+      const guide = guides[0]!;
+      expect(guide.updatedAt).toBe("2026-08-18");
+      expect(guide.sources?.length).toBeGreaterThanOrEqual(1);
+      guide.sources?.forEach((source) => expect(source.url).toMatch(/^https:\/\//));
+      expect(guide.content.ru.sections.length).toBeGreaterThanOrEqual(4);
+      expect(guide.content.en.sections.length).toBe(guide.content.ru.sections.length);
+      expect(guide.content.ru.takeaways).toHaveLength(3);
+      expect(guide.content.en.takeaways).toHaveLength(3);
+      expect(guide.toolPath.ru).toMatch(/^\//);
+      expect(guide.toolPath.en).toMatch(/^\/en\//);
+    });
+  });
+
+  it("adds standalone research depth to both strategy hubs", () => {
+    expect(insights.filter((insight) => insight.game === "totalwar")).toHaveLength(1);
+    expect(insights.filter((insight) => insight.game === "ck3")).toHaveLength(1);
   });
 });

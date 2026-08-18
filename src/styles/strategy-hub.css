@@ -105,8 +105,6 @@
 .strategy-path-planner .path-tabs button > small { grid-column: 2; min-width: 0; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 .strategy-path-planner .path-tabs button[aria-selected="true"] { border-color: rgba(var(--strategy-accent-rgb), .38); background: linear-gradient(140deg, rgba(var(--strategy-accent-rgb), .12), rgba(10,10,13,.99)); }
 .strategy-path-panel { position: relative; overflow: hidden; border-color: rgba(var(--strategy-accent-rgb), .19); background: linear-gradient(145deg, rgba(var(--strategy-accent-rgb), .06), rgba(8,8,11,.98) 55%); }
-.strategy-path-panel > .strategy-mark { position: absolute; right: 24px; bottom: 20px; transform: scale(2.8) rotate(-8deg); opacity: .045; pointer-events: none; }
-.strategy-path-panel > *:not(.strategy-mark) { position: relative; z-index: 1; }
 .strategy-path-planner .path-route-label,
 .strategy-path-planner .path-step > span { color: var(--strategy-accent); }
 .strategy-path-planner .path-route-label { background: #111013; }

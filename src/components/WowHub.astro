@@ -8,6 +8,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GameWorldHero from "./GameWorldHero.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
+import HubGuideFeature from "./HubGuideFeature.astro";
 import SiteFooter from "./SiteFooter.astro";
 import WowCalculators from "./WowCalculators.astro";
 import WowDecisionDeck from "./WowDecisionDeck.astro";
@@ -28,7 +29,7 @@ const copy = lang === "ru" ? {
   title: "Экономика WoW Retail: аукцион, профессии и золото | Money Meta",
   description: "Живая модель экономики WoW Retail: карта рынка, персональные пути, актуальные изменения, рейтинги способов заработка, сценарии и калькуляторы.",
   back: "← Все экономики",
-  live: "Модель рынка Retail · проверено 2026-08-12",
+  live: "Модель рынка Retail · проверено 2026-08-18",
   eyebrow: "World of Warcraft Retail · Живой рынок",
   heading: "Не фарми красивую цену. Управляй потоком золота.",
   lede: "Проследи путь капитала от материалов до полученной прибыли. Выбери свою роль на рынке, проверь ликвидность и узнай, где привлекательная маржа перестаёт быть реальной.",
@@ -83,7 +84,7 @@ const copy = lang === "ru" ? {
   title: "WoW Retail Economy Hub: Auction House, professions and gold | Money Meta",
   description: "A living WoW Retail economy model with a market map, personal paths, current changes, conditional route rankings, scenarios and calculators.",
   back: "← All economies",
-  live: "Retail market model · checked 2026-08-12",
+  live: "Retail market model · checked 2026-08-18",
   eyebrow: "World of Warcraft Retail · Living Market Hub",
   heading: "Do not farm a price. Manage the flow of gold.",
   lede: "Follow capital from reagent to realized profit. Choose a market role, test liquidity and see where the attractive margin stops being real.",
@@ -205,6 +206,7 @@ const copy = lang === "ru" ? {
       </section>
 
       <HubDecisionGateway hub="wow" lang={lang} />
+      <HubGuideFeature hub="wow" lang={lang} />
       <WowMarketLedger lang={lang} />
       <WowEconomyMap lang={lang} />
       <WowPlayerPaths lang={lang} />

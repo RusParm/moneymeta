@@ -215,8 +215,6 @@
     radial-gradient(460px 260px at 98% 0, rgba(165, 140, 232, .1), transparent 70%),
     linear-gradient(155deg, rgba(15, 25, 40, .98), rgba(6, 11, 20, .99));
 }
-.wow-path-panel > *:not(.wow-path-watermark) { position: relative; z-index: 1; }
-.wow-path-watermark { position: absolute; right: 24px; bottom: 20px; opacity: .055; pointer-events: none; transform: scale(2.6) rotate(-8deg); }
 .wow-path-planner .path-route-label,
 .wow-path-planner .path-step > span { color: var(--wow-frost); }
 .wow-path-planner .path-constraints small { font-size: 10px; line-height: 1.35; }
@@ -347,7 +345,6 @@
   .wow-economy-node { min-height: 150px; }
   .wow-economy-detail .economy-detail-top { grid-template-columns: auto auto minmax(0, 1fr); gap: 12px; }
   .wow-economy-detail .economy-detail-top .pill { min-width: 0; white-space: normal; }
-  .wow-path-watermark { display: none; }
   .wow-pulse-card { min-height: 380px; }
   .wow-model { padding: 20px; }
   .wow-model-head { grid-template-columns: 68px minmax(0, 1fr); gap: 15px; align-items: start; }

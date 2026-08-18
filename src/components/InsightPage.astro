@@ -1,6 +1,6 @@
 ---
 import type { Insight, InsightLocale } from "../data/insights";
-import { insights } from "../data/insights";
+import { insightGameLabels, insights } from "../data/insights";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
@@ -11,7 +11,7 @@ const content = insight.content[lang];
 const prefix = lang === "ru" ? "" : "/en";
 const path = `${prefix}/insights/${insight.slug}/`;
 const alternatePath = `${lang === "ru" ? "/en" : ""}/insights/${insight.slug}/`;
-const gameLabel = insight.game === "gta" ? "GTA Online" : insight.game === "dota" ? "Dota 2" : "WoW Retail";
+const gameLabel = insightGameLabels[insight.game];
 const allInsightsPath = `${prefix}/insights/`;
 const related = insights
   .filter((item) => item.slug !== insight.slug)
@@ -27,9 +27,10 @@ const labels = lang === "ru" ? {
   takeaways: "Главное за 30 секунд",
   model: "Открыть модель",
   related: "Следующие разборы",
-  relatedText: "Три экономики, один принцип: сначала понять цену выбора, затем действовать.",
+  relatedText: "Пять экономик, один принцип: сначала понять цену выбора, затем действовать.",
   disclosure: "О данных",
-  disclosureText: "Все числовые примеры являются прозрачными рабочими сценариями. Они не выдаются за официальные данные издателя, а исходные значения можно заменить в связанном инструменте."
+  disclosureText: "Все числовые примеры являются прозрачными рабочими сценариями. Они не выдаются за официальные данные издателя, а исходные значения можно заменить в связанном инструменте.",
+  sources: "Официальные источники материала"
 } : {
   back: "← All field notes",
   updated: "Updated",
@@ -39,9 +40,10 @@ const labels = lang === "ru" ? {
   takeaways: "The 30-second answer",
   model: "Open the model",
   related: "Read next",
-  relatedText: "Three economies, one principle: understand the trade-off before acting.",
+  relatedText: "Five economies, one principle: understand the trade-off before acting.",
   disclosure: "Data note",
-  disclosureText: "Every numeric example is a transparent baseline scenario. It is not presented as official publisher data and can be recalculated in the linked tool."
+  disclosureText: "Every numeric example is a transparent baseline scenario. It is not presented as official publisher data and can be recalculated in the linked tool.",
+  sources: "Primary sources for this guide"
 };
 ---
 
@@ -103,6 +105,13 @@ const labels = lang === "ru" ? {
               <a class="button primary" href={insight.toolPath[lang]}>{labels.model} →</a>
             </div>
             <div class="callout"><p><strong>{labels.disclosure}.</strong> {labels.disclosureText}</p></div>
+            {insight.sources && (
+              <section class="article-sources" aria-labelledby="article-sources-title">
+                <span class="article-index">S</span>
+                <h2 id="article-sources-title">{labels.sources}</h2>
+                <ul>{insight.sources.map((source) => <li><a href={source.url} target="_blank" rel="noopener noreferrer">{source.label[lang]} ↗</a></li>)}</ul>
+              </section>
+            )}
           </div>
         </div>
       </article>
@@ -113,7 +122,7 @@ const labels = lang === "ru" ? {
           {related.map((item) => {
             const itemContent = item.content[lang];
             const href = `${prefix}/insights/${item.slug}/`;
-            return <a class={`related-card related-${item.game}`} href={href}><span>{item.game === "gta" ? "GTA Online" : item.game === "dota" ? "Dota 2" : "WoW Retail"}</span><h3>{itemContent.title}</h3><p>{itemContent.description}</p><strong>{itemContent.readTime} · ↗</strong></a>;
+            return <a class={`related-card related-${item.game}`} href={href}><span>{insightGameLabels[item.game]}</span><h3>{itemContent.title}</h3><p>{itemContent.description}</p><strong>{itemContent.readTime} · ↗</strong></a>;
           })}
         </div>
       </section>

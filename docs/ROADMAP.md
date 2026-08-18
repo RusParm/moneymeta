@@ -79,6 +79,15 @@
 - Local persistence without accounts, personal data or backend state.
 - Preview browser QA across desktop and mobile before production promotion.
 
+## P1.7: v1.8 authored hub depth
+
+- One patch-aware flagship guide for each of the five live economies in full RU/EN parity.
+- A shared editorial feature that breaks the generic section-and-card rhythm without flattening each game's visual identity.
+- Standalone Total War and Crusader Kings III guide routes inside Field Notes and the sitemap.
+- Current-source review dated 2026-08-18 with future releases kept outside live numeric models until verification.
+- Layout guard for decorative media so marks and portraits cannot occupy the text reading layer.
+- Separate branch preview and browser QA before any later production decision.
+
 ## Next: recurring utility
 
 - Goal Planner.
