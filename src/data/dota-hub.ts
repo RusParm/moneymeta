@@ -261,7 +261,7 @@ export const dotaPlayerPaths: DotaPlayerPath[] = [
 
 export const dotaPulse = {
   patch: currentPatch,
-  checkedAt: "2026-08-12",
+  checkedAt: "2026-08-18",
   staleAfterDays: 45,
   sourceUrl: `https://www.dota2.com/patches/${currentPatch}`,
   status: "verified" as const,
@@ -442,6 +442,6 @@ export const dotaMediaPolicy = {
     ru: "Редакционное использование до отдельной проверки коммерческих прав",
     en: "editorial identification pending commercial-rights review"
   },
-  checkedAt: "2026-08-12",
+  checkedAt: "2026-08-18",
   removable: true
 };

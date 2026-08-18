@@ -1,0 +1,78 @@
+---
+import { insightGameLabels, insights, type InsightGame, type InsightLocale } from "../data/insights";
+import "../styles/editorial-guide.css";
+
+interface Props {
+  hub: "gta" | "dota" | "wow" | "total-war" | "ck3";
+  lang: InsightLocale;
+}
+
+const { hub, lang } = Astro.props;
+const gameByHub: Record<Props["hub"], InsightGame> = {
+  gta: "gta",
+  dota: "dota",
+  wow: "wow",
+  "total-war": "totalwar",
+  ck3: "ck3"
+};
+const game = gameByHub[hub];
+const guide = insights.find((item) => item.game === game && item.format === "guide" && item.featuredInHub);
+
+if (!guide) throw new Error(`Featured guide is missing for ${hub}`);
+
+const content = guide.content[lang];
+const prefix = lang === "ru" ? "" : "/en";
+const guidePath = `${prefix}/insights/${guide.slug}/`;
+const copy = lang === "ru" ? {
+  rail: "Главный гайд хаба",
+  issue: "Выпуск 01",
+  checked: "Проверено",
+  summary: "Суть за минуту",
+  read: "Открыть полный гайд",
+  tool: "Сразу к модели",
+  sources: "Официальные источники"
+} : {
+  rail: "Hub field guide",
+  issue: "Issue 01",
+  checked: "Checked",
+  summary: "One-minute brief",
+  read: "Read the complete guide",
+  tool: "Go straight to the model",
+  sources: "Primary sources"
+};
+---
+
+<section class={`hub-guide-feature hub-guide-${game}`} aria-labelledby={`${hub}-guide-title`}>
+  <div class="hub-guide-rail">
+    <span>{copy.rail}</span>
+    <strong aria-hidden="true">01</strong>
+    <div><small>{copy.issue}</small><b>{insightGameLabels[game]}</b></div>
+  </div>
+
+  <article class="hub-guide-story">
+    <div class="hub-guide-meta">
+      <span>{content.kicker}</span>
+      <span>{copy.checked} · {guide.updatedAt}</span>
+      <span>{guide.gameVersion[lang]}</span>
+    </div>
+    <h2 id={`${hub}-guide-title`}>{content.title}</h2>
+    <p>{content.thesis}</p>
+    <div class="hub-guide-actions">
+      <a class="hub-guide-primary" href={guidePath}>{copy.read} →</a>
+      <a href={guide.toolPath[lang]}>{copy.tool} ↗</a>
+    </div>
+    {guide.sources && (
+      <div class="hub-guide-sources">
+        <span>{copy.sources}</span>
+        {guide.sources.map((source) => <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label[lang]} ↗</a>)}
+      </div>
+    )}
+  </article>
+
+  <aside class="hub-guide-brief" aria-label={copy.summary}>
+    <span>{copy.summary}</span>
+    <ol>
+      {content.takeaways.map((takeaway, index) => <li><b>0{index + 1}</b><p>{takeaway}</p></li>)}
+    </ol>
+  </aside>
+</section>

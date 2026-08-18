@@ -87,3 +87,11 @@ A mature vertical cannot rely on a strong hero and a library of links. GTA and W
 ## 2026-08-18: every hub starts with a decision
 
 The depth of a living hub should not make the first useful action harder to find. Every economy begins with the same compact interaction contract: three questions, an immediate recommendation, three checks and direct links to the next model or analysis. The interface grammar is shared, but questions, scoring and outcomes remain native to each game. State stays local to the device and does not require an account or personal data.
+
+## 2026-08-18: authored guide before another card grid
+
+Each hub follows quick start with one substantial editorial guide rather than another interchangeable collection of cards. The guide must expose a dated game version, primary sources, a concrete sequence, three concise takeaways and a direct path into a model. Decorative game media may support the layout only when it has reserved space and cannot sit beneath text.
+
+## 2026-08-18: announced content stays outside live models
+
+Official future releases are useful review triggers, not permission to model unreleased mechanics. Total War's September 24 update and Crusader Kings III Silk & Silver remain watch items until release notes and live behavior can be verified. Current calculations stay bound to Patch 8.1 and version 1.19.0.6 respectively.

@@ -221,7 +221,7 @@ export const wowPlayerPaths: WowPlayerPath[] = [
 
 export const wowPulse = {
   release: "Curse of Ula’tek",
-  checkedAt: "2026-08-12",
+  checkedAt: "2026-08-18",
   staleAfterDays: 30,
   sourceUrl: "https://worldofwarcraft.blizzard.com/en-us/news/24288418/quality-of-life-improvements-coming-in-curse-of-ulatek",
   status: "verified" as const,

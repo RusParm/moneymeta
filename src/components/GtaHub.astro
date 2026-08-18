@@ -13,6 +13,7 @@ import GtaPlayerPaths from "./GtaPlayerPaths.astro";
 import GtaPulse from "./GtaPulse.astro";
 import GtaRankings from "./GtaRankings.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
+import HubGuideFeature from "./HubGuideFeature.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -32,7 +33,7 @@ const copy = lang === "ru" ? {
   heroProof: [
     ["7", "активов в модели"],
     ["3", "пути игрока"],
-    ["6", "полных разборов"],
+    ["7", "полных разборов"],
     ["Авто", "проверка актуальности"]
   ],
   loadoutLabel: "Ключевые системы GTA-хаба",
@@ -97,7 +98,7 @@ const copy = lang === "ru" ? {
   heroProof: [
     ["7", "modeled assets"],
     ["3", "player paths"],
-    ["6", "complete analyses"],
+    ["7", "complete analyses"],
     ["Auto", "freshness guard"]
   ],
   loadoutLabel: "Key systems in the GTA hub",
@@ -219,6 +220,7 @@ const copy = lang === "ru" ? {
       </section>
 
       <HubDecisionGateway hub="gta" lang={lang} />
+      <HubGuideFeature hub="gta" lang={lang} />
       <GtaEconomyMap lang={lang} />
       <GtaPlayerPaths lang={lang} />
       <GtaPulse lang={lang} />

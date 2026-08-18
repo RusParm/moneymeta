@@ -71,12 +71,12 @@ const copy = lang === "ru" ? {
           hidden={index !== 0}
           data-dota-path-panel={path.id}
         >
-          <div class="dota-path-portrait" aria-hidden="true"><DotaMedia asset={path.hero} lang={lang} eager={index === 0} /></div>
           <div class="path-panel-head">
             <div>
               <span class="game-tag">{path.label[lang]} · {dotaPatchContext.patch}</span>
               <h3>{path.title[lang]}</h3>
             </div>
+            <div class="dota-path-portrait" aria-hidden="true"><DotaMedia asset={path.hero} lang={lang} eager={index === 0} /></div>
             <div class="path-constraints" aria-label={lang === "ru" ? "Ограничения пути" : "Path constraints"}>
               <span><small>{copy.matches}</small><strong>{path.matches[lang]}</strong></span>
               <span><small>{copy.focus}</small><strong>{path.focus[lang]}</strong></span>

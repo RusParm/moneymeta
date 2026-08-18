@@ -1,16 +1,25 @@
 import { dotaPatchContext } from "./dota-economy";
+import { guideInsights } from "./guides";
 
 export type InsightLocale = "ru" | "en";
-export type InsightGame = "gta" | "dota" | "wow";
+export type InsightGame = "gta" | "dota" | "wow" | "totalwar" | "ck3";
 export type InsightAudience = "returner" | "casual" | "grinder";
 export type InsightEvidence = "verified" | "estimated";
 
-interface InsightSection {
+export const insightGameLabels: Record<InsightGame, string> = {
+  gta: "GTA Online",
+  dota: "Dota 2",
+  wow: "WoW Retail",
+  totalwar: "Total War: Warhammer III",
+  ck3: "Crusader Kings III"
+};
+
+export interface InsightSection {
   heading: string;
   paragraphs: string[];
 }
 
-interface LocalizedInsight {
+export interface LocalizedInsight {
   title: string;
   description: string;
   kicker: string;
@@ -24,15 +33,18 @@ interface LocalizedInsight {
 export interface Insight {
   slug: string;
   game: InsightGame;
+  format?: "analysis" | "guide";
+  featuredInHub?: boolean;
   updatedAt: string;
   gameVersion: Record<InsightLocale, string>;
   evidenceStatus: InsightEvidence;
   audiences: InsightAudience[];
   toolPath: Record<InsightLocale, string>;
+  sources?: Array<{ label: Record<InsightLocale, string>; url: string }>;
   content: Record<InsightLocale, LocalizedInsight>;
 }
 
-export const insights: Insight[] = [
+const coreInsights: Insight[] = [
   {
     slug: "gta-online-what-to-buy-with-2-5m",
     game: "gta",
@@ -466,8 +478,8 @@ export const insights: Insight[] = [
   {
     slug: "gta-online-when-weekly-bonus-changes-plan",
     game: "gta",
-    updatedAt: "2026-08-12",
-    gameVersion: { ru: "GTA Online · летнее событие с ограблениями · 6-12 августа 2026", en: "GTA Online · Summer Heist Event · Aug 6-12 2026" },
+    updatedAt: "2026-08-18",
+    gameVersion: { ru: "GTA Online · Brand Wars · 13-26 августа 2026", en: "GTA Online · Brand Wars · Aug 13-26 2026" },
     evidenceStatus: "verified",
     audiences: ["returner", "casual", "grinder"],
     toolPath: {
@@ -477,35 +489,35 @@ export const insights: Insight[] = [
     content: {
       ru: {
         title: "Когда недельный бонус должен изменить твой план в GTA Online",
-        description: "Правило для ограниченных событий: сначала забрать безусловную ценность, затем оценить редкое окно и только потом менять портфель.",
+        description: "Как отделить бесплатный актив, временный множитель и короткое окно заработка от долгосрочной экономики бизнеса.",
         kicker: "GTA Online · цена недельной возможности",
-        thesis: "Недельный бонус меняет порядок действий, но не всегда меняет лучшую долгосрочную покупку. В окне с 6 по 12 августа сначала нужно забрать GTA$1 млн за вход и пройти новый заход на Cayo Perico, а рейтинг производственных бизнесов считать отдельно.",
+        thesis: "Brand Wars меняет порядок действий до 26 августа, но не переписывает экономику портфеля. Сначала забери бесплатный Hotring Sabre, затем проверь 4X в свободном режиме и только при подходящем сеансе используй трёхдневное окно 5X для VIP Work.",
         readTime: "5 мин",
         takeaways: [
-          "До конца 12 августа официальное событие даёт GTA$1 млн за вход; начисление может занять до 72 часов.",
-          "Первое свежее прохождение Cayo Perico в этом окне гарантирует Panther Statue.",
-          "Активности с двойными и тройными наградами являются временным способом заработать. Их нельзя автоматически переносить на постоянные производственные бизнесы."
+          "Declasse Hotring Sabre можно забрать бесплатно до 26 августа. Это экономия на покупке, а не регулярный доход.",
+          "Испытания и события свободного режима дают 4X GTA$/RP до 26 августа.",
+          "VIP Work даёт 5X GTA$/RP только 21-23 августа. Покупать дорогую инфраструктуру ради короткого окна обычно рискованно."
         ],
         sections: [
           {
-            heading: "Сначала безусловная ценность",
+            heading: "Сначала забери то, что не требует вложений",
             paragraphs: [
-              "Если награда требует только входа, первым действием становится запуск игры, а не покупка. Это добавляет капитал без затрат времени и может сразу изменить список доступных вариантов.",
-              "По официальному Rockstar Newswire окно действует до конца 12 августа, а начисление GTA$1 млн может занять до 72 часов. Поэтому решение нужно отделить от момента фактического поступления средств."
+              "Бесплатный Hotring Sabre является простым первым действием, если автомобиль нужен тебе как часть коллекции или для соответствующих гонок. Он не требует замораживать капитал, поэтому его не нужно сравнивать с покупкой производственного бизнеса.",
+              "Не записывай полную цену автомобиля в прибыль недели. Ты избежал расхода только в том случае, если действительно собирался его покупать. В остальных сценариях это бесплатный необязательный актив."
             ]
           },
           {
-            heading: "Затем редкое ограниченное окно",
+            heading: "Затем проверь множитель на короткой выборке",
             paragraphs: [
-              "Гарантированная Panther Statue за первое новое прохождение Cayo Perico является редкой возможностью с ограниченным сроком. Она важнее обычного цикла, если игрок успевает завершить ограбление.",
-              "Но редкая выплата не делает Kosatka или любой другой бизнес лучшей постоянной покупкой для всех. Сначала оцени доступ, подготовку и собственное время."
+              "4X в испытаниях и событиях свободного режима выглядит убедительно, но итог зависит от того, какие события появляются, сколько длится ожидание и насколько стабильно ты их завершаешь. Проведи два или три цикла и запиши фактическую выплату вместе с полным временем.",
+              "Если маршрут оказывается лучше привычного заработка именно для твоего сеанса, используй его до 26 августа. Если ожидание и перемещения съедают преимущество, множитель не обязан становиться главным планом недели."
             ]
           },
           {
-            heading: "И только потом меняй базовый портфель",
+            heading: "Короткое окно 5X требует готового доступа",
             paragraphs: [
-              "Тройные награды в Community Mission Series и двойные в A Superyacht Life и Assault on Cayo Perico создают временные активные маршруты. Их нужно сравнивать с альтернативами на эту неделю, а не навсегда переписывать экономику Кислотной лаборатории, Бункера или Ночного клуба.",
-              "Money Meta автоматически переносит обновление в архив после окончания срока. Так старый бонус не выдаётся за актуальную мету, что часто случается в гайдах для вернувшихся игроков."
+              "5X на VIP Work действует только с 21 по 23 августа. Для игрока с уже готовым доступом это повод заранее выделить короткий сеанс. Для нового игрока трёхдневное окно не является достаточным основанием для дорогой покупки без отдельного расчёта.",
+              "После 23 августа этот маршрут снова нужно сравнить с обычными выплатами, а после 26 августа весь Brand Wars Pulse уйдёт в архив. Кислотная лаборатория, Бункер и Ночной клуб продолжают оцениваться по собственному денежному циклу."
             ]
           }
         ],
@@ -513,35 +525,35 @@ export const insights: Insight[] = [
       },
       en: {
         title: "When a weekly bonus should change your GTA Online plan",
-        description: "A rule for limited events: claim unconditional value, assess the rare window, then decide whether the portfolio changes.",
+        description: "Separate a free asset, a temporary multiplier and a short cash window from long-horizon business economics.",
         kicker: "GTA Online · Weekly opportunity cost",
-        thesis: "A weekly bonus changes action order but does not always change the best long-term purchase. In the August 6-12 window, the sequence starts with the GTA$1m login value and a first fresh Cayo run while production rankings remain separate.",
+        thesis: "Brand Wars changes action order through August 26 without rewriting the portfolio. Claim the free Hotring Sabre first, sample 4X Freemode results next, and use the three-day 5X VIP Work window only when it fits an already accessible session.",
         readTime: "5 min",
         takeaways: [
-          "Through the end of August 12, the official event grants GTA$1m for logging in; delivery can take up to 72 hours.",
-          "The first fresh Cayo Perico playthrough in the window guarantees the Panther Statue.",
-          "2X/3X activities are a temporary active-cash layer; they are not automatically applied to permanent production businesses."
+          "The Declasse Hotring Sabre is free through August 26. That is an acquisition saving, not recurring income.",
+          "Freemode Challenges and Events pay 4X GTA$/RP through August 26.",
+          "VIP Work pays 5X GTA$/RP only from August 21 through 23. New infrastructure for a short window needs a separate case."
         ],
         sections: [
           {
-            heading: "Claim unconditional value first",
+            heading: "Claim the no-capital option first",
             paragraphs: [
-              "When a reward requires only a login, logging in comes before buying. It adds capital without locking time and can change the affordable shortlist through one action.",
-              "The official Rockstar Newswire window runs through the end of August 12, and delivery of GTA$1m can take up to 72 hours. Separate the decision from the moment cash actually arrives."
+              "The free Hotring Sabre is a simple first action when the car belongs in your collection or race plan. It does not lock capital, so it should not be compared with buying a production business.",
+              "Do not record the full sticker price as weekly profit. You avoided an expense only when you genuinely planned to buy the vehicle. Otherwise it is a free optional asset."
             ]
           },
           {
-            heading: "Then assess the rare expiring window",
+            heading: "Sample the multiplier before rebuilding the week",
             paragraphs: [
-              "A guaranteed Panther Statue on the first fresh Cayo playthrough is an opportunity with expiry. It deserves priority over a routine loop when the player can finish the run inside the window.",
-              "The rare payout does not automatically make Kosatka or any other asset the best permanent purchase for every player. Access, setup and available time still matter."
+              "A 4X Freemode headline is compelling, but the realized result depends on which event appears, waiting time and completion consistency. Run two or three cycles and record payout together with the full clock time.",
+              "Use the route through August 26 when it beats your normal loop in your actual session. When waiting and travel erase the edge, the multiplier does not need to become the center of the week."
             ]
           },
           {
-            heading: "Only then change the base portfolio",
+            heading: "The 5X window works best with existing access",
             paragraphs: [
-              "3X Community Mission Series and 2X A Superyacht Life / Assault on Cayo Perico create temporary active routes. Compare them with this week's alternatives; do not permanently rewrite Acid Lab, Bunker or Nightclub unit economics.",
-              "Money Meta automatically moves Pulse into archive after valid-through. That prevents one of the most expensive returner-guide errors: presenting yesterday's bonus as current meta."
+              "VIP Work pays 5X only from August 21 through 23. For a player with access already in place, that supports one prepared short session. For a new player, three days is not enough evidence for an expensive purchase without a separate payback case.",
+              "After August 23 the route returns to its regular comparison, and after August 26 the complete Brand Wars Pulse becomes archive context. Acid Lab, Bunker and Nightclub still follow their own cash cycles."
             ]
           }
         ],
@@ -1555,6 +1567,8 @@ export const insights: Insight[] = [
     }
   }
 ];
+
+export const insights: Insight[] = [...guideInsights, ...coreInsights];
 
 export function getInsight(slug: string): Insight | undefined {
   return insights.find((insight) => insight.slug === slug);
