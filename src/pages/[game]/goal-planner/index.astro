@@ -1,0 +1,13 @@
+---
+import GoalPlannerPage from "../../../components/GoalPlannerPage.astro";
+import { hubPortalList, type HubPortalId } from "../../../data/hub-portals";
+
+export function getStaticPaths() {
+  return hubPortalList.map((hub) => ({ params: { game: hub.slug }, props: { hub: hub.id } }));
+}
+
+interface Props { hub: HubPortalId; }
+const { hub } = Astro.props;
+---
+
+<GoalPlannerPage hub={hub} lang="ru" />

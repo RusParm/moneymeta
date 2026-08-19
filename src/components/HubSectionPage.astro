@@ -27,6 +27,7 @@ import GtaPulse from "./GtaPulse.astro";
 import GtaRankings from "./GtaRankings.astro";
 import HubGameMark from "./HubGameMark.astro";
 import HubGuideLibrary from "./HubGuideLibrary.astro";
+import GoalPlannerTeaser from "./GoalPlannerTeaser.astro";
 import SiteFooter from "./SiteFooter.astro";
 import StrategySectionContent from "./StrategySectionContent.astro";
 import WowCalculators from "./WowCalculators.astro";
@@ -169,6 +170,8 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
       </nav>
 
       <div class="section-page-content">
+        {sectionSlug === "tools" && <GoalPlannerTeaser hub={hubId} lang={lang} />}
+
         {hubId === "gta" && sectionSlug === "economy" && <GtaEconomyMap lang={lang} />}
         {hubId === "gta" && sectionSlug === "player-paths" && <GtaPlayerPaths lang={lang} />}
         {hubId === "gta" && sectionSlug === "meta" && <><GtaPulse lang={lang} /><GtaRankings lang={lang} /></>}

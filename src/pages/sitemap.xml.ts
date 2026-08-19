@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { getGoalPlannerPath } from "../data/goal-planners";
 import { HUB_SECTION_SLUGS, getHubPath, hubPortalList } from "../data/hub-portals";
 import { insights } from "../data/insights";
 
@@ -27,6 +28,7 @@ const paths = [
     getHubPath(hub.id, "ru", section),
     getHubPath(hub.id, "en", section)
   ])),
+  ...hubPortalList.flatMap((hub) => [getGoalPlannerPath(hub.id, "ru"), getGoalPlannerPath(hub.id, "en")]),
   ...insights.flatMap((insight) => [`/insights/${insight.slug}/`, `/en/insights/${insight.slug}/`])
 ];
 
