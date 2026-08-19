@@ -47,10 +47,10 @@ describe("hub decision gateway", () => {
         expect(outcome.checks).toHaveLength(3);
         expect(outcome.title.ru).toBeTruthy();
         expect(outcome.title.en).toBeTruthy();
-        expect(outcome.primary.href.ru).toMatch(/^(?:#|\/)/u);
-        expect(outcome.primary.href.en).toMatch(/^(?:#|\/)/u);
-        expect(outcome.secondary.href.ru).toMatch(/^(?:#|\/)/u);
-        expect(outcome.secondary.href.en).toMatch(/^(?:#|\/)/u);
+        expect(outcome.primary.href.ru).toMatch(/^\//u);
+        expect(outcome.primary.href.en).toMatch(/^\/en\//u);
+        expect(outcome.secondary.href.ru).toMatch(/^\//u);
+        expect(outcome.secondary.href.en).toMatch(/^\/en\//u);
       });
     });
   });

@@ -135,7 +135,17 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Expanded standalone Field Notes from three to five games and made the homepage feature one deliberately selected guide per economy.
 - Updated current context on 2026-08-18: GTA Online Brand Wars through August 26, Dota 2 Patch 7.41e, WoW Curse of Ula'tek hotfix review, Total War Patch 8.1 plus the September 24 watch item, and Crusader Kings III 1.19.0.6 plus the Q4 Silk & Silver boundary.
 - Removed oversized decorative path watermarks from GTA, WoW and both strategy hubs. The Dota path portrait now occupies a reserved grid cell and disappears before it can compete with text.
-- Production v1.7 remains unchanged while v1.8 is validated on a separate branch preview.
+- v1.8 passed branch preview review and is the current production release.
+
+## Active release candidate: v1.9 linked hub architecture
+
+- Replaced every long root hub with a compact portal that explains the player value, exposes the current version and routes to five standalone destinations: economy, player paths, meta, guides and tools.
+- Added fifty localized section routes across five games and two languages while preserving every previous public root and calculator URL.
+- Migrated quick-start outcomes, economy-map actions, player paths, scenario decks and article CTAs away from root-page fragments to the relevant focused route.
+- Added publisher-sourced editorial media with explicit credits and fallbacks. Dota continues to use the existing removable Valve item and hero registry.
+- Expanded Total War and Crusader Kings III from one full guide each to three, bringing both strategy guide libraries to a useful launch depth without adding unreleased mechanics to live models.
+- Added route, media-policy, navigation-migration and strategy-depth tests. Sixty-one automated tests pass; 121 static pages build with zero Astro diagnostics and zero missing internal links.
+- v1.8 production remains unchanged while v1.9 is validated on its branch preview.
 
 ## Release policy
 

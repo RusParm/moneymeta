@@ -1,5 +1,6 @@
 ---
 import { gtaEconomyNodes } from "../data/gta-hub";
+import { migrateHubHref } from "../lib/hub-links";
 import GtaAssetMark from "./GtaAssetMark.astro";
 
 interface Props { lang: "ru" | "en"; }
@@ -23,9 +24,10 @@ const copy = lang === "ru" ? {
   open: "Open the connected tool"
 };
 
-const hrefFor = (href: string) => lang === "en" && href.startsWith("/gta-online/")
-  ? `/en${href}`
-  : href;
+const hrefFor = (href: string) => {
+  const migrated = migrateHubHref("gta", lang, href);
+  return lang === "en" && migrated.startsWith("/gta-online/") ? `/en${migrated}` : migrated;
+};
 const first = gtaEconomyNodes[0]!;
 const marks: Record<string, [string, "teal" | "magenta" | "gold" | "coral"]> = lang === "ru" ? {
   capital: ["$", "teal"], acquisition: ["П", "magenta"], supply: ["Р", "gold"], production: ["ПР", "teal"], storage: ["З", "gold"], sale: ["$", "magenta"], reinvest: ["↻", "coral"]

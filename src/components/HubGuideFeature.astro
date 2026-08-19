@@ -1,5 +1,6 @@
 ---
 import { insightGameLabels, insights, type InsightGame, type InsightLocale } from "../data/insights";
+import { migrateHubHref } from "../lib/hub-links";
 import "../styles/editorial-guide.css";
 
 interface Props {
@@ -23,6 +24,7 @@ if (!guide) throw new Error(`Featured guide is missing for ${hub}`);
 const content = guide.content[lang];
 const prefix = lang === "ru" ? "" : "/en";
 const guidePath = `${prefix}/insights/${guide.slug}/`;
+const toolHref = migrateHubHref(hub, lang, guide.toolPath[lang]);
 const copy = lang === "ru" ? {
   rail: "Главный гайд хаба",
   issue: "Выпуск 01",
@@ -59,7 +61,7 @@ const copy = lang === "ru" ? {
     <p>{content.thesis}</p>
     <div class="hub-guide-actions">
       <a class="hub-guide-primary" href={guidePath}>{copy.read} →</a>
-      <a href={guide.toolPath[lang]}>{copy.tool} ↗</a>
+      <a href={toolHref}>{copy.tool} ↗</a>
     </div>
     {guide.sources && (
       <div class="hub-guide-sources">

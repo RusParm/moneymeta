@@ -95,3 +95,11 @@ Each hub follows quick start with one substantial editorial guide rather than an
 ## 2026-08-18: announced content stays outside live models
 
 Official future releases are useful review triggers, not permission to model unreleased mechanics. Total War's September 24 update and Crusader Kings III Silk & Silver remain watch items until release notes and live behavior can be verified. Current calculations stay bound to Patch 8.1 and version 1.19.0.6 respectively.
+
+## 2026-08-19: hub roots are portals, not documents
+
+A game root should establish value, current context and the next decision within a few screens. Deep maps, player paths, patch analysis, guides and tools belong on stable standalone URLs. This preserves depth while removing the requirement to scroll through every product layer in one visit. Existing public roots and calculator URLs remain valid; contextual actions route directly to the focused page.
+
+## 2026-08-19: game media is editorial evidence, not decoration
+
+Owned Money Meta worlds remain the visual foundation. Publisher screenshots, patch banners, item icons and hero portraits may identify a current event, mechanic or guide when the source is explicit, the asset can be removed independently and the layout still works without it. Third-party media never supplies model inputs and never sits beneath text as an uncontrolled decorative layer.

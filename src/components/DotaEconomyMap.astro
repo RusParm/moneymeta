@@ -1,10 +1,12 @@
 ---
 import { dotaEconomyNodes } from "../data/dota-hub";
+import { migrateHubHref } from "../lib/hub-links";
 import DotaMedia from "./DotaMedia.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const first = dotaEconomyNodes[0]!;
+const hrefFor = (href: string) => migrateHubHref("dota", lang, href);
 
 const copy = lang === "ru" ? {
   kicker: "Карта экономики матча · путь одной монеты",
@@ -49,7 +51,7 @@ const copy = lang === "ru" ? {
           data-summary={node.summary[lang]}
           data-decision={node.decision[lang]}
           data-signal={node.signal[lang]}
-          data-href={node.href}
+          data-href={hrefFor(node.href)}
           data-media-src={node.media.src}
           data-media-alt={node.media.alt[lang]}
           data-media-fallback={node.media.fallback}
@@ -83,7 +85,7 @@ const copy = lang === "ru" ? {
           <strong data-map-decision>{first.decision[lang]}</strong>
         </div>
       </div>
-      <a class="map-tool-link" data-map-link href={first.href}>{copy.open} →</a>
+      <a class="map-tool-link" data-map-link href={hrefFor(first.href)}>{copy.open} →</a>
     </article>
   </div>
 </section>

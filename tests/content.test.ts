@@ -155,7 +155,19 @@ describe("five-hub guide edition", () => {
   });
 
   it("adds standalone research depth to both strategy hubs", () => {
-    expect(insights.filter((insight) => insight.game === "totalwar")).toHaveLength(1);
-    expect(insights.filter((insight) => insight.game === "ck3")).toHaveLength(1);
+    expect(insights.filter((insight) => insight.game === "totalwar")).toHaveLength(3);
+    expect(insights.filter((insight) => insight.game === "ck3")).toHaveLength(3);
+  });
+
+  it("keeps every strategy guide actionable in both languages", () => {
+    insights.filter((insight) => insight.game === "totalwar" || insight.game === "ck3").forEach((guide) => {
+      expect(guide.format).toBe("guide");
+      expect(guide.sources?.length).toBeGreaterThanOrEqual(1);
+      expect(guide.content.ru.sections.length).toBeGreaterThanOrEqual(4);
+      expect(guide.content.en.sections.length).toBe(guide.content.ru.sections.length);
+      expect(guide.content.ru.takeaways).toHaveLength(3);
+      expect(guide.toolPath.ru).toContain("/tools/");
+      expect(guide.toolPath.en).toContain("/en/");
+    });
   });
 });

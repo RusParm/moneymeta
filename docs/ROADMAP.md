@@ -88,6 +88,15 @@
 - Layout guard for decorative media so marks and portraits cannot occupy the text reading layer.
 - Separate branch preview and browser QA before any later production decision.
 
+## P1.8: v1.9 linked hub architecture
+
+- Compact portal root for each game with a visible value proposition and current-version boundary.
+- Five standalone RU/EN destinations per game: economy, player paths, meta, guides and tools.
+- Real URL navigation for decision gateways and contextual cards instead of dependencies on one long root document.
+- Publisher-sourced editorial imagery with explicit credit, removable media records and owned Money Meta worlds as the visual foundation.
+- Three complete, sourced strategy guides per game plus six narrow operational briefs.
+- Internal-link audit, responsive browser QA and separate Vercel preview before any production decision.
+
 ## Next: recurring utility
 
 - Goal Planner.

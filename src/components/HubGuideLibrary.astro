@@ -1,0 +1,153 @@
+---
+import { insights, type InsightGame } from "../data/insights";
+import type { HubLocale, HubPortalId } from "../data/hub-portals";
+import HubGameMark from "./HubGameMark.astro";
+
+interface Props {
+  hub: HubPortalId;
+  lang: HubLocale;
+  compact?: boolean;
+}
+
+const { hub, lang, compact = false } = Astro.props;
+const insightGame: Record<HubPortalId, InsightGame> = {
+  gta: "gta",
+  dota: "dota",
+  wow: "wow",
+  "total-war": "totalwar",
+  ck3: "ck3"
+};
+
+const allItems = insights
+  .filter((insight) => insight.game === insightGame[hub])
+  .sort((a, b) => Number(Boolean(b.featuredInHub)) - Number(Boolean(a.featuredInHub)) || b.updatedAt.localeCompare(a.updatedAt));
+const items = compact ? allItems.slice(0, 3) : allItems;
+
+const copy = lang === "ru" ? {
+  kicker: compact ? "Редакционная подборка" : "Гайды и разборы",
+  title: compact ? "Три материала для первого осмысленного хода" : "Не пересказ механик. Разбор решений с проверкой.",
+  text: compact
+    ? "Начни с готового протокола, затем открой модель и замени исходные значения своими."
+    : "Каждый материал формулирует вопрос, фиксирует вводные, показывает границы вывода и ведёт к инструменту, где решение можно перепроверить.",
+  all: "Все",
+  returner: "После перерыва",
+  casual: "Играю понемногу",
+  grinder: "Оптимизирую",
+  verified: "проверено",
+  estimated: "модель",
+  guide: "практический гайд",
+  analysis: "разбор",
+  takeaway: "Что унесёшь",
+  open: "Открыть материал",
+  count: "материалов",
+  openAll: "Все гайды хаба"
+} : {
+  kicker: compact ? "Editorial shortlist" : "Guides and analyses",
+  title: compact ? "Three reads for the first informed move" : "Not a mechanics recap. Decisions you can test.",
+  text: compact
+    ? "Start with a field protocol, then open the model and replace the baseline with your own values."
+    : "Every piece states the question, records inputs, marks the conclusion boundary and connects to a tool where the decision can be retested.",
+  all: "All",
+  returner: "Returner",
+  casual: "Short sessions",
+  grinder: "Optimizer",
+  verified: "verified",
+  estimated: "model",
+  guide: "field guide",
+  analysis: "analysis",
+  takeaway: "What you get",
+  open: "Open the piece",
+  count: "pieces",
+  openAll: "All hub guides"
+};
+
+const hubSlug = hub === "gta" ? "gta-online" : hub === "dota" ? "dota-2" : hub === "ck3" ? "crusader-kings-3" : hub;
+const guidesPath = `${lang === "en" ? "/en" : ""}/${hubSlug}/guides/`;
+---
+
+<section class:list={["section", "hub-section", "portal-guide-library", { "is-compact": compact }]} data-hub-guide-library>
+  <div class="section-head hub-section-head portal-guide-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2>{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="count"><span data-guide-count>{items.length}</span> {copy.count}</span>
+  </div>
+
+  {!compact && (
+    <div class="portal-guide-filters" role="group" aria-label={copy.kicker}>
+      {[
+        ["all", copy.all],
+        ["returner", copy.returner],
+        ["casual", copy.casual],
+        ["grinder", copy.grinder]
+      ].map(([id, label], index) => (
+        <button type="button" aria-pressed={index === 0 ? "true" : "false"} data-guide-filter={id}>{label}</button>
+      ))}
+    </div>
+  )}
+
+  <div class="portal-guide-grid">
+    {items.map((item, index) => {
+      const href = `${lang === "en" ? "/en" : ""}/insights/${item.slug}/`;
+      const content = item.content[lang];
+      return (
+        <article
+          class:list={["portal-guide-card", { "is-featured": index === 0 && !compact }]}
+          data-guide-card
+          data-audiences={item.audiences.join(" ")}
+        >
+          <div class="portal-guide-card-top">
+            <HubGameMark hub={hub} section="guides" lang={lang} large={index === 0 && !compact} />
+            <div>
+              <span>{item.format === "guide" ? copy.guide : copy.analysis}</span>
+              <strong>{content.readTime}</strong>
+            </div>
+            <span class={`pill ${item.evidenceStatus === "verified" ? "teal" : "muted"}`}>
+              {item.evidenceStatus === "verified" ? copy.verified : copy.estimated}
+            </span>
+          </div>
+          <div class="portal-guide-card-body">
+            <p>{content.kicker}</p>
+            <h3><a href={href}>{content.title}</a></h3>
+            <span>{content.description}</span>
+          </div>
+          <div class="portal-guide-takeaway">
+            <small>{copy.takeaway}</small>
+            <strong>{content.takeaways[0]}</strong>
+          </div>
+          <div class="portal-guide-card-foot">
+            <span>{item.gameVersion[lang]}</span>
+            <span>{item.updatedAt}</span>
+          </div>
+          <a class="portal-guide-link" href={href}>{copy.open} →</a>
+        </article>
+      );
+    })}
+  </div>
+
+  {compact && <a class="portal-inline-link" href={guidesPath}>{copy.openAll} →</a>}
+</section>
+
+{!compact && (
+  <script>
+    document.querySelectorAll<HTMLElement>("[data-hub-guide-library]").forEach((root) => {
+      const buttons = [...root.querySelectorAll<HTMLButtonElement>("[data-guide-filter]")];
+      const cards = [...root.querySelectorAll<HTMLElement>("[data-guide-card]")];
+      const count = root.querySelector<HTMLElement>("[data-guide-count]");
+
+      buttons.forEach((button) => button.addEventListener("click", () => {
+        const filter = button.dataset.guideFilter ?? "all";
+        buttons.forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
+        let visible = 0;
+        cards.forEach((card) => {
+          const matches = filter === "all" || (card.dataset.audiences ?? "").split(" ").includes(filter);
+          card.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        if (count) count.textContent = String(visible);
+      }));
+    });
+  </script>
+)}

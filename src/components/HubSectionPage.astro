@@ -1,0 +1,210 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import ck3World from "../assets/game-worlds/ck3-economy-world.webp";
+import dotaWorld from "../assets/game-worlds/dota-economy-world.webp";
+import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
+import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
+import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
+import { crusaderKingsHub, totalWarHub } from "../data/strategy-hubs";
+import { getHubPath, hubPortals, type HubLocale, type HubPortalId, type HubSectionSlug } from "../data/hub-portals";
+import "../styles/wow-hub.css";
+import "../styles/strategy-hub.css";
+import "../styles/hub-portal.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import DotaCalculators from "./DotaCalculators.astro";
+import DotaDecisionDeck from "./DotaDecisionDeck.astro";
+import DotaEconomyMap from "./DotaEconomyMap.astro";
+import DotaPlayerPaths from "./DotaPlayerPaths.astro";
+import DotaPulse from "./DotaPulse.astro";
+import DotaRoleLenses from "./DotaRoleLenses.astro";
+import GtaCapitalLab from "./GtaCapitalLab.astro";
+import GtaDecisionDeck from "./GtaDecisionDeck.astro";
+import GtaEconomyMap from "./GtaEconomyMap.astro";
+import GtaPlayerPaths from "./GtaPlayerPaths.astro";
+import GtaPulse from "./GtaPulse.astro";
+import GtaRankings from "./GtaRankings.astro";
+import HubGameMark from "./HubGameMark.astro";
+import HubGuideLibrary from "./HubGuideLibrary.astro";
+import SiteFooter from "./SiteFooter.astro";
+import StrategySectionContent from "./StrategySectionContent.astro";
+import WowCalculators from "./WowCalculators.astro";
+import WowDecisionDeck from "./WowDecisionDeck.astro";
+import WowEconomyMap from "./WowEconomyMap.astro";
+import WowMarketLedger from "./WowMarketLedger.astro";
+import WowPlayerPaths from "./WowPlayerPaths.astro";
+import WowPulse from "./WowPulse.astro";
+import WowRankings from "./WowRankings.astro";
+
+interface Props {
+  hub: HubPortalId;
+  section: HubSectionSlug;
+  lang: HubLocale;
+}
+
+const { hub: hubId, section: sectionSlug, lang } = Astro.props;
+const hub = hubPortals[hubId];
+const section = hub.sections.find((item) => item.slug === sectionSlug)!;
+const root = getHubPath(hubId, lang);
+const canonical = getHubPath(hubId, lang, sectionSlug);
+const alternate = getHubPath(hubId, lang === "ru" ? "en" : "ru", sectionSlug);
+const worlds: Record<HubPortalId, ImageMetadata> = { gta: gtaWorld, dota: dotaWorld, wow: wowWorld, "total-war": totalWarWorld, ck3: ck3World };
+const mainClass = hubId === "gta"
+  ? "game-gta gta-living-hub"
+  : hubId === "dota"
+    ? "game-dota dota-living-hub"
+    : hubId === "wow"
+      ? "game-wow wow-living-hub"
+      : `strategy-living-hub strategy-${hubId}`;
+const currentIndex = hub.sections.findIndex((item) => item.slug === sectionSlug);
+const related = [hub.sections[(currentIndex + 1) % hub.sections.length]!, hub.sections[(currentIndex + 2) % hub.sections.length]!];
+const strategyData = hubId === "total-war" ? totalWarHub : crusaderKingsHub;
+
+const copy = lang === "ru" ? {
+  back: "← К порталу игры",
+  hub: "Портал",
+  current: "Текущий раздел",
+  version: "Контекст",
+  checked: "проверено",
+  question: "Вопрос, на который отвечает раздел",
+  outcome: "Что получишь",
+  sourceKicker: "Методика и актуальность",
+  sourceTitle: "Факт версии отдельно. Твои вводные отдельно.",
+  sourceText: "Официальный источник используется для контекста патча или события. Все цены, сроки, вероятность и риск, которые можно менять в модели, остаются пользовательскими вводными.",
+  source: "Открыть первоисточник",
+  nextKicker: "Продолжить маршрут",
+  nextTitle: "Следующие два слоя решения",
+  open: "Открыть",
+  portal: "Вернуться к карте хаба",
+  independent: "Независимый аналитический продукт"
+} : {
+  back: "← Back to game portal",
+  hub: "Portal",
+  current: "Current section",
+  version: "Context",
+  checked: "checked",
+  question: "Question answered here",
+  outcome: "What you get",
+  sourceKicker: "Method and freshness",
+  sourceTitle: "Version fact on one layer. Your inputs on another.",
+  sourceText: "The primary source defines patch or event context. Every editable price, horizon, probability and risk remains a user input.",
+  source: "Open primary source",
+  nextKicker: "Continue the route",
+  nextTitle: "The next two decision layers",
+  open: "Open",
+  portal: "Return to hub map",
+  independent: "Independent analytical product"
+};
+
+const pageTitle = `${section.title[lang]} · ${hub.name} | Money Meta`;
+const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  lang={lang}
+  canonicalPath={canonical}
+  alternatePath={alternate}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: pageTitle,
+    description: pageDescription,
+    inLanguage: lang,
+    about: { "@type": "VideoGame", name: hub.name, publisher: hub.publisher },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: hub.name, item: new URL(root, Astro.site).toString() },
+        { "@type": "ListItem", position: 2, name: section.label[lang], item: new URL(canonical, Astro.site).toString() }
+      ]
+    }
+  }}
+>
+  <main class={`page game-page hub-section-page ${mainClass}`} data-hub-section={sectionSlug} data-hub={hubId}>
+    <div class="shell">
+      <BrandHeader
+        lang={lang}
+        ruPath={getHubPath(hubId, "ru", sectionSlug)}
+        enPath={getHubPath(hubId, "en", sectionSlug)}
+        backPath={root}
+        backLabel={copy.back}
+      />
+
+      <section class="section-page-hero" aria-labelledby={`${hubId}-${sectionSlug}-page-title`}>
+        <Image
+          class="section-page-hero-art"
+          src={worlds[hubId]}
+          alt=""
+          widths={[480, 720, 960, 1280]}
+          sizes="(max-width: 760px) calc(100vw - 28px), 520px"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="section-page-hero-copy">
+          <nav class="section-breadcrumb" aria-label="Breadcrumb"><a href={root}>{hub.name}</a><span>/</span><span>{section.label[lang]}</span></nav>
+          <div class="section-page-title-row">
+            <HubGameMark hub={hubId} section={sectionSlug} lang={lang} large />
+            <div><span>{section.code} / {copy.current}</span><h1 id={`${hubId}-${sectionSlug}-page-title`}>{section.title[lang]}</h1></div>
+          </div>
+          <p>{section.description[lang]}</p>
+          <dl>
+            <div><dt>{copy.question}</dt><dd>{section.question[lang]}</dd></div>
+            <div><dt>{copy.outcome}</dt><dd>{section.payoff[lang]}</dd></div>
+          </dl>
+          <div class="section-page-version"><span>{copy.version}</span><strong>{hub.version[lang]}</strong><small>{copy.checked} {hub.checkedAt}</small></div>
+        </div>
+      </section>
+
+      <nav class="section-page-nav" aria-label={lang === "ru" ? `Разделы ${hub.name}` : `${hub.name} sections`}>
+        <a class="section-page-home" href={root}><span>00</span><strong>{copy.hub}</strong></a>
+        {hub.sections.map((item) => (
+          <a href={getHubPath(hubId, lang, item.slug)} aria-current={item.slug === sectionSlug ? "page" : undefined}>
+            <HubGameMark hub={hubId} section={item.slug} lang={lang} />
+            <span>{item.code}</span><strong>{item.label[lang]}</strong>
+          </a>
+        ))}
+      </nav>
+
+      <div class="section-page-content">
+        {hubId === "gta" && sectionSlug === "economy" && <GtaEconomyMap lang={lang} />}
+        {hubId === "gta" && sectionSlug === "player-paths" && <GtaPlayerPaths lang={lang} />}
+        {hubId === "gta" && sectionSlug === "meta" && <><GtaPulse lang={lang} /><GtaRankings lang={lang} /></>}
+        {hubId === "gta" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
+        {hubId === "gta" && sectionSlug === "tools" && <><GtaDecisionDeck lang={lang} /><GtaCapitalLab lang={lang} /></>}
+
+        {hubId === "dota" && sectionSlug === "economy" && <DotaEconomyMap lang={lang} />}
+        {hubId === "dota" && sectionSlug === "player-paths" && <><DotaPlayerPaths lang={lang} /><DotaRoleLenses lang={lang} /></>}
+        {hubId === "dota" && sectionSlug === "meta" && <DotaPulse lang={lang} />}
+        {hubId === "dota" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
+        {hubId === "dota" && sectionSlug === "tools" && <><DotaDecisionDeck lang={lang} /><DotaCalculators lang={lang} /></>}
+
+        {hubId === "wow" && sectionSlug === "economy" && <><WowMarketLedger lang={lang} /><WowEconomyMap lang={lang} /></>}
+        {hubId === "wow" && sectionSlug === "player-paths" && <WowPlayerPaths lang={lang} />}
+        {hubId === "wow" && sectionSlug === "meta" && <><WowPulse lang={lang} /><WowRankings lang={lang} /></>}
+        {hubId === "wow" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
+        {hubId === "wow" && sectionSlug === "tools" && <><WowDecisionDeck lang={lang} /><WowCalculators lang={lang} /></>}
+
+        {(hubId === "total-war" || hubId === "ck3") && <StrategySectionContent lang={lang} hub={hubId} section={sectionSlug} data={strategyData} />}
+      </div>
+
+      <section class="section hub-section section-page-source" aria-labelledby={`${hubId}-${sectionSlug}-source-title`}>
+        <div><span class="section-kicker">{copy.sourceKicker}</span><h2 id={`${hubId}-${sectionSlug}-source-title`}>{copy.sourceTitle}</h2><p>{copy.sourceText}</p></div>
+        <aside><span>{hub.version[lang]}</span><strong>{copy.checked} {hub.checkedAt}</strong><a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} · {copy.source} ↗</a><small>{copy.independent}</small></aside>
+      </section>
+
+      <section class="section hub-section section-page-next" aria-labelledby={`${hubId}-${sectionSlug}-next-title`}>
+        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.nextKicker}</span><h2 id={`${hubId}-${sectionSlug}-next-title`}>{copy.nextTitle}</h2></div><a href={root}>{copy.portal} →</a></div>
+        <div>
+          {related.map((item) => (
+            <a href={getHubPath(hubId, lang, item.slug)}><HubGameMark hub={hubId} section={item.slug} lang={lang} /><span>{item.code} / {item.label[lang]}</span><strong>{item.title[lang]}</strong><small>{item.payoff[lang]}</small><b>{copy.open} →</b></a>
+          ))}
+        </div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { HUB_SECTION_SLUGS, getHubPath, hubPortalList } from "../data/hub-portals";
 import { insights } from "../data/insights";
 
 const corePaths = [
@@ -22,6 +23,10 @@ const corePaths = [
 
 const paths = [
   ...corePaths,
+  ...hubPortalList.flatMap((hub) => HUB_SECTION_SLUGS.flatMap((section) => [
+    getHubPath(hub.id, "ru", section),
+    getHubPath(hub.id, "en", section)
+  ])),
   ...insights.flatMap((insight) => [`/insights/${insight.slug}/`, `/en/insights/${insight.slug}/`])
 ];
 

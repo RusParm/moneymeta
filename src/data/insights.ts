@@ -1,5 +1,6 @@
 import { dotaPatchContext } from "./dota-economy";
 import { guideInsights } from "./guides";
+import { strategyInsights } from "./strategy-insights";
 
 export type InsightLocale = "ru" | "en";
 export type InsightGame = "gta" | "dota" | "wow" | "totalwar" | "ck3";
@@ -1568,7 +1569,7 @@ const coreInsights: Insight[] = [
   }
 ];
 
-export const insights: Insight[] = [...guideInsights, ...coreInsights];
+export const insights: Insight[] = [...guideInsights, ...strategyInsights, ...coreInsights];
 
 export function getInsight(slug: string): Insight | undefined {
   return insights.find((insight) => insight.slug === slug);

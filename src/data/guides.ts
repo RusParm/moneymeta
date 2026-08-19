@@ -121,7 +121,7 @@ export const guideInsights = [
     gameVersion: { ru: "Dota 2 · патч 7.41e", en: "Dota 2 · Patch 7.41e" },
     evidenceStatus: "estimated",
     audiences: ["returner", "casual", "grinder"],
-    toolPath: { ru: "/dota-2/#scenario-lab", en: "/en/dota-2/#scenario-lab" },
+    toolPath: { ru: "/dota-2/tools/#scenario-lab", en: "/en/dota-2/tools/#scenario-lab" },
     sources: [
       {
         label: { ru: "Valve · патч 7.41e", en: "Valve · Patch 7.41e" },
@@ -226,7 +226,7 @@ export const guideInsights = [
     gameVersion: { ru: "WoW Retail · Midnight: Curse of Ula’tek", en: "WoW Retail · Midnight: Curse of Ula’tek" },
     evidenceStatus: "estimated",
     audiences: ["returner", "casual", "grinder"],
-    toolPath: { ru: "/wow/#crafting-margin", en: "/en/wow/#crafting-margin" },
+    toolPath: { ru: "/wow/tools/#crafting-margin", en: "/en/wow/tools/#crafting-margin" },
     sources: [
       {
         label: { ru: "Blizzard · Curse of Ula’tek", en: "Blizzard · Curse of Ula’tek" },
@@ -335,7 +335,7 @@ export const guideInsights = [
     gameVersion: { ru: "Total War: Warhammer III · патч 8.1", en: "Total War: Warhammer III · Patch 8.1" },
     evidenceStatus: "estimated",
     audiences: ["returner", "casual", "grinder"],
-    toolPath: { ru: "/total-war/#war-reserve", en: "/en/total-war/#war-reserve" },
+    toolPath: { ru: "/total-war/tools/#war-reserve", en: "/en/total-war/tools/#war-reserve" },
     sources: [
       {
         label: { ru: "Creative Assembly · патч 8.1", en: "Creative Assembly · Patch 8.1" },
@@ -444,7 +444,7 @@ export const guideInsights = [
     gameVersion: { ru: "Crusader Kings III · версия 1.19.0.6", en: "Crusader Kings III · Update 1.19.0.6" },
     evidenceStatus: "estimated",
     audiences: ["returner", "casual", "grinder"],
-    toolPath: { ru: "/crusader-kings-3/#succession-buffer", en: "/en/crusader-kings-3/#succession-buffer" },
+    toolPath: { ru: "/crusader-kings-3/tools/#succession-buffer", en: "/en/crusader-kings-3/tools/#succession-buffer" },
     sources: [
       {
         label: { ru: "Paradox · версия 1.19.0.6", en: "Paradox · Update 1.19.0.6" },
