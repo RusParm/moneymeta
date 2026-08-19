@@ -1,9 +1,11 @@
 ---
 import { wowPlayerPaths } from "../data/wow-hub";
+import { migrateHubHref } from "../lib/hub-links";
 import WowMarketMark from "./WowMarketMark.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
+const hrefFor = (href: string) => migrateHubHref("wow", lang, href);
 
 const copy = lang === "ru" ? {
   kicker: "Персональный путь · выбери роль на рынке",
@@ -84,7 +86,7 @@ const copy = lang === "ru" ? {
           </div>
           <div class="path-panel-foot">
             <div class="path-flip"><span>{copy.flip}</span><p>{path.flipCondition[lang]}</p></div>
-            <a class="button primary wow-primary" href={path.href[lang]}>{copy.cta} →</a>
+            <a class="button primary wow-primary" href={hrefFor(path.href[lang])}>{copy.cta} →</a>
           </div>
         </article>
       ))}

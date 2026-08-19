@@ -88,9 +88,26 @@
 - Layout guard for decorative media so marks and portraits cannot occupy the text reading layer.
 - Separate branch preview and browser QA before any later production decision.
 
+## P1.8: v1.9 linked hub architecture
+
+- Compact portal root for each game with a visible value proposition and current-version boundary.
+- Five standalone RU/EN destinations per game: economy, player paths, meta, guides and tools.
+- Real URL navigation for decision gateways and contextual cards instead of dependencies on one long root document.
+- Publisher-sourced editorial imagery with explicit credit, removable media records and owned Money Meta worlds as the visual foundation.
+- Three complete, sourced strategy guides per game plus six narrow operational briefs.
+- Internal-link audit, responsive browser QA and separate Vercel preview before any production decision.
+
+## P1.9: v1.10 recurring goal utility
+
+- One standalone RU/EN goal-runway route for every live economy.
+- Game-native planning units: GTA weekly net flow, Dota item timing and buffer, WoW effective GPH, Total War turns to war and CK3 months to succession.
+- Shared calculation contract for target, liquid starting state, protected reserve, sustainable pace and decision horizon.
+- Local persistence and shareable scenario URLs without accounts or backend state.
+- One complete operational guide per game connected directly to the relevant planner.
+- Current patch context remains separate from all editable player assumptions.
+
 ## Next: recurring utility
 
-- Goal Planner.
 - Weekly Meta with freshness guard.
 - Cross-device profile and result-card export.
 - Email capture and weekly brief.

@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-08-18
+Updated: 2026-08-19
 
 ## Baseline
 
@@ -135,7 +135,27 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Expanded standalone Field Notes from three to five games and made the homepage feature one deliberately selected guide per economy.
 - Updated current context on 2026-08-18: GTA Online Brand Wars through August 26, Dota 2 Patch 7.41e, WoW Curse of Ula'tek hotfix review, Total War Patch 8.1 plus the September 24 watch item, and Crusader Kings III 1.19.0.6 plus the Q4 Silk & Silver boundary.
 - Removed oversized decorative path watermarks from GTA, WoW and both strategy hubs. The Dota path portrait now occupies a reserved grid cell and disappears before it can compete with text.
-- Production v1.7 remains unchanged while v1.8 is validated on a separate branch preview.
+- v1.8 passed branch preview review and is the current production release.
+
+## Active release candidate: v1.9 linked hub architecture
+
+- Replaced every long root hub with a compact portal that explains the player value, exposes the current version and routes to five standalone destinations: economy, player paths, meta, guides and tools.
+- Added fifty localized section routes across five games and two languages while preserving every previous public root and calculator URL.
+- Migrated quick-start outcomes, economy-map actions, player paths, scenario decks and article CTAs away from root-page fragments to the relevant focused route.
+- Added publisher-sourced editorial media with explicit credits and fallbacks. Dota continues to use the existing removable Valve item and hero registry.
+- Expanded Total War and Crusader Kings III from one full guide each to three, bringing both strategy guide libraries to a useful launch depth without adding unreleased mechanics to live models.
+- Added route, media-policy, navigation-migration and strategy-depth tests. Sixty-one automated tests pass; 121 static pages build with zero Astro diagnostics and zero missing internal links.
+- v1.8 production remains unchanged while v1.9 is validated on its branch preview.
+
+## Active release candidate: v1.10 goal runways
+
+- Added a standalone, shareable goal-runway model for each game in complete RU/EN parity.
+- GTA tests a purchase date against weekly net flow and a protected cash floor; Dota calculates remaining item timing while preserving a player-defined buffer.
+- WoW plans from liquid gold and effective GPH rather than unsold inventory; Total War tests treasury readiness by turn; Crusader Kings III tests an heir buffer across a working transition horizon.
+- Every planner reports the funding gap, runway, required pace, checkpoint value and slack, then explains the result with three game-native checks.
+- Added five complete operational guides linked directly to the planners, raising each research library by one decision-complete piece.
+- Planner inputs persist locally and can be shared in the URL. Patch facts and editable player assumptions remain visibly separate.
+- Production v1.8 and `main` remain unchanged while v1.10 is validated through the existing draft PR preview.
 
 ## Release policy
 

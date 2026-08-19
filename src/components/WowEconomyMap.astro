@@ -1,10 +1,12 @@
 ---
 import { wowEconomyNodes } from "../data/wow-hub";
+import { migrateHubHref } from "../lib/hub-links";
 import WowMarketMark from "./WowMarketMark.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const first = wowEconomyNodes[0]!;
+const hrefFor = (href: string) => migrateHubHref("wow", lang, href);
 
 const copy = lang === "ru" ? {
   kicker: "Карта экономики · оборот капитала",
@@ -49,7 +51,7 @@ const copy = lang === "ru" ? {
           data-summary={node.summary[lang]}
           data-decision={node.decision[lang]}
           data-signal={node.signal[lang]}
-          data-href={node.href}
+          data-href={hrefFor(node.href)}
           data-mark={node.mark.code[lang]}
           data-tone={node.mark.tone}
           data-glyph={node.mark.glyph}
@@ -75,7 +77,7 @@ const copy = lang === "ru" ? {
         <div><span>{copy.signal}</span><strong data-map-signal>{first.signal[lang]}</strong></div>
         <div><span>{copy.decision}</span><strong data-map-decision>{first.decision[lang]}</strong></div>
       </div>
-      <a class="map-tool-link" data-map-link href={first.href}>{copy.open} →</a>
+      <a class="map-tool-link" data-map-link href={hrefFor(first.href)}>{copy.open} →</a>
     </article>
   </div>
 </section>

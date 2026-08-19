@@ -1,0 +1,228 @@
+---
+import type { HubLocale, HubPortalId, HubSectionSlug } from "../data/hub-portals";
+import { getHubPath } from "../data/hub-portals";
+import type { StrategyHubData } from "../data/strategy-hubs";
+import { isOlderThanDays } from "../lib/freshness";
+import HubGuideLibrary from "./HubGuideLibrary.astro";
+import StrategyCalculators from "./StrategyCalculators.astro";
+import StrategyMark from "./StrategyMark.astro";
+
+interface Props {
+  lang: HubLocale;
+  hub: "total-war" | "ck3";
+  section: HubSectionSlug;
+  data: StrategyHubData;
+}
+
+const { lang, hub, section, data } = Astro.props;
+const stale = isOlderThanDays(data.checkedAt, data.staleAfterDays);
+const toolsHref = (anchor: string) => `${getHubPath(hub, lang, "tools")}#${anchor.replace(/^#/, "")}`;
+const routeForLegacyHref = (href: string) => {
+  if (href.includes("pulse")) return getHubPath(hub, lang, "meta");
+  if (href.includes("player-paths")) return getHubPath(hub, lang, "player-paths");
+  if (href.includes("economy-lenses")) return getHubPath(hub, lang, "meta");
+  if (href.includes("decision-deck")) return getHubPath(hub, lang, "tools");
+  return toolsHref(href);
+};
+
+const copy = lang === "ru" ? {
+  mapKicker: "Карта системы",
+  mapTitle: hub === "ck3" ? "Один золотой проходит через всё правление" : "Один золотой проходит через всю кампанию",
+  mapText: "Семь узлов показывают не энциклопедию ресурсов, а последовательность решений и место, где капитал меняет форму.",
+  signal: "Смотреть на",
+  action: "Решение",
+  openTool: "Проверить в инструменте",
+  pathKicker: "Три режима игры",
+  pathTitle: "Одинаковая карта требует разного порядка действий",
+  pathText: "Каждый маршрут начинается с ограничений, заканчивается точкой пересмотра и ведёт к модели, где план можно проверить.",
+  constraints: "Исходные условия",
+  route: "Порядок действий",
+  flip: "Когда менять план",
+  run: "Открыть модель маршрута",
+  pulseKicker: "Текущий официальный контекст",
+  verified: "проверено",
+  recheck: "нужна повторная проверка",
+  source: "Первоисточник",
+  decision: "Что делать иначе",
+  lensesKicker: "Решения по фазам",
+  lensesTitle: "Лучший ход меняется вместе с целью",
+  lensesText: "Открой нужную цель. Внутри видны вопрос, рабочая формула, три условных варианта и причина, почему ответ переворачивается.",
+  openLens: "Развернуть сравнение",
+  formula: "Рабочая формула",
+  note: "Почему меняется лидер",
+  guideKicker: "Короткие памятки",
+  guideTitle: "Шесть операционных заметок рядом с полными гайдами",
+  guideText: "Памятка отвечает на один узкий вопрос и ведёт к связанному разделу. Полные материалы ниже раскрывают весь сценарий.",
+  takeaway: "Ключевой вывод",
+  open: "Открыть связанный раздел",
+  toolsKicker: "Готовые ситуации",
+  toolsTitle: "Начни с вопроса, затем меняй цифры",
+  toolsText: "Шесть входных сценариев ведут к трём моделям. Все исходные значения редактируются и не выдаются за официальную экономику.",
+  model: "Открыть модель"
+} : {
+  mapKicker: "System map",
+  mapTitle: hub === "ck3" ? "One gold through the entire reign" : "One gold through the entire campaign",
+  mapText: "Seven nodes show a sequence of decisions and the point where capital changes form, not an encyclopedia of resources.",
+  signal: "Watch",
+  action: "Decision",
+  openTool: "Test in the tool",
+  pathKicker: "Three operating modes",
+  pathTitle: "The same map requires a different order of actions",
+  pathText: "Every route starts with constraints, ends at a review point and opens a model where the plan can be tested.",
+  constraints: "Starting conditions",
+  route: "Action order",
+  flip: "When the plan changes",
+  run: "Open route model",
+  pulseKicker: "Current official context",
+  verified: "verified",
+  recheck: "recheck required",
+  source: "Primary source",
+  decision: "What changes now",
+  lensesKicker: "Decisions by phase",
+  lensesTitle: "The best move changes with the objective",
+  lensesText: "Open the relevant objective. Each lens exposes the question, working formula, three conditional choices and the reason the answer flips.",
+  openLens: "Expand comparison",
+  formula: "Working formula",
+  note: "Why the leader changes",
+  guideKicker: "Operational briefs",
+  guideTitle: "Six narrow notes beside the full guides",
+  guideText: "A brief answers one narrow question and opens the connected destination. Full pieces below cover the entire case.",
+  takeaway: "Key takeaway",
+  open: "Open connected section",
+  toolsKicker: "Prepared situations",
+  toolsTitle: "Start with the question, then change the numbers",
+  toolsText: "Six entry cases route into three models. Every baseline is editable and never presented as official game economy.",
+  model: "Open model"
+};
+---
+
+{section === "economy" && (
+  <section class="section hub-section strategy-focused-map" aria-labelledby={`${hub}-focused-map-title`}>
+    <div class="section-head hub-section-head">
+      <div><span class="section-kicker">{copy.mapKicker}</span><h2 id={`${hub}-focused-map-title`}>{copy.mapTitle}</h2><p class="section-copy">{copy.mapText}</p></div>
+      <span class="count">01-07</span>
+    </div>
+    <div class="strategy-focused-node-grid">
+      {data.economyNodes.map((node, index) => (
+        <article class:list={["strategy-focused-node", { "is-lead": index === 0 }]}>
+          <div><StrategyMark mark={node.mark} lang={lang} large={index === 0} /><span>{node.code} / {node.phase[lang]}</span></div>
+          <h3>{node.title[lang]}</h3>
+          <p>{node.summary[lang]}</p>
+          <dl>
+            <div><dt>{copy.signal}</dt><dd>{node.signal[lang]}</dd></div>
+            <div><dt>{copy.action}</dt><dd>{node.decision[lang]}</dd></div>
+          </dl>
+          <a href={routeForLegacyHref(node.href)}>{copy.openTool} →</a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+
+{section === "player-paths" && (
+  <section class="section hub-section strategy-focused-paths" aria-labelledby={`${hub}-focused-paths-title`}>
+    <div class="section-head hub-section-head">
+      <div><span class="section-kicker">{copy.pathKicker}</span><h2 id={`${hub}-focused-paths-title`}>{copy.pathTitle}</h2><p class="section-copy">{copy.pathText}</p></div>
+      <span class="count">3</span>
+    </div>
+    <div class="strategy-focused-path-grid">
+      {data.paths.map((path, index) => (
+        <article class:list={["strategy-focused-path", { "is-featured": index === 0 }]}>
+          <header><StrategyMark mark={path.mark} lang={lang} large /><div><span>0{index + 1} / {path.label[lang]}</span><h3>{path.title[lang]}</h3><p>{path.summary[lang]}</p></div></header>
+          <div class="strategy-focused-constraints">
+            <strong>{copy.constraints}</strong>
+            {path.constraints.map((item) => <span><small>{item.label[lang]}</small><b>{item.value[lang]}</b></span>)}
+          </div>
+          <div class="strategy-focused-steps">
+            <strong>{copy.route}</strong>
+            {path.steps.map((step, stepIndex) => <div><span>{stepIndex + 1}</span><p><b>{step.title[lang]}</b>{step.text[lang]}</p></div>)}
+          </div>
+          <aside><small>{copy.flip}</small><strong>{path.flip[lang]}</strong></aside>
+          <a class="button primary strategy-primary" href={routeForLegacyHref(path.href)}>{copy.run} →</a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}
+
+{section === "meta" && (
+  <>
+    <section class:list={["section", "hub-section", "strategy-focused-pulse", { "is-stale": stale }]} aria-labelledby={`${hub}-focused-pulse-title`}>
+      <div class="section-head hub-section-head">
+        <div><span class="section-kicker">{copy.pulseKicker}</span><h2 id={`${hub}-focused-pulse-title`}>{data.pulse.title[lang]}</h2><p class="section-copy">{data.pulse.text[lang]}</p></div>
+        <div class="portal-version-stack"><span>{data.version[lang]}</span><strong>{stale ? copy.recheck : copy.verified} · {data.checkedAt}</strong></div>
+      </div>
+      <div class="pulse-grid">
+        {data.pulse.changes.map((change, index) => (
+          <article class="pulse-card strategy-pulse-card">
+            <div class="strategy-pulse-head"><div class="pulse-card-top"><span>0{index + 1}</span><strong>{change.signal[lang]}</strong></div><StrategyMark mark={change.mark} lang={lang} /></div>
+            <h3>{change.title[lang]}</h3><p>{change.summary[lang]}</p>
+            <a class="strategy-source-link" href={change.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} · {change.sourceLabel[lang]} ↗</a>
+            <div class="pulse-decision"><span>{copy.decision}</span><p>{change.decision[lang]}</p></div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section hub-section strategy-focused-lenses" aria-labelledby={`${hub}-focused-lenses-title`}>
+      <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.lensesKicker}</span><h2 id={`${hub}-focused-lenses-title`}>{copy.lensesTitle}</h2><p class="section-copy">{copy.lensesText}</p></div></div>
+      <div class="strategy-lens-stack">
+        {data.lenses.map((lens, index) => (
+          <details open={index === 0}>
+            <summary><span>0{index + 1}</span><strong>{lens.label[lang]}</strong><small>{copy.openLens}</small></summary>
+            <div class="strategy-lens-body">
+              <header><div><span>{lens.label[lang]}</span><h3>{lens.question[lang]}</h3></div><code><small>{copy.formula}</small>{lens.formula[lang]}</code></header>
+              <div class="conditional-rank-grid">
+                {lens.cards.map((card, cardIndex) => (
+                  <article class={`conditional-rank-card strategy-rank-card rank-${cardIndex + 1}`}>
+                    <div class="conditional-rank-top"><span>0{cardIndex + 1}</span><div><StrategyMark mark={card.mark} lang={lang} /><span class={`pill ${cardIndex === 0 ? "strategy-pill" : "muted"}`}>{card.grade} · {card.fit}</span></div></div>
+                    <h3>{card.title[lang]}</h3><p>{card.text[lang]}</p>
+                    <div class="conditional-metrics">{card.metrics.map((metric) => <span><small>{metric.label[lang]}</small><strong>{metric.value[lang]}</strong></span>)}</div>
+                  </article>
+                ))}
+              </div>
+              <aside><small>{copy.note}</small><strong>{lens.note[lang]}</strong></aside>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </>
+)}
+
+{section === "guides" && (
+  <>
+    <section class="section hub-section strategy-focused-briefs" aria-labelledby={`${hub}-focused-briefs-title`}>
+      <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.guideKicker}</span><h2 id={`${hub}-focused-briefs-title`}>{copy.guideTitle}</h2><p class="section-copy">{copy.guideText}</p></div><span class="count">6</span></div>
+      <div class="strategy-brief-grid">
+        {data.briefs.map((brief, index) => (
+          <article>
+            <div><StrategyMark mark={brief.mark} lang={lang} /><span>0{index + 1} / {brief.kicker[lang]}</span><span class={`pill ${brief.status === "verified" ? "strategy-pill" : "muted"}`}>{brief.status === "verified" ? copy.verified : lang === "ru" ? "модель" : "model"}</span></div>
+            <h3>{brief.title[lang]}</h3><p>{brief.text[lang]}</p>
+            <aside><small>{copy.takeaway}</small><strong>{brief.takeaway[lang]}</strong></aside>
+            <a href={routeForLegacyHref(brief.href)}>{copy.open} →</a>
+          </article>
+        ))}
+      </div>
+    </section>
+    <HubGuideLibrary hub={hub as HubPortalId} lang={lang} />
+  </>
+)}
+
+{section === "tools" && (
+  <>
+    <section class="section hub-section strategy-focused-scenarios" aria-labelledby={`${hub}-focused-scenarios-title`}>
+      <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.toolsKicker}</span><h2 id={`${hub}-focused-scenarios-title`}>{copy.toolsTitle}</h2><p class="section-copy">{copy.toolsText}</p></div><span class="count">6 → 3</span></div>
+      <div class="decision-deck-grid strategy-decision-deck">
+        {data.scenarios.map((scenario, index) => (
+          <a class:list={["decision-deck-card", "strategy-decision-card", { "is-featured": index === 1 }]} href={toolsHref(scenario.href)}>
+            <div class="decision-deck-top"><span>0{index + 1} · {scenario.mode[lang]}</span><StrategyMark mark={scenario.mark} lang={lang} /></div>
+            <div><span class="game-tag">{scenario.eyebrow[lang]}</span><h3>{scenario.question[lang]}</h3><p>{scenario.outcome[lang]}</p></div>
+            <strong>{copy.model} →</strong>
+          </a>
+        ))}
+      </div>
+    </section>
+    <StrategyCalculators lang={lang} data={data} />
+  </>
+)}

@@ -13,7 +13,7 @@ describe("GTA benchmark hub content", () => {
     expect(gtaEconomyNodes).toHaveLength(7);
     expect(gtaPlayerPaths).toHaveLength(3);
     expect(gtaScenarios).toHaveLength(6);
-    expect(insights.filter((insight) => insight.game === "gta")).toHaveLength(7);
+    expect(insights.filter((insight) => insight.game === "gta")).toHaveLength(8);
   });
 
   it("keeps every GTA research note complete in both languages", () => {
@@ -44,7 +44,7 @@ describe("Dota living hub content", () => {
     expect(dotaRoleLenses).toHaveLength(3);
     expect(dotaScenarios).toHaveLength(8);
     expect(new Set(dotaScenarios.map((scenario) => scenario.kind)).size).toBeGreaterThanOrEqual(6);
-    expect(insights.filter((insight) => insight.game === "dota")).toHaveLength(7);
+    expect(insights.filter((insight) => insight.game === "dota")).toHaveLength(8);
   });
 
   it("keeps every Dota research note complete in both languages", () => {
@@ -78,7 +78,7 @@ describe("WoW living hub content", () => {
     expect(wowMarketRoutes).toHaveLength(6);
     expect(wowScenarios).toHaveLength(8);
     expect(new Set(wowScenarios.map((scenario) => scenario.kind)).size).toBeGreaterThanOrEqual(5);
-    expect(insights.filter((insight) => insight.game === "wow")).toHaveLength(7);
+    expect(insights.filter((insight) => insight.game === "wow")).toHaveLength(8);
   });
 
   it("keeps every WoW research note complete in both languages", () => {
@@ -155,7 +155,19 @@ describe("five-hub guide edition", () => {
   });
 
   it("adds standalone research depth to both strategy hubs", () => {
-    expect(insights.filter((insight) => insight.game === "totalwar")).toHaveLength(1);
-    expect(insights.filter((insight) => insight.game === "ck3")).toHaveLength(1);
+    expect(insights.filter((insight) => insight.game === "totalwar")).toHaveLength(4);
+    expect(insights.filter((insight) => insight.game === "ck3")).toHaveLength(4);
+  });
+
+  it("keeps every strategy guide actionable in both languages", () => {
+    insights.filter((insight) => insight.game === "totalwar" || insight.game === "ck3").forEach((guide) => {
+      expect(guide.format).toBe("guide");
+      expect(guide.sources?.length).toBeGreaterThanOrEqual(1);
+      expect(guide.content.ru.sections.length).toBeGreaterThanOrEqual(4);
+      expect(guide.content.en.sections.length).toBe(guide.content.ru.sections.length);
+      expect(guide.content.ru.takeaways).toHaveLength(3);
+      expect(guide.toolPath.ru).toMatch(/\/(?:tools|goal-planner)\//u);
+      expect(guide.toolPath.en).toContain("/en/");
+    });
   });
 });

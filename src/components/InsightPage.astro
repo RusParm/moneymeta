@@ -1,6 +1,8 @@
 ---
 import type { Insight, InsightLocale } from "../data/insights";
 import { insightGameLabels, insights } from "../data/insights";
+import type { HubPortalId } from "../data/hub-portals";
+import { migrateHubHref } from "../lib/hub-links";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
@@ -13,6 +15,8 @@ const path = `${prefix}/insights/${insight.slug}/`;
 const alternatePath = `${lang === "ru" ? "/en" : ""}/insights/${insight.slug}/`;
 const gameLabel = insightGameLabels[insight.game];
 const allInsightsPath = `${prefix}/insights/`;
+const portalId: HubPortalId = insight.game === "totalwar" ? "total-war" : insight.game;
+const toolHref = migrateHubHref(portalId, lang, insight.toolPath[lang]);
 const related = insights
   .filter((item) => item.slug !== insight.slug)
   .sort((a, b) => Number(b.game === insight.game) - Number(a.game === insight.game))
@@ -81,14 +85,14 @@ const labels = lang === "ru" ? {
           <p class="eyebrow">{content.kicker}</p>
           <h1>{content.title}</h1>
           <p class="insight-thesis">{content.thesis}</p>
-          <a class="button primary button-large" href={insight.toolPath[lang]}>{content.toolLabel} →</a>
+          <a class="button primary button-large" href={toolHref}>{content.toolLabel} →</a>
         </header>
 
         <div class="insight-layout">
           <aside class="takeaway-card">
             <span class="result-label">{labels.takeaways}</span>
             <ol>{content.takeaways.map((takeaway) => <li>{takeaway}</li>)}</ol>
-            <a class="demo-link" href={insight.toolPath[lang]}>{labels.model} ↗</a>
+            <a class="demo-link" href={toolHref}>{labels.model} ↗</a>
           </aside>
 
           <div class="article-body">
@@ -102,7 +106,7 @@ const labels = lang === "ru" ? {
             <div class="article-cta">
               <span class="game-sigil">MM</span>
               <div><strong>{content.toolLabel}</strong><p>{lang === "ru" ? "Замени исходные значения своими и получи ответ для своей ситуации." : "Replace the baseline with your inputs and get an answer for your scenario."}</p></div>
-              <a class="button primary" href={insight.toolPath[lang]}>{labels.model} →</a>
+              <a class="button primary" href={toolHref}>{labels.model} →</a>
             </div>
             <div class="callout"><p><strong>{labels.disclosure}.</strong> {labels.disclosureText}</p></div>
             {insight.sources && (

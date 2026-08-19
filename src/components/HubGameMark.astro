@@ -1,0 +1,67 @@
+---
+import type { HubLocale, HubPortalId, HubSectionSlug } from "../data/hub-portals";
+import { dotaMedia } from "../data/dota-hub";
+import { wowMarks } from "../data/wow-hub";
+import DotaMedia from "./DotaMedia.astro";
+import GtaAssetMark from "./GtaAssetMark.astro";
+import StrategyMark from "./StrategyMark.astro";
+import WowMarketMark from "./WowMarketMark.astro";
+
+interface Props {
+  hub: HubPortalId;
+  section: HubSectionSlug;
+  lang: HubLocale;
+  large?: boolean;
+}
+
+const { hub, section, lang, large = false } = Astro.props;
+
+const dotaAssets = {
+  economy: dotaMedia.quellingBlade,
+  "player-paths": dotaMedia.dragonKnight,
+  meta: dotaMedia.bkb,
+  guides: dotaMedia.crystalMaiden,
+  tools: dotaMedia.handOfMidas
+} as const;
+
+const wowAssets = {
+  economy: wowMarks.market,
+  "player-paths": wowMarks.knowledge,
+  meta: wowMarks.reinvest,
+  guides: wowMarks.orders,
+  tools: wowMarks.liquidity
+} as const;
+
+const gtaMarks = lang === "ru" ? {
+  economy: ["$", "ДЕН", "teal"],
+  "player-paths": ["П", "ПУТЬ", "magenta"],
+  meta: ["Н", "МЕТА", "coral"],
+  guides: ["Г", "ГАЙД", "gold"],
+  tools: ["Σ", "МОД", "teal"]
+} as const : {
+  economy: ["$", "CASH", "teal"],
+  "player-paths": ["P", "PATH", "magenta"],
+  meta: ["W", "LIVE", "coral"],
+  guides: ["G", "READ", "gold"],
+  tools: ["Σ", "MODEL", "teal"]
+} as const;
+
+const strategyMarks: Record<"total-war" | "ck3", Record<HubSectionSlug, string>> = {
+  "total-war": { economy: "¤", "player-paths": "P", meta: "AI", guides: "L", tools: "T" },
+  ck3: { economy: "D", "player-paths": "S", meta: "L", guides: "B", tools: "T" }
+};
+---
+
+<span class:list={["hub-game-mark", { "is-large": large }]}>
+  {hub === "dota" && <DotaMedia asset={dotaAssets[section]} lang={lang} eager={large} />}
+  {hub === "wow" && <WowMarketMark mark={wowAssets[section]} lang={lang} large={large} />}
+  {hub === "gta" && (
+    <GtaAssetMark
+      mark={gtaMarks[section][0]}
+      code={gtaMarks[section][1]}
+      tone={gtaMarks[section][2]}
+      large={large}
+    />
+  )}
+  {(hub === "total-war" || hub === "ck3") && <StrategyMark mark={strategyMarks[hub][section]} lang={lang} large={large} />}
+</span>

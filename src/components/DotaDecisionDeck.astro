@@ -1,10 +1,12 @@
 ---
 import { dotaScenarios } from "../data/dota-hub";
 import { dotaPatchContext } from "../data/dota-economy";
+import { migrateHubHref } from "../lib/hub-links";
 import DotaMedia from "./DotaMedia.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
+const hrefFor = (href: string) => migrateHubHref("dota", lang, href);
 
 const kindLabel = lang === "ru" ? {
   farm: "Возможности фарма",
@@ -51,7 +53,7 @@ const copy = lang === "ru" ? {
 
   <div class="decision-deck-grid dota-decision-deck">
     {dotaScenarios.map((scenario, index) => (
-      <a class={`decision-deck-card dota-decision-card ${scenario.featured ? "is-featured" : ""}`} href={scenario.href[lang]}>
+      <a class={`decision-deck-card dota-decision-card ${scenario.featured ? "is-featured" : ""}`} href={hrefFor(scenario.href[lang])}>
         <div class="decision-deck-top">
           <span>0{index + 1} · {kindLabel[scenario.kind]}</span>
           <DotaMedia asset={scenario.media} lang={lang} />

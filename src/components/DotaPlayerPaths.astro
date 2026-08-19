@@ -1,10 +1,12 @@
 ---
 import { dotaPlayerPaths } from "../data/dota-hub";
 import { dotaPatchContext } from "../data/dota-economy";
+import { migrateHubHref } from "../lib/hub-links";
 import DotaMedia from "./DotaMedia.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
+const hrefFor = (href: string) => migrateHubHref("dota", lang, href);
 
 const copy = lang === "ru" ? {
   kicker: "Персональный путь игрока",
@@ -96,7 +98,7 @@ const copy = lang === "ru" ? {
 
           <div class="path-panel-foot">
             <div class="path-flip"><span>{copy.flip}</span><p>{path.flipCondition[lang]}</p><small>{copy.note}</small></div>
-            <a class="button primary dota-primary" href={path.href[lang]}>{copy.cta} →</a>
+            <a class="button primary dota-primary" href={hrefFor(path.href[lang])}>{copy.cta} →</a>
           </div>
         </article>
       ))}

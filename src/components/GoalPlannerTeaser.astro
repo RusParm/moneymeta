@@ -1,0 +1,32 @@
+---
+import { getGoalPlannerPath, goalPlanners } from "../data/goal-planners";
+import type { HubLocale, HubPortalId } from "../data/hub-portals";
+import HubGameMark from "./HubGameMark.astro";
+import "../styles/goal-planner.css";
+
+interface Props { hub: HubPortalId; lang: HubLocale; }
+const { hub, lang } = Astro.props;
+const planner = goalPlanners[hub];
+const copy = lang === "ru" ? {
+  kicker: "Новая повторяемая модель",
+  label: "Планировщик цели",
+  open: "Открыть отдельный планировщик",
+  facts: ["срок", "требуемый темп", "защищённый резерв"]
+} : {
+  kicker: "New repeat-use model",
+  label: "Goal runway",
+  open: "Open the standalone planner",
+  facts: ["timing", "required pace", "protected reserve"]
+};
+---
+
+<section class={`goal-planner-teaser goal-planner-${hub}`} aria-labelledby={`${hub}-goal-planner-teaser-title`}>
+  <div class="goal-planner-teaser-mark"><HubGameMark hub={hub} section="tools" lang={lang} large /></div>
+  <div class="goal-planner-teaser-copy">
+    <span>{copy.kicker} · {copy.label}</span>
+    <h2 id={`${hub}-goal-planner-teaser-title`}>{planner.title[lang]}</h2>
+    <p>{planner.description[lang]}</p>
+    <div>{copy.facts.map((fact, index) => <small><b>0{index + 1}</b>{fact}</small>)}</div>
+  </div>
+  <a href={getGoalPlannerPath(hub, lang)}>{copy.open} →</a>
+</section>

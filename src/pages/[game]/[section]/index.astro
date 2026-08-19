@@ -1,0 +1,16 @@
+---
+import HubSectionPage from "../../../components/HubSectionPage.astro";
+import { HUB_SECTION_SLUGS, hubPortalList, type HubPortalId, type HubSectionSlug } from "../../../data/hub-portals";
+
+export function getStaticPaths() {
+  return hubPortalList.flatMap((hub) => HUB_SECTION_SLUGS.map((section) => ({
+    params: { game: hub.slug, section },
+    props: { hub: hub.id, section }
+  })));
+}
+
+interface Props { hub: HubPortalId; section: HubSectionSlug; }
+const { hub, section } = Astro.props;
+---
+
+<HubSectionPage hub={hub} section={section} lang="ru" />

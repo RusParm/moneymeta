@@ -1,9 +1,11 @@
 ---
 import { wowScenarios, type WowScenarioKind } from "../data/wow-hub";
+import { migrateHubHref } from "../lib/hub-links";
 import WowMarketMark from "./WowMarketMark.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
+const hrefFor = (href: string) => migrateHubHref("wow", lang, href);
 
 const labels: Record<WowScenarioKind, string> = lang === "ru" ? {
   craft: "Маржа рецепта",
@@ -40,7 +42,7 @@ const copy = lang === "ru" ? {
 
   <div class="decision-deck-grid wow-decision-deck">
     {wowScenarios.map((scenario, index) => (
-      <a class={`decision-deck-card wow-decision-card ${scenario.featured ? "is-featured" : ""}`} href={scenario.href[lang]}>
+      <a class={`decision-deck-card wow-decision-card ${scenario.featured ? "is-featured" : ""}`} href={hrefFor(scenario.href[lang])}>
         <div class="decision-deck-top"><span>0{index + 1} · {labels[scenario.kind]}</span><WowMarketMark mark={scenario.mark} lang={lang} /></div>
         <div><span class="game-tag">WoW Retail · Midnight</span><h3>{scenario.title[lang]}</h3><p>{scenario.text[lang]}</p></div>
         <strong>{copy.cta} →</strong>

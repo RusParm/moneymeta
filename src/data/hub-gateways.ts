@@ -98,8 +98,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Активные часы на один цикл", "Active hours per cycle"),
           t("Расходники и подготовка", "Supplies and preparation")
         ],
-        primary: { label: t("Выбрать путь игрока", "Open the player path"), href: t("#player-paths", "#player-paths") },
-        secondary: { label: t("Проверить следующий ход", "Test the next move"), href: t("/gta-online/calculators/business-roi/#next-move", "/en/gta-online/calculators/business-roi/#next-move") }
+        primary: { label: t("Выбрать путь игрока", "Open the player path"), href: t("/gta-online/player-paths/", "/en/gta-online/player-paths/") },
+        secondary: { label: t("Проверить следующий ход", "Test the next move"), href: t("/gta-online/tools/#business-roi", "/en/gta-online/tools/#business-roi") }
       },
       {
         id: "next",
@@ -116,8 +116,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Чистая прибыль за неделю", "Weekly net profit"),
           t("Срок до покупки в двух вариантах", "Time to purchase in both cases")
         ],
-        primary: { label: t("Рассчитать срок до цели", "Calculate time to goal"), href: t("#hours-to-goal", "#hours-to-goal") },
-        secondary: { label: t("Сравнить окупаемость бизнеса", "Compare business payback"), href: t("#business-roi", "#business-roi") }
+        primary: { label: t("Рассчитать срок до цели", "Calculate time to goal"), href: t("/gta-online/tools/#hours-to-goal", "/en/gta-online/tools/#hours-to-goal") },
+        secondary: { label: t("Сравнить окупаемость бизнеса", "Compare business payback"), href: t("/gta-online/tools/#business-roi", "/en/gta-online/tools/#business-roi") }
       },
       {
         id: "portfolio",
@@ -134,8 +134,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Доход на активный час", "Return per active hour"),
           t("Доля капитала без назначения", "Unallocated capital share")
         ],
-        primary: { label: t("Собрать распределение", "Build the allocation"), href: t("#portfolio-allocation", "#portfolio-allocation") },
-        secondary: { label: t("Открыть условные рейтинги", "Open conditional rankings"), href: t("#conditional-rankings", "#conditional-rankings") }
+        primary: { label: t("Собрать распределение", "Build the allocation"), href: t("/gta-online/tools/#portfolio-allocation", "/en/gta-online/tools/#portfolio-allocation") },
+        secondary: { label: t("Открыть условные рейтинги", "Open conditional rankings"), href: t("/gta-online/meta/#conditional-rankings", "/en/gta-online/meta/#conditional-rankings") }
       }
     ]
   },
@@ -197,8 +197,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Ожидаемая длительность матча", "Expected match length"),
           t("Ближайшая цель команды", "Next team objective")
         ],
-        primary: { label: t("Рассчитать окупаемость Midas", "Calculate Midas payback"), href: t("#midas-irr", "#midas-irr") },
-        secondary: { label: t("Сравнить ролевые решения", "Compare role decisions"), href: t("#role-lenses", "#role-lenses") }
+        primary: { label: t("Рассчитать окупаемость Midas", "Calculate Midas payback"), href: t("/dota-2/tools/#midas-irr", "/en/dota-2/tools/#midas-irr") },
+        secondary: { label: t("Сравнить ролевые решения", "Compare role decisions"), href: t("/dota-2/player-paths/#role-lenses", "/en/dota-2/player-paths/#role-lenses") }
       },
       {
         id: "timing",
@@ -215,8 +215,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Время до цели на карте", "Time to the map objective"),
           t("Что команда теряет в ожидании", "What the team gives up while waiting")
         ],
-        primary: { label: t("Открыть решения по ролям", "Open role decisions"), href: t("#role-lenses", "#role-lenses") },
-        secondary: { label: t("Выбрать готовую ситуацию", "Choose a prepared situation"), href: t("#decision-deck", "#decision-deck") }
+        primary: { label: t("Открыть решения по ролям", "Open role decisions"), href: t("/dota-2/player-paths/#role-lenses", "/en/dota-2/player-paths/#role-lenses") },
+        secondary: { label: t("Выбрать готовую ситуацию", "Choose a prepared situation"), href: t("/dota-2/tools/#decision-deck", "/en/dota-2/tools/#decision-deck") }
       },
       {
         id: "liquidity",
@@ -233,7 +233,7 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Золото к началу цели", "Gold at objective time"),
           t("Способ вернуться в драку", "Route back into the fight")
         ],
-        primary: { label: t("Рассчитать запас на выкуп", "Calculate buyback reserve"), href: t("#buyback-reserve", "#buyback-reserve") },
+        primary: { label: t("Рассчитать запас на выкуп", "Calculate buyback reserve"), href: t("/dota-2/tools/#buyback-reserve", "/en/dota-2/tools/#buyback-reserve") },
         secondary: { label: t("Прочитать разбор перед Рошаном", "Read the pre-Roshan analysis"), href: t("/insights/dota-2-buyback-reserve-before-roshan/", "/en/insights/dota-2-buyback-reserve-before-roshan/") }
       }
     ]
@@ -296,8 +296,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Потери на повторных выставлениях", "Relisting losses"),
           t("Чистое золото за час", "Net gold per hour")
         ],
-        primary: { label: t("Рассчитать реальный доход", "Calculate realized income"), href: t("#farm-liquidity", "#farm-liquidity") },
-        secondary: { label: t("Сравнить рыночные маршруты", "Compare market routes"), href: t("#market-rankings", "#market-rankings") }
+        primary: { label: t("Рассчитать реальный доход", "Calculate realized income"), href: t("/wow/tools/#farm-liquidity", "/en/wow/tools/#farm-liquidity") },
+        secondary: { label: t("Сравнить рыночные маршруты", "Compare market routes"), href: t("/wow/meta/#market-rankings", "/en/wow/meta/#market-rankings") }
       },
       {
         id: "craft",
@@ -314,8 +314,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Ожидаемая доля продаж", "Expected sell-through"),
           t("Капитал в непроданном остатке", "Capital in unsold stock")
         ],
-        primary: { label: t("Рассчитать маржу изготовления", "Calculate crafting margin"), href: t("#crafting-margin", "#crafting-margin") },
-        secondary: { label: t("Открыть баланс рынка", "Open the market snapshot"), href: t("#market-ledger", "#market-ledger") }
+        primary: { label: t("Рассчитать маржу изготовления", "Calculate crafting margin"), href: t("/wow/tools/#crafting-margin", "/en/wow/tools/#crafting-margin") },
+        secondary: { label: t("Открыть баланс рынка", "Open the market snapshot"), href: t("/wow/economy/#market-ledger", "/en/wow/economy/#market-ledger") }
       },
       {
         id: "order",
@@ -332,8 +332,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Запас на повторное изготовление", "Recraft reserve"),
           t("Минимальная цена времени", "Minimum value of time")
         ],
-        primary: { label: t("Рассчитать минимальную комиссию", "Calculate the commission floor"), href: t("#order-floor", "#order-floor") },
-        secondary: { label: t("Открыть путь заказов", "Open the order path"), href: t("#player-paths", "#player-paths") }
+        primary: { label: t("Рассчитать минимальную комиссию", "Calculate the commission floor"), href: t("/wow/tools/#order-floor", "/en/wow/tools/#order-floor") },
+        secondary: { label: t("Открыть путь заказов", "Open the order path"), href: t("/wow/player-paths/", "/en/wow/player-paths/") }
       },
       {
         id: "inventory",
@@ -350,7 +350,7 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Ожидаемая цена выхода", "Expected exit price"),
           t("Доля ликвидного золота", "Share of liquid gold")
         ],
-        primary: { label: t("Открыть баланс рынка", "Open the market snapshot"), href: t("#market-ledger", "#market-ledger") },
+        primary: { label: t("Открыть баланс рынка", "Open the market snapshot"), href: t("/wow/economy/#market-ledger", "/en/wow/economy/#market-ledger") },
         secondary: { label: t("Проверить размер партии", "Review batch sizing"), href: t("/insights/wow-batch-size-inventory-trap/", "/en/insights/wow-batch-size-inventory-trap/") }
       }
     ]
@@ -413,8 +413,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Чистый прирост дохода", "Incremental net income"),
           t("Риск нового фронта", "New-front risk")
         ],
-        primary: { label: t("Рассчитать окупаемость здания", "Calculate building payback"), href: t("#building-payback", "#building-payback") },
-        secondary: { label: t("Открыть путь развития", "Open the development path"), href: t("#player-paths", "#player-paths") }
+        primary: { label: t("Рассчитать окупаемость здания", "Calculate building payback"), href: t("/total-war/tools/#building-payback", "/en/total-war/tools/#building-payback") },
+        secondary: { label: t("Открыть путь развития", "Open the development path"), href: t("/total-war/player-paths/", "/en/total-war/player-paths/") }
       },
       {
         id: "reserve",
@@ -431,8 +431,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Чистый расход за ход", "Net outflow per turn"),
           t("Обязательный остаток казны", "Required treasury floor")
         ],
-        primary: { label: t("Рассчитать военный резерв", "Calculate the war reserve"), href: t("#war-reserve", "#war-reserve") },
-        secondary: { label: t("Проверить изменения патча", "Review patch changes"), href: t("#campaign-pulse", "#campaign-pulse") }
+        primary: { label: t("Рассчитать военный резерв", "Calculate the war reserve"), href: t("/total-war/tools/#war-reserve", "/en/total-war/tools/#war-reserve") },
+        secondary: { label: t("Проверить изменения патча", "Review patch changes"), href: t("/total-war/meta/", "/en/total-war/meta/") }
       },
       {
         id: "conquest",
@@ -449,8 +449,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Доход после стабилизации", "Income after stabilization"),
           t("Риск и стоимость удержания", "Holding risk and cost")
         ],
-        primary: { label: t("Сравнить варианты захвата", "Compare conquest options"), href: t("#conquest-choice", "#conquest-choice") },
-        secondary: { label: t("Открыть решения по фазам", "Open campaign lenses"), href: t("#economy-lenses", "#economy-lenses") }
+        primary: { label: t("Сравнить варианты захвата", "Compare conquest options"), href: t("/total-war/tools/#conquest-choice", "/en/total-war/tools/#conquest-choice") },
+        secondary: { label: t("Открыть решения по фазам", "Open campaign lenses"), href: t("/total-war/meta/", "/en/total-war/meta/") }
       }
     ]
   },
@@ -512,8 +512,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Срок завершения и окупаемости", "Completion and payback"),
           t("Риск потери владения", "Holding-loss risk")
         ],
-        primary: { label: t("Рассчитать окупаемость домена", "Calculate domain payback"), href: t("#domain-payback", "#domain-payback") },
-        secondary: { label: t("Открыть путь правителя", "Open the ruler path"), href: t("#player-paths", "#player-paths") }
+        primary: { label: t("Рассчитать окупаемость домена", "Calculate domain payback"), href: t("/crusader-kings-3/tools/#domain-payback", "/en/crusader-kings-3/tools/#domain-payback") },
+        secondary: { label: t("Открыть путь правителя", "Open the ruler path"), href: t("/crusader-kings-3/player-paths/", "/en/crusader-kings-3/player-paths/") }
       },
       {
         id: "war",
@@ -530,8 +530,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Чистый отток в месяц", "Net monthly outflow"),
           t("Казна в конце конфликта", "Treasury after the conflict")
         ],
-        primary: { label: t("Рассчитать военную казну", "Calculate the war chest"), href: t("#war-chest", "#war-chest") },
-        secondary: { label: t("Сравнить решения правителя", "Compare ruler decisions"), href: t("#economy-lenses", "#economy-lenses") }
+        primary: { label: t("Рассчитать военную казну", "Calculate the war chest"), href: t("/crusader-kings-3/tools/#war-chest", "/en/crusader-kings-3/tools/#war-chest") },
+        secondary: { label: t("Сравнить решения правителя", "Compare ruler decisions"), href: t("/crusader-kings-3/meta/", "/en/crusader-kings-3/meta/") }
       },
       {
         id: "succession",
@@ -548,8 +548,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Временное снижение дохода", "Temporary income loss"),
           t("Целевой остаток наследника", "Heir treasury target")
         ],
-        primary: { label: t("Рассчитать запас наследника", "Calculate the heir buffer"), href: t("#succession-buffer", "#succession-buffer") },
-        secondary: { label: t("Проверить контекст династии", "Review dynasty context"), href: t("#dynasty-pulse", "#dynasty-pulse") }
+        primary: { label: t("Рассчитать запас наследника", "Calculate the heir buffer"), href: t("/crusader-kings-3/tools/#succession-buffer", "/en/crusader-kings-3/tools/#succession-buffer") },
+        secondary: { label: t("Проверить контекст династии", "Review dynasty context"), href: t("/crusader-kings-3/meta/", "/en/crusader-kings-3/meta/") }
       }
     ]
   }
