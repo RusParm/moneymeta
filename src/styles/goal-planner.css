@@ -131,7 +131,7 @@
 .goal-planner-result > dl { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin: 12px 0 0; }
 .goal-planner-result > dl > div { min-width: 0; padding: 17px; border: 1px solid rgba(255,255,255,.08); border-radius: 11px; background: rgba(255,255,255,.018); }
 .goal-planner-result dt { color: #817b8c; font: 700 8px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
-.goal-planner-result dd { min-width: 0; margin: 9px 0 0; color: #f5f2f8; font: 700 clamp(16px, 2vw, 24px)/1.05 "Roboto Condensed", sans-serif; overflow-wrap: anywhere; }
+.goal-planner-result dd { min-width: 0; margin: 9px 0 0; color: #f5f2f8; font: 700 clamp(16px, 1.55vw, 21px)/1.08 "Roboto Condensed", sans-serif; overflow-wrap: anywhere; }
 .goal-planner-result .scenario-actions { margin-top: 20px; }
 
 .goal-planner-method { display: grid; grid-template-columns: minmax(260px,.62fr) minmax(0,1.38fr); gap: 52px; margin: 0 0 86px; padding: 46px 0; border-block: 1px solid var(--goal-line); }
