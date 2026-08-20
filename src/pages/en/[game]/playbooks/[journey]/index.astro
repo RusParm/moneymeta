@@ -1,0 +1,16 @@
+---
+import HubJourneyPage from "../../../../../components/HubJourneyPage.astro";
+import { hubJourneyList, type HubJourney } from "../../../../../data/hub-journeys";
+
+export function getStaticPaths() {
+  return hubJourneyList.map((journey) => ({
+    params: { game: journey.hub === "gta" ? "gta-online" : journey.hub === "dota" ? "dota-2" : journey.hub === "ck3" ? "crusader-kings-3" : journey.hub, journey: journey.slug },
+    props: { journey }
+  }));
+}
+
+interface Props { journey: HubJourney; }
+const { journey } = Astro.props;
+---
+
+<HubJourneyPage journey={journey} lang="en" />

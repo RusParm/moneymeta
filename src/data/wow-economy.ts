@@ -8,7 +8,7 @@ export interface WowEconomySource {
 
 export const wowPatchContext = {
   release: "Midnight · Curse of Ula’tek",
-  checkedAt: "2026-08-18",
+  checkedAt: "2026-08-19",
   status: "mixed evidence" as const,
   note: {
     ru: "Текущий контекст Retail подтверждён материалами Blizzard. Рыночные цены, вероятность продажи, комиссия аукциона и исходные значения остаются редактируемой моделью. Их нужно сверять со своим регионом, сервером и категорией товара.",

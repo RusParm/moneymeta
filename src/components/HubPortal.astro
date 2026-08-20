@@ -7,6 +7,7 @@ import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
 import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
 import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
 import { dotaMedia } from "../data/dota-hub";
+import { getHubJourneyPath, hubJourneys } from "../data/hub-journeys";
 import { getHubPath, hubPortals, type HubLocale, type HubPortalId } from "../data/hub-portals";
 import "../styles/wow-hub.css";
 import "../styles/strategy-hub.css";
@@ -17,6 +18,7 @@ import DotaMedia from "./DotaMedia.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
 import HubGameMark from "./HubGameMark.astro";
 import HubGuideLibrary from "./HubGuideLibrary.astro";
+import HubJourneyRail from "./HubJourneyRail.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props {
@@ -118,11 +120,18 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
     description: hub.description[lang],
     inLanguage: lang,
     about: { "@type": "VideoGame", name: hub.name, publisher: hub.publisher },
-    hasPart: hub.sections.map((item) => ({
-      "@type": "WebPage",
-      name: item.title[lang],
-      url: new URL(getHubPath(hubId, lang, item.slug), Astro.site).toString()
-    }))
+    hasPart: [
+      ...hub.sections.map((item) => ({
+        "@type": "WebPage",
+        name: item.title[lang],
+        url: new URL(getHubPath(hubId, lang, item.slug), Astro.site).toString()
+      })),
+      ...hubJourneys[hubId].map((journey) => ({
+        "@type": "HowTo",
+        name: journey.title[lang],
+        url: new URL(getHubJourneyPath(journey, lang), Astro.site).toString()
+      }))
+    ]
   }}
 >
   <main class={`page game-page hub-portal ${mainClass}`} data-hub-portal={hubId} data-insight-game={gameInsightId}>
@@ -213,6 +222,8 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
       </section>
 
       <HubDecisionGateway hub={hubId} lang={lang} />
+
+      <HubJourneyRail hub={hubId} lang={lang} />
 
       <section class="section hub-section portal-media-section" aria-labelledby={`${hubId}-media-title`}>
         <div class="section-head hub-section-head">

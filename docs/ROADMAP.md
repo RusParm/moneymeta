@@ -106,6 +106,15 @@
 - One complete operational guide per game connected directly to the relevant planner.
 - Current patch context remains separate from all editable player assumptions.
 
+## P1.95: v1.11 connected decision playbooks
+
+- Three authored playbooks per game in complete RU/EN parity, each with a stable standalone URL.
+- Four deliberate steps per playbook connecting hub sections, the relevant planner and one applied analysis.
+- Context rails on section pages, planners and matching Field Notes that identify the current step and the next useful move.
+- Player situation, time window, starting signal, success condition and failure condition stated before the route begins.
+- Compact playbook entry points on hub roots without restoring the former endless-page architecture.
+- Route, localization, content-depth, internal-link and responsive-browser gates before production promotion.
+
 ## Next: recurring utility
 
 - Weekly Meta with freshness guard.

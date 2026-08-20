@@ -158,18 +158,18 @@ export const totalWarHub: StrategyHubData = {
   name: "Total War: Warhammer III",
   shortName: "Total War",
   publisher: "SEGA / Creative Assembly",
-  worldCode: ruEn("КАПИТАЛ КАМПАНИИ / 8.1", "CAMPAIGN CAPITAL / 8.1"),
-  checkedAt: "2026-08-18",
+  worldCode: ruEn("КАПИТАЛ КАМПАНИИ / 8.1.1", "CAMPAIGN CAPITAL / 8.1.1"),
+  checkedAt: "2026-08-19",
   staleAfterDays: 45,
-  version: ruEn("Патч 8.1", "Patch 8.1"),
+  version: ruEn("Хотфикс 8.1.1 · экономика патча 8.1", "Hotfix 8.1.1 · Patch 8.1 economy"),
   currencyUnit: ruEn("зол.", "gold"),
   periodUnit: ruEn("ход.", "turns"),
   meta: {
     title: ruEn("Экономика Total War: Warhammer III: казна, армии и провинции | Money Meta", "Total War: Warhammer III Economy Hub: treasury, armies and provinces | Money Meta"),
-    description: ruEn("Интерактивный разбор экономики Total War: Warhammer III: движение золота, пути игрока, изменения патча 8.1 и модели для зданий, военного резерва и захвата.", "An interactive Total War: Warhammer III campaign economy with capital map, player paths, Patch 8.1 Pulse and models for buildings, war reserves and conquest choices.")
+    description: ruEn("Интерактивный разбор экономики Total War: Warhammer III: текущий хотфикс 8.1.1, экономические изменения патча 8.1 и модели для зданий, военного резерва и захвата.", "An interactive Total War: Warhammer III campaign economy with current Hotfix 8.1.1, Patch 8.1 economic changes and models for buildings, war reserves and conquest choices.")
   },
   hero: {
-    live: ruEn("Патч 8.1 · проверено 2026-08-18", "Patch 8.1 · checked 2026-08-18"),
+    live: ruEn("Хотфикс 8.1.1 · проверено 2026-08-19", "Hotfix 8.1.1 · checked 2026-08-19"),
     eyebrow: ruEn("Total War: Warhammer III · экономика кампании", "Total War: Warhammer III · Campaign Economy"),
     heading: ruEn("Армия выигрывает битву. Казна решает, переживёшь ли войну.", "An army wins the battle. The treasury decides whether you survive the war."),
     lede: ruEn("Свяжи доход провинций, строительство, содержание армий и захват территорий в одну систему. Проверяй решение в горизонте ходов, а не по самой большой цифре на экране.", "Connect provincial income, construction, army upkeep and conquest into one system. Test a decision across a turn horizon instead of chasing the largest number on screen."),
@@ -179,7 +179,7 @@ export const totalWarHub: StrategyHubData = {
       ["7", ruEn("узлов экономики", "economy links")],
       ["3", ruEn("пути кампании", "campaign paths")],
       ["3", ruEn("живые модели", "live models")],
-      ["8.1", ruEn("официальный контекст", "official context")]
+      ["8.1.1", ruEn("текущий хотфикс", "current hotfix")]
     ],
     loadout: [
       { mark: "¤", label: ruEn("КАЗНА", "TREASURY"), value: ruEn("Военный резерв", "War chest") },
@@ -229,8 +229,8 @@ export const totalWarHub: StrategyHubData = {
     }
   ],
   pulse: {
-    title: ruEn("Патч 8.1 меняет давление на кампанию, но считать всё равно нужно", "Patch 8.1 changes campaign pressure without replacing unit economics"),
-    text: ruEn("Здесь подтверждённые изменения Creative Assembly отделены от значений, которые зависят от твоей фракции и сохранения.", "Pulse separates confirmed Creative Assembly changes from editable values in your faction and save."),
+    title: ruEn("Хотфикс 8.1.1 актуален, экономический контекст остаётся в патче 8.1", "Hotfix 8.1.1 is live while the economic context remains Patch 8.1"),
+    text: ruEn("Хотфикс исправляет технические проблемы и не задаёт новую универсальную экономику. Подтверждённые изменения патча 8.1 по-прежнему отделены от значений твоей фракции и сохранения.", "The hotfix addresses technical issues without defining a new universal economy. Confirmed Patch 8.1 changes remain separate from editable values in your faction and save."),
     changes: [
       { mark: "AI", signal: ruEn("Проверено · патч 8.1", "Verified · Patch 8.1"), title: ruEn("На позднем этапе ИИ активнее расширяется", "Late-game AI looks for expansion"), summary: ruEn("Creative Assembly снизила приоритет оборонительных задач на позднем этапе и немного повысила приоритет атак на силы противника.", "Creative Assembly reduced late-game defensive task priority and slightly raised tasks targeting enemy forces."), decision: ruEn("Держи больший резерв на границе, если план зависит от долгой мирной окупаемости.", "Keep a larger frontier reserve when the plan depends on a long peaceful payback."), sourceLabel: ruEn("Creative Assembly · патч 8.1", "Creative Assembly · Patch 8.1"), sourceUrl: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101" },
       { mark: "LM", signal: ruEn("Проверено · патч 8.1", "Verified · Patch 8.1"), title: ruEn("Новые особые постройки и технологии требуют пересчёта", "New landmarks and technologies require a rerun"), summary: ruEn("Патч 8.1 добавил особые постройки и технологии, поэтому старые универсальные приоритеты больше нельзя переносить без проверки.", "Patch 8.1 added landmarks and technologies, so old universal building priorities should not be carried over without checking."), decision: ruEn("Введи фактическую стоимость и прирост дохода своей провинции в модель окупаемости здания.", "Enter the actual cost and income delta from your province in Building Payback."), sourceLabel: ruEn("Creative Assembly · патч 8.1", "Creative Assembly · Patch 8.1"), sourceUrl: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101" },
@@ -347,7 +347,8 @@ export const totalWarHub: StrategyHubData = {
     disclaimer: ruEn("Total War, Total War: Warhammer и связанные названия являются собственностью их правообладателей. Money Meta является независимым аналитическим продуктом.", "Total War, Total War: Warhammer and related names belong to their respective owners. Money Meta is an independent analytical product."),
     roadmap: ruEn("После пользовательской проверки добавим шаблоны фракций, снимки провинций и заметки по сохранениям.", "Next layer after user validation: faction presets, province snapshots and campaign save notes."),
     sources: [
-      { label: ruEn("Creative Assembly · патч 8.1", "Creative Assembly · Patch 8.1"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101", note: ruEn("Текущая версия, поведение ИИ кампании, особые постройки и технологии.", "Current version, Campaign AI, landmarks and technologies.") },
+      { label: ruEn("Creative Assembly · хотфикс 8.1.1", "Creative Assembly · Hotfix 8.1.1"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/forums/7-patch-notes-amp-announcements/threads/14865", note: ruEn("Текущая версия на дату проверки. Хотфикс исправляет запуск, эффект Shadow Walkers и прокрутку, не вводя новую экономическую модель.", "Current live version on the check date. The hotfix addresses boot, a Shadow Walkers effect and scrolling without introducing a new economic model.") },
+      { label: ruEn("Creative Assembly · патч 8.1", "Creative Assembly · Patch 8.1"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101", note: ruEn("Поведение ИИ кампании, особые постройки и технологии, на которых основан экономический контекст.", "Campaign AI, landmarks and technologies underpinning the economic context.") },
       { label: ruEn("Creative Assembly · выпуск 24 сентября", "Creative Assembly · September 24 release"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/102", note: ruEn("Официальная дата Lords of the End Times и следующего крупного обновления. До релиза этот материал остаётся наблюдением, а не текущей моделью.", "Official date for Lords of the End Times and the next major update. Until release, this is a watch item rather than live model context.") },
       { label: ruEn("Creative Assembly · анонс Free-LC", "Creative Assembly · Free-LC announcement"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/103", note: ruEn("Дополнительный официальный контекст будущего обновления, опубликованный 17 августа.", "Additional official context for the future update, published August 17.") }
     ]
@@ -361,7 +362,7 @@ export const crusaderKingsHub: StrategyHubData = {
   shortName: "CK3",
   publisher: "Paradox Interactive",
   worldCode: ruEn("КАЗНА ДИНАСТИИ / 1.19.0.6", "DYNASTY LEDGER / 1.19.0.6"),
-  checkedAt: "2026-08-18",
+  checkedAt: "2026-08-19",
   staleAfterDays: 45,
   version: ruEn("1.19.0.6", "1.19.0.6"),
   currencyUnit: ruEn("зол.", "gold"),
@@ -371,7 +372,7 @@ export const crusaderKingsHub: StrategyHubData = {
     description: ruEn("Интерактивный разбор экономики Crusader Kings III: путь золота, стили правления, изменения версии 1.19 и модели для зданий, военного резерва и наследования.", "An interactive Crusader Kings III economy with a gold map, ruler paths, Update 1.19 Pulse and models for buildings, war reserves and succession.")
   },
   hero: {
-    live: ruEn("Версия 1.19.0.6 · проверено 2026-08-18", "Update 1.19.0.6 · checked 2026-08-18"),
+    live: ruEn("Версия 1.19.0.6 · проверено 2026-08-19", "Update 1.19.0.6 · checked 2026-08-19"),
     eyebrow: ruEn("Crusader Kings III · экономика династии", "Crusader Kings III · Dynasty Economy"),
     heading: ruEn("Ты управляешь не золотом. Ты финансируешь выживание династии.", "You do not manage gold. You finance the survival of a dynasty."),
     lede: ruEn("Свяжи доход домена, профессиональные полки, войны, активности и наследование. Смотри не только на месячный плюс, но и на казну, которую получит следующий правитель.", "Connect domain income, men-at-arms, wars, activities and succession. Read more than monthly profit: model the treasury the next ruler inherits."),

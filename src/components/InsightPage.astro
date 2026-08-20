@@ -5,6 +5,7 @@ import type { HubPortalId } from "../data/hub-portals";
 import { migrateHubHref } from "../lib/hub-links";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
+import HubJourneyContext from "./HubJourneyContext.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props { lang: InsightLocale; insight: Insight; }
@@ -119,6 +120,8 @@ const labels = lang === "ru" ? {
           </div>
         </div>
       </article>
+
+      <HubJourneyContext hub={portalId} lang={lang} context={{ kind: "insight", slug: insight.slug }} />
 
       <section class="section section-roomy">
         <div class="section-head"><div><span class="section-kicker">{lang === "ru" ? "Разборы Money Meta" : "Money Meta Field Notes"}</span><h2>{labels.related}</h2><p class="section-copy">{labels.relatedText}</p></div></div>

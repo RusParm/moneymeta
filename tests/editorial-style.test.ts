@@ -6,6 +6,7 @@ import { dotaEconomyNodes, dotaPlayerPaths, dotaPulse, dotaRoleLenses, dotaScena
 import { insights } from "../src/data/insights";
 import { goalPlanners } from "../src/data/goal-planners";
 import { hubGateways } from "../src/data/hub-gateways";
+import { hubJourneys } from "../src/data/hub-journeys";
 import { crusaderKingsHub, totalWarHub } from "../src/data/strategy-hubs";
 import { wowPatchContext } from "../src/data/wow-economy";
 import { wowEconomyNodes, wowMarketRoutes, wowMarks, wowPlayerPaths, wowPulse, wowScenarios } from "../src/data/wow-hub";
@@ -51,7 +52,8 @@ describe("editorial style", () => {
       crusaderKingsHub,
       insights,
       goalPlanners,
-      hubGateways
+      hubGateways,
+      hubJourneys
     };
     const forbidden = /\b(?:buyback|GPM|GPH|vROI|ROI|Net Worth|Business ROI|Profession Knowledge|Knowledge Points|Crafting Orders?|Capital lock-up|Editable baseline|Opportunity cost|Time \+ liquidity|Cross-asset|baseline|friction|inventory risk|Money Meta original|Craft All|Ledger|LIQ|CAP|ORD|CRF|KNO|GOAL|PF)\b/iu;
     const offenders: Array<{ path: string; text: string }> = [];
