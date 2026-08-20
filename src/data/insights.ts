@@ -1,15 +1,17 @@
 import { dotaPatchContext } from "./dota-economy";
+import { gtaViInsights } from "./gta-vi-insights";
 import { guideInsights } from "./guides";
 import { runwayInsights } from "./runway-insights";
 import { strategyInsights } from "./strategy-insights";
 
 export type InsightLocale = "ru" | "en";
-export type InsightGame = "gta" | "dota" | "wow" | "totalwar" | "ck3";
+export type InsightGame = "gta" | "gta6" | "dota" | "wow" | "totalwar" | "ck3";
 export type InsightAudience = "returner" | "casual" | "grinder";
 export type InsightEvidence = "verified" | "estimated";
 
 export const insightGameLabels: Record<InsightGame, string> = {
   gta: "GTA Online",
+  gta6: "GTA VI",
   dota: "Dota 2",
   wow: "WoW Retail",
   totalwar: "Total War: Warhammer III",
@@ -1570,7 +1572,7 @@ const coreInsights: Insight[] = [
   }
 ];
 
-export const insights: Insight[] = [...guideInsights, ...strategyInsights, ...runwayInsights, ...coreInsights];
+export const insights: Insight[] = [...gtaViInsights, ...guideInsights, ...strategyInsights, ...runwayInsights, ...coreInsights];
 
 export function getInsight(slug: string): Insight | undefined {
   return insights.find((insight) => insight.slug === slug);

@@ -19,6 +19,10 @@ GTA Online is the proving ground for the methodology and product. It also create
 - GTA Online: long-horizon production economy and asset allocation.
 - Dota 2: match economy, timing and liquidity reserves.
 - World of Warcraft Retail: player-driven markets, crafting margins and inventory liquidity.
+- Total War: Warhammer III: campaign capital, reserve and conquest choices.
+- Crusader Kings III: domain investment, war liquidity and succession resilience.
+
+GTA VI is a separate pre-release watch surface. It tracks only official facts, explicit unknowns and future measurement plans; it is not counted as a sixth live economy and must not promise an unconfirmed GTA VI Online product.
 
 WoW Classic is a future separate product surface, not a data toggle inside the Retail model.
 

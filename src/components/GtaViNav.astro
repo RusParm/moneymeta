@@ -1,0 +1,18 @@
+---
+import { getGtaViPath, gtaViRoutes, type GtaViLocale, type GtaViSectionId } from "../data/gta-vi";
+
+interface Props { lang: GtaViLocale; active: GtaViSectionId; }
+const { lang, active } = Astro.props;
+---
+
+<nav class="gta6-dossier-nav" aria-label={lang === "ru" ? "Разделы досье GTA VI" : "GTA VI dossier sections"}>
+  {(Object.keys(gtaViRoutes) as GtaViSectionId[]).map((id, index) => {
+    const route = gtaViRoutes[id];
+    return (
+      <a href={getGtaViPath(id, lang)} aria-current={active === id ? "page" : undefined}>
+        <span>0{index + 1}</span>
+        <strong>{route.label[lang]}</strong>
+      </a>
+    );
+  })}
+</nav>

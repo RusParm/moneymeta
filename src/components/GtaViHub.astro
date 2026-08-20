@@ -1,0 +1,254 @@
+---
+import {
+  getGtaViPath,
+  gtaViConfirmedFacts,
+  gtaViMedia,
+  gtaViRoutes,
+  gtaViSources,
+  gtaViUnknowns,
+  gtaViUpdateLog,
+  gtaViWatch,
+  type GtaViLocale,
+  type GtaViSectionId
+} from "../data/gta-vi";
+import { gtaViInsights } from "../data/gta-vi-insights";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import GtaViMedia from "./GtaViMedia.astro";
+import GtaViNav from "./GtaViNav.astro";
+import SiteFooter from "./SiteFooter.astro";
+import "../styles/gta-vi.css";
+
+interface Props { lang: GtaViLocale; }
+const { lang } = Astro.props;
+const path = getGtaViPath("overview", lang);
+const alternatePath = getGtaViPath("overview", lang === "ru" ? "en" : "ru");
+const prefix = lang === "ru" ? "" : "/en";
+const detailRoutes = (["economy", "precedent", "launch"] as GtaViSectionId[]).map((id) => ({ id, ...gtaViRoutes[id] }));
+const routeMedia = {
+  economy: gtaViMedia.robbery,
+  precedent: gtaViMedia.boobie,
+  launch: gtaViMedia.city
+} as const;
+
+const copy = lang === "ru" ? {
+  title: "GTA VI: живое досье экономики | Money Meta",
+  description: "Подтвержденные факты об экономике GTA VI, границы неизвестного, уроки GTA Online и прозрачный план измерений после выхода.",
+  back: "← Главная",
+  heroKicker: "GTA VI · дорелизное досье",
+  heroTitle: "Не угадываем экономику. Готовимся ее измерить.",
+  heroText: "Money Meta отделяет официальный факт от красивой догадки. Здесь мы фиксируем, что Rockstar уже показала о деньгах, бизнесах и риске, что пока неизвестно и как проверим систему после выхода.",
+  openEconomy: "Разобрать сигналы экономики",
+  openProtocol: "Открыть протокол 72 часов",
+  checked: "Проверено",
+  release: "Выход",
+  nextCheck: "Следующая проверка",
+  sourceOnly: "Только официальные источники",
+  factKicker: "Состояние досье",
+  factTitle: "Четыре факта, на которые уже можно опираться.",
+  factText: "Каждая карточка ведет к первичному источнику. Если формулировка не подтверждает механику игрока, мы прямо так и пишем.",
+  routesKicker: "Не бесконечная страница",
+  routesTitle: "Выбери вопрос и перейди в отдельный разбор.",
+  routesText: "Главная страница остается картой. Глубина вынесена в связанные маршруты с собственной задачей, доказательствами и выводом.",
+  open: "Открыть раздел",
+  methodKicker: "В чем добавленная ценность",
+  methodTitle: "Один сигнал проходит три проверки.",
+  states: [
+    ["ПОДТВЕРЖДЕНО", "Прямая формулировка, официальный кадр или объявленная дата."],
+    ["ГРАНИЦА", "Что этот материал не подтверждает и где начинается домысел."],
+    ["ПРОВЕРКА", "Какое наблюдение или повторяемый замер сможет закрыть вопрос."]
+  ],
+  eventLabel: "Ближайшая официальная точка",
+  eventTitle: "Расширенный показ может изменить карту фактов.",
+  eventText: "27 августа мы не будем пересказывать весь ролик. Обновим только те строки досье, для которых появится прямое подтверждение.",
+  eventTime: "27.08.2026 · 15:00 ET",
+  unknownKicker: "Честный список неизвестного",
+  unknownTitle: "Важнейшие вопросы пока открыты.",
+  unknownText: "Именно эти пробелы не позволяют выпускать правдоподобные на вид калькуляторы до релиза.",
+  allUnknowns: "Все открытые вопросы",
+  guidesKicker: "Редакционные маршруты",
+  guidesTitle: "Три материала, чтобы понимать досье глубже.",
+  read: "Читать",
+  logKicker: "Журнал изменений",
+  logTitle: "Что меняется и почему.",
+  sourcesKicker: "Доказательная база",
+  sourcesTitle: "Первичные источники текущей версии.",
+  mediaNote: "Изображения используются как редакционные материалы, подписаны и связаны с официальной медиатекой Rockstar Games. Макет сохраняет смысл без них."
+} : {
+  title: "GTA VI economy living dossier | Money Meta",
+  description: "Confirmed GTA VI economy facts, explicit unknowns, lessons from GTA Online and a transparent post-launch measurement plan.",
+  back: "← Home",
+  heroKicker: "GTA VI · pre-release dossier",
+  heroTitle: "Do not guess the economy. Prepare to measure it.",
+  heroText: "Money Meta separates an official fact from a convincing guess. This dossier records what Rockstar has shown about money, enterprise and risk, what remains unknown and how the system will be tested after release.",
+  openEconomy: "Read the economy signals",
+  openProtocol: "Open the 72-hour protocol",
+  checked: "Checked",
+  release: "Release",
+  nextCheck: "Next verification",
+  sourceOnly: "Primary sources only",
+  factKicker: "Dossier status",
+  factTitle: "Four facts we can already rely on.",
+  factText: "Every card resolves to a primary source. If the wording does not confirm a player mechanic, we say so explicitly.",
+  routesKicker: "Not an endless page",
+  routesTitle: "Choose the question and enter a focused analysis.",
+  routesText: "The root remains a map. Depth lives in connected routes with their own question, evidence and conclusion.",
+  open: "Open section",
+  methodKicker: "What Money Meta adds",
+  methodTitle: "Every signal passes three checks.",
+  states: [
+    ["CONFIRMED", "A direct statement, an official image or an announced date."],
+    ["BOUNDARY", "What the material does not prove and where inference begins."],
+    ["TEST", "The observation or repeatable measurement that can close the question."]
+  ],
+  eventLabel: "Next official checkpoint",
+  eventTitle: "The Extended Look may change the fact map.",
+  eventText: "On August 27 we will not recap the entire presentation. Only dossier lines supported by direct evidence will change.",
+  eventTime: "Aug 27, 2026 · 3:00 PM ET",
+  unknownKicker: "The honest unknown ledger",
+  unknownTitle: "The most important questions remain open.",
+  unknownText: "Those gaps are exactly why polished-looking calculators would be premature before launch.",
+  allUnknowns: "See every open question",
+  guidesKicker: "Editorial routes",
+  guidesTitle: "Three notes for a deeper reading of the dossier.",
+  read: "Read",
+  logKicker: "Change log",
+  logTitle: "What changes and why.",
+  sourcesKicker: "Evidence base",
+  sourcesTitle: "Primary sources behind this version.",
+  mediaNote: "Images are used as credited editorial material and link to Rockstar Games' official media library. The layout keeps its meaning without them."
+};
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={path}
+  alternatePath={alternatePath}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: copy.title,
+    description: copy.description,
+    dateModified: gtaViWatch.checkedAt,
+    about: "Grand Theft Auto VI",
+    inLanguage: lang,
+    isPartOf: { "@type": "WebSite", name: "Money Meta", url: "https://themoneymeta.com" }
+  }}
+>
+  <main class="page gta6-page gta6-hub">
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/gta-6/" enPath="/en/gta-6/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
+
+      <section class="gta6-hero">
+        <div class="gta6-hero-copy">
+          <div class="gta6-status-line"><span></span>{copy.sourceOnly} · {copy.checked} {gtaViWatch.checkedAt}</div>
+          <p class="eyebrow">{copy.heroKicker}</p>
+          <h1>{copy.heroTitle}</h1>
+          <p class="lede">{copy.heroText}</p>
+          <div class="hero-actions">
+            <a class="button primary button-large" href={getGtaViPath("economy", lang)}>{copy.openEconomy} →</a>
+            <a class="button ghost button-large" href={getGtaViPath("launch", lang)}>{copy.openProtocol}</a>
+          </div>
+          <dl class="gta6-hero-ledger">
+            <div><dt>{copy.release}</dt><dd>{lang === "ru" ? "19.11.2026" : "Nov 19, 2026"}</dd></div>
+            <div><dt>{copy.nextCheck}</dt><dd>{lang === "ru" ? "27.08.2026" : "Aug 27, 2026"}</dd></div>
+            <div><dt>{lang === "ru" ? "Платформы" : "Platforms"}</dt><dd>PS5 · Xbox Series X|S</dd></div>
+          </dl>
+        </div>
+        <GtaViMedia item={gtaViMedia.cover} lang={lang} class="gta6-hero-art" loading="eager" priority />
+      </section>
+
+      <GtaViNav lang={lang} active="overview" />
+
+      <section class="section gta6-facts" aria-labelledby="gta6-facts-title">
+        <div class="section-head">
+          <div><span class="section-kicker">{copy.factKicker}</span><h2 id="gta6-facts-title">{copy.factTitle}</h2><p class="section-copy">{copy.factText}</p></div>
+          <span class="count">{gtaViWatch.version[lang]}</span>
+        </div>
+        <div class="gta6-fact-grid">
+          {gtaViConfirmedFacts.map((fact, index) => {
+            const source = gtaViSources.find((item) => item.id === fact.sourceId)!;
+            return (
+              <a href={source.url} target="_blank" rel="noopener noreferrer" class="gta6-fact-card">
+                <span>0{index + 1} · {fact.label[lang]}</span>
+                <strong>{fact.value[lang]}</strong>
+                <p>{fact.detail[lang]}</p>
+                <small>{source.publisher} ↗</small>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <section class="section section-roomy" aria-labelledby="gta6-routes-title">
+        <div class="section-head">
+          <div><span class="section-kicker">{copy.routesKicker}</span><h2 id="gta6-routes-title">{copy.routesTitle}</h2><p class="section-copy">{copy.routesText}</p></div>
+        </div>
+        <div class="gta6-route-grid">
+          {detailRoutes.map((route, index) => (
+            <article class={`gta6-route-card gta6-route-${route.id}`}>
+              <GtaViMedia item={routeMedia[route.id as keyof typeof routeMedia]} lang={lang} />
+              <div class="gta6-route-body">
+                <span>0{index + 2} · {route.eyebrow[lang]}</span>
+                <h3>{route.label[lang]}</h3>
+                <p>{route.summary[lang]}</p>
+                <a href={getGtaViPath(route.id, lang)}>{copy.open} →</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="section section-roomy gta6-method" aria-labelledby="gta6-method-title">
+        <div class="gta6-method-intro"><span class="section-kicker">{copy.methodKicker}</span><h2 id="gta6-method-title">{copy.methodTitle}</h2></div>
+        <div class="gta6-state-grid">
+          {copy.states.map(([status, text], index) => <article><span>0{index + 1}</span><strong>{status}</strong><p>{text}</p></article>)}
+        </div>
+      </section>
+
+      <section class="gta6-event-panel">
+        <div><span>{copy.eventLabel}</span><h2>{copy.eventTitle}</h2><p>{copy.eventText}</p></div>
+        <aside><strong>{copy.eventTime}</strong><a href={gtaViSources.find((source) => source.id === "extended-look")!.url} target="_blank" rel="noopener noreferrer">Rockstar Games ↗</a></aside>
+      </section>
+
+      <section class="section section-roomy gta6-unknown-preview" aria-labelledby="gta6-unknown-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.unknownKicker}</span><h2 id="gta6-unknown-title">{copy.unknownTitle}</h2><p class="section-copy">{copy.unknownText}</p></div></div>
+        <ol>{gtaViUnknowns.slice(0, 4).map((question) => <li>{question[lang]}</li>)}</ol>
+        <a class="button ghost" href={`${getGtaViPath("economy", lang)}#unknown-ledger`}>{copy.allUnknowns} →</a>
+      </section>
+
+      <section class="section section-roomy" aria-labelledby="gta6-guides-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.guidesKicker}</span><h2 id="gta6-guides-title">{copy.guidesTitle}</h2></div></div>
+        <div class="gta6-guide-grid">
+          {gtaViInsights.map((insight, index) => {
+            const content = insight.content[lang];
+            return (
+              <a href={`${prefix}/insights/${insight.slug}/`}>
+                <span>0{index + 1} · {content.readTime}</span>
+                <h3>{content.title}</h3>
+                <p>{content.description}</p>
+                <strong>{copy.read} →</strong>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
+      <section class="section section-roomy gta6-log" aria-labelledby="gta6-log-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.logKicker}</span><h2 id="gta6-log-title">{copy.logTitle}</h2></div></div>
+        <div class="gta6-log-list">
+          {gtaViUpdateLog.map((entry, index) => <article class:list={{ "is-future": index > 0 }}><time datetime={entry.date}>{entry.date}</time><div><h3>{entry.title[lang]}</h3><p>{entry.text[lang]}</p></div></article>)}
+        </div>
+      </section>
+
+      <section class="section section-roomy gta6-source-panel" aria-labelledby="gta6-sources-title">
+        <div><span class="section-kicker">{copy.sourcesKicker}</span><h2 id="gta6-sources-title">{copy.sourcesTitle}</h2><p>{copy.mediaNote}</p></div>
+        <ol>{gtaViSources.map((source) => <li><a href={source.url} target="_blank" rel="noopener noreferrer"><span>{source.publisher}</span><strong>{source.label[lang]}</strong><small>{copy.checked} {source.checkedAt} ↗</small></a></li>)}</ol>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

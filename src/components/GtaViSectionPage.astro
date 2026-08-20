@@ -1,0 +1,357 @@
+---
+import {
+  getGtaViPath,
+  getGtaViSource,
+  gtaViLaunchMetrics,
+  gtaViLaunchPhases,
+  gtaViMedia,
+  gtaViPrecedents,
+  gtaViRoutes,
+  gtaViSignals,
+  gtaViSources,
+  gtaViUnknowns,
+  gtaViWatch,
+  type GtaViLocale,
+  type GtaViSectionId
+} from "../data/gta-vi";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import GtaViMedia from "./GtaViMedia.astro";
+import GtaViNav from "./GtaViNav.astro";
+import SiteFooter from "./SiteFooter.astro";
+import "../styles/gta-vi.css";
+
+type DetailSection = Exclude<GtaViSectionId, "overview">;
+interface Props { lang: GtaViLocale; section: DetailSection; }
+const { lang, section } = Astro.props;
+const path = getGtaViPath(section, lang);
+const alternatePath = getGtaViPath(section, lang === "ru" ? "en" : "ru");
+const media = section === "economy" ? gtaViMedia.robbery : section === "precedent" ? gtaViMedia.boobie : gtaViMedia.city;
+
+const pageCopy = {
+  economy: {
+    ru: {
+      title: "Экономика GTA VI: подтвержденные сигналы | Money Meta",
+      description: "Что официальные материалы GTA VI подтверждают о бизнесах, ограблениях, контрабанде и внимании, а какие механики пока неизвестны.",
+      kicker: "GTA VI · факты и границы",
+      heading: "Мир уже говорит о деньгах. Механики игрока еще молчат.",
+      lede: "Rockstar показывает предпринимателей, грабителей, контрабандистов и музыкальный бизнес. Это сильные экономические сигналы мира, но ни один из них сам по себе не доказывает покупаемые бизнесы, пассивный доход или свободный рынок.",
+      primary: "Перейти к сигналам",
+      secondary: "Открытые вопросы"
+    },
+    en: {
+      title: "GTA VI economy: confirmed signals | Money Meta",
+      description: "What official GTA VI material confirms about enterprise, robberies, smuggling and attention, and which mechanics remain unknown.",
+      kicker: "GTA VI · facts and boundaries",
+      heading: "The world already talks about money. Player mechanics do not.",
+      lede: "Rockstar shows entrepreneurs, robbers, smugglers and a music business. These are strong economic signals in the world, but none independently proves buyable businesses, passive income or a free market.",
+      primary: "Read the signals",
+      secondary: "Open questions"
+    }
+  },
+  precedent: {
+    ru: {
+      title: "Чему GTA Online может научить перед GTA VI | Money Meta",
+      description: "Пять полезных способов анализировать GTA VI после релиза и пять механик GTA Online, которые нельзя заранее переносить в новую игру.",
+      kicker: "GTA VI · прецедент, не прогноз",
+      heading: "Берем способ думать. Не переносим готовый ответ.",
+      lede: "GTA Online научила игроков считать чистую прибыль, время, риск и связи между активами. Эти вопросы пригодятся снова. Конкретные выплаты, таймеры, бизнесы и сетевые правила не являются доказательством того, как устроена GTA VI.",
+      primary: "Открыть матрицу",
+      secondary: "Почему это не прогноз"
+    },
+    en: {
+      title: "What GTA Online can teach us before GTA VI | Money Meta",
+      description: "Five useful lenses for studying GTA VI after launch, and five GTA Online mechanics that cannot be assumed in the new game.",
+      kicker: "GTA VI · precedent, not prediction",
+      heading: "Carry the way of thinking. Leave the answer behind.",
+      lede: "GTA Online taught players to examine net profit, time, risk and links between assets. Those questions remain useful. Its payouts, timers, businesses and online rules are not evidence of how GTA VI works.",
+      primary: "Open the matrix",
+      secondary: "Why this is not a forecast"
+    }
+  },
+  launch: {
+    ru: {
+      title: "GTA VI: протокол первых 72 часов | Money Meta",
+      description: "План Money Meta для проверки валюты, выплат, времени, риска и покупок GTA VI в первые 72 часа после релиза.",
+      kicker: "GTA VI · протокол измерений",
+      heading: "Сначала наблюдение. Потом повтор. Только затем совет.",
+      lede: "В первые дни сеть заполнится быстрыми выводами. Money Meta будет вести журнал версии, платформы, исходных условий и повторных попыток, чтобы отличить единичную находку от устойчивой механики.",
+      primary: "Посмотреть этапы",
+      secondary: "Список показателей"
+    },
+    en: {
+      title: "GTA VI: the first 72-hour protocol | Money Meta",
+      description: "Money Meta's plan for testing GTA VI currencies, payouts, time, risk and purchases during the first 72 hours after release.",
+      kicker: "GTA VI · measurement protocol",
+      heading: "Observe first. Repeat second. Advise only after that.",
+      lede: "The first days will be full of fast conclusions. Money Meta will log version, platform, starting conditions and repeated attempts so one-off discoveries do not masquerade as stable mechanics.",
+      primary: "See the phases",
+      secondary: "Metric registry"
+    }
+  }
+} as const;
+const hero = pageCopy[section][lang];
+
+const shared = lang === "ru" ? {
+  back: "← Досье GTA VI",
+  checked: "Проверено",
+  primaryOnly: "Только первичные источники",
+  boundary: "Главная граница",
+  boundaryTitle: "Подтвержденный элемент мира не равен подтвержденной механике игрока.",
+  boundaryText: "Персонаж может владеть бизнесом в сюжете, но из этого нельзя заключать, что игрок сможет купить этот бизнес, управлять им или получать регулярный доход.",
+  signalKicker: "Официальные сигналы",
+  signalTitle: "Что показано, где заканчивается факт и как закрыть вопрос.",
+  evidence: "Что подтверждено",
+  doesNotProve: "Чего это не доказывает",
+  launchTest: "Как проверим",
+  source: "Источник",
+  unknownKicker: "Реестр неизвестного",
+  unknownTitle: "Восемь вопросов, которые нельзя закрыть трейлером.",
+  unknownText: "До прямого ответа Rockstar или повторяемого наблюдения после выхода их статус остается неизвестным.",
+  precedentKicker: "Матрица переноса",
+  precedentTitle: "Пять полезных линз и пять запрещенных допущений.",
+  lens: "Аналитическая линза",
+  carries: "Что сохраняет ценность",
+  noCarry: "Что нельзя переносить",
+  test: "Проверка после выхода",
+  notForecastKicker: "Дисциплина сравнения",
+  notForecastTitle: "GTA Online дает контрольные вопросы, а не ответы о GTA VI.",
+  notForecastPoints: [
+    ["ОБЪЕКТ", "GTA Online является постоянно обновляемой сетевой игрой. Официально подтвержденная GTA VI сейчас описана как одиночная игра."],
+    ["ВЕРСИЯ", "Цены и выплаты GTA Online менялись годами. Их текущее значение нельзя использовать как исходное число для другой игры."],
+    ["ЦЕЛЬ", "Мы переносим только логику проверки: чистый результат, время, риск и открываемые возможности."]
+  ],
+  gtaOnlineLink: "Открыть действующую аналитику GTA Online",
+  phaseKicker: "План по времени",
+  phaseTitle: "Четыре этапа от досье до первых устойчивых выводов.",
+  phaseGoal: "Задача",
+  phaseOutput: "Результат",
+  metricsKicker: "Реестр показателей",
+  metricsTitle: "Девять величин вместо одного громкого дохода в час.",
+  metricsText: "Каждая запись получит платформу, версию игры, исходные условия и минимум три попытки там, где механика допускает повтор.",
+  rulesKicker: "Правила публикации",
+  rulesTitle: "Когда наблюдение становится рекомендацией.",
+  rules: [
+    ["01", "Сохраняем исходные условия", "Баланс, этап сюжета, герой, сложность, транспорт и доступные улучшения записываются до попытки."],
+    ["02", "Повторяем измерение", "Единичный результат остается наблюдением. Для диапазона нужны повторные попытки с одинаковыми условиями."],
+    ["03", "Показываем разброс", "Минимум, медиана и максимум честнее одной красивой цифры, если результат меняется."],
+    ["04", "Версионируем вывод", "Патч или изменение условий не переписывает историю: создается новая версия записи."]
+  ],
+  futureKicker: "Будущие инструменты",
+  futureTitle: "Что откроется только после появления данных.",
+  futureTools: [
+    ["Карта стартового капитала", "Сравнит деньги, обязательные расходы и доступ после первых сюжетных этапов."],
+    ["Журнал выплат", "Сведет валовую и чистую выплату, время, риск и повторяемость заданий."],
+    ["Проверка крупных покупок", "Покажет, какую возможность открывает транспорт, недвижимость или другой актив."],
+    ["Карта собственности", "Отделит сюжетные владения от покупаемых и управляемых активов."],
+    ["Система денег героев", "Проверит общий или раздельный баланс и стоимость переключения решений."]
+  ],
+  locked: "Откроется после проверки данных",
+  nextKicker: "Продолжить исследование",
+  nextTitle: "Досье связано, но каждый маршрут решает свой вопрос."
+} : {
+  back: "← GTA VI dossier",
+  checked: "Checked",
+  primaryOnly: "Primary sources only",
+  boundary: "The central boundary",
+  boundaryTitle: "A confirmed element of the world is not a confirmed player mechanic.",
+  boundaryText: "A character may own a business in the story. That does not prove the player can buy it, operate it or receive recurring income from it.",
+  signalKicker: "Official signals",
+  signalTitle: "What is shown, where the fact ends and how the question can be closed.",
+  evidence: "What is confirmed",
+  doesNotProve: "What it does not prove",
+  launchTest: "How we will test it",
+  source: "Source",
+  unknownKicker: "Unknown ledger",
+  unknownTitle: "Eight questions a trailer cannot close.",
+  unknownText: "Until Rockstar answers directly or a repeatable post-launch observation exists, their status remains unknown.",
+  precedentKicker: "Transfer matrix",
+  precedentTitle: "Five useful lenses and five forbidden assumptions.",
+  lens: "Analytical lens",
+  carries: "What retains value",
+  noCarry: "What cannot carry",
+  test: "Post-launch test",
+  notForecastKicker: "Comparison discipline",
+  notForecastTitle: "GTA Online supplies control questions, not answers about GTA VI.",
+  notForecastPoints: [
+    ["OBJECT", "GTA Online is a continuously updated networked game. The officially confirmed GTA VI product is currently described as single-player."],
+    ["VERSION", "GTA Online prices and payouts changed for years. Their current values cannot seed a model for a different game."],
+    ["PURPOSE", "Only the testing logic carries: net outcome, time, risk and capability unlocked."]
+  ],
+  gtaOnlineLink: "Open the live GTA Online analysis",
+  phaseKicker: "Time plan",
+  phaseTitle: "Four phases from dossier to the first durable conclusions.",
+  phaseGoal: "Goal",
+  phaseOutput: "Output",
+  metricsKicker: "Metric registry",
+  metricsTitle: "Nine measures instead of one loud hourly-income number.",
+  metricsText: "Every record includes platform, game version, starting conditions and at least three attempts whenever the mechanic can be repeated.",
+  rulesKicker: "Publishing rules",
+  rulesTitle: "When an observation becomes a recommendation.",
+  rules: [
+    ["01", "Preserve starting conditions", "Balance, story stage, protagonist, difficulty, vehicle and available upgrades are logged before the attempt."],
+    ["02", "Repeat the measurement", "A single outcome remains an observation. A range needs repeated attempts under matched conditions."],
+    ["03", "Show the spread", "Minimum, median and maximum are more honest than one polished number when outcomes vary."],
+    ["04", "Version the conclusion", "A patch or condition change does not rewrite history. It creates a new record version."]
+  ],
+  futureKicker: "Future tools",
+  futureTitle: "What unlocks only when the data exists.",
+  futureTools: [
+    ["Starting-capital map", "Compare cash, required spending and access after the first story stages."],
+    ["Payout ledger", "Record gross and net payout, time, risk and mission repeatability."],
+    ["Major-purchase test", "Show which capability a vehicle, property or other asset actually unlocks."],
+    ["Ownership map", "Separate story-owned property from purchasable and operable assets."],
+    ["Protagonist money system", "Test shared or separate balances and the decision cost of switching."]
+  ],
+  locked: "Unlocks after data verification",
+  nextKicker: "Continue the research",
+  nextTitle: "The dossier is connected, but every route answers a distinct question."
+};
+
+const nextRoutes = (["economy", "precedent", "launch"] as DetailSection[]).filter((id) => id !== section);
+---
+
+<BaseLayout
+  title={hero.title}
+  description={hero.description}
+  lang={lang}
+  canonicalPath={path}
+  alternatePath={alternatePath}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: hero.title,
+    description: hero.description,
+    dateModified: gtaViWatch.checkedAt,
+    about: "Grand Theft Auto VI",
+    inLanguage: lang,
+    isPartOf: { "@type": "CollectionPage", name: "GTA VI Economy Watch", url: new URL(getGtaViPath("overview", lang), Astro.site).href }
+  }}
+>
+  <main class={`page gta6-page gta6-section gta6-section-${section}`}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getGtaViPath(section, "ru")} enPath={getGtaViPath(section, "en")} backPath={getGtaViPath("overview", lang)} backLabel={shared.back} />
+
+      <header class="gta6-section-hero">
+        <div class="gta6-section-hero-copy">
+          <div class="gta6-status-line"><span></span>{shared.primaryOnly} · {shared.checked} {gtaViWatch.checkedAt}</div>
+          <p class="eyebrow">{hero.kicker}</p>
+          <h1>{hero.heading}</h1>
+          <p class="lede">{hero.lede}</p>
+          <div class="hero-actions">
+            <a class="button primary button-large" href={section === "economy" ? "#signals" : section === "precedent" ? "#precedent-matrix" : "#phases"}>{hero.primary} →</a>
+            <a class="button ghost button-large" href={section === "economy" ? "#unknown-ledger" : section === "precedent" ? "#comparison-boundary" : "#metric-registry"}>{hero.secondary}</a>
+          </div>
+        </div>
+        <GtaViMedia item={media} lang={lang} class="gta6-section-art" loading="eager" priority />
+      </header>
+
+      <GtaViNav lang={lang} active={section} />
+
+      {section === "economy" && (
+        <>
+          <section class="gta6-boundary-card">
+            <span>{shared.boundary}</span><h2>{shared.boundaryTitle}</h2><p>{shared.boundaryText}</p>
+          </section>
+
+          <section id="signals" class="section section-roomy" aria-labelledby="gta6-signals-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.signalKicker}</span><h2 id="gta6-signals-title">{shared.signalTitle}</h2></div></div>
+            <div class="gta6-signal-list">
+              {gtaViSignals.map((signal, index) => {
+                const source = getGtaViSource(signal.sourceId);
+                return (
+                  <article>
+                    <div class="gta6-signal-head"><span>0{index + 1}</span><strong>{lang === "ru" ? "ПОДТВЕРЖДЕННЫЙ СЮЖЕТНЫЙ СИГНАЛ" : "CONFIRMED NARRATIVE SIGNAL"}</strong></div>
+                    <h3>{signal.title[lang]}</h3>
+                    <div class="gta6-signal-grid">
+                      <div><span>{shared.evidence}</span><p>{signal.evidence[lang]}</p></div>
+                      <div><span>{shared.doesNotProve}</span><p>{signal.boundary[lang]}</p></div>
+                      <div><span>{shared.launchTest}</span><p>{signal.measure[lang]}</p></div>
+                    </div>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer">{shared.source}: {source.publisher} · {source.label[lang]} ↗</a>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+          <section id="unknown-ledger" class="section section-roomy gta6-unknown-ledger" aria-labelledby="gta6-unknown-ledger-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.unknownKicker}</span><h2 id="gta6-unknown-ledger-title">{shared.unknownTitle}</h2><p class="section-copy">{shared.unknownText}</p></div><span class="count">8 · {lang === "ru" ? "статус: неизвестно" : "status: unknown"}</span></div>
+            <ol>{gtaViUnknowns.map((question, index) => <li><span>Q{String(index + 1).padStart(2, "0")}</span><p>{question[lang]}</p><strong>{lang === "ru" ? "НЕТ ДАННЫХ" : "NO DATA"}</strong></li>)}</ol>
+          </section>
+        </>
+      )}
+
+      {section === "precedent" && (
+        <>
+          <section id="comparison-boundary" class="gta6-boundary-card">
+            <span>{shared.boundary}</span><h2>{shared.notForecastTitle}</h2><p>{lang === "ru" ? "Сходство бренда не делает две экономики одинаковыми. Сравнение полезно только там, где оно задает проверяемый вопрос." : "A shared brand does not make two economies identical. Comparison is useful only where it creates a testable question."}</p>
+          </section>
+
+          <section id="precedent-matrix" class="section section-roomy" aria-labelledby="gta6-precedent-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.precedentKicker}</span><h2 id="gta6-precedent-title">{shared.precedentTitle}</h2></div></div>
+            <div class="gta6-precedent-table" role="table" aria-label={shared.precedentTitle}>
+              <div class="gta6-precedent-row gta6-precedent-head" role="row"><span role="columnheader">{shared.lens}</span><span role="columnheader">{shared.carries}</span><span role="columnheader">{shared.noCarry}</span><span role="columnheader">{shared.test}</span></div>
+              {gtaViPrecedents.map((item, index) => (
+                <div class="gta6-precedent-row" role="row">
+                  <strong role="cell"><small>0{index + 1}</small>{item.lens[lang]}</strong>
+                  <p role="cell">{item.carries[lang]}</p>
+                  <p role="cell">{item.doesNotCarry[lang]}</p>
+                  <p role="cell">{item.launchTest[lang]}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section class="section section-roomy gta6-comparison-discipline" aria-labelledby="gta6-comparison-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.notForecastKicker}</span><h2 id="gta6-comparison-title">{shared.notForecastTitle}</h2></div></div>
+            <div class="gta6-state-grid">{shared.notForecastPoints.map(([code, title], index) => <article><span>0{index + 1}</span><strong>{code}</strong><p>{title}</p></article>)}</div>
+            <a class="button ghost" href={lang === "ru" ? "/gta-online/" : "/en/gta-online/"}>{shared.gtaOnlineLink} →</a>
+          </section>
+        </>
+      )}
+
+      {section === "launch" && (
+        <>
+          <section class="gta6-boundary-card">
+            <span>{shared.boundary}</span><h2>{lang === "ru" ? "Скорость публикации не важнее качества наблюдения." : "Publishing speed is not more important than observation quality."}</h2><p>{lang === "ru" ? "Мы не назовем лучший способ заработка после одной удачной попытки. Ранний материал покажет условия, разброс и степень уверенности." : "We will not call something the best money route after one lucky attempt. Early material will show conditions, spread and confidence."}</p>
+          </section>
+
+          <section id="phases" class="section section-roomy" aria-labelledby="gta6-phases-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.phaseKicker}</span><h2 id="gta6-phases-title">{shared.phaseTitle}</h2></div></div>
+            <ol class="gta6-phase-list">
+              {gtaViLaunchPhases.map((phase, index) => <li><div><span>0{index + 1}</span><time>{phase.window}</time></div><h3>{phase.title[lang]}</h3><p><strong>{shared.phaseGoal}.</strong> {phase.goal[lang]}</p><p><strong>{shared.phaseOutput}.</strong> {phase.output[lang]}</p></li>)}
+            </ol>
+          </section>
+
+          <section id="metric-registry" class="section section-roomy" aria-labelledby="gta6-metrics-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.metricsKicker}</span><h2 id="gta6-metrics-title">{shared.metricsTitle}</h2><p class="section-copy">{shared.metricsText}</p></div><span class="count">9 {lang === "ru" ? "показателей" : "measures"}</span></div>
+            <div class="gta6-metric-grid">{gtaViLaunchMetrics.map((metric) => <article><span>{metric.code}</span><h3>{metric.name[lang]}</h3><p>{metric.definition[lang]}</p></article>)}</div>
+          </section>
+
+          <section class="section section-roomy" aria-labelledby="gta6-rules-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.rulesKicker}</span><h2 id="gta6-rules-title">{shared.rulesTitle}</h2></div></div>
+            <div class="gta6-rule-grid">{shared.rules.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
+          </section>
+
+          <section class="section section-roomy gta6-future-tools" aria-labelledby="gta6-tools-title">
+            <div class="section-head"><div><span class="section-kicker">{shared.futureKicker}</span><h2 id="gta6-tools-title">{shared.futureTitle}</h2></div></div>
+            <div>{shared.futureTools.map(([title, text], index) => <article><span>0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div><strong>{shared.locked}</strong></article>)}</div>
+          </section>
+        </>
+      )}
+
+      <section class="section section-roomy gta6-next-routes" aria-labelledby="gta6-next-title">
+        <div class="section-head"><div><span class="section-kicker">{shared.nextKicker}</span><h2 id="gta6-next-title">{shared.nextTitle}</h2></div></div>
+        <div>{nextRoutes.map((id) => <a href={getGtaViPath(id, lang)}><span>{gtaViRoutes[id].eyebrow[lang]}</span><h3>{gtaViRoutes[id].label[lang]}</h3><p>{gtaViRoutes[id].summary[lang]}</p><strong>→</strong></a>)}</div>
+      </section>
+
+      <section class="gta6-inline-sources">
+        <span>{lang === "ru" ? "Источники текущей версии" : "Sources for this version"}</span>
+        <div>{gtaViSources.slice(0, section === "economy" ? 6 : 4).map((source) => <a href={source.url} target="_blank" rel="noopener noreferrer">{source.publisher} · {source.label[lang]} ↗</a>)}</div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

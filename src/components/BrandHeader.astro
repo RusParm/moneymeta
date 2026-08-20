@@ -12,13 +12,14 @@ const currentPath = Astro.url.pathname;
 const links = [
   { id: "home", label: lang === "ru" ? "Обзор" : "Overview", href: lang === "ru" ? "/" : "/en/" },
   { id: "gta", label: "GTA Online", href: lang === "ru" ? "/gta-online/" : "/en/gta-online/" },
+  { id: "gta6", label: "GTA VI", href: lang === "ru" ? "/gta-6/" : "/en/gta-6/" },
   { id: "dota", label: "Dota 2", href: lang === "ru" ? "/dota-2/" : "/en/dota-2/" },
   { id: "wow", label: "WoW Retail", href: lang === "ru" ? "/wow/" : "/en/wow/" },
   { id: "total-war", label: "Total War", href: lang === "ru" ? "/total-war/" : "/en/total-war/" },
   { id: "ck3", label: "CK3", href: lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/" },
   { id: "insights", label: lang === "ru" ? "Разборы" : "Field Notes", href: lang === "ru" ? "/insights/" : "/en/insights/" }
 ];
-const active = currentPath.includes("insights") ? "insights" : currentPath.includes("gta-online") ? "gta" : currentPath.includes("dota-2") ? "dota" : currentPath.includes("wow") ? "wow" : currentPath.includes("total-war") ? "total-war" : currentPath.includes("crusader-kings-3") ? "ck3" : "home";
+const active = currentPath.includes("insights") ? "insights" : currentPath.includes("gta-6") ? "gta6" : currentPath.includes("gta-online") ? "gta" : currentPath.includes("dota-2") ? "dota" : currentPath.includes("wow") ? "wow" : currentPath.includes("total-war") ? "total-war" : currentPath.includes("crusader-kings-3") ? "ck3" : "home";
 ---
 
 <div class="site-chrome">
