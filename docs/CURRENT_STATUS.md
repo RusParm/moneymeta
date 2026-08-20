@@ -184,7 +184,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 
 Every release is built and tested locally, deployed to a branch preview, checked for deployment errors and only then promoted to production.
 
-## Active release candidate: v1.13 Dota item atlas
+## Production release: v1.13 Dota item atlas
 
 - Added a build-time OpenDota snapshot for the Patch 7.41e professional cohort with visible match count, role coverage and source boundaries.
 - Added complete RU/EN item-atlas routes with search, role and sample filters, explicit pagination and a standalone analysis URL for every observed item and component.
@@ -192,4 +192,14 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Added a shareable two-to-five-item planner with current minute, sustainable GPM, available gold, projected completion minutes, professional median deltas and delay from earlier purchases.
 - Added curated decision analysis for high-impact items plus derived role and replay questions for the full catalog.
 - Added a daily automation that updates only a dedicated snapshot branch and pull request after validation, tests and static build pass.
-- The current local snapshot contains 367 parsed professional matches, 3,183 classified player rows, 86.7% role coverage and 188 observed items or components. Preview browser QA remains required before production promotion.
+- The current snapshot contains 367 parsed professional matches, 3,183 classified player rows, 86.7% role coverage and 188 observed items or components.
+
+## Active release candidate: v1.14 compact decision portals
+
+- Rebuilt all five localized root hubs around three deliberate layers: current context, game-native quick start and a compact command center.
+- Removed the duplicated full destination grid, media gallery, long guide cards, expanded playbook rail and standalone source section from every root without removing their focused URLs.
+- Kept five direct section routes, three authored playbooks, two current editorial entry points and the primary source boundary visible inside one compact navigation surface.
+- Added a Dota-specific item strip linking directly to the atlas and build planner without restoring the full catalog on the hub root.
+- Mobile gateway choices, destination cards, playbooks and guide entry points use contained horizontal rails. Text and marks occupy separate grid columns with explicit minimum-width guards.
+- Fixed the Dota item atlas cascade bug that rendered hidden cards. Pagination now shows twelve cards per page and has a regression test for both page size and hidden-state display.
+- Ninety automated tests pass. Five hundred sixty-five static pages build with zero Astro diagnostics. HTTPS preview browser QA remains required before production promotion.

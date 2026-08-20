@@ -65,6 +65,8 @@ const copy = lang === "ru" ? {
   found: "найдено",
   of: "из",
   page: "Страница",
+  pages: "страниц",
+  items: "предметов",
   previous: "← Назад",
   next: "Дальше →",
   gold: "золота",
@@ -120,6 +122,8 @@ const copy = lang === "ru" ? {
   found: "found",
   of: "of",
   page: "Page",
+  pages: "pages",
+  items: "items",
   previous: "← Previous",
   next: "Next →",
   gold: "gold",
@@ -218,7 +222,7 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
                 data-support-n={support.timing?.n ?? 0}
                 data-best-rate={bestRate}
                 data-earliest-median={earliestMedian}
-                hidden={itemIndex >= 18}
+                hidden={itemIndex >= 12}
               >
                 <a class="dota-item-card-head" href={getDotaItemPath(item, lang)}>
                   <span class="dota-item-icon"><span>{item.name.slice(0, 2).toUpperCase()}</span><img src={item.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span>
@@ -241,7 +245,7 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
         <div class="dota-atlas-empty" data-atlas-empty hidden>{copy.empty}</div>
         <div class="dota-atlas-pagination" data-atlas-pagination>
           <button type="button" data-page-previous>{copy.previous}</button>
-          <span><b>{copy.page} <span data-page-current>1</span></b><small><span data-page-total>1</span> {copy.of} <span data-page-items>{dotaItems.length}</span></small></span>
+          <span><b>{copy.page} <span data-page-current>1</span></b><small><span data-page-total>1</span> {copy.pages} · <span data-page-items>{dotaItems.length}</span> {copy.items}</small></span>
           <button type="button" data-page-next>{copy.next}</button>
         </div>
       </section>
@@ -257,6 +261,12 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
   </main>
 </BaseLayout>
 
+<style is:global>
+  [data-dota-atlas] [hidden] {
+    display: none !important;
+  }
+</style>
+
 <script>
   const ready = (callback: () => void) => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", callback, { once: true }) : callback();
   ready(() => {
@@ -266,7 +276,7 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
     if (!root || !form || !grid) return;
     const cards = [...grid.querySelectorAll<HTMLElement>("[data-item-card]")];
     const minimum = Number(root.dataset.minimumSample ?? 200);
-    const perPage = 18;
+    const perPage = 12;
     const count = root.querySelector<HTMLElement>("[data-atlas-count]");
     const empty = root.querySelector<HTMLElement>("[data-atlas-empty]");
     const pagination = root.querySelector<HTMLElement>("[data-atlas-pagination]");

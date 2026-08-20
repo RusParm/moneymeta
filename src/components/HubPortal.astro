@@ -6,19 +6,17 @@ import dotaWorld from "../assets/game-worlds/dota-economy-world.webp";
 import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
 import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
 import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
-import { dotaMedia } from "../data/dota-hub";
+import { dotaItemsSnapshot, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
 import { getHubJourneyPath, hubJourneys } from "../data/hub-journeys";
 import { getHubPath, hubPortals, type HubLocale, type HubPortalId } from "../data/hub-portals";
+import { insights, type InsightGame } from "../data/insights";
 import "../styles/wow-hub.css";
 import "../styles/strategy-hub.css";
 import "../styles/hub-portal.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
-import DotaMedia from "./DotaMedia.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
 import HubGameMark from "./HubGameMark.astro";
-import HubGuideLibrary from "./HubGuideLibrary.astro";
-import HubJourneyRail from "./HubJourneyRail.astro";
 import SiteFooter from "./SiteFooter.astro";
 
 interface Props {
@@ -44,67 +42,72 @@ const mainClass = hubId === "gta"
     : hubId === "wow"
       ? "game-wow wow-living-hub"
       : `strategy-living-hub strategy-${hubId}`;
-const gameInsightId = hubId === "total-war" ? "totalwar" : hubId;
+const insightGame: InsightGame = hubId === "total-war" ? "totalwar" : hubId;
+const journeys = hubJourneys[hubId];
+const featuredGuides = insights
+  .filter((insight) => insight.game === insightGame)
+  .sort((left, right) => Number(Boolean(right.featuredInHub)) - Number(Boolean(left.featuredInHub)) || right.updatedAt.localeCompare(left.updatedAt))
+  .slice(0, 2);
 
 const copy = lang === "ru" ? {
   back: "← Все экономики",
   live: "Рабочий контекст",
   checked: "проверено",
   primary: "Подобрать мой маршрут",
-  secondary: "Открыть инструменты",
-  mapKicker: "Пять самостоятельных разделов",
-  mapTitle: "Выбери решение, а не место на длинной странице",
-  mapText: "Каждая карточка открывает отдельный URL с одним типом задачи. Ссылку можно сохранить, отправить и открыть снова без повторной прокрутки.",
-  open: "Открыть раздел",
-  question: "Вопрос раздела",
-  payoff: "Результат",
-  valueSteps: [
-    ["01", "Формулируем вопрос", "Сначала определяем, что именно должно измениться после решения."],
-    ["02", "Проверяем ограничение", "Капитал, время, риск и текущая версия видны до вывода."],
-    ["03", "Даём следующий ход", "Материал заканчивается действием, ссылкой или расчётом."]
-  ],
-  mediaKicker: "Игровой контекст",
-  mediaTitle: "Визуал помогает узнать ситуацию. Решение всё равно проходит через данные.",
-  mediaText: "Издательские изображения используются для редакционной идентификации конкретного патча или события. Источник указан на каждой карточке; числа Money Meta остаются отдельным слоем.",
-  source: "Источник изображения",
-  dotaMediaTitle: "Предметы и герои, вокруг которых строятся решения",
-  sourceKicker: "Актуальность и границы",
-  sourceTitle: "Версия видна до рекомендации",
-  sourceText: "Официальный источник задаёт текущий контекст. Редактируемые цены, длительность, риск и цели не выдаются за данные издателя.",
+  secondary: "Что изменилось",
+  value: "Ценность",
+  valueLink: "Понять экономику",
+  destinations: "Пять направлений",
+  commandKicker: "Куда дальше",
+  commandTitle: "Один вопрос. Одна короткая страница",
+  commandText: "Хаб больше не пытается вместить всю игру. Выбери задачу, получи вывод и вернись сюда только за следующим решением.",
+  commandCount: "05 РАЗДЕЛОВ · 03 МАРШРУТА",
+  result: "Что получишь",
+  playbooks: "Готовые маршруты",
+  playbooksText: "Если вопрос состоит из нескольких шагов, открой связанный маршрут вместо пяти вкладок наугад.",
+  start: "Начать маршрут",
+  guides: "Свежие разборы",
+  guidesText: "Два материала для входа. Полная библиотека живёт на отдельной странице.",
+  read: "Читать разбор",
+  allGuides: "Открыть всю библиотеку",
+  dotaLayer: "Предметный слой Dota 2",
+  dotaLayerText: "Найди предмет или заранее проверь порядок сборки, не открывая полный каталог внутри хаба.",
+  atlas: "Атлас предметов",
+  planner: "План сборки",
+  context: "Актуальный контекст",
+  sourceText: "Факты версии и вывод Money Meta остаются разными слоями.",
   openSource: "Открыть первоисточник",
-  independent: "Money Meta является независимым аналитическим продуктом",
-  next: "К следующему решению"
+  independent: "Независимый аналитический продукт"
 } : {
   back: "← All economies",
   live: "Working context",
   checked: "checked",
   primary: "Find my route",
-  secondary: "Open tools",
-  mapKicker: "Five standalone destinations",
-  mapTitle: "Choose a decision, not a position on a long page",
-  mapText: "Each card opens a dedicated URL for one type of question. Save it, share it and return without repeating the scroll.",
-  open: "Open section",
-  question: "Section question",
-  payoff: "Outcome",
-  valueSteps: [
-    ["01", "State the question", "Define what should change after the decision."],
-    ["02", "Expose the constraint", "Capital, time, risk and live version appear before the conclusion."],
-    ["03", "Give the next move", "Every piece ends in an action, a route or a calculation."]
-  ],
-  mediaKicker: "Game context",
-  mediaTitle: "Visuals identify the situation. Data still decides the move.",
-  mediaText: "Publisher imagery is used editorially to identify a specific patch or event. Every card carries a source; Money Meta numbers remain a separate layer.",
-  source: "Image source",
-  dotaMediaTitle: "Items and heroes behind the decision set",
-  sourceKicker: "Freshness and boundaries",
-  sourceTitle: "The version appears before the recommendation",
-  sourceText: "The primary source defines current context. Editable prices, duration, risk and objectives are never presented as publisher data.",
+  secondary: "What changed",
+  value: "Value",
+  valueLink: "Understand the economy",
+  destinations: "Five destinations",
+  commandKicker: "Where next",
+  commandTitle: "One question, one focused page",
+  commandText: "The hub no longer tries to contain the whole game. Pick the task, reach a conclusion and return only for the next decision.",
+  commandCount: "05 PAGES · 03 PLAYBOOKS",
+  result: "What you get",
+  playbooks: "Connected playbooks",
+  playbooksText: "When the question needs several steps, follow one authored route instead of opening five random tabs.",
+  start: "Start playbook",
+  guides: "Current analysis",
+  guidesText: "Two deliberate entry points. The full research library lives on its own page.",
+  read: "Read analysis",
+  allGuides: "Open the full library",
+  dotaLayer: "Dota 2 item layer",
+  dotaLayerText: "Find an item or test a build order without placing the full catalog inside the hub.",
+  atlas: "Item atlas",
+  planner: "Build planner",
+  context: "Current context",
+  sourceText: "Version facts and Money Meta conclusions remain separate layers.",
   openSource: "Open primary source",
-  independent: "Money Meta is an independent analytical product",
-  next: "To the next decision"
+  independent: "Independent analytical product"
 };
-
-const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMedia.bkb, dotaMedia.aegis, dotaMedia.crystalMaiden];
 ---
 
 <BaseLayout
@@ -126,7 +129,7 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
         name: item.title[lang],
         url: new URL(getHubPath(hubId, lang, item.slug), Astro.site).toString()
       })),
-      ...hubJourneys[hubId].map((journey) => ({
+      ...journeys.map((journey) => ({
         "@type": "HowTo",
         name: journey.title[lang],
         url: new URL(getHubJourneyPath(journey, lang), Astro.site).toString()
@@ -134,7 +137,7 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
     ]
   }}
 >
-  <main class={`page game-page hub-portal ${mainClass}`} data-hub-portal={hubId} data-insight-game={gameInsightId}>
+  <main class={`page game-page hub-portal hub-portal-v14 ${mainClass}`} data-hub-portal={hubId} data-insight-game={insightGame}>
     <div class="shell">
       <BrandHeader
         lang={lang}
@@ -163,7 +166,7 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
           <p class="lede">{hub.lede[lang]}</p>
           <div class="hero-actions">
             <a class="button primary button-large" href="#quick-start">{copy.primary} →</a>
-            <a class="button ghost button-large" href={getHubPath(hubId, lang, "tools")}>{copy.secondary}</a>
+            <a class="button ghost button-large" href={getHubPath(hubId, lang, "meta")}>{copy.secondary}</a>
           </div>
           <div class="portal-proof-grid">
             {hub.stats.map((stat) => <div><strong>{stat.value}</strong><span>{stat.label[lang]}</span></div>)}
@@ -171,16 +174,14 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
         </div>
 
         <aside class="portal-value-card">
-          <span>{hub.shortName} / {lang === "ru" ? "ЦЕННОСТЬ" : "VALUE"}</span>
+          <span>{hub.shortName} / {copy.value}</span>
           <h2>{hub.valueTitle[lang]}</h2>
           <p>{hub.valueText[lang]}</p>
-          <div class="portal-value-steps">
-            {copy.valueSteps.map(([code, title, text]) => <div><b>{code}</b><strong>{title}</strong><small>{text}</small></div>)}
-          </div>
+          <a class="portal-value-link" href={getHubPath(hubId, lang, "economy")}>{copy.valueLink} →</a>
         </aside>
       </section>
 
-      <nav class="portal-section-rail" aria-label={copy.mapKicker}>
+      <nav class="portal-section-rail" aria-label={copy.destinations}>
         {hub.sections.map((item) => (
           <a href={getHubPath(hubId, lang, item.slug)}>
             <HubGameMark hub={hubId} section={item.slug} lang={lang} />
@@ -190,97 +191,83 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
         ))}
       </nav>
 
-      <section class="section hub-section portal-destinations" aria-labelledby={`${hubId}-destinations-title`}>
-        <div class="section-head hub-section-head">
-          <div>
-            <span class="section-kicker">{copy.mapKicker}</span>
-            <h2 id={`${hubId}-destinations-title`}>{copy.mapTitle}</h2>
-            <p class="section-copy">{copy.mapText}</p>
-          </div>
-          <span class="count">01-05 · URL</span>
-        </div>
-
-        <div class="portal-destination-grid">
-          {hub.sections.map((item, index) => (
-            <a class:list={["portal-destination-card", { "is-featured": index === 0 }]} href={getHubPath(hubId, lang, item.slug)}>
-              <div class="portal-destination-top">
-                <HubGameMark hub={hubId} section={item.slug} lang={lang} large={index === 0} />
-                <span>{item.code} / {item.label[lang]}</span>
-              </div>
-              <div>
-                <h3>{item.title[lang]}</h3>
-                <p>{item.description[lang]}</p>
-              </div>
-              <dl>
-                <div><dt>{copy.question}</dt><dd>{item.question[lang]}</dd></div>
-                <div><dt>{copy.payoff}</dt><dd>{item.payoff[lang]}</dd></div>
-              </dl>
-              <strong class="portal-card-link">{copy.open} →</strong>
-            </a>
-          ))}
-        </div>
-      </section>
-
       <HubDecisionGateway hub={hubId} lang={lang} />
 
-      <slot name="after-gateway" />
-
-      <HubJourneyRail hub={hubId} lang={lang} />
-
-      <section class="section hub-section portal-media-section" aria-labelledby={`${hubId}-media-title`}>
-        <div class="section-head hub-section-head">
+      <section class="section hub-section portal-command-center" aria-labelledby={`${hubId}-command-title`}>
+        <header class="portal-command-head">
           <div>
-            <span class="section-kicker">{copy.mediaKicker}</span>
-            <h2 id={`${hubId}-media-title`}>{hubId === "dota" ? copy.dotaMediaTitle : copy.mediaTitle}</h2>
-            <p class="section-copy">{copy.mediaText}</p>
+            <span class="section-kicker">{copy.commandKicker}</span>
+            <h2 id={`${hubId}-command-title`}>{copy.commandTitle}</h2>
+            <p>{copy.commandText}</p>
           </div>
-        </div>
+          <span class="count">{copy.commandCount}</span>
+        </header>
 
-        {hubId === "dota" ? (
-          <div class="portal-dota-media-grid">
-            {dotaPortalMedia.map((asset, index) => (
-              <a href={index === 0 || index === 1 ? getHubPath(hubId, lang, "economy") : index === 4 ? getHubPath(hubId, lang, "guides") : getHubPath(hubId, lang, "meta")}>
-                <DotaMedia asset={asset} lang={lang} />
-                <div><span>0{index + 1}</span><strong>{asset.alt[lang]}</strong><small>Valve · {copy.next}</small></div>
+        <div class="portal-command-grid">
+          <nav class="portal-route-list" aria-label={copy.destinations}>
+            {hub.sections.map((item) => (
+              <a href={getHubPath(hubId, lang, item.slug)}>
+                <HubGameMark hub={hubId} section={item.slug} lang={lang} />
+                <div>
+                  <span>{item.code} · {item.label[lang]}</span>
+                  <strong>{item.title[lang]}</strong>
+                  <small><b>{copy.result}:</b> {item.payoff[lang]}</small>
+                </div>
+                <b aria-hidden="true">→</b>
               </a>
             ))}
-          </div>
-        ) : (
-          <div class:list={["portal-editorial-grid", { "has-gallery": hub.media.length > 1 }]}>
-            {hub.media.map((media, index) => (
-              <figure class:list={["portal-editorial-card", { "is-lead": index === 0 }]}>
-                <img
-                  src={media.src}
-                  alt={media.alt[lang]}
-                  loading="lazy"
-                  decoding="async"
-                  referrerpolicy="no-referrer"
-                  style={media.position ? `object-position:${media.position}` : undefined}
-                  onerror="this.closest('figure')?.classList.add('media-unavailable')"
-                />
-                <figcaption>
-                  <span>{media.caption[lang]}</span>
-                  <a href={media.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source}: {media.sourceLabel} ↗</a>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        )}
-      </section>
+          </nav>
 
-      <HubGuideLibrary hub={hubId} lang={lang} compact />
+          <div class="portal-command-side">
+            {hubId === "dota" && (
+              <section class="portal-dota-shortcuts" aria-labelledby="portal-dota-shortcuts-title">
+                <div>
+                  <span>DOTA 2 · {dotaItemsSnapshot.patch.label}</span>
+                  <h3 id="portal-dota-shortcuts-title">{copy.dotaLayer}</h3>
+                  <p>{copy.dotaLayerText}</p>
+                </div>
+                <nav>
+                  <a href={getDotaItemsPath(lang)}><span>{dotaItemsSnapshot.items.length}</span><strong>{copy.atlas}</strong><b>→</b></a>
+                  <a href={getDotaItemPlannerPath(lang)}><span>2-5</span><strong>{copy.planner}</strong><b>→</b></a>
+                </nav>
+              </section>
+            )}
 
-      <section class="section hub-section portal-source-rail" aria-labelledby={`${hubId}-source-title`}>
-        <div>
-          <span class="section-kicker">{copy.sourceKicker}</span>
-          <h2 id={`${hubId}-source-title`}>{copy.sourceTitle}</h2>
-          <p>{copy.sourceText}</p>
-        </div>
-        <div class="portal-source-status">
-          <span>{hub.version[lang]}</span>
-          <strong>{copy.checked} {hub.checkedAt}</strong>
-          <a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} · {copy.openSource} ↗</a>
-          <small>{copy.independent}</small>
+            <section class="portal-playbook-panel" aria-labelledby={`${hubId}-playbooks-title`}>
+              <header><div><span>{copy.playbooks}</span><h3 id={`${hubId}-playbooks-title`}>{copy.playbooks}</h3></div><p>{copy.playbooksText}</p></header>
+              <div>
+                {journeys.map((journey) => (
+                  <a href={getHubJourneyPath(journey, lang)}>
+                    <HubGameMark hub={hubId} section={journey.steps[0].destination.section} lang={lang} />
+                    <span>{journey.code}</span>
+                    <strong>{journey.title[lang]}</strong>
+                    <small>{copy.start} →</small>
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            <section class="portal-guide-panel" aria-labelledby={`${hubId}-guides-title`}>
+              <header><div><span>{copy.guides}</span><h3 id={`${hubId}-guides-title`}>{copy.guides}</h3></div><p>{copy.guidesText}</p></header>
+              <div>
+                {featuredGuides.map((guide) => (
+                  <a href={`${lang === "en" ? "/en" : ""}/insights/${guide.slug}/`}>
+                    <span>{guide.content[lang].readTime} · {guide.updatedAt}</span>
+                    <strong>{guide.content[lang].title}</strong>
+                    <small>{copy.read} →</small>
+                  </a>
+                ))}
+              </div>
+              <a class="portal-all-guides" href={getHubPath(hubId, lang, "guides")}>{copy.allGuides} →</a>
+            </section>
+
+            <aside class="portal-freshness-card">
+              <div><span>{copy.context}</span><strong>{hub.version[lang]}</strong><small>{copy.checked} {hub.checkedAt}</small></div>
+              <p>{copy.sourceText}</p>
+              <a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} · {copy.openSource} ↗</a>
+              <small>{copy.independent}</small>
+            </aside>
+          </div>
         </div>
       </section>
 

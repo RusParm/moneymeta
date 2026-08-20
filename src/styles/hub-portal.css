@@ -28,12 +28,12 @@
 .portal-hero {
   position: relative;
   display: grid;
-  min-height: 690px;
-  grid-template-columns: minmax(0, 1.45fr) minmax(310px, .55fr);
+  min-height: 610px;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, .5fr);
   align-items: end;
   gap: 28px;
   overflow: hidden;
-  padding: clamp(28px, 5vw, 62px);
+  padding: clamp(28px, 4vw, 50px);
   border: 1px solid rgba(var(--portal-accent-rgb), .23);
   border-radius: 27px;
   background: #080a10;
@@ -65,12 +65,12 @@
 }
 .portal-live > span { width: 7px; height: 7px; flex: 0 0 auto; border-radius: 50%; background: var(--portal-accent); box-shadow: 0 0 16px var(--portal-accent); }
 .portal-hero .eyebrow { color: var(--portal-accent); }
-.portal-hero h1 { max-width: 860px; margin-top: 13px; font-size: clamp(53px, 7vw, 91px); line-height: .88; letter-spacing: -.045em; overflow-wrap: anywhere; }
-.portal-hero .lede { max-width: 730px; margin-top: 22px; color: rgba(255,255,255,.72); font-size: 17px; line-height: 1.68; }
-.portal-hero .hero-actions { margin-top: 29px; }
+.portal-hero h1 { max-width: 790px; margin-top: 13px; font-size: clamp(49px, 6.1vw, 80px); line-height: .9; letter-spacing: -.04em; overflow-wrap: anywhere; }
+.portal-hero .lede { max-width: 710px; margin-top: 19px; color: rgba(255,255,255,.72); font-size: 15px; line-height: 1.65; }
+.portal-hero .hero-actions { margin-top: 24px; }
 .portal-hero .button.primary { border-color: var(--portal-accent); background: linear-gradient(135deg, color-mix(in srgb, var(--portal-accent) 86%, #d91778), color-mix(in srgb, var(--portal-accent) 55%, #8f1e68)); color: #08090d; }
 
-.portal-proof-grid { display: grid; max-width: 760px; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 7px; margin-top: 27px; }
+.portal-proof-grid { display: grid; max-width: 720px; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 7px; margin-top: 22px; }
 .portal-proof-grid > div { min-width: 0; padding: 11px 12px; border: 1px solid rgba(var(--portal-accent-rgb), .16); border-radius: 10px; background: rgba(6,8,13,.65); backdrop-filter: blur(12px); }
 .portal-proof-grid strong { display: block; color: var(--portal-accent); font: 800 26px/.9 "Roboto Condensed", sans-serif; }
 .portal-proof-grid span { display: block; margin-top: 8px; color: rgba(255,255,255,.55); font: 700 9px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; overflow-wrap: anywhere; }
@@ -79,6 +79,7 @@
 .portal-value-card > span { color: var(--portal-accent); font: 700 9px "JetBrains Mono", monospace; letter-spacing: .08em; }
 .portal-value-card h2 { margin-top: 13px; font-size: clamp(29px, 3vw, 42px); line-height: .96; overflow-wrap: anywhere; }
 .portal-value-card > p { margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.portal-value-link { display: inline-flex; margin-top: 18px; color: var(--portal-accent); font: 700 9px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
 .portal-value-steps { display: grid; gap: 9px; margin-top: 20px; }
 .portal-value-steps > div { display: grid; grid-template-columns: 26px minmax(0,1fr); gap: 2px 9px; min-width: 0; padding-top: 10px; border-top: 1px solid rgba(var(--portal-accent-rgb), .13); }
 .portal-value-steps b { grid-row: 1/3; color: var(--portal-accent); font: 800 10px "JetBrains Mono", monospace; }
@@ -216,6 +217,81 @@
 .portal-source-status small,
 .section-page-source aside small { color: var(--muted-dim); font-size: 10px; line-height: 1.5; }
 
+/* v1.14 compact root portals */
+.hub-portal-v14 .hub-decision-gateway { margin-top: 80px; }
+.portal-command-center { margin-top: 80px; }
+.portal-command-head { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 24px; align-items: end; padding-bottom: 24px; border-bottom: 1px solid rgba(var(--portal-accent-rgb), .16); }
+.portal-command-head h2 { max-width: 830px; margin-top: 10px; font-size: clamp(39px, 5.1vw, 62px); line-height: .93; }
+.portal-command-head p { max-width: 760px; margin: 15px 0 0; color: var(--muted); font-size: 14px; line-height: 1.68; }
+.portal-command-grid { display: grid; grid-template-columns: minmax(0, .92fr) minmax(380px, 1.08fr); gap: 14px; align-items: start; margin-top: 18px; }
+.portal-route-list,
+.portal-command-side { display: grid; gap: 9px; min-width: 0; }
+.portal-route-list > a { display: grid; min-width: 0; min-height: 118px; grid-template-columns: 54px minmax(0,1fr) auto; gap: 14px; align-items: center; padding: 17px; border: 1px solid rgba(var(--portal-accent-rgb), .16); border-radius: 16px; background: rgba(8,9,14,.92); color: inherit; transition: border-color .18s ease, transform .18s ease, background .18s ease; }
+.portal-route-list > a:hover { border-color: rgba(var(--portal-accent-rgb), .42); background: rgba(var(--portal-accent-rgb), .045); transform: translateX(3px); }
+.portal-route-list .hub-game-mark .dota-media,
+.portal-route-list .hub-game-mark .gta-asset-mark,
+.portal-route-list .hub-game-mark .wow-market-mark,
+.portal-route-list .hub-game-mark .strategy-mark { width: 54px; height: 50px; flex-basis: 54px; }
+.portal-route-list > a > div { display: grid; min-width: 0; gap: 5px; }
+.portal-route-list > a > div > span { color: var(--portal-accent); font: 700 8px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
+.portal-route-list > a > div > strong { min-width: 0; font-size: clamp(20px, 2vw, 25px); line-height: 1.02; overflow-wrap: anywhere; }
+.portal-route-list > a > div > small { min-width: 0; color: var(--muted); font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.portal-route-list > a > div > small b { color: rgba(255,255,255,.72); }
+.portal-route-list > a > b { color: var(--portal-accent); font: 700 17px "JetBrains Mono", monospace; }
+
+.portal-playbook-panel,
+.portal-guide-panel,
+.portal-dota-shortcuts,
+.portal-freshness-card { min-width: 0; padding: 20px; border: 1px solid rgba(var(--portal-accent-rgb), .16); border-radius: 17px; background: rgba(8,9,14,.92); }
+.portal-playbook-panel > header,
+.portal-guide-panel > header { display: grid; grid-template-columns: minmax(0,.7fr) minmax(220px,1.3fr); gap: 18px; align-items: end; padding-bottom: 14px; border-bottom: 1px solid rgba(var(--portal-accent-rgb), .12); }
+.portal-playbook-panel > header span,
+.portal-guide-panel > header span,
+.portal-dota-shortcuts > div > span,
+.portal-freshness-card > div > span { color: var(--portal-accent); font: 700 8px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
+.portal-playbook-panel > header h3,
+.portal-guide-panel > header h3,
+.portal-dota-shortcuts h3 { margin-top: 6px; font-size: 27px; line-height: 1; overflow-wrap: anywhere; }
+.portal-playbook-panel > header p,
+.portal-guide-panel > header p,
+.portal-dota-shortcuts p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.portal-playbook-panel > div { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; margin-top: 14px; }
+.portal-playbook-panel > div > a { display: grid; min-width: 0; grid-template-columns: 42px minmax(0,1fr); gap: 6px 10px; align-content: start; padding: 12px; border: 1px solid rgba(var(--portal-accent-rgb), .12); border-radius: 12px; color: inherit; }
+.portal-playbook-panel > div > a:hover,
+.portal-guide-panel > div > a:hover { border-color: rgba(var(--portal-accent-rgb), .36); background: rgba(var(--portal-accent-rgb), .035); }
+.portal-playbook-panel .hub-game-mark { grid-row: 1/4; align-self: start; }
+.portal-playbook-panel .hub-game-mark .dota-media,
+.portal-playbook-panel .hub-game-mark .gta-asset-mark,
+.portal-playbook-panel .hub-game-mark .wow-market-mark,
+.portal-playbook-panel .hub-game-mark .strategy-mark { width: 42px; height: 39px; flex-basis: 42px; }
+.portal-playbook-panel > div > a > span { color: var(--portal-accent); font: 700 7px/1.35 "JetBrains Mono", monospace; }
+.portal-playbook-panel > div > a > strong { min-width: 0; font-size: 13px; line-height: 1.28; overflow-wrap: anywhere; }
+.portal-playbook-panel > div > a > small { color: var(--muted-dim); font: 700 7px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
+
+.portal-guide-panel > div { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; margin-top: 14px; }
+.portal-guide-panel > div > a { display: grid; min-width: 0; min-height: 128px; grid-template-rows: auto 1fr auto; gap: 8px; padding: 14px; border: 1px solid rgba(var(--portal-accent-rgb), .12); border-radius: 12px; color: inherit; }
+.portal-guide-panel > div > a > span { color: var(--portal-accent); font: 700 7px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
+.portal-guide-panel > div > a > strong { min-width: 0; font-size: 16px; line-height: 1.2; overflow-wrap: anywhere; }
+.portal-guide-panel > div > a > small,
+.portal-all-guides { color: var(--portal-accent); font: 700 8px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
+.portal-all-guides { display: inline-flex; margin-top: 14px; }
+
+.portal-dota-shortcuts { display: grid; grid-template-columns: minmax(0,.85fr) minmax(270px,1.15fr); gap: 17px; align-items: center; background: radial-gradient(circle at 90% 0, rgba(231,185,91,.08), transparent 42%), rgba(8,9,14,.94); }
+.portal-dota-shortcuts p { margin-top: 9px; }
+.portal-dota-shortcuts nav { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+.portal-dota-shortcuts nav a { display: grid; min-width: 0; min-height: 92px; grid-template-columns: minmax(0,1fr) auto; align-content: space-between; gap: 5px; padding: 13px; border: 1px solid rgba(231,185,91,.17); border-radius: 11px; color: inherit; }
+.portal-dota-shortcuts nav span { color: var(--portal-accent); font: 800 19px "Roboto Condensed", sans-serif; }
+.portal-dota-shortcuts nav strong { grid-column: 1/-1; min-width: 0; font-size: 14px; overflow-wrap: anywhere; }
+.portal-dota-shortcuts nav b { grid-column: 2; grid-row: 1; color: var(--portal-accent); }
+
+.portal-freshness-card { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 8px 18px; align-items: end; background: linear-gradient(135deg, rgba(var(--portal-accent-rgb), .06), rgba(8,9,14,.96) 48%); }
+.portal-freshness-card > div { display: grid; min-width: 0; gap: 5px; grid-row: 1/4; }
+.portal-freshness-card > div > strong { min-width: 0; font-size: 21px; line-height: 1.05; overflow-wrap: anywhere; }
+.portal-freshness-card > div > small,
+.portal-freshness-card > small { color: var(--muted-dim); font: 700 8px/1.45 "JetBrains Mono", monospace; text-transform: uppercase; }
+.portal-freshness-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.portal-freshness-card > a { color: var(--portal-accent); font: 700 8px/1.45 "JetBrains Mono", monospace; text-transform: uppercase; overflow-wrap: anywhere; }
+
 /* Focused section pages */
 .section-page-hero { position: relative; display: grid; min-height: 520px; grid-template-columns: minmax(0,1.25fr) minmax(330px,.75fr); overflow: hidden; border: 1px solid rgba(var(--portal-accent-rgb), .23); border-radius: 25px; background: #07090e; box-shadow: var(--shadow); }
 .section-page-hero-art { grid-column: 2; width: 100%; height: 100%; object-fit: cover; object-position: 58% center; filter: saturate(.9) contrast(1.04); }
@@ -338,10 +414,13 @@
   .portal-guide-library.is-compact .portal-guide-card:first-child { grid-column: 1/-1; }
   .section-page-nav { overflow-x: auto; grid-template-columns: repeat(6, minmax(150px,1fr)); }
   .strategy-brief-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .portal-command-grid { grid-template-columns: 1fr; }
+  .portal-route-list { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .portal-route-list > a:last-child { grid-column: 1/-1; }
 }
 
 @media (max-width: 860px) {
-  .portal-hero { min-height: 830px; grid-template-columns: 1fr; align-content: end; padding: 32px; }
+  .portal-hero { min-height: 720px; grid-template-columns: 1fr; align-content: end; padding: 32px; }
   .portal-hero-shade { background: linear-gradient(0deg, rgba(5,7,12,.99) 0%, rgba(5,7,12,.93) 62%, rgba(5,7,12,.28) 100%); }
   .portal-hero-copy { padding-top: 180px; }
   .portal-hero h1 { font-size: clamp(49px, 10vw, 70px); }
@@ -368,13 +447,19 @@
   .section-page-hero-copy { grid-column: 1; width: 100%; align-self: end; padding-top: 180px; }
   .strategy-focused-path { grid-template-columns: 1fr; }
   .strategy-lens-body > header { grid-template-columns: 1fr; align-items: start; }
+  .portal-value-card { display: none; }
+  .portal-command-head { grid-template-columns: 1fr; align-items: start; }
+  .portal-command-head > .count { justify-self: start; }
+  .portal-playbook-panel > header,
+  .portal-guide-panel > header { grid-template-columns: 1fr; align-items: start; }
+  .portal-dota-shortcuts { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 680px) {
   .hub-portal .site-chrome,
   .hub-section-page .site-chrome { margin-bottom: 18px; }
-  .portal-hero { min-height: 780px; padding: 22px 18px; border-radius: 20px; }
-  .portal-hero-copy { padding-top: 170px; }
+  .portal-hero { min-height: 660px; padding: 22px 18px; border-radius: 20px; }
+  .portal-hero-copy { padding-top: 145px; }
   .portal-hero h1 { font-size: clamp(43px, 13vw, 58px); }
   .portal-hero .lede { font-size: 14px; }
   .portal-proof-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
@@ -427,10 +512,35 @@
   .strategy-lens-stack summary { grid-template-columns: 32px minmax(0,1fr); padding: 17px; }
   .strategy-lens-stack summary small { display: none; }
   .strategy-lens-body { padding: 7px 16px 20px; }
+  .hub-portal-v14 .hub-decision-gateway,
+  .portal-command-center { margin-top: 62px; }
+  .portal-command-head h2 { font-size: 39px; }
+  .portal-route-list,
+  .portal-playbook-panel > div,
+  .portal-guide-panel > div {
+    display: flex;
+    overflow-x: auto;
+    gap: 9px;
+    padding: 2px 2px 12px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+  .portal-route-list > a,
+  .portal-route-list > a:last-child { grid-column: auto; width: min(82vw,360px); min-width: min(82vw,360px); min-height: 150px; scroll-snap-align: start; }
+  .portal-playbook-panel > div > a { width: min(72vw,300px); min-width: min(72vw,300px); min-height: 118px; scroll-snap-align: start; }
+  .portal-guide-panel > div > a { width: min(78vw,330px); min-width: min(78vw,330px); scroll-snap-align: start; }
+  .portal-playbook-panel,
+  .portal-guide-panel,
+  .portal-dota-shortcuts,
+  .portal-freshness-card { padding: 17px; }
+  .portal-dota-shortcuts nav { grid-template-columns: 1fr; }
+  .portal-dota-shortcuts nav a { min-height: 78px; }
+  .portal-freshness-card { grid-template-columns: 1fr; align-items: start; }
+  .portal-freshness-card > div { grid-row: auto; }
 }
 
 @media (max-width: 430px) {
-  .portal-hero { min-height: 830px; }
+  .portal-hero { min-height: 690px; }
   .portal-proof-grid { gap: 5px; }
   .portal-proof-grid > div { padding: 10px; }
   .portal-section-rail { grid-template-columns: repeat(5, minmax(145px,1fr)); }

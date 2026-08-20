@@ -2,6 +2,12 @@ import { describe, expect, it } from "vitest";
 import { HUB_SECTION_SLUGS, getHubPath, hubPortalList, hubPortals } from "../src/data/hub-portals";
 import { migrateHubHref } from "../src/lib/hub-links";
 
+const portalSource = Object.values(import.meta.glob("../src/components/HubPortal.astro", {
+  eager: true,
+  import: "default",
+  query: "?raw"
+}) as Record<string, string>)[0] ?? "";
+
 describe("v1.9 hub portals", () => {
   it("ships five compact portals with five standalone destinations each", () => {
     expect(hubPortalList).toHaveLength(5);
@@ -48,5 +54,16 @@ describe("v1.9 hub portals", () => {
     expect(hubPortals.ck3.version.ru).toContain("1.19");
     expect(hubPortals.gta.version.ru).toContain("Brand Wars");
     expect(hubPortals.wow.version.ru).toContain("Ula’tek");
+  });
+
+  it("keeps root hubs as compact routers instead of full duplicated documents", () => {
+    expect(portalSource).toContain("hub-portal-v14");
+    expect(portalSource).toContain("portal-command-center");
+    expect(portalSource).toContain("<HubDecisionGateway");
+    expect(portalSource).not.toContain("<HubJourneyRail");
+    expect(portalSource).not.toContain("<HubGuideLibrary");
+    expect(portalSource).not.toContain("portal-destinations");
+    expect(portalSource).not.toContain("portal-media-section");
+    expect(portalSource).not.toContain("portal-source-rail");
   });
 });

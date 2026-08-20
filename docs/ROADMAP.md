@@ -140,6 +140,15 @@
 - Shareable two-to-five-item planner with projected completion minute, pro median delta and build-order delay.
 - Scheduled snapshot updates through a dedicated automation pull request, never a direct `main` write.
 
+## P2.2: v1.14 compact decision portals
+
+- Reduce all five root hubs to a short route: current context, quick start and one compact command center.
+- Keep the five focused section URLs, three authored playbooks and full guide libraries as the depth layer instead of duplicating them on the root.
+- Preserve game-native marks and current-version evidence while reserving a separate text column so icons cannot compete with copy.
+- Turn mobile choices, routes and editorial entry points into contained horizontal rails rather than a single endless document.
+- Fix Dota item atlas pagination so only twelve current-page cards are visible and the URL retains filter and page state.
+- Require local tests, static build and responsive HTTPS preview QA before any production decision.
+
 ## Later
 
 - Authentication and cross-device profiles.
