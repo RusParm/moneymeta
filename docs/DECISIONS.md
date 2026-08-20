@@ -119,3 +119,19 @@ Related content is useful only when the relationship changes the player's next a
 ## 2026-08-19: playbooks are route maps, not longer hub pages
 
 The playbook page explains the sequence and the checks between steps, but does not duplicate every calculator or guide. Detail stays on stable section, planner and Field Note URLs. This keeps the hub connected without recreating an endless root page and gives every deep page a clear role in a larger player decision.
+
+## 2026-08-20: GTA VI is a watch surface, not a sixth live model
+
+GTA VI enters Money Meta as a dated evidence dossier before release. It does not change the claim that the product currently has five live economies and fifteen editable models. No calculator, ranking or recommendation may appear until a player mechanic has an official explanation or a repeatable observation in the released game.
+
+## 2026-08-20: narrative evidence is not mechanical evidence
+
+Official character and world descriptions may confirm economic themes such as business networks, robbery, smuggling, property and attention. They do not by themselves confirm that the player can buy, operate or earn from those systems. Every GTA VI signal therefore stores the direct evidence, the boundary of the claim and the post-launch test that could close the question.
+
+## 2026-08-20: GTA Online supplies analytical lenses, not GTA VI forecasts
+
+Net outcome, access cost, player attention and failure risk remain useful questions across games. GTA Online prices, payouts, timers, portfolio links and online-service rules do not transfer into GTA VI. Comparison pages must state both the reusable lens and the prohibited assumption.
+
+## 2026-08-20: early GTA VI recommendations require repeated measurement
+
+The first 72-hour protocol records platform, game version, protagonist, story stage, starting state, all required costs and time categories. One run remains an observation. A working range needs repeated attempts under comparable conditions, and a recommendation must show both outcome spread and confidence. Later patches create new versions rather than silently rewriting the record.

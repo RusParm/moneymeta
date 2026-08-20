@@ -3,6 +3,7 @@ import { insightGameLabels, insights, type InsightLocale } from "../data/insight
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
+import "../styles/gta-vi.css";
 
 interface Props { lang: InsightLocale; }
 const { lang } = Astro.props;
@@ -10,7 +11,7 @@ const prefix = lang === "ru" ? "" : "/en";
 const path = `${prefix}/insights/`;
 const copy = lang === "ru" ? {
   title: "Разборы игровых экономик Money Meta",
-  description: "Практические разборы пяти игровых экономик с цифрами, официальным контекстом, моделями и конкретным следующим действием.",
+  description: "Практические разборы пяти живых игровых экономик и дорелизное досье GTA VI с официальным контекстом, моделями и конкретным следующим действием.",
   back: "← Главная",
   kicker: "Прикладные разборы · решения, а не новости",
   heading: "Разбираем экономику игры до конкретного действия.",
@@ -19,7 +20,7 @@ const copy = lang === "ru" ? {
   read: "Читать разбор"
 } : {
   title: "Money Meta Field Notes - game economy analysis",
-  description: "Practical analysis across five game economies with numbers, primary context, models and a concrete next action.",
+  description: "Practical analysis across five live game economies and a pre-release GTA VI dossier with primary context, models and a concrete next action.",
   back: "← Home",
   kicker: "Field Notes · decisions, not news",
   heading: "Take a game economy all the way to an action.",
@@ -39,7 +40,7 @@ const copy = lang === "ru" ? {
         <p class="lede">{copy.lede}</p>
       </section>
       <section class="section">
-        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01-{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{lang === "ru" ? `${insights.length} материалов · 5 игр · русский и английский` : `${insights.length} notes · 5 games · RU/EN`}</span></div>
+        <div class="section-head"><div><span class="section-kicker">{copy.featured}</span><h2>01-{String(insights.length).padStart(2, "0")}</h2></div><span class="count">{lang === "ru" ? `${insights.length} материалов · 5 живых экономик + GTA VI · RU/EN` : `${insights.length} notes · 5 live economies + GTA VI · RU/EN`}</span></div>
         <div class="insight-card-grid">
           {insights.map((insight, index) => {
             const content = insight.content[lang];

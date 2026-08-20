@@ -7,6 +7,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import HubJourneyContext from "./HubJourneyContext.astro";
 import SiteFooter from "./SiteFooter.astro";
+import "../styles/gta-vi.css";
 
 interface Props { lang: InsightLocale; insight: Insight; }
 const { lang, insight } = Astro.props;
@@ -16,8 +17,9 @@ const path = `${prefix}/insights/${insight.slug}/`;
 const alternatePath = `${lang === "ru" ? "/en" : ""}/insights/${insight.slug}/`;
 const gameLabel = insightGameLabels[insight.game];
 const allInsightsPath = `${prefix}/insights/`;
-const portalId: HubPortalId = insight.game === "totalwar" ? "total-war" : insight.game;
-const toolHref = migrateHubHref(portalId, lang, insight.toolPath[lang]);
+const isGtaVi = insight.game === "gta6";
+const portalId: HubPortalId | null = isGtaVi ? null : (insight.game === "totalwar" ? "total-war" : insight.game) as HubPortalId;
+const toolHref = portalId ? migrateHubHref(portalId, lang, insight.toolPath[lang]) : insight.toolPath[lang];
 const related = insights
   .filter((item) => item.slug !== insight.slug)
   .sort((a, b) => Number(b.game === insight.game) - Number(a.game === insight.game))
@@ -30,11 +32,11 @@ const labels = lang === "ru" ? {
   evidence: "Данные",
   version: "Версия",
   takeaways: "Главное за 30 секунд",
-  model: "Открыть модель",
+  model: isGtaVi ? "Открыть досье" : "Открыть модель",
   related: "Следующие разборы",
-  relatedText: "Пять экономик, один принцип: сначала понять цену выбора, затем действовать.",
+  relatedText: "Пять живых экономик и одно дорелизное досье: сначала понять цену выбора, затем действовать.",
   disclosure: "О данных",
-  disclosureText: "Все числовые примеры являются прозрачными рабочими сценариями. Они не выдаются за официальные данные издателя, а исходные значения можно заменить в связанном инструменте.",
+  disclosureText: isGtaVi ? "Дорелизные материалы отделяют официальный факт от сюжетного сигнала и неизвестной механики. Ни одна гипотеза не выдается за свойство игры." : "Все числовые примеры являются прозрачными рабочими сценариями. Они не выдаются за официальные данные издателя, а исходные значения можно заменить в связанном инструменте.",
   sources: "Официальные источники материала"
 } : {
   back: "← All field notes",
@@ -43,11 +45,11 @@ const labels = lang === "ru" ? {
   evidence: "Evidence",
   version: "Version",
   takeaways: "The 30-second answer",
-  model: "Open the model",
+  model: isGtaVi ? "Open the dossier" : "Open the model",
   related: "Read next",
-  relatedText: "Five economies, one principle: understand the trade-off before acting.",
+  relatedText: "Five live economies and one pre-release dossier: understand the trade-off before acting.",
   disclosure: "Data note",
-  disclosureText: "Every numeric example is a transparent baseline scenario. It is not presented as official publisher data and can be recalculated in the linked tool.",
+  disclosureText: isGtaVi ? "Pre-release material separates official fact, narrative signal and unknown mechanic. No hypothesis is presented as a property of the game." : "Every numeric example is a transparent baseline scenario. It is not presented as official publisher data and can be recalculated in the linked tool.",
   sources: "Primary sources for this guide"
 };
 ---
@@ -106,7 +108,7 @@ const labels = lang === "ru" ? {
             ))}
             <div class="article-cta">
               <span class="game-sigil">MM</span>
-              <div><strong>{content.toolLabel}</strong><p>{lang === "ru" ? "Замени исходные значения своими и получи ответ для своей ситуации." : "Replace the baseline with your inputs and get an answer for your scenario."}</p></div>
+              <div><strong>{content.toolLabel}</strong><p>{isGtaVi ? (lang === "ru" ? "Перейди к реестру доказательств, границ и будущих проверок." : "Continue into the evidence, boundary and future-test registry.") : (lang === "ru" ? "Замени исходные значения своими и получи ответ для своей ситуации." : "Replace the baseline with your inputs and get an answer for your scenario.")}</p></div>
               <a class="button primary" href={toolHref}>{labels.model} →</a>
             </div>
             <div class="callout"><p><strong>{labels.disclosure}.</strong> {labels.disclosureText}</p></div>
@@ -121,7 +123,7 @@ const labels = lang === "ru" ? {
         </div>
       </article>
 
-      <HubJourneyContext hub={portalId} lang={lang} context={{ kind: "insight", slug: insight.slug }} />
+      {portalId && <HubJourneyContext hub={portalId} lang={lang} context={{ kind: "insight", slug: insight.slug }} />}
 
       <section class="section section-roomy">
         <div class="section-head"><div><span class="section-kicker">{lang === "ru" ? "Разборы Money Meta" : "Money Meta Field Notes"}</span><h2>{labels.related}</h2><p class="section-copy">{labels.relatedText}</p></div></div>

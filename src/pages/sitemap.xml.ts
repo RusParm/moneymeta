@@ -19,6 +19,14 @@ const corePaths = [
   "/en/gta-online/",
   "/gta-online/calculators/business-roi/",
   "/en/gta-online/calculators/business-roi/",
+  "/gta-6/",
+  "/en/gta-6/",
+  "/gta-6/economy/",
+  "/en/gta-6/economy/",
+  "/gta-6/from-gta-online/",
+  "/en/gta-6/from-gta-online/",
+  "/gta-6/launch-watch/",
+  "/en/gta-6/launch-watch/",
   "/insights/",
   "/en/insights/"
 ];

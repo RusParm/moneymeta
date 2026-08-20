@@ -157,7 +157,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Planner inputs persist locally and can be shared in the URL. Patch facts and editable player assumptions remain visibly separate.
 - v1.10 passed branch-preview review, was squash-merged through PR #7 and is the current production release.
 
-## Active release candidate: v1.11 connected decision playbooks
+## Production release: v1.11 connected decision playbooks
 
 - Added three authored decision playbooks to every game hub: fifteen playbooks and thirty localized RU/EN routes in total.
 - Each playbook connects four deliberate steps across economy, player path, current meta, a model or planner and applied analysis instead of sending readers through a cyclic related-card list.
@@ -165,7 +165,20 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Every playbook defines the player situation, decision window, starting signal, success condition, failure condition and three game-native operating rules.
 - Rechecked all five live context boundaries against first-party publisher sources on 2026-08-19. Total War now names Hotfix 8.1.1 as live while keeping the economic analysis explicitly tied to Patch 8.1.
 - Playbooks remain standalone URLs rather than adding another long document to the hub root. Existing public routes remain unchanged.
-- Local tests, static build, internal-link audit, branch preview and responsive browser QA are required before any production decision.
+- Seventy-one automated tests passed, 171 static pages built with zero diagnostics and 6,317 internal links resolved with zero missing destinations.
+- Branch preview passed complete RU/EN playbook, context-rail, planner-interaction and responsive layout QA.
+- v1.11 was squash-merged through PR #8 and is the current production release.
+
+## Active release candidate: v1.12 GTA VI Economy Watch
+
+- Added a compact GTA VI living dossier in complete RU/EN parity without presenting the unreleased game as a live modeled economy.
+- Added focused routes for confirmed economy signals, GTA Online precedent boundaries and a first 72-hour measurement protocol.
+- Added three substantial bilingual Field Notes covering the confirmed fact layer, reusable analytical lenses and launch measurement discipline.
+- Current evidence uses first-party Rockstar Games and Take-Two sources checked on 2026-08-20. Release date, launch platforms, single-player format and US edition pricing are separated from unconfirmed player mechanics.
+- Four narrative signals store the direct evidence, claim boundary and future test. Eight material unknowns remain visibly unresolved.
+- Five official media records carry explicit Rockstar Games credit, source links, localized alt text and removable placement.
+- Homepage, global navigation, footer, Field Notes and sitemap now expose the watch while keeping the product count at five live economies and fifteen models.
+- Seventy-seven automated tests pass, 185 static pages build with zero Astro diagnostics and the next gate is branch-preview responsive browser QA.
 
 ## Release policy
 

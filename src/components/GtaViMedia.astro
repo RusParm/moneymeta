@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets";
+import type { GtaViLocale, GtaViMediaItem } from "../data/gta-vi";
+
+interface Props {
+  item: GtaViMediaItem;
+  lang: GtaViLocale;
+  class?: string;
+  loading?: "eager" | "lazy";
+  priority?: boolean;
+}
+
+const { item, lang, class: className, loading = "lazy", priority = false } = Astro.props;
+---
+
+<figure class:list={["gta6-media", className]}>
+  <Image
+    src={item.asset}
+    alt={item.alt[lang]}
+    widths={[520, 840, 1180, 1600]}
+    sizes="(max-width: 760px) calc(100vw - 28px), (max-width: 1180px) calc(100vw - 40px), 1180px"
+    loading={loading}
+    fetchpriority={priority ? "high" : "auto"}
+    decoding="async"
+  />
+  <figcaption>
+    <span>{item.caption[lang]}</span>
+    <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer">
+      {lang === "ru" ? "Источник и изображение" : "Source and image"}: {item.credit} ↗
+    </a>
+  </figcaption>
+</figure>

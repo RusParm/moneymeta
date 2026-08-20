@@ -6,7 +6,7 @@ const { lang } = Astro.props;
 <footer class="footer">
   <div class="footer-status">
     <span class="console-signal">Money Meta · {lang === "ru" ? "Работает" : "Live"}</span>
-    <span>{lang === "ru" ? "5 экономик · 15 живых моделей · русский и английский" : "5 economies · 15 live models · RU/EN"}</span>
+    <span>{lang === "ru" ? "5 живых экономик · досье GTA VI · 15 моделей · RU/EN" : "5 live economies · GTA VI dossier · 15 models · RU/EN"}</span>
   </div>
   <div class="footer-grid">
     <p>
@@ -16,6 +16,7 @@ const { lang } = Astro.props;
     </p>
     <nav class="footer-nav" aria-label={lang === "ru" ? "Экономики" : "Economies"}>
       <a href={lang === "ru" ? "/gta-online/" : "/en/gta-online/"}>GTA Online</a>
+      <a href={lang === "ru" ? "/gta-6/" : "/en/gta-6/"}>GTA VI</a>
       <a href={lang === "ru" ? "/dota-2/" : "/en/dota-2/"}>Dota 2</a>
       <a href={lang === "ru" ? "/wow/" : "/en/wow/"}>WoW Retail</a>
       <a href={lang === "ru" ? "/total-war/" : "/en/total-war/"}>Total War</a>

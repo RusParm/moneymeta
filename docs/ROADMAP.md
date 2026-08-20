@@ -115,12 +115,22 @@
 - Compact playbook entry points on hub roots without restoring the former endless-page architecture.
 - Route, localization, content-depth, internal-link and responsive-browser gates before production promotion.
 
+## P2: v1.12 GTA VI Economy Watch
+
+- A compact RU/EN GTA VI portal that stays separate from the five live, measurable economies.
+- Three focused destinations for confirmed economy signals, bounded GTA Online precedent and the first 72-hour measurement protocol.
+- Three substantial bilingual Field Notes connected to the evidence registry rather than premature calculators.
+- A dated source registry using first-party Rockstar Games and Take-Two material only.
+- Explicit separation between confirmed fact, narrative signal, historical precedent and unknown player mechanic.
+- Credited, removable official media with a layout that keeps its meaning without publisher artwork.
+- Homepage, navigation and Field Notes discovery without relabeling GTA VI as a live modeled economy.
+
 ## Next: recurring utility
 
 - Weekly Meta with freshness guard.
 - Cross-device profile and result-card export.
 - Email capture and weekly brief.
-- GTA VI Economy Watch using only official/verified claims.
+- Dota 2 public-data feasibility check for repeatable match-economy benchmarks.
 
 ## Later
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { gtaBusinesses, weeklyMeta } from "../src/data/gta-businesses";
 import { gtaEconomyNodes, gtaPlayerPaths, gtaScenarios } from "../src/data/gta-hub";
+import { gtaViConfirmedFacts, gtaViLaunchMetrics, gtaViLaunchPhases, gtaViPrecedents, gtaViSignals, gtaViUnknowns } from "../src/data/gta-vi";
 import { dotaPatchContext } from "../src/data/dota-economy";
 import { dotaEconomyNodes, dotaPlayerPaths, dotaPulse, dotaRoleLenses, dotaScenarios } from "../src/data/dota-hub";
 import { insights } from "../src/data/insights";
@@ -35,6 +36,12 @@ describe("editorial style", () => {
       gtaEconomyNodes,
       gtaPlayerPaths,
       gtaScenarios,
+      gtaViConfirmedFacts,
+      gtaViSignals,
+      gtaViUnknowns,
+      gtaViPrecedents,
+      gtaViLaunchPhases,
+      gtaViLaunchMetrics,
       dotaPatchContext,
       dotaEconomyNodes,
       dotaPlayerPaths,

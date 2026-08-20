@@ -8,6 +8,7 @@ import wowEconomyWorld from "../assets/game-worlds/wow-economy-world.webp";
 import { dotaPatchContext } from "../data/dota-economy";
 import { dotaPulse } from "../data/dota-hub";
 import { weeklyMeta } from "../data/gta-businesses";
+import { gtaViMedia, gtaViWatch } from "../data/gta-vi";
 import { insightGameLabels, insights } from "../data/insights";
 import { crusaderKingsHub, totalWarHub } from "../data/strategy-hubs";
 import { wowPatchContext } from "../data/wow-economy";
@@ -15,13 +16,16 @@ import { wowPulse } from "../data/wow-hub";
 import { isExpired, isOlderThanDays } from "../lib/freshness";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
+import GtaViMedia from "./GtaViMedia.astro";
 import SiteFooter from "./SiteFooter.astro";
+import "../styles/gta-vi.css";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 
 const homePath = lang === "ru" ? "/" : "/en/";
 const gtaPath = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
+const gtaViPath = lang === "ru" ? "/gta-6/" : "/en/gta-6/";
 const dotaPath = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
 const wowPath = lang === "ru" ? "/wow/" : "/en/wow/";
 const totalWarPath = lang === "ru" ? "/total-war/" : "/en/total-war/";
@@ -51,6 +55,14 @@ const copy = lang === "ru" ? {
   atlasStatus: "Атлас игровых экономик",
   atlasTitle: "У каждой игры своя валюта. Логика решений универсальна.",
   atlasText: "Money Meta показывает, как время, ресурсы, риск и прогресс связаны между собой.",
+  gtaViKicker: "Новый режим наблюдения · GTA VI",
+  gtaViTitle: "Большая игра заслуживает доказательств, а не догадок.",
+  gtaViText: "До релиза Money Meta ведет живое досье: подтвержденные факты, границы неизвестного, уроки GTA Online и протокол первых 72 часов. Калькуляторы появятся только тогда, когда появятся измеряемые механики.",
+  gtaViStatus: "Дорелизное досье",
+  gtaViRelease: "Выход 19.11.2026",
+  gtaViChecked: "Проверено 20.08.2026",
+  gtaViOpen: "Открыть GTA VI Watch",
+  gtaViSignals: "Сигналы экономики",
   worldTypes: ["Производство", "Экономика матча", "Рынок игроков", "Экономика кампании", "Капитал династии"],
   audienceKicker: "Для кого создан Money Meta",
   audienceTitle: "Начни со своей ситуации",
@@ -153,6 +165,14 @@ const copy = lang === "ru" ? {
   atlasStatus: "Living economy atlas",
   atlasTitle: "Every game has its own currency. Decision logic travels.",
   atlasText: "Money Meta shows how time, resources, risk and progression connect.",
+  gtaViKicker: "A new observation mode · GTA VI",
+  gtaViTitle: "A major game deserves evidence, not guesses.",
+  gtaViText: "Before release, Money Meta maintains a living dossier: confirmed facts, explicit unknowns, bounded lessons from GTA Online and a first 72-hour protocol. Calculators arrive only when measurable mechanics exist.",
+  gtaViStatus: "Pre-release dossier",
+  gtaViRelease: "Release Nov 19, 2026",
+  gtaViChecked: "Checked Aug 20, 2026",
+  gtaViOpen: "Open GTA VI Watch",
+  gtaViSignals: "Economy signals",
   worldTypes: ["Production", "Match economy", "Player market", "Campaign economy", "Dynasty capital"],
   audienceKicker: "Who Money Meta is for",
   audienceTitle: "Start with your situation",
@@ -303,6 +323,18 @@ const copy = lang === "ru" ? {
       <section class="audience-strip" aria-labelledby="audience-title">
         <div class="audience-strip-intro"><span>{copy.audienceKicker}</span><strong id="audience-title">{copy.audienceTitle}</strong></div>
         {copy.audiences.map(([code, title, text]) => <article><span>{code}</span><strong>{title}</strong><p>{text}</p></article>)}
+      </section>
+
+      <section class="home-gta6-watch" aria-labelledby="home-gta6-title">
+        <GtaViMedia item={gtaViMedia.cover} lang={lang} />
+        <div class="home-gta6-watch-copy">
+          <div class="home-gta6-watch-meta"><span><i></i>{copy.gtaViStatus}</span><b>{copy.gtaViChecked}</b></div>
+          <span class="section-kicker">{copy.gtaViKicker}</span>
+          <h2 id="home-gta6-title">{copy.gtaViTitle}</h2>
+          <p>{copy.gtaViText}</p>
+          <div class="home-gta6-watch-facts"><span>{copy.gtaViRelease}</span><span>{copy.gtaViSignals}</span><span>{gtaViWatch.platforms}</span></div>
+          <a class="button primary" href={gtaViPath}>{copy.gtaViOpen} →</a>
+        </div>
       </section>
 
       <section id="how-it-works" class="section section-roomy home-explainer" aria-labelledby="home-explainer-title">

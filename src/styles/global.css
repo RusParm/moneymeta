@@ -130,6 +130,7 @@ button, select { cursor: pointer; }
 .economy-link[aria-current="page"] { color: var(--text); border-color: var(--line); background: linear-gradient(120deg, rgba(255,46,136,.1), rgba(0,230,202,.06)); }
 .economy-home[aria-current="page"] span, .economy-home:hover span { background: var(--magenta); }
 .economy-gta[aria-current="page"] span, .economy-gta:hover span { background: var(--teal); }
+.economy-gta6[aria-current="page"] span, .economy-gta6:hover span { background: #ff4f9a; }
 .economy-dota[aria-current="page"] span, .economy-dota:hover span { background: var(--gold); }
 .economy-wow[aria-current="page"] span, .economy-wow:hover span { background: var(--blue); }
 .economy-total-war[aria-current="page"] span, .economy-total-war:hover span { background: #e2ad55; }
