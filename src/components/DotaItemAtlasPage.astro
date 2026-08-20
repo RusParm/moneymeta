@@ -218,7 +218,7 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
                 data-support-n={support.timing?.n ?? 0}
                 data-best-rate={bestRate}
                 data-earliest-median={earliestMedian}
-                hidden={itemIndex >= 18}
+                hidden={itemIndex >= 12}
               >
                 <a class="dota-item-card-head" href={getDotaItemPath(item, lang)}>
                   <span class="dota-item-icon"><span>{item.name.slice(0, 2).toUpperCase()}</span><img src={item.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span>
@@ -257,6 +257,12 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
   </main>
 </BaseLayout>
 
+<style is:global>
+  [data-dota-atlas] [hidden] {
+    display: none !important;
+  }
+</style>
+
 <script>
   const ready = (callback: () => void) => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", callback, { once: true }) : callback();
   ready(() => {
@@ -266,7 +272,7 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
     if (!root || !form || !grid) return;
     const cards = [...grid.querySelectorAll<HTMLElement>("[data-item-card]")];
     const minimum = Number(root.dataset.minimumSample ?? 200);
-    const perPage = 18;
+    const perPage = 12;
     const count = root.querySelector<HTMLElement>("[data-atlas-count]");
     const empty = root.querySelector<HTMLElement>("[data-atlas-empty]");
     const pagination = root.querySelector<HTMLElement>("[data-atlas-pagination]");

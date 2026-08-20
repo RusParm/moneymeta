@@ -9,6 +9,12 @@ import {
 import { dotaItemsSnapshot, getDotaItemPath, getDotaItemSlug } from "../src/data/dota-items";
 import { sitemapPaths } from "../src/pages/sitemap.xml";
 
+const atlasSource = Object.values(import.meta.glob("../src/components/DotaItemAtlasPage.astro", {
+  eager: true,
+  import: "default",
+  query: "?raw"
+}) as Record<string, string>)[0] ?? "";
+
 const item = (overrides: Partial<DotaItemRecord> = {}): DotaItemRecord => ({
   id: 116,
   key: "black_king_bar",
@@ -147,5 +153,13 @@ describe("Dota snapshot shape", () => {
     expect(getDotaItemSlug("black_king_bar")).toBe("black-king-bar");
     expect(getDotaItemPath("black_king_bar", "ru")).toBe("/dota-2/items/black-king-bar/");
     expect(item().key).toBe("black_king_bar");
+  });
+});
+
+describe("Dota atlas pagination contract", () => {
+  it("renders twelve cards per page and force-hides every inactive card", () => {
+    expect(atlasSource).toContain("hidden={itemIndex >= 12}");
+    expect(atlasSource).toContain("const perPage = 12;");
+    expect(atlasSource).toMatch(/\[data-dota-atlas\]\s+\[hidden\]\s*\{[^}]*display:\s*none\s*!important;/u);
   });
 });

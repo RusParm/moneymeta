@@ -147,3 +147,11 @@ Money Meta prices only explicit attributes that have a clean base-item reference
 ## 2026-08-20: recurring data updates require review
 
 The Dota snapshot workflow writes only to the dedicated `automation/dota-item-snapshot` branch and creates or updates a pull request after validation, tests and build pass. It never writes directly to `main` and never merges itself. OpenDota is the first provider; the checked-in snapshot keeps a provider-neutral contract for a later validated STRATZ adapter.
+
+## 2026-08-20: root hubs stop after the next useful route
+
+The root of a game is a decision router, not a compressed copy of every destination. It contains the current context, one game-native quick start, five focused destinations, three authored playbooks, two editorial entry points and a compact source boundary. Full media galleries, complete guide cards, detailed playbook cards and repeated source explanations stay on their dedicated URLs. On narrow screens, route, guide and choice collections scroll horizontally inside their own rail instead of extending the whole document vertically.
+
+## 2026-08-20: hidden pagination state must win the CSS cascade
+
+Any client-side catalog that uses the HTML `hidden` attribute must ship an explicit author-level `[hidden]` display rule. Component display declarations such as `display: grid` must never make an inactive page visible. The Dota item atlas shows twelve cards per page, preserves search and page state in the URL and covers the visibility contract with an automated regression test.
