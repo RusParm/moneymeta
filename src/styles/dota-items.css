@@ -84,7 +84,7 @@
 }
 
 .dota-items-hero-board::before {
-  content: "ITEM / TIMING / OBJECTIVE";
+  content: attr(data-caption);
   position: absolute;
   right: 18px;
   top: 13px;
@@ -397,11 +397,15 @@
 }
 
 .dota-item-card-head h3 {
+  display: -webkit-box;
+  min-height: 2.16em;
   margin-top: 4px;
   overflow: hidden;
   font-size: 22px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .dota-item-card-head b {
@@ -647,7 +651,7 @@
 }
 
 .dota-item-portrait::after {
-  content: "PRICE / TIMING / PURPOSE";
+  content: attr(data-caption);
   position: absolute;
   top: 18px;
   right: 20px;

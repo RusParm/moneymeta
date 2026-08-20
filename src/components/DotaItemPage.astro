@@ -99,7 +99,13 @@ const copy = lang === "ru" ? {
   methodology: "Методика и источники",
   fetched: "Срез получен",
   sourceBoundary: "OpenDota даёт наблюдаемые покупки и константы предметов. Money Meta рассчитывает квартиль, прозрачную оценку характеристик и интерпретацию. Valve задаёт границу текущего патча.",
-  source: "Открыть источник"
+  source: "Открыть источник",
+  portraitCaption: "ЦЕНА · ТАЙМИНГ · ЗАДАЧА",
+  portraitSource: "Иконка Valve · справочник OpenDota",
+  coreCode: "КОР",
+  supportCode: "ПОДДЕРЖКА",
+  minute: "мин",
+  directCode: "БЕЗ КОМПОНЕНТОВ"
 } : {
   back: "← Back to item atlas",
   title: `${item.name}: Dota 2 7.41e cost and timings | Money Meta`,
@@ -155,7 +161,13 @@ const copy = lang === "ru" ? {
   methodology: "Methodology and sources",
   fetched: "Snapshot fetched",
   sourceBoundary: "OpenDota supplies observed purchases and item constants. Money Meta calculates quartiles, transparent stat pricing and interpretation. Valve defines the current patch boundary.",
-  source: "Open source"
+  source: "Open source",
+  portraitCaption: "PRICE · TIMING · PURPOSE",
+  portraitSource: "Valve item icon · OpenDota constants",
+  coreCode: "CORE",
+  supportCode: "SUPPORT",
+  minute: "min",
+  directCode: "DIRECT"
 };
 
 const roleCopy = (role: DotaItemRole) => role === "core" ? copy.cores : copy.supports;
@@ -215,7 +227,7 @@ const comparison = (() => {
           <div class="dota-item-detail-facts"><span><b>{item.cost.toLocaleString("en-US")}</b>{copy.cost}</span><span><b>{item.components.length || "0"}</b>{copy.build}</span><span><b>{reliableRoles.length}</b>{copy.benchmark}</span></div>
           <div class="hero-actions"><a class="button primary button-large" href={`${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=${item.key}`}>{copy.planner} →</a><a class="button ghost button-large" href={atlasPath}>{copy.atlas}</a></div>
         </div>
-        <div class="dota-item-portrait"><span>{item.name.slice(0, 2).toUpperCase()}</span><img src={item.image} alt={item.name} width="352" height="256" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" onerror="this.style.display='none'" /><small>Valve item icon · OpenDota constants</small></div>
+        <div class="dota-item-portrait" data-caption={copy.portraitCaption}><span>{item.name.slice(0, 2).toUpperCase()}</span><img src={item.image} alt={item.name} width="352" height="256" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" onerror="this.style.display='none'" /><small>{copy.portraitSource}</small></div>
       </header>
 
       <DotaItemNav lang={lang} active="item" />
@@ -232,11 +244,11 @@ const comparison = (() => {
             const reliable = hasReliableTiming(item, role, minimumSample);
             const scale = timing ? Math.max(45, Math.ceil(timing.p75 + 5)) : 45;
             return <article class:list={["dota-item-timing-panel", { "is-reliable": reliable }]}>
-              <header><div><span>{role === "core" ? "CORE" : "SUPPORT"}</span><h3>{roleCopy(role)}</h3></div><b>{reliable ? copy.reliable : copy.hidden}</b></header>
+              <header><div><span>{role === "core" ? copy.coreCode : copy.supportCode}</span><h3>{roleCopy(role)}</h3></div><b>{reliable ? copy.reliable : copy.hidden}</b></header>
               {reliable && timing ? <>
-                <div class="dota-timing-primary"><strong>{timing.median.toFixed(1)}</strong><span>{copy.median} · min</span></div>
-                <div class="dota-timing-axis" style={`--p25:${timing.p25 / scale * 100}%;--median:${timing.median / scale * 100}%;--p75:${timing.p75 / scale * 100}%`}><i></i><b></b><span></span><small>0</small><small>{scale} min</small></div>
-                <dl><div><dt>{copy.range}</dt><dd>{timing.p25.toFixed(1)} - {timing.p75.toFixed(1)} min</dd></div><div><dt>{copy.rate}</dt><dd>{timing.purchaseRatePct.toFixed(1)}%</dd></div><div><dt>{copy.purchases}</dt><dd>n {timing.n}</dd></div></dl>
+                <div class="dota-timing-primary"><strong>{timing.median.toFixed(1)}</strong><span>{copy.median} · {copy.minute}</span></div>
+                <div class="dota-timing-axis" style={`--p25:${timing.p25 / scale * 100}%;--median:${timing.median / scale * 100}%;--p75:${timing.p75 / scale * 100}%`}><i></i><b></b><span></span><small>0</small><small>{scale} {copy.minute}</small></div>
+                <dl><div><dt>{copy.range}</dt><dd>{timing.p25.toFixed(1)} - {timing.p75.toFixed(1)} {copy.minute}</dd></div><div><dt>{copy.rate}</dt><dd>{timing.purchaseRatePct.toFixed(1)}%</dd></div><div><dt>{copy.purchases}</dt><dd>n {timing.n}</dd></div></dl>
               </> : <div class="dota-timing-insufficient"><strong>{timing ? copy.insufficientTitle : copy.absentTitle}</strong><p>{timing ? copy.insufficientText : copy.absentText}</p><span>{timing ? `n ${timing.n} / ${minimumSample}` : `n 0 / ${minimumSample}`}</span></div>}
             </article>;
           })}
@@ -252,7 +264,7 @@ const comparison = (() => {
             <i>=</i><div class="dota-component-result"><span><img src={item.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span><strong>{item.name}</strong><small>{item.cost.toLocaleString("en-US")}</small></div>
           </div>
           <dl class="dota-component-ledger"><div><dt>{copy.componentSum}</dt><dd>{componentCost.toLocaleString("en-US")}</dd></div><div><dt>{copy.completion}</dt><dd>{completionCost.toLocaleString("en-US")}</dd></div></dl>
-        </> : <div class="dota-item-direct"><span>DIRECT</span><p>{copy.direct}</p></div>}
+        </> : <div class="dota-item-direct"><span>{copy.directCode}</span><p>{copy.direct}</p></div>}
       </section>
 
       <section class="section dota-item-valuation" aria-labelledby="dota-item-valuation-title">

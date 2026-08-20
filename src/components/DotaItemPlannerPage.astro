@@ -36,6 +36,7 @@ const copy = lang === "ru" ? {
   editable: "5 редактируемых позиций",
   roles: "2 ролевых ориентира",
   local: "без аккаунта, хранится локально",
+  capacity: "От 2 до 5 предметов · ссылка",
   inputKicker: "Твои вводные",
   inputTitle: "Планируй от текущего состояния, а не от идеальной нулевой минуты.",
   role: "Роль для сравнения",
@@ -92,6 +93,7 @@ const copy = lang === "ru" ? {
   editable: "5 editable slots",
   roles: "2 role benchmarks",
   local: "no account, saved locally",
+  capacity: "2 to 5 items · URL",
   inputKicker: "Your inputs",
   inputTitle: "Plan from the current state, not an ideal minute zero.",
   role: "Comparison role",
@@ -175,7 +177,7 @@ const copy = lang === "ru" ? {
       <DotaItemsStatus lang={lang} compact />
 
       <section id="planner-model" class="section dota-planner-model" data-scenario-root data-scenario-key="dota-item-plan" aria-labelledby="dota-planner-model-title">
-        <div class="section-head"><div><span class="section-kicker">{copy.inputKicker}</span><h2 id="dota-planner-model-title">{copy.inputTitle}</h2></div><span class="count">2-5 items · URL</span></div>
+        <div class="section-head"><div><span class="section-kicker">{copy.inputKicker}</span><h2 id="dota-planner-model-title">{copy.inputTitle}</h2></div><span class="count">{copy.capacity}</span></div>
         <div class="dota-planner-layout">
           <div class="dota-planner-inputs">
             <div class="dota-planner-context form-grid">
@@ -257,7 +259,8 @@ const copy = lang === "ru" ? {
       pace: ru ? "Внутри окна ±2 минуты" : "Inside the ±2 minute window",
       late: ru ? "Позже наблюдаемой медианы" : "Later than observed median",
       noData: ru ? "нет данных" : "no data",
-      difference: ru ? "разница" : "difference"
+      difference: ru ? "разница" : "difference",
+      minute: ru ? "мин" : "min"
     };
     const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
     const format = (value: number, digits = 1) => value.toLocaleString(ru ? "ru-RU" : "en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
@@ -296,10 +299,10 @@ const copy = lang === "ru" ? {
         row.querySelector<HTMLElement>("[data-row-name]")!.textContent = entry.item.name;
         row.querySelector<HTMLElement>("[data-row-cost]")!.textContent = entry.item.cost.toLocaleString("en-US");
         row.querySelector<HTMLElement>("[data-row-projected]")!.textContent = format(projected);
-        row.querySelector<HTMLElement>("[data-row-median]")!.textContent = benchmark ? `${format(benchmark.median)} min · n ${benchmark.n}` : messages.noData;
+        row.querySelector<HTMLElement>("[data-row-median]")!.textContent = benchmark ? `${format(benchmark.median)} ${messages.minute} · n ${benchmark.n}` : messages.noData;
         const deltaNode = row.querySelector<HTMLElement>("[data-row-delta]")!;
-        deltaNode.textContent = delta === null ? messages.noData : `${messages.difference}: ${delta > 0 ? "+" : ""}${format(delta)} min`;
-        row.querySelector<HTMLElement>("[data-row-sacrifice]")!.textContent = `${format(sacrifice)} min`;
+        deltaNode.textContent = delta === null ? messages.noData : `${messages.difference}: ${delta > 0 ? "+" : ""}${format(delta)} ${messages.minute}`;
+        row.querySelector<HTMLElement>("[data-row-sacrifice]")!.textContent = `${format(sacrifice)} ${messages.minute}`;
         row.querySelector<HTMLElement>("[data-row-state]")!.textContent = state === "ahead" ? messages.ahead : state === "late" ? messages.late : state === "on-pace" ? messages.pace : messages.noBenchmark;
         const up = row.querySelector<HTMLButtonElement>("[data-move-up]")!;
         const down = row.querySelector<HTMLButtonElement>("[data-move-down]")!;

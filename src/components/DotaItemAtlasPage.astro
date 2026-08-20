@@ -184,7 +184,7 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
             <div><strong>{reliable("support")}</strong><span>{copy.support}</span></div>
           </div>
         </div>
-        <div class="dota-items-hero-board" aria-label={lang === "ru" ? "Ключевые предметы атласа" : "Key atlas items"}>
+        <div class="dota-items-hero-board" data-caption={lang === "ru" ? "ПРЕДМЕТ · ТАЙМИНГ · ЗАДАЧА" : "ITEM · TIMING · OBJECTIVE"} aria-label={lang === "ru" ? "Ключевые предметы атласа" : "Key atlas items"}>
           {heroItems.map((item, index) => item && <a href={getDotaItemPath(item, lang)} style={`--item-index:${index}`}><img src={item.image} alt={item.name} width="132" height="96" loading={index < 2 ? "eager" : "lazy"} decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /><span>0{index + 1}</span><strong>{item.name}</strong><small>{item.cost.toLocaleString("en-US")} {copy.gold}</small></a>)}
         </div>
       </header>
