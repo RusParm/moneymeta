@@ -1,0 +1,339 @@
+---
+import {
+  dotaItems,
+  dotaItemsSnapshot,
+  getDotaItemPath,
+  getDotaItemPlannerPath,
+  getDotaItemsPath,
+  type DotaItemsLocale
+} from "../data/dota-items";
+import { hasReliableTiming, type DotaItemRole } from "../lib/dota-items";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import DotaItemNav from "./DotaItemNav.astro";
+import DotaItemsStatus from "./DotaItemsStatus.astro";
+import SiteFooter from "./SiteFooter.astro";
+import "../styles/dota-items.css";
+
+interface Props { lang: DotaItemsLocale; }
+const { lang } = Astro.props;
+const path = getDotaItemsPath(lang);
+const alternatePath = getDotaItemsPath(lang === "ru" ? "en" : "ru");
+const minimumSample = dotaItemsSnapshot.methodology.minimumSample;
+const reliable = (role: DotaItemRole) => dotaItems.filter((item) => hasReliableTiming(item, role, minimumSample)).length;
+const heroItems = ["blink", "black_king_bar", "force_staff", "arcane_boots"]
+  .map((key) => dotaItems.find((item) => item.key === key))
+  .filter(Boolean);
+const qualityLabel: Record<string, Record<DotaItemsLocale, string>> = {
+  component: { ru: "компонент", en: "component" },
+  common: { ru: "базовый", en: "common" },
+  rare: { ru: "редкий", en: "rare" },
+  epic: { ru: "эпический", en: "epic" },
+  artifact: { ru: "артефакт", en: "artifact" },
+  secret_shop: { ru: "тайная лавка", en: "secret shop" },
+  standard: { ru: "предмет", en: "item" }
+};
+const copy = lang === "ru" ? {
+  back: "← Портал Dota 2",
+  title: "Предметы Dota 2: цена, тайминги и смысл покупки | Money Meta",
+  description: "Атлас предметов Dota 2 для патча 7.41e: стоимость, компоненты, проверяемая оценка характеристик и профессиональные тайминги по ролям.",
+  kicker: "Dota 2 · атлас предметов · 7.41e",
+  heading: "Не спрашивай, хороший ли предмет. Спроси, что он должен успеть изменить.",
+  lede: "Атлас соединяет цену и дерево сборки с реальными первыми покупками в профессиональных матчах. Медиана не диктует сборку. Она показывает, насколько твой план отличается от наблюдаемого окна для этой роли.",
+  primary: "Найти предмет",
+  secondary: "Собрать очередь",
+  observed: "наблюдаемых предметов",
+  core: "надёжных таймингов коров",
+  support: "надёжных таймингов поддержки",
+  searchKicker: "Каталог без бесконечной ленты",
+  searchTitle: "Отфильтруй задачу. Затем открой отдельный разбор.",
+  search: "Название предмета",
+  searchPlaceholder: "Например, Blink или BKB",
+  role: "Роль",
+  allRoles: "Все роли",
+  cores: "Коры",
+  supports: "Поддержка",
+  sample: "Выборка",
+  allItems: "Все предметы",
+  reliableOnly: "Только n ≥ 200",
+  sort: "Сортировка",
+  relevance: "Частота в профи",
+  name: "По названию",
+  lowCost: "Сначала дешевле",
+  highCost: "Сначала дороже",
+  early: "Раньше медиана",
+  found: "найдено",
+  of: "из",
+  page: "Страница",
+  previous: "← Назад",
+  next: "Дальше →",
+  gold: "золота",
+  median: "медиана",
+  middle: "середина выборки",
+  rate: "частота",
+  enough: "Надёжная выборка",
+  insufficient: "Выборка меньше 200",
+  absent: "Нет покупки в срезе",
+  sampleN: "покупок",
+  open: "Разобрать предмет",
+  empty: "По этим условиям предметов нет. Сними один из фильтров.",
+  methodKicker: "Как читать цифры",
+  methodTitle: "Ориентир, а не готовый билд.",
+  methodIntro: "Каждый тайминг является первой покупкой предмета одним игроком. Повторные покупки не увеличивают выборку.",
+  rules: [
+    ["PATCH", "Только текущий патч", "Семейство 7.41 ограничено официальным временем выхода 7.41e. Старые матчи не смешиваются с текущим окном."],
+    ["ROLE", "Роль с известной границей", "Коры объединяют fantasy_role 1, 3 и 4; поддержка использует роль 2. Неклассифицированные строки исключены."],
+    ["N≥200", "Слабая выборка скрыта", "Квартиль, медиана и частота не показываются для роли, если предмет купили меньше 200 раз."],
+    ["PRICE", "Цена не равна ценности", "Оценка характеристик учитывает только явные параметры с чистым базовым компонентом. Активные и пассивные эффекты остаются отдельно."]
+  ],
+  attribution: "Данные матчей и константы предметов: OpenDota и odota/dotaconstants. Контекст патча: Valve.",
+  openSource: "Открыть источник"
+} : {
+  back: "← Dota 2 portal",
+  title: "Dota 2 items: cost, timings and purchase purpose | Money Meta",
+  description: "A Patch 7.41e Dota 2 item atlas with costs, components, auditable stat pricing and professional role timings.",
+  kicker: "Dota 2 · item atlas · 7.41e",
+  heading: "Do not ask whether an item is good. Ask what it must change in time.",
+  lede: "The atlas connects cost and build structure with observed first purchases in professional matches. The median does not prescribe a build. It shows how your plan differs from the observed window for that role.",
+  primary: "Find an item",
+  secondary: "Build a queue",
+  observed: "observed items",
+  core: "reliable core timings",
+  support: "reliable support timings",
+  searchKicker: "A catalog without infinite scroll",
+  searchTitle: "Filter the decision, then open a dedicated analysis.",
+  search: "Item name",
+  searchPlaceholder: "For example, Blink or BKB",
+  role: "Role",
+  allRoles: "All roles",
+  cores: "Cores",
+  supports: "Supports",
+  sample: "Sample",
+  allItems: "All items",
+  reliableOnly: "Only n ≥ 200",
+  sort: "Sort",
+  relevance: "Pro purchase rate",
+  name: "Name",
+  lowCost: "Lowest cost",
+  highCost: "Highest cost",
+  early: "Earliest median",
+  found: "found",
+  of: "of",
+  page: "Page",
+  previous: "← Previous",
+  next: "Next →",
+  gold: "gold",
+  median: "median",
+  middle: "middle half",
+  rate: "purchase rate",
+  enough: "Reliable sample",
+  insufficient: "Sample below 200",
+  absent: "No purchase in cohort",
+  sampleN: "purchases",
+  open: "Analyze item",
+  empty: "No items match these conditions. Remove one filter.",
+  methodKicker: "How to read the numbers",
+  methodTitle: "A benchmark, not a prescribed build.",
+  methodIntro: "Every timing is one player's first purchase of the item. Repeat purchases do not inflate the sample.",
+  rules: [
+    ["PATCH", "Current patch only", "Patch family 7.41 is bounded by the official 7.41e release timestamp. Older matches do not enter the window."],
+    ["ROLE", "A role with a boundary", "Cores combine fantasy_role 1, 3 and 4; supports use role 2. Unclassified rows are excluded."],
+    ["N≥200", "Weak samples stay hidden", "Quartiles, median and rate do not appear for a role until the item has at least 200 purchases."],
+    ["PRICE", "Cost is not value", "Stat pricing includes only explicit attributes with a clean base component. Active and passive effects remain separate."]
+  ],
+  attribution: "Match data and item constants: OpenDota and odota/dotaconstants. Patch context: Valve.",
+  openSource: "Open source"
+};
+
+const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
+  const timing = item.timings[role];
+  return { timing, reliable: Boolean(timing && timing.n >= minimumSample) };
+};
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={path}
+  alternatePath={alternatePath}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: copy.title,
+    description: copy.description,
+    inLanguage: lang,
+    dateModified: dotaItemsSnapshot.fetchedAt,
+    about: { "@type": "VideoGame", name: "Dota 2", publisher: "Valve" },
+    mainEntity: { "@type": "ItemList", numberOfItems: dotaItems.length, itemListElement: dotaItems.map((item, index) => ({ "@type": "ListItem", position: index + 1, name: item.name, url: new URL(getDotaItemPath(item, lang), Astro.site).href })) }
+  }}
+>
+  <main class="page dota-items-page" data-dota-atlas data-minimum-sample={minimumSample}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getDotaItemsPath("ru")} enPath={getDotaItemsPath("en")} backPath={lang === "ru" ? "/dota-2/" : "/en/dota-2/"} backLabel={copy.back} />
+
+      <header class="dota-items-hero">
+        <div class="dota-items-hero-copy">
+          <p class="eyebrow">{copy.kicker}</p>
+          <h1>{copy.heading}</h1>
+          <p class="lede">{copy.lede}</p>
+          <div class="hero-actions"><a class="button primary button-large" href="#item-catalog">{copy.primary} →</a><a class="button ghost button-large" href={getDotaItemPlannerPath(lang)}>{copy.secondary}</a></div>
+          <div class="dota-items-proof">
+            <div><strong>{dotaItems.length}</strong><span>{copy.observed}</span></div>
+            <div><strong>{reliable("core")}</strong><span>{copy.core}</span></div>
+            <div><strong>{reliable("support")}</strong><span>{copy.support}</span></div>
+          </div>
+        </div>
+        <div class="dota-items-hero-board" data-caption={lang === "ru" ? "ПРЕДМЕТ · ТАЙМИНГ · ЗАДАЧА" : "ITEM · TIMING · OBJECTIVE"} aria-label={lang === "ru" ? "Ключевые предметы атласа" : "Key atlas items"}>
+          {heroItems.map((item, index) => item && <a href={getDotaItemPath(item, lang)} style={`--item-index:${index}`}><img src={item.image} alt={item.name} width="132" height="96" loading={index < 2 ? "eager" : "lazy"} decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /><span>0{index + 1}</span><strong>{item.name}</strong><small>{item.cost.toLocaleString("en-US")} {copy.gold}</small></a>)}
+        </div>
+      </header>
+
+      <DotaItemNav lang={lang} active="atlas" />
+      <DotaItemsStatus lang={lang} />
+
+      <section id="item-catalog" class="section dota-item-catalog" aria-labelledby="dota-item-catalog-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.searchKicker}</span><h2 id="dota-item-catalog-title">{copy.searchTitle}</h2></div><span class="count" data-atlas-count>{dotaItems.length} {copy.found}</span></div>
+
+        <form class="dota-atlas-controls" data-atlas-controls>
+          <label><span>{copy.search}</span><input type="search" name="q" placeholder={copy.searchPlaceholder} autocomplete="off" /></label>
+          <label><span>{copy.role}</span><select name="role"><option value="any">{copy.allRoles}</option><option value="core">{copy.cores}</option><option value="support">{copy.supports}</option></select></label>
+          <label><span>{copy.sample}</span><select name="sample"><option value="all">{copy.allItems}</option><option value="reliable">{copy.reliableOnly}</option></select></label>
+          <label><span>{copy.sort}</span><select name="sort"><option value="relevance">{copy.relevance}</option><option value="name">{copy.name}</option><option value="cost-asc">{copy.lowCost}</option><option value="cost-desc">{copy.highCost}</option><option value="median">{copy.early}</option></select></label>
+        </form>
+
+        <div class="dota-item-grid" data-atlas-grid>
+          {dotaItems.map((item, itemIndex) => {
+            const core = timingCard(item, "core");
+            const support = timingCard(item, "support");
+            const bestRate = Math.max(core.reliable ? core.timing!.purchaseRatePct : -1, support.reliable ? support.timing!.purchaseRatePct : -1);
+            const earliestMedian = Math.min(core.reliable ? core.timing!.median : 999, support.reliable ? support.timing!.median : 999);
+            return (
+              <article
+                class="dota-item-card"
+                data-item-card
+                data-name={`${item.name} ${item.key}`.toLocaleLowerCase("en")}
+                data-cost={item.cost}
+                data-core-n={core.timing?.n ?? 0}
+                data-support-n={support.timing?.n ?? 0}
+                data-best-rate={bestRate}
+                data-earliest-median={earliestMedian}
+                hidden={itemIndex >= 18}
+              >
+                <a class="dota-item-card-head" href={getDotaItemPath(item, lang)}>
+                  <span class="dota-item-icon"><span>{item.name.slice(0, 2).toUpperCase()}</span><img src={item.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span>
+                  <span><small>{qualityLabel[item.quality]?.[lang] ?? qualityLabel.standard![lang]}</small><h3>{item.name}</h3><b>{item.cost.toLocaleString("en-US")} {copy.gold}</b></span>
+                </a>
+                <div class="dota-item-role-grid">
+                  {(["core", "support"] as DotaItemRole[]).map((role) => {
+                    const value = role === "core" ? core : support;
+                    return <div class:list={["dota-item-role", { "is-reliable": value.reliable }]}>
+                      <div><strong>{role === "core" ? copy.cores : copy.supports}</strong><span>{value.reliable ? copy.enough : value.timing ? copy.insufficient : copy.absent}</span></div>
+                      {value.reliable ? <><b>{value.timing!.median.toFixed(1)} <small>{copy.median}</small></b><p>{value.timing!.p25.toFixed(1)} - {value.timing!.p75.toFixed(1)} · {copy.middle}</p><p>{value.timing!.purchaseRatePct.toFixed(1)}% · {copy.rate} · n {value.timing!.n}</p></> : <p>{value.timing ? `n ${value.timing.n} ${copy.sampleN}` : copy.absent}</p>}
+                    </div>;
+                  })}
+                </div>
+                <a class="dota-item-card-link" href={getDotaItemPath(item, lang)}>{copy.open} →</a>
+              </article>
+            );
+          })}
+        </div>
+        <div class="dota-atlas-empty" data-atlas-empty hidden>{copy.empty}</div>
+        <div class="dota-atlas-pagination" data-atlas-pagination>
+          <button type="button" data-page-previous>{copy.previous}</button>
+          <span><b>{copy.page} <span data-page-current>1</span></b><small><span data-page-total>1</span> {copy.of} <span data-page-items>{dotaItems.length}</span></small></span>
+          <button type="button" data-page-next>{copy.next}</button>
+        </div>
+      </section>
+
+      <section id="methodology" class="section dota-items-method" aria-labelledby="dota-items-method-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.methodKicker}</span><h2 id="dota-items-method-title">{copy.methodTitle}</h2><p class="section-copy">{copy.methodIntro}</p></div><span class="count">{dotaItemsSnapshot.patch.label} · n≥{minimumSample}</span></div>
+        <div class="dota-items-method-grid">{copy.rules.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
+        <div class="dota-items-attribution"><p>{copy.attribution}</p><div>{dotaItemsSnapshot.sources.map((source) => <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label} · {copy.openSource} ↗</a>)}</div></div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  const ready = (callback: () => void) => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", callback, { once: true }) : callback();
+  ready(() => {
+    const root = document.querySelector<HTMLElement>("[data-dota-atlas]");
+    const form = root?.querySelector<HTMLFormElement>("[data-atlas-controls]");
+    const grid = root?.querySelector<HTMLElement>("[data-atlas-grid]");
+    if (!root || !form || !grid) return;
+    const cards = [...grid.querySelectorAll<HTMLElement>("[data-item-card]")];
+    const minimum = Number(root.dataset.minimumSample ?? 200);
+    const perPage = 18;
+    const count = root.querySelector<HTMLElement>("[data-atlas-count]");
+    const empty = root.querySelector<HTMLElement>("[data-atlas-empty]");
+    const pagination = root.querySelector<HTMLElement>("[data-atlas-pagination]");
+    const previous = root.querySelector<HTMLButtonElement>("[data-page-previous]");
+    const next = root.querySelector<HTMLButtonElement>("[data-page-next]");
+    const currentNode = root.querySelector<HTMLElement>("[data-page-current]");
+    const totalNode = root.querySelector<HTMLElement>("[data-page-total]");
+    const itemNode = root.querySelector<HTMLElement>("[data-page-items]");
+    const foundLabel = document.documentElement.lang === "ru" ? "найдено" : "found";
+    let page = 1;
+
+    const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement;
+    const number = (card: HTMLElement, key: string) => Number(card.dataset[key] ?? 0);
+    const values = () => ({ q: field("q").value.trim().toLocaleLowerCase("en"), role: field("role").value, sample: field("sample").value, sort: field("sort").value });
+    const roleN = (card: HTMLElement, role: string) => role === "support" ? number(card, "supportN") : role === "core" ? number(card, "coreN") : Math.max(number(card, "coreN"), number(card, "supportN"));
+
+    const updateUrl = (state: ReturnType<typeof values>, totalPages: number) => {
+      const url = new URL(location.href);
+      for (const [key, value] of Object.entries({ ...state, page: String(page) })) {
+        if ((key === "q" && !value) || (key === "role" && value === "any") || (key === "sample" && value === "all") || (key === "sort" && value === "relevance") || (key === "page" && (page === 1 || totalPages === 1))) url.searchParams.delete(key);
+        else url.searchParams.set(key, value);
+      }
+      history.replaceState({}, "", url);
+    };
+
+    const render = () => {
+      const state = values();
+      const visible = cards.filter((card) => {
+        if (state.q && !card.dataset.name?.includes(state.q)) return false;
+        if (state.role !== "any" && roleN(card, state.role) <= 0) return false;
+        if (state.sample === "reliable" && roleN(card, state.role) < minimum) return false;
+        return true;
+      });
+      visible.sort((left, right) => {
+        if (state.sort === "name") return (left.dataset.name ?? "").localeCompare(right.dataset.name ?? "", "en");
+        if (state.sort === "cost-asc") return number(left, "cost") - number(right, "cost");
+        if (state.sort === "cost-desc") return number(right, "cost") - number(left, "cost");
+        if (state.sort === "median") return number(left, "earliestMedian") - number(right, "earliestMedian");
+        return number(right, "bestRate") - number(left, "bestRate") || number(right, "cost") - number(left, "cost");
+      });
+      const pages = Math.max(1, Math.ceil(visible.length / perPage));
+      page = Math.min(page, pages);
+      const shown = new Set(visible.slice((page - 1) * perPage, page * perPage));
+      cards.forEach((card) => { card.hidden = !shown.has(card); });
+      visible.forEach((card) => grid.append(card));
+      if (count) count.textContent = `${visible.length} ${foundLabel}`;
+      if (empty) empty.hidden = visible.length !== 0;
+      if (pagination) pagination.hidden = visible.length === 0;
+      if (previous) previous.disabled = page <= 1;
+      if (next) next.disabled = page >= pages;
+      if (currentNode) currentNode.textContent = String(page);
+      if (totalNode) totalNode.textContent = String(pages);
+      if (itemNode) itemNode.textContent = String(visible.length);
+      updateUrl(state, pages);
+    };
+
+    const params = new URLSearchParams(location.search);
+    for (const name of ["q", "role", "sample", "sort"]) {
+      const value = params.get(name);
+      const control = field(name);
+      if (value && (control instanceof HTMLInputElement || [...(control as HTMLSelectElement).options].some((option) => option.value === value))) control.value = value;
+    }
+    page = Math.max(1, Number(params.get("page")) || 1);
+    form.addEventListener("input", () => { page = 1; render(); });
+    form.addEventListener("change", () => { page = 1; render(); });
+    previous?.addEventListener("click", () => { page -= 1; render(); document.querySelector("#item-catalog")?.scrollIntoView({ behavior: "smooth" }); });
+    next?.addEventListener("click", () => { page += 1; render(); document.querySelector("#item-catalog")?.scrollIntoView({ behavior: "smooth" }); });
+    render();
+  });
+</script>

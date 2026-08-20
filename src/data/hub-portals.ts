@@ -128,7 +128,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     stats: [
       { value: "7", label: t("узлов экономики матча", "match-economy links") },
       { value: "3", label: t("ролевых маршрута", "role routes") },
-      { value: "2", label: t("живые модели", "live models") },
+      { value: "3", label: t("живые модели", "live models") },
       { value: guideCount("dota"), label: t("полных разборов", "full analyses") }
     ],
     sections: [
@@ -136,7 +136,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
       section("player-paths", "02", "DK", t("Маршруты", "Player paths"), t("Решения по роли и стадии матча", "Decisions by role and match stage"), t("Керри, инициатор и поддержка получают разный порядок проверок перед покупкой.", "Carry, initiator and support use a different order of checks before buying."), t("Сопоставишь покупку со своей задачей", "Match the purchase to your job"), t("Как моя роль создаёт ценность в ближайшие пять минут?", "How does my role create value in the next five minutes?")),
       section("meta", "03", "7.41e", t("Мета", "Meta"), t("Что патч меняет в решениях, а не в списках", "What the patch changes in decisions, not lists"), t("Три проверенных изменения, их экономический смысл и граница между фактом патча и нашей интерпретацией.", "Three verified changes, their economic meaning and a clear boundary between patch fact and interpretation."), t("Поймёшь, какой старый шаблон нужно перепроверить", "Know which old habit needs retesting"), t("Как 7.41e меняет мой следующий выбор?", "How does 7.41e change my next choice?")),
       section("guides", "04", "CM", t("Гайды", "Guides"), t("Разборы реплея и протоколы решений", "Replay reviews and decision protocols"), t("От первого двадцатиминутного отчёта до резерва на выкуп перед Рошаном.", "From a first-20-minute ledger to buyback reserve before Roshan."), t("Получишь конкретные отметки для следующего реплея", "Get concrete checkpoints for the next replay"), t("Что именно искать в повторе, кроме KDA?", "What should I inspect in a replay beyond KDA?")),
-      section("tools", "05", "HM", t("Инструменты", "Tools"), t("Midas, выкуп и готовые сценарии", "Midas, buyback and prepared scenarios"), t("Окупаемость ускорения и запас на второй шанс с вводными конкретного матча.", "Acceleration payback and second-life liquidity with match-specific inputs."), t("Проверишь решение до того, как окно закроется", "Test the decision before the window closes"), t("Хватит ли времени окупить жадность или сохранить выкуп?", "Is there enough time to repay greed or preserve buyback?"))
+      section("tools", "05", "ITM", t("Инструменты", "Tools"), t("Очередь предметов, Midas и выкуп", "Item queue, Midas and buyback"), t("План из двух-пяти предметов с профессиональными ориентирами, окупаемость ускорения и запас на второй шанс с вводными конкретного матча.", "A two-to-five item plan with professional benchmarks, acceleration payback and second-life liquidity using match-specific inputs."), t("Увидишь минуту покупки и цену порядка до того, как окно закроется", "See the completion minute and order cost before the window closes"), t("Какой порядок предметов успевает к цели и сохраняет обязательный запас?", "Which item order reaches the objective and preserves the required reserve?"))
     ],
     media: []
   },

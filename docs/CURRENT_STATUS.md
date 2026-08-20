@@ -183,3 +183,13 @@ The production repository contained three standalone HTML files with CDN Tailwin
 ## Release policy
 
 Every release is built and tested locally, deployed to a branch preview, checked for deployment errors and only then promoted to production.
+
+## Active release candidate: v1.13 Dota item atlas
+
+- Added a build-time OpenDota snapshot for the Patch 7.41e professional cohort with visible match count, role coverage and source boundaries.
+- Added complete RU/EN item-atlas routes with search, role and sample filters, explicit pagination and a standalone analysis URL for every observed item and component.
+- Added transparent stat pricing from clean base-item references. Active abilities, passive effects, slot compression and timing utility remain explicitly unpriced.
+- Added a shareable two-to-five-item planner with current minute, sustainable GPM, available gold, projected completion minutes, professional median deltas and delay from earlier purchases.
+- Added curated decision analysis for high-impact items plus derived role and replay questions for the full catalog.
+- Added a daily automation that updates only a dedicated snapshot branch and pull request after validation, tests and static build pass.
+- The current local snapshot contains 367 parsed professional matches, 3,183 classified player rows, 86.7% role coverage and 188 observed items or components. Preview browser QA remains required before production promotion.
