@@ -101,7 +101,7 @@
 
 .hub-journey-page { --journey-line: rgba(var(--journey-rgb), .2); }
 .hub-journey-page .shell { max-width: 1360px; }
-.journey-page-hero { position: relative; display: grid; grid-template-columns: minmax(0,1fr) minmax(250px,330px); min-height: 660px; margin-top: 30px; overflow: hidden; border: 1px solid rgba(var(--journey-rgb), .28); border-radius: 26px; background: #07080c; }
+.journey-page-hero { position: relative; display: grid; grid-template-columns: minmax(0,1fr) minmax(300px,360px); min-height: 660px; margin-top: 30px; overflow: hidden; border: 1px solid rgba(var(--journey-rgb), .28); border-radius: 26px; background: #07080c; }
 .journey-page-hero-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .38; filter: saturate(.74) contrast(1.08); }
 .journey-page-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg,rgba(5,6,10,.98),rgba(5,6,10,.86) 58%,rgba(5,6,10,.42)), linear-gradient(0deg,rgba(5,6,10,.8),transparent 46%); pointer-events: none; }
 .journey-page-hero-copy { position: relative; z-index: 1; align-self: center; min-width: 0; padding: clamp(38px,6vw,78px); }
@@ -126,7 +126,7 @@
 .journey-page-hero-copy dt { color: var(--journey-accent); font: 700 8px "JetBrains Mono", monospace; text-transform: uppercase; }
 .journey-page-hero-copy dd { margin: 6px 0 0; color: #ded9e2; font-size: 11px; line-height: 1.55; }
 .journey-page-hero > aside { position: relative; z-index: 1; align-self: end; min-width: 0; margin: 0 28px 28px 0; padding: 26px; border: 1px solid rgba(var(--journey-rgb), .3); border-radius: 18px; background: rgba(5,6,10,.86); backdrop-filter: blur(16px); }
-.journey-page-hero > aside strong { display: block; margin-top: 56px; color: #fff; font: 700 clamp(28px,3.2vw,45px)/.98 "Roboto Condensed",sans-serif; text-wrap: balance; overflow-wrap: anywhere; }
+.journey-page-hero > aside strong { display: block; margin-top: 56px; color: #fff; font: 700 clamp(26px,2.25vw,34px)/1.02 "Roboto Condensed",sans-serif; text-wrap: pretty; overflow-wrap: break-word; hyphens: auto; }
 .journey-page-hero > aside small { display: block; margin-top: 26px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.44); font: 700 8px "JetBrains Mono",monospace; text-transform: uppercase; }
 
 .journey-page-nav { display: grid; grid-template-columns: .65fr repeat(3,minmax(0,1fr)); margin: 16px 0 32px; overflow: hidden; border: 1px solid rgba(255,255,255,.09); border-radius: 14px; }
@@ -183,12 +183,12 @@
 .journey-more > div:last-child small { min-width: 0; color: #817b8a; font-size: 10px; line-height: 1.55; }
 .journey-more > div:last-child b { grid-row: 1 / 3; align-self: center; color: var(--journey-accent); }
 
-@media (max-width: 1000px) {
+@media (max-width: 1120px) {
   .journey-rail-grid { grid-template-columns: 1fr; }
   .journey-rail-card { min-height: auto; }
   .journey-rail-card > p { min-height: 0; }
   .journey-page-hero { grid-template-columns: 1fr; }
-  .journey-page-hero > aside { justify-self: end; width: min(330px,calc(100% - 56px)); }
+  .journey-page-hero > aside { justify-self: end; width: min(400px,calc(100% - 56px)); }
   .journey-page-nav { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .journey-page-nav a:nth-child(2) { border-right: 0; }
   .journey-page-nav a { border-bottom: 1px solid rgba(255,255,255,.08); }
@@ -226,7 +226,7 @@
   .journey-page-hero-copy > p { font-size: 13px; }
   .journey-page-hero-copy > dl { grid-template-columns: 1fr; }
   .journey-page-hero > aside { justify-self: stretch; width: auto; margin: 0 20px 20px; }
-  .journey-page-hero > aside strong { margin-top: 28px; }
+  .journey-page-hero > aside strong { margin-top: 28px; font-size: clamp(28px,8vw,38px); }
   .journey-page-nav { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
   .journey-page-nav a { flex: 0 0 72%; border-right: 1px solid rgba(255,255,255,.08); border-bottom: 0; scroll-snap-align: start; }
   .journey-control-board { grid-template-columns: 1fr; margin-bottom: 62px; }
