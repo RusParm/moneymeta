@@ -6,7 +6,7 @@ import {
   validateDotaItemsSnapshot,
   type DotaItemRecord
 } from "../src/lib/dota-items";
-import { dotaItemsSnapshot } from "../src/data/dota-items";
+import { dotaItemsSnapshot, getDotaItemPath, getDotaItemSlug } from "../src/data/dota-items";
 import { sitemapPaths } from "../src/pages/sitemap.xml";
 
 const item = (overrides: Partial<DotaItemRecord> = {}): DotaItemRecord => ({
@@ -138,8 +138,14 @@ describe("Dota snapshot shape", () => {
   it("publishes both localized atlas, planner and item routes in the sitemap", () => {
     expect(sitemapPaths).toContain("/dota-2/items/");
     expect(sitemapPaths).toContain("/en/dota-2/items/planner/");
-    expect(sitemapPaths).toContain("/dota-2/items/black_king_bar/");
-    expect(sitemapPaths).toContain("/en/dota-2/items/black_king_bar/");
+    expect(sitemapPaths).toContain("/dota-2/items/black-king-bar/");
+    expect(sitemapPaths).toContain("/en/dota-2/items/black-king-bar/");
     expect(new Set(sitemapPaths).size).toBe(sitemapPaths.length);
+  });
+
+  it("uses readable item slugs without changing internal planner keys", () => {
+    expect(getDotaItemSlug("black_king_bar")).toBe("black-king-bar");
+    expect(getDotaItemPath("black_king_bar", "ru")).toBe("/dota-2/items/black-king-bar/");
+    expect(item().key).toBe("black_king_bar");
   });
 });

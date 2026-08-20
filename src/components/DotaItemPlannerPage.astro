@@ -53,8 +53,7 @@ const copy = lang === "ru" ? {
   finish: "конец очереди",
   selected: "предметов в плане",
   projected: "твой прогноз",
-  proMedian: "медиана профи",
-  delta: "разница",
+  proMedian: "ориентир профи",
   sacrifice: "задержка из-за предыдущих покупок",
   noBenchmark: "Нет надёжной выборки для роли",
   ahead: "Раньше наблюдаемой медианы",
@@ -110,8 +109,7 @@ const copy = lang === "ru" ? {
   finish: "queue completes",
   selected: "items in plan",
   projected: "your projection",
-  proMedian: "pro median",
-  delta: "difference",
+  proMedian: "pro benchmark",
   sacrifice: "delay from earlier purchases",
   noBenchmark: "No reliable role sample",
   ahead: "Earlier than observed median",
@@ -206,7 +204,7 @@ const copy = lang === "ru" ? {
         <article class="dota-plan-row">
           <div class="dota-plan-order"><b data-row-order></b><div><button type="button" data-move-up aria-label={copy.moveEarlier}>↑</button><button type="button" data-move-down aria-label={copy.moveLater}>↓</button></div></div>
           <a data-row-link class="dota-plan-item"><span><img data-row-image alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" /></span><div><strong data-row-name></strong><small><span data-row-cost></span> {lang === "ru" ? "золота" : "gold"}</small></div></a>
-          <div class="dota-plan-metrics"><div><span>{copy.projected}</span><strong><b data-row-projected></b> {copy.minute}</strong></div><div><span>{copy.proMedian}</span><strong data-row-median></strong></div><div><span>{copy.delta}</span><strong data-row-delta></strong></div><div><span>{copy.sacrifice}</span><strong data-row-sacrifice></strong></div></div>
+          <div class="dota-plan-metrics"><div><span>{copy.projected}</span><strong><b data-row-projected></b> {copy.minute}</strong></div><div><span>{copy.proMedian}</span><strong data-row-median></strong><small data-row-delta></small></div><div><span>{copy.sacrifice}</span><strong data-row-sacrifice></strong></div></div>
           <div class="dota-plan-state" data-row-state></div>
         </article>
       </template>
@@ -258,7 +256,8 @@ const copy = lang === "ru" ? {
       ahead: ru ? "Раньше наблюдаемой медианы" : "Earlier than observed median",
       pace: ru ? "Внутри окна ±2 минуты" : "Inside the ±2 minute window",
       late: ru ? "Позже наблюдаемой медианы" : "Later than observed median",
-      noData: ru ? "нет данных" : "no data"
+      noData: ru ? "нет данных" : "no data",
+      difference: ru ? "разница" : "difference"
     };
     const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
     const format = (value: number, digits = 1) => value.toLocaleString(ru ? "ru-RU" : "en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
@@ -299,7 +298,7 @@ const copy = lang === "ru" ? {
         row.querySelector<HTMLElement>("[data-row-projected]")!.textContent = format(projected);
         row.querySelector<HTMLElement>("[data-row-median]")!.textContent = benchmark ? `${format(benchmark.median)} min · n ${benchmark.n}` : messages.noData;
         const deltaNode = row.querySelector<HTMLElement>("[data-row-delta]")!;
-        deltaNode.textContent = delta === null ? messages.noData : `${delta > 0 ? "+" : ""}${format(delta)} min`;
+        deltaNode.textContent = delta === null ? messages.noData : `${messages.difference}: ${delta > 0 ? "+" : ""}${format(delta)} min`;
         row.querySelector<HTMLElement>("[data-row-sacrifice]")!.textContent = `${format(sacrifice)} min`;
         row.querySelector<HTMLElement>("[data-row-state]")!.textContent = state === "ahead" ? messages.ahead : state === "late" ? messages.late : state === "on-pace" ? messages.pace : messages.noBenchmark;
         const up = row.querySelector<HTMLButtonElement>("[data-move-up]")!;

@@ -12,7 +12,8 @@ export const dotaItemsByKey = new Map(dotaItems.map((item) => [item.key, item]))
 
 export const getDotaItemsPath = (lang: DotaItemsLocale) => lang === "ru" ? "/dota-2/items/" : "/en/dota-2/items/";
 export const getDotaItemPlannerPath = (lang: DotaItemsLocale) => `${getDotaItemsPath(lang)}planner/`;
-export const getDotaItemPath = (item: Pick<DotaItemRecord, "key"> | string, lang: DotaItemsLocale) => `${getDotaItemsPath(lang)}${typeof item === "string" ? item : item.key}/`;
+export const getDotaItemSlug = (item: Pick<DotaItemRecord, "key"> | string) => (typeof item === "string" ? item : item.key).replaceAll("_", "-");
+export const getDotaItemPath = (item: Pick<DotaItemRecord, "key"> | string, lang: DotaItemsLocale) => `${getDotaItemsPath(lang)}${getDotaItemSlug(item)}/`;
 
 export const roleLabel: Record<DotaItemRole, LocalizedText> = {
   core: { ru: "коры", en: "cores" },

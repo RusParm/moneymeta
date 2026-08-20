@@ -68,8 +68,6 @@ const copy = lang === "ru" ? {
   previous: "← Назад",
   next: "Дальше →",
   gold: "золота",
-  components: "компонентов",
-  noComponents: "готовая покупка",
   median: "медиана",
   middle: "середина выборки",
   rate: "частота",
@@ -125,8 +123,6 @@ const copy = lang === "ru" ? {
   previous: "← Previous",
   next: "Next →",
   gold: "gold",
-  components: "components",
-  noComponents: "direct purchase",
   median: "median",
   middle: "middle half",
   rate: "purchase rate",
@@ -228,7 +224,6 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
                   <span class="dota-item-icon"><span>{item.name.slice(0, 2).toUpperCase()}</span><img src={item.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span>
                   <span><small>{qualityLabel[item.quality]?.[lang] ?? qualityLabel.standard![lang]}</small><h3>{item.name}</h3><b>{item.cost.toLocaleString("en-US")} {copy.gold}</b></span>
                 </a>
-                <div class="dota-item-build-note"><span>{item.components.length ? `${item.components.length} ${copy.components}` : copy.noComponents}</span><i></i><span>{item.abilities.length ? item.abilities.map((ability) => ability.type).join(" + ") : (lang === "ru" ? "характеристики" : "stats")}</span></div>
                 <div class="dota-item-role-grid">
                   {(["core", "support"] as DotaItemRole[]).map((role) => {
                     const value = role === "core" ? core : support;

@@ -326,7 +326,7 @@
 
 .dota-item-card {
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -411,29 +411,11 @@
   font: 650 11px "JetBrains Mono", monospace;
 }
 
-.dota-item-build-note {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 17px;
-  border-top: 1px solid var(--line-soft);
-  border-bottom: 1px solid var(--line-soft);
-  color: var(--muted-dim);
-  font: 600 9px "JetBrains Mono", monospace;
-  text-transform: uppercase;
-}
-
-.dota-item-build-note i {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--dota-amber);
-}
-
 .dota-item-role-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
+  border-top: 1px solid var(--line-soft);
   background: var(--line-soft);
 }
 
@@ -1503,8 +1485,8 @@
 
 .dota-plan-metrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .dota-plan-metrics > div {
@@ -1523,6 +1505,13 @@
   margin-top: 4px;
   color: var(--text);
   font: 700 10px "JetBrains Mono", monospace;
+}
+
+.dota-plan-metrics small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted-dim);
+  font: 650 9px "JetBrains Mono", monospace;
 }
 
 .dota-plan-metrics div:first-child strong {
@@ -1751,7 +1740,7 @@
   }
 
   .dota-plan-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
