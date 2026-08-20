@@ -160,6 +160,8 @@ describe("Dota atlas pagination contract", () => {
   it("renders twelve cards per page and force-hides every inactive card", () => {
     expect(atlasSource).toContain("hidden={itemIndex >= 12}");
     expect(atlasSource).toContain("const perPage = 12;");
+    expect(atlasSource).toContain("{copy.pages} ·");
+    expect(atlasSource).toContain("{copy.items}");
     expect(atlasSource).toMatch(/\[data-dota-atlas\]\s+\[hidden\]\s*\{[^}]*display:\s*none\s*!important;/u);
   });
 });
