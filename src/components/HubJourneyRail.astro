@@ -1,0 +1,62 @@
+---
+import { getHubJourneyPath, getHubJourneyStepPath, hubJourneys } from "../data/hub-journeys";
+import type { HubLocale, HubPortalId } from "../data/hub-portals";
+import "../styles/hub-journeys.css";
+import HubGameMark from "./HubGameMark.astro";
+
+interface Props { hub: HubPortalId; lang: HubLocale; }
+const { hub, lang } = Astro.props;
+const journeys = hubJourneys[hub];
+const copy = lang === "ru" ? {
+  kicker: "Связанные игровые плейбуки",
+  title: "Не набор страниц. Три маршрута от ситуации до решения.",
+  text: "Каждый плейбук соединяет контекст игры, ограничение, расчёт и полевой разбор. Открывай маршрут целиком или переходи сразу к нужному шагу.",
+  forWhom: "Для кого",
+  window: "Горизонт",
+  open: "Открыть плейбук",
+  route: "Шаги маршрута"
+} : {
+  kicker: "Connected game playbooks",
+  title: "Not a page collection. Three routes from situation to decision.",
+  text: "Each playbook connects game context, the binding constraint, a calculation and a field guide. Open the full route or jump straight to the relevant step.",
+  forWhom: "For",
+  window: "Window",
+  open: "Open playbook",
+  route: "Route steps"
+};
+---
+
+<section class={`section hub-section hub-journey-rail hub-journey-${hub}`} aria-labelledby={`${hub}-journeys-title`}>
+  <div class="section-head hub-section-head journey-rail-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id={`${hub}-journeys-title`}>{copy.title}</h2>
+      <p class="section-copy">{copy.text}</p>
+    </div>
+    <span class="journey-rail-count">03 / PLAYBOOKS</span>
+  </div>
+
+  <div class="journey-rail-grid">
+    {journeys.map((journey, journeyIndex) => (
+      <article class:list={["journey-rail-card", { "is-featured": journeyIndex === 0 }]}>
+        <div class="journey-rail-card-head">
+          <HubGameMark hub={hub} section={journey.steps[0].destination.section} lang={lang} large={journeyIndex === 0} />
+          <div><span>{journey.code}</span><strong>{journey.title[lang]}</strong></div>
+        </div>
+        <p>{journey.description[lang]}</p>
+        <dl>
+          <div><dt>{copy.forWhom}</dt><dd>{journey.audience[lang]}</dd></div>
+          <div><dt>{copy.window}</dt><dd>{journey.window[lang]}</dd></div>
+        </dl>
+        <div class="journey-mini-route" aria-label={copy.route}>
+          {journey.steps.map((item) => (
+            <a href={getHubJourneyStepPath(journey, item, lang)} aria-label={item.title[lang]}>
+              <span>{item.code}</span><i aria-hidden="true"></i><small>{item.title[lang]}</small>
+            </a>
+          ))}
+        </div>
+        <a class="journey-rail-open" href={getHubJourneyPath(journey, lang)}>{copy.open} →</a>
+      </article>
+    ))}
+  </div>
+</section>

@@ -8,7 +8,7 @@ export interface EconomySource {
 
 export const dotaPatchContext = {
   patch: "7.41e",
-  checkedAt: "2026-08-18",
+  checkedAt: "2026-08-19",
   status: "mixed" as const,
   note: {
     ru: "Контекст патча и формула выкупа подтверждены официальными примечаниями Valve. Текущие характеристики Hand of Midas дополнительно сверены с данными игрового сообщества. Все исходные значения можно изменить в калькуляторе.",

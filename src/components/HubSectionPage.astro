@@ -27,6 +27,7 @@ import GtaPulse from "./GtaPulse.astro";
 import GtaRankings from "./GtaRankings.astro";
 import HubGameMark from "./HubGameMark.astro";
 import HubGuideLibrary from "./HubGuideLibrary.astro";
+import HubJourneyContext from "./HubJourneyContext.astro";
 import GoalPlannerTeaser from "./GoalPlannerTeaser.astro";
 import SiteFooter from "./SiteFooter.astro";
 import StrategySectionContent from "./StrategySectionContent.astro";
@@ -58,8 +59,6 @@ const mainClass = hubId === "gta"
     : hubId === "wow"
       ? "game-wow wow-living-hub"
       : `strategy-living-hub strategy-${hubId}`;
-const currentIndex = hub.sections.findIndex((item) => item.slug === sectionSlug);
-const related = [hub.sections[(currentIndex + 1) % hub.sections.length]!, hub.sections[(currentIndex + 2) % hub.sections.length]!];
 const strategyData = hubId === "total-war" ? totalWarHub : crusaderKingsHub;
 
 const copy = lang === "ru" ? {
@@ -74,10 +73,6 @@ const copy = lang === "ru" ? {
   sourceTitle: "Факт версии отдельно. Твои вводные отдельно.",
   sourceText: "Официальный источник используется для контекста патча или события. Все цены, сроки, вероятность и риск, которые можно менять в модели, остаются пользовательскими вводными.",
   source: "Открыть первоисточник",
-  nextKicker: "Продолжить маршрут",
-  nextTitle: "Следующие два слоя решения",
-  open: "Открыть",
-  portal: "Вернуться к карте хаба",
   independent: "Независимый аналитический продукт"
 } : {
   back: "← Back to game portal",
@@ -91,10 +86,6 @@ const copy = lang === "ru" ? {
   sourceTitle: "Version fact on one layer. Your inputs on another.",
   sourceText: "The primary source defines patch or event context. Every editable price, horizon, probability and risk remains a user input.",
   source: "Open primary source",
-  nextKicker: "Continue the route",
-  nextTitle: "The next two decision layers",
-  open: "Open",
-  portal: "Return to hub map",
   independent: "Independent analytical product"
 };
 
@@ -198,14 +189,7 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
         <aside><span>{hub.version[lang]}</span><strong>{copy.checked} {hub.checkedAt}</strong><a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} · {copy.source} ↗</a><small>{copy.independent}</small></aside>
       </section>
 
-      <section class="section hub-section section-page-next" aria-labelledby={`${hubId}-${sectionSlug}-next-title`}>
-        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.nextKicker}</span><h2 id={`${hubId}-${sectionSlug}-next-title`}>{copy.nextTitle}</h2></div><a href={root}>{copy.portal} →</a></div>
-        <div>
-          {related.map((item) => (
-            <a href={getHubPath(hubId, lang, item.slug)}><HubGameMark hub={hubId} section={item.slug} lang={lang} /><span>{item.code} / {item.label[lang]}</span><strong>{item.title[lang]}</strong><small>{item.payoff[lang]}</small><b>{copy.open} →</b></a>
-          ))}
-        </div>
-      </section>
+      <HubJourneyContext hub={hubId} lang={lang} context={{ kind: "section", section: sectionSlug }} />
 
       <SiteFooter lang={lang} />
     </div>

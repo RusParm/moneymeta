@@ -1,0 +1,173 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import ck3World from "../assets/game-worlds/ck3-economy-world.webp";
+import dotaWorld from "../assets/game-worlds/dota-economy-world.webp";
+import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
+import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
+import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
+import { getHubJourneyPath, getHubJourneyStepPath, hubJourneys, type HubJourney } from "../data/hub-journeys";
+import { getHubPath, hubPortals, type HubLocale, type HubPortalId } from "../data/hub-portals";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/wow-hub.css";
+import "../styles/strategy-hub.css";
+import "../styles/hub-portal.css";
+import "../styles/hub-journeys.css";
+import BrandHeader from "./BrandHeader.astro";
+import HubGameMark from "./HubGameMark.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { journey: HubJourney; lang: HubLocale; }
+const { journey, lang } = Astro.props;
+const hubId: HubPortalId = journey.hub;
+const hub = hubPortals[hubId];
+const root = getHubPath(hubId, lang);
+const canonical = getHubJourneyPath(journey, lang);
+const alternate = getHubJourneyPath(journey, lang === "ru" ? "en" : "ru");
+const worlds: Record<HubPortalId, ImageMetadata> = { gta: gtaWorld, dota: dotaWorld, wow: wowWorld, "total-war": totalWarWorld, ck3: ck3World };
+const siblings = hubJourneys[hubId].filter((item) => item.slug !== journey.slug);
+const mainClass = hubId === "gta" ? "game-gta" : hubId === "dota" ? "game-dota" : hubId === "wow" ? "game-wow" : `strategy-${hubId}`;
+
+const copy = lang === "ru" ? {
+  back: "← К порталу игры",
+  portal: "Портал",
+  playbooks: "Плейбуки",
+  route: "Маршрут решения",
+  forWhom: "Для кого",
+  window: "Горизонт",
+  start: "Стартовая ситуация",
+  success: "Признак готовности",
+  failure: "Красный флаг",
+  steps: "Четыре шага",
+  stepsTitle: "Каждый шаг заканчивается проверяемым выходом",
+  stepsText: "Не читай всё подряд. Открой нужный слой, выполни проверку и вернись к маршруту с результатом.",
+  instruction: "Что сделать",
+  checkpoint: "Можно идти дальше, когда",
+  open: "Открыть шаг",
+  doctrine: "Правила маршрута",
+  doctrineTitle: "Три правила, которые нельзя менять ради удобного ответа",
+  source: "Текущий контекст",
+  checked: "проверено",
+  sourceText: "Официальный источник задаёт версию игры. Все суммы, сроки и риски в маршруте остаются проверяемыми вводными игрока.",
+  more: "Другие плейбуки хаба",
+  moreTitle: "Следующая задача начинается с другой ситуации"
+} : {
+  back: "← Back to game portal",
+  portal: "Portal",
+  playbooks: "Playbooks",
+  route: "Decision route",
+  forWhom: "For",
+  window: "Window",
+  start: "Starting situation",
+  success: "Ready signal",
+  failure: "Red flag",
+  steps: "Four steps",
+  stepsTitle: "Every step ends with a verifiable exit",
+  stepsText: "Do not read everything in sequence. Open the relevant layer, run the check and return to the route with a result.",
+  instruction: "What to do",
+  checkpoint: "Move on when",
+  open: "Open step",
+  doctrine: "Route rules",
+  doctrineTitle: "Three rules that cannot move to make the answer convenient",
+  source: "Current context",
+  checked: "checked",
+  sourceText: "The primary source defines the game version. Every amount, horizon and risk in the route remains a testable player input.",
+  more: "Other hub playbooks",
+  moreTitle: "The next task starts from a different situation"
+};
+
+const pageTitle = `${journey.title[lang]} · ${hub.name} | Money Meta`;
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={`${journey.description[lang]} ${journey.successSignal[lang]}`}
+  lang={lang}
+  canonicalPath={canonical}
+  alternatePath={alternate}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: journey.title[lang],
+    description: journey.description[lang],
+    inLanguage: lang,
+    about: { "@type": "VideoGame", name: hub.name, publisher: hub.publisher },
+    step: journey.steps.map((item, index) => ({
+      "@type": "HowToStep",
+      position: index + 1,
+      name: item.title[lang],
+      text: item.instruction[lang],
+      url: new URL(getHubJourneyStepPath(journey, item, lang), Astro.site).toString()
+    }))
+  }}
+>
+  <main class={`page hub-journey-page hub-journey-${hubId} ${mainClass}`} data-hub-journey={journey.slug} data-hub={hubId}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getHubJourneyPath(journey, "ru")} enPath={getHubJourneyPath(journey, "en")} backPath={root} backLabel={copy.back} />
+
+      <section class="journey-page-hero" aria-labelledby={`${hubId}-${journey.slug}-title`}>
+        <Image class="journey-page-hero-art" src={worlds[hubId]} alt="" widths={[520, 780, 1040, 1440]} sizes="(max-width: 760px) calc(100vw - 28px), 1180px" loading="eager" decoding="async" />
+        <div class="journey-page-hero-copy">
+          <nav aria-label="Breadcrumb"><a href={root}>{hub.name}</a><span>/</span><span>{copy.playbooks}</span><span>/</span><span>{journey.code}</span></nav>
+          <div class="journey-page-title-row"><HubGameMark hub={hubId} section={journey.steps[0].destination.section} lang={lang} large /><div><span>{copy.route} · {hub.version[lang]}</span><h1 id={`${hubId}-${journey.slug}-title`}>{journey.title[lang]}</h1></div></div>
+          <p>{journey.description[lang]}</p>
+          <dl><div><dt>{copy.forWhom}</dt><dd>{journey.audience[lang]}</dd></div><div><dt>{copy.window}</dt><dd>{journey.window[lang]}</dd></div></dl>
+        </div>
+        <aside>
+          <span>{journey.code}</span>
+          <strong>{journey.startingPoint[lang]}</strong>
+          <small>{copy.start}</small>
+        </aside>
+      </section>
+
+      <nav class="journey-page-nav" aria-label={copy.playbooks}>
+        <a href={root}><span>00</span><strong>{copy.portal}</strong></a>
+        {hubJourneys[hubId].map((item) => <a href={getHubJourneyPath(item, lang)} aria-current={item.slug === journey.slug ? "page" : undefined}><span>{item.code}</span><strong>{item.title[lang]}</strong></a>)}
+      </nav>
+
+      <section class="journey-control-board" aria-label={copy.route}>
+        <article><span>{copy.start}</span><strong>{journey.startingPoint[lang]}</strong></article>
+        <article class="is-success"><span>{copy.success}</span><strong>{journey.successSignal[lang]}</strong></article>
+        <article class="is-failure"><span>{copy.failure}</span><strong>{journey.failureSignal[lang]}</strong></article>
+      </section>
+
+      <section class="section hub-section journey-step-section" aria-labelledby={`${hubId}-${journey.slug}-steps-title`}>
+        <div class="section-head hub-section-head">
+          <div><span class="section-kicker">{copy.steps}</span><h2 id={`${hubId}-${journey.slug}-steps-title`}>{copy.stepsTitle}</h2><p class="section-copy">{copy.stepsText}</p></div>
+          <span class="journey-step-count">01-04</span>
+        </div>
+
+        <ol class="journey-step-list">
+          {journey.steps.map((item, index) => (
+            <li>
+              <div class="journey-step-identity"><span>{item.code}</span><HubGameMark hub={hubId} section={item.destination.section} lang={lang} large={index === 0} /></div>
+              <article>
+                <span>{hub.sections.find((section) => section.slug === item.destination.section)?.label[lang]}</span>
+                <h3>{item.title[lang]}</h3>
+                <dl><div><dt>{copy.instruction}</dt><dd>{item.instruction[lang]}</dd></div><div><dt>{copy.checkpoint}</dt><dd>{item.checkpoint[lang]}</dd></div></dl>
+                <a href={getHubJourneyStepPath(journey, item, lang)}>{copy.open} →</a>
+              </article>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="journey-doctrine" aria-labelledby={`${hubId}-${journey.slug}-doctrine-title`}>
+        <div><span>{copy.doctrine}</span><h2 id={`${hubId}-${journey.slug}-doctrine-title`}>{copy.doctrineTitle}</h2></div>
+        <ol>{journey.principles.map((principle, index) => <li><span>0{index + 1}</span><strong>{principle[lang]}</strong></li>)}</ol>
+      </section>
+
+      <section class="journey-source-rail" aria-label={copy.source}>
+        <div><span>{copy.source}</span><strong>{hub.version[lang]}</strong><p>{copy.sourceText}</p></div>
+        <aside><span>{copy.checked} {hub.checkedAt}</span><a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} ↗</a></aside>
+      </section>
+
+      <section class="section hub-section journey-more" aria-labelledby={`${hubId}-${journey.slug}-more-title`}>
+        <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.more}</span><h2 id={`${hubId}-${journey.slug}-more-title`}>{copy.moreTitle}</h2></div></div>
+        <div>{siblings.map((item) => <a href={getHubJourneyPath(item, lang)}><span>{item.code}</span><strong>{item.title[lang]}</strong><small>{item.startingPoint[lang]}</small><b>→</b></a>)}</div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

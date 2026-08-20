@@ -147,7 +147,7 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Added route, media-policy, navigation-migration and strategy-depth tests. Sixty-one automated tests pass; 121 static pages build with zero Astro diagnostics and zero missing internal links.
 - v1.8 production remains unchanged while v1.9 is validated on its branch preview.
 
-## Active release candidate: v1.10 goal runways
+## Production release: v1.10 goal runways
 
 - Added a standalone, shareable goal-runway model for each game in complete RU/EN parity.
 - GTA tests a purchase date against weekly net flow and a protected cash floor; Dota calculates remaining item timing while preserving a player-defined buffer.
@@ -155,7 +155,17 @@ The production repository contained three standalone HTML files with CDN Tailwin
 - Every planner reports the funding gap, runway, required pace, checkpoint value and slack, then explains the result with three game-native checks.
 - Added five complete operational guides linked directly to the planners, raising each research library by one decision-complete piece.
 - Planner inputs persist locally and can be shared in the URL. Patch facts and editable player assumptions remain visibly separate.
-- Production v1.8 and `main` remain unchanged while v1.10 is validated through the existing draft PR preview.
+- v1.10 passed branch-preview review, was squash-merged through PR #7 and is the current production release.
+
+## Active release candidate: v1.11 connected decision playbooks
+
+- Added three authored decision playbooks to every game hub: fifteen playbooks and thirty localized RU/EN routes in total.
+- Each playbook connects four deliberate steps across economy, player path, current meta, a model or planner and applied analysis instead of sending readers through a cyclic related-card list.
+- Hub roots now expose the playbooks as compact entry points; focused section pages, goal planners and matching Field Notes show the player's current step and one concrete next move.
+- Every playbook defines the player situation, decision window, starting signal, success condition, failure condition and three game-native operating rules.
+- Rechecked all five live context boundaries against first-party publisher sources on 2026-08-19. Total War now names Hotfix 8.1.1 as live while keeping the economic analysis explicitly tied to Patch 8.1.
+- Playbooks remain standalone URLs rather than adding another long document to the hub root. Existing public routes remain unchanged.
+- Local tests, static build, internal-link audit, branch preview and responsive browser QA are required before any production decision.
 
 ## Release policy
 

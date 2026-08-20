@@ -111,3 +111,11 @@ A shared calculation engine may normalize target, liquid starting state, protect
 ## 2026-08-19: a goal is funded only above the reserve
 
 Reaching the displayed purchase price is not enough when the action removes the player's next decision. Goal runways treat the protected reserve as a separate constraint and never silently spend it to make a deadline pass. A missed horizon must be solved by changing scope, sustainable pace or timing.
+
+## 2026-08-19: hub connections are authored decision paths
+
+Related content is useful only when the relationship changes the player's next action. Each hub therefore exposes a small set of authored playbooks with a declared player situation, decision window, start signal and success condition. A playbook connects four deliberate steps across the hub's focused routes and ends in a model or applied analysis; section pages, planners and matching articles show the current step and one next move. Mechanical previous/next or cyclic related-card lists are removed.
+
+## 2026-08-19: playbooks are route maps, not longer hub pages
+
+The playbook page explains the sequence and the checks between steps, but does not duplicate every calculator or guide. Detail stays on stable section, planner and Field Note URLs. This keeps the hub connected without recreating an endless root page and gives every deep page a clear role in a larger player decision.

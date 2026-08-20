@@ -166,7 +166,7 @@ export interface WeeklyMetaSnapshot {
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  checkedAt: "2026-08-18",
+  checkedAt: "2026-08-19",
   validThrough: "2026-08-26",
   status: "verified",
   sourceUrl: "https://www.rockstargames.com/newswire/article/9k2kok31k3a8k9/declare-your-allegiance-and-determine-who-owns-los-santos-in-the-brand",

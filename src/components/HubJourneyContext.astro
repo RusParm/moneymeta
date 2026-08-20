@@ -1,0 +1,86 @@
+---
+import { getHubJourneyPath, getHubJourneyStepPath, hubJourneys } from "../data/hub-journeys";
+import type { HubLocale, HubPortalId, HubSectionSlug } from "../data/hub-portals";
+import "../styles/hub-journeys.css";
+import HubGameMark from "./HubGameMark.astro";
+
+type JourneyContext =
+  | { kind: "section"; section: HubSectionSlug }
+  | { kind: "planner" }
+  | { kind: "insight"; slug: string };
+
+interface Props { hub: HubPortalId; lang: HubLocale; context: JourneyContext; }
+const { hub, lang, context } = Astro.props;
+const matches = hubJourneys[hub].map((journey) => {
+  const index = journey.steps.findIndex((item) => {
+    if (context.kind === "section") return item.destination.section === context.section;
+    if (context.kind === "planner") return item.destination.kind === "planner";
+    return item.destination.kind === "insight" && item.destination.slug === context.slug;
+  });
+  return { journey, index };
+}).filter((item) => item.index >= 0).slice(0, 2);
+
+const copy = lang === "ru" ? {
+  kicker: "Контекст решения",
+  title: "Ты не на отдельной странице. Ты внутри игрового маршрута.",
+  text: "Плейбук показывает, что уже проверено, какой слой идёт следующим и где решение заканчивается действием.",
+  now: "Сейчас",
+  next: "Следующий ход",
+  outcome: "Критерий выхода",
+  full: "Весь плейбук",
+  open: "Перейти к шагу"
+} : {
+  kicker: "Decision context",
+  title: "This is not an isolated page. It is part of a game route.",
+  text: "The playbook shows what has been checked, which layer comes next and where the decision becomes action.",
+  now: "Current",
+  next: "Next move",
+  outcome: "Exit criterion",
+  full: "Full playbook",
+  open: "Open next step"
+};
+---
+
+{matches.length > 0 && (
+  <section class={`section hub-section hub-journey-context hub-journey-${hub}`} aria-labelledby={`${hub}-journey-context-title`}>
+    <div class="section-head hub-section-head journey-context-head">
+      <div><span class="section-kicker">{copy.kicker}</span><h2 id={`${hub}-journey-context-title`}>{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+      <span>{matches.length.toString().padStart(2, "0")} / ROUTES</span>
+    </div>
+
+    <div class="journey-context-list">
+      {matches.map(({ journey, index }) => {
+        const current = journey.steps[index]!;
+        const next = journey.steps[index + 1];
+        return (
+          <article class="journey-context-card">
+            <div class="journey-context-card-head">
+              <HubGameMark hub={hub} section={current.destination.section} lang={lang} />
+              <div><span>{journey.code} · {index + 1}/{journey.steps.length}</span><h3><a href={getHubJourneyPath(journey, lang)}>{journey.title[lang]}</a></h3></div>
+              <a href={getHubJourneyPath(journey, lang)}>{copy.full} ↗</a>
+            </div>
+
+            <nav class="journey-context-track" aria-label={journey.title[lang]}>
+              {journey.steps.map((item, stepIndex) => (
+                <a
+                  href={getHubJourneyStepPath(journey, item, lang)}
+                  aria-current={stepIndex === index ? "step" : undefined}
+                  title={item.title[lang]}
+                ><span>{item.code}</span><i aria-hidden="true"></i><small>{item.title[lang]}</small></a>
+              ))}
+            </nav>
+
+            <div class="journey-context-action">
+              <div><span>{copy.now}</span><strong>{current.title[lang]}</strong><p>{current.checkpoint[lang]}</p></div>
+              {next ? (
+                <div class="is-next"><span>{copy.next}</span><strong>{next.title[lang]}</strong><p>{next.instruction[lang]}</p><a href={getHubJourneyStepPath(journey, next, lang)}>{copy.open} →</a></div>
+              ) : (
+                <div class="is-next"><span>{copy.outcome}</span><strong>{journey.successSignal[lang]}</strong><p>{journey.principles[2][lang]}</p><a href={getHubJourneyPath(journey, lang)}>{copy.full} →</a></div>
+              )}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+)}

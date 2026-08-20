@@ -15,6 +15,7 @@ import "../styles/hub-portal.css";
 import "../styles/goal-planner.css";
 import BrandHeader from "./BrandHeader.astro";
 import HubGameMark from "./HubGameMark.astro";
+import HubJourneyContext from "./HubJourneyContext.astro";
 import ScenarioActions from "./ScenarioActions.astro";
 import SiteFooter from "./SiteFooter.astro";
 
@@ -58,10 +59,6 @@ const copy = lang === "ru" ? {
   guideText: "Полный материал объясняет, какие вводные нельзя смешивать, как проверять плохой сценарий и что менять первым при дефиците.",
   readGuide: "Открыть полный гайд",
   source: "Текущий первоисточник",
-  next: "Продолжить решение",
-  deepTools: "Глубокие модели игры",
-  allGuides: "Все гайды",
-  gamePortal: "Карта хаба",
   checked: "проверено"
 } : {
   back: "← Back to game tools",
@@ -87,10 +84,6 @@ const copy = lang === "ru" ? {
   guideText: "The full guide explains which inputs must stay separate, how to run the adverse case and what to change first when the runway fails.",
   readGuide: "Read the complete guide",
   source: "Current primary source",
-  next: "Continue the decision",
-  deepTools: "Deep game models",
-  allGuides: "All guides",
-  gamePortal: "Hub map",
   checked: "checked"
 };
 
@@ -193,10 +186,7 @@ const pageTitle = `${planner.title[lang]} · ${hub.name} | Money Meta`;
         <aside><span>{hub.version[lang]}</span><strong>{copy.checked} {hub.checkedAt}</strong><a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} ↗</a></aside>
       </section>
 
-      <section class="goal-planner-next" aria-labelledby={`${hubId}-goal-next-title`}>
-        <div><span>{copy.next}</span><h2 id={`${hubId}-goal-next-title`}>{lang === "ru" ? "От горизонта - к точному решению" : "From runway to the exact decision"}</h2></div>
-        <div><a href={tools}><span>Σ</span><strong>{copy.deepTools}</strong><small>{hub.sections.find((item) => item.slug === "tools")!.payoff[lang]}</small></a><a href={guides}><span>G</span><strong>{copy.allGuides}</strong><small>{hub.sections.find((item) => item.slug === "guides")!.payoff[lang]}</small></a><a href={root}><span>00</span><strong>{copy.gamePortal}</strong><small>{hub.valueTitle[lang]}</small></a></div>
-      </section>
+      <HubJourneyContext hub={hubId} lang={lang} context={{ kind: "planner" }} />
 
       <SiteFooter lang={lang} />
     </div>
