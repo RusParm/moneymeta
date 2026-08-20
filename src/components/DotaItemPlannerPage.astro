@@ -1,0 +1,342 @@
+---
+import {
+  dotaItems,
+  dotaItemsSnapshot,
+  getDotaItemPath,
+  getDotaItemPlannerPath,
+  getDotaItemsPath,
+  type DotaItemsLocale
+} from "../data/dota-items";
+import { calculateItemPlan } from "../lib/dota-items";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import DotaItemNav from "./DotaItemNav.astro";
+import DotaItemsStatus from "./DotaItemsStatus.astro";
+import ScenarioActions from "./ScenarioActions.astro";
+import SiteFooter from "./SiteFooter.astro";
+import "../styles/dota-items.css";
+
+interface Props { lang: DotaItemsLocale; }
+const { lang } = Astro.props;
+const path = getDotaItemPlannerPath(lang);
+const alternatePath = getDotaItemPlannerPath(lang === "ru" ? "en" : "ru");
+const minimumSample = dotaItemsSnapshot.methodology.minimumSample;
+const defaults = ["blink", "black_king_bar", "", "", ""];
+const initialRows = calculateItemPlan(dotaItems, { role: "core", currentMinute: 10, goldPerMinute: 500, startingGold: 1_000, itemKeys: defaults.filter(Boolean) });
+const plannerData = JSON.stringify(dotaItems.map((item) => ({ key: item.key, name: item.name, cost: item.cost, image: item.image, timings: item.timings, path: getDotaItemPath(item, lang) }))).replace(/</g, "\\u003c");
+const copy = lang === "ru" ? {
+  back: "← К атласу предметов",
+  title: "План сборки предметов Dota 2 | Money Meta",
+  description: "Планировщик от двух до пяти предметов Dota 2: ожидаемые минуты по GPM, сравнение с профессиональной медианой и цена порядка сборки в патче 7.41e.",
+  kicker: "Dota 2 · очередь предметов · 7.41e",
+  heading: "Порядок сборки тратит время так же, как покупка тратит золото.",
+  lede: "Задай текущую минуту, доступное золото и устойчивый GPM. План покажет абсолютную минуту каждого завершения, сравнит её с профессиональным окном роли и посчитает, сколько более ранние предметы задерживают следующий.",
+  primary: "Собрать план",
+  secondary: "Открыть атлас",
+  editable: "5 редактируемых позиций",
+  roles: "2 ролевых ориентира",
+  local: "без аккаунта, хранится локально",
+  inputKicker: "Твои вводные",
+  inputTitle: "Планируй от текущего состояния, а не от идеальной нулевой минуты.",
+  role: "Роль для сравнения",
+  core: "Кор",
+  support: "Поддержка",
+  currentMinute: "Текущая минута",
+  gpm: "Устойчивый GPM дальше",
+  currentGold: "Золото на эту очередь",
+  item: "Предмет",
+  optional: "не выбрано",
+  itemHelp: "Первые две позиции обязательны. Остальные можно оставить пустыми.",
+  resultKicker: "Очередь и цена порядка",
+  resultTitle: "Каждая строка отвечает на три разных вопроса.",
+  totalCost: "общая стоимость",
+  finish: "конец очереди",
+  selected: "предметов в плане",
+  projected: "твой прогноз",
+  proMedian: "медиана профи",
+  delta: "разница",
+  sacrifice: "задержка из-за предыдущих покупок",
+  noBenchmark: "Нет надёжной выборки для роли",
+  ahead: "Раньше наблюдаемой медианы",
+  pace: "Внутри окна ±2 минуты",
+  late: "Позже наблюдаемой медианы",
+  minute: "мин",
+  moveEarlier: "Поднять выше",
+  moveLater: "Опустить ниже",
+  inspect: "Разобрать предмет",
+  duplicate: "Один предмет выбран несколько раз. Убери повтор, чтобы порядок оставался интерпретируемым.",
+  minimum: "Выбери минимум два разных предмета.",
+  insightKicker: "Как принять решение",
+  insightTitle: "Медиана объясняет отклонение. Она не отменяет состояние карты.",
+  insights: [
+    ["01", "Сначала проверь назначение", "Если предмет не меняет ближайшую драку, объект или фарм, ранняя минута сама по себе не делает сборку хорошей."],
+    ["02", "Затем посмотри цену порядка", "Показатель задержки говорит, сколько минут этот предмет отдаёт всем покупкам после него при указанном GPM."],
+    ["03", "После матча сравни факт", "Запиши реальную минуту, причину отклонения и действие после покупки. Один матч остаётся наблюдением, а не новым нормативом."]
+  ],
+  assumptionsKicker: "Граница модели",
+  assumptionsTitle: "Что расчёт учитывает и чего не знает.",
+  assumptions: [
+    ["Учитывает", "Текущее золото, устойчивый будущий GPM, стоимость и заданный порядок до пяти предметов."],
+    ["Не учитывает", "Продажу предметов, стоимость курьера, случайные убийства, потерю фарма, buyback и изменения маршрута по ходу матча."],
+    ["Сравнивает", `Первую покупку предмета в профессиональном срезе ${dotaItemsSnapshot.patch.label}. Числа скрыты при n < ${minimumSample}.`]
+  ],
+  source: "Открыть источник"
+} : {
+  back: "← Back to item atlas",
+  title: "Dota 2 item build planner | Money Meta",
+  description: "A two-to-five item Dota 2 planner with GPM-based completion minutes, pro median comparisons and build-order cost for Patch 7.41e.",
+  kicker: "Dota 2 · item queue · 7.41e",
+  heading: "Build order spends time just as every purchase spends gold.",
+  lede: "Set the current minute, available gold and sustainable GPM. The planner shows the absolute completion minute, compares it with the role's professional window and calculates how much earlier items delay each next one.",
+  primary: "Build the plan",
+  secondary: "Open atlas",
+  editable: "5 editable slots",
+  roles: "2 role benchmarks",
+  local: "no account, saved locally",
+  inputKicker: "Your inputs",
+  inputTitle: "Plan from the current state, not an ideal minute zero.",
+  role: "Comparison role",
+  core: "Core",
+  support: "Support",
+  currentMinute: "Current minute",
+  gpm: "Sustainable GPM ahead",
+  currentGold: "Gold available to this queue",
+  item: "Item",
+  optional: "not selected",
+  itemHelp: "The first two slots are required. Leave the others empty if needed.",
+  resultKicker: "Queue and order cost",
+  resultTitle: "Every row answers three different questions.",
+  totalCost: "total cost",
+  finish: "queue completes",
+  selected: "items in plan",
+  projected: "your projection",
+  proMedian: "pro median",
+  delta: "difference",
+  sacrifice: "delay from earlier purchases",
+  noBenchmark: "No reliable role sample",
+  ahead: "Earlier than observed median",
+  pace: "Inside the ±2 minute window",
+  late: "Later than observed median",
+  minute: "min",
+  moveEarlier: "Move earlier",
+  moveLater: "Move later",
+  inspect: "Analyze item",
+  duplicate: "The same item appears more than once. Remove the duplicate so the order remains interpretable.",
+  minimum: "Select at least two different items.",
+  insightKicker: "How to make the decision",
+  insightTitle: "The median explains the deviation. It does not erase map state.",
+  insights: [
+    ["01", "Check the purpose first", "If the item does not change the next fight, objective or farm loop, an early minute does not make the build good by itself."],
+    ["02", "Then inspect order cost", "The delay measure shows how many minutes this item gives to every later purchase at the entered GPM."],
+    ["03", "Compare the fact after the match", "Record the actual minute, the cause of deviation and the action after purchase. One match remains an observation, not a new benchmark."]
+  ],
+  assumptionsKicker: "Model boundary",
+  assumptionsTitle: "What the calculation knows and what it does not.",
+  assumptions: [
+    ["Included", "Current gold, sustainable future GPM, cost and the entered order of up to five items."],
+    ["Excluded", "Selling items, courier costs, random kills, lost farm, buyback and route changes during the match."],
+    ["Compared", `First item purchases in the professional ${dotaItemsSnapshot.patch.label} cohort. Numbers stay hidden below n ${minimumSample}.`]
+  ],
+  source: "Open source"
+};
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={path}
+  alternatePath={alternatePath}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: copy.title,
+    description: copy.description,
+    applicationCategory: "GameApplication",
+    operatingSystem: "Web",
+    inLanguage: lang,
+    isAccessibleForFree: true,
+    dateModified: dotaItemsSnapshot.fetchedAt,
+    about: { "@type": "VideoGame", name: "Dota 2", publisher: "Valve" }
+  }}
+>
+  <main class="page dota-items-page dota-item-planner" data-item-planner data-minimum-sample={minimumSample}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getDotaItemPlannerPath("ru")} enPath={getDotaItemPlannerPath("en")} backPath={getDotaItemsPath(lang)} backLabel={copy.back} />
+
+      <header class="dota-planner-hero">
+        <div><p class="eyebrow">{copy.kicker}</p><h1>{copy.heading}</h1><p class="lede">{copy.lede}</p><div class="hero-actions"><a class="button primary button-large" href="#planner-model">{copy.primary} →</a><a class="button ghost button-large" href={getDotaItemsPath(lang)}>{copy.secondary}</a></div></div>
+        <div class="dota-planner-hero-queue" aria-hidden="true">
+          {initialRows.map((row, index) => <><span><img src={row.item.image} alt="" width="88" height="64" loading="eager" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /><b>0{index + 1}</b></span>{index < initialRows.length - 1 && <i></i>}</>)}
+          <span class="is-empty"><b>03</b></span><i></i><span class="is-empty"><b>04</b></span><i></i><span class="is-empty"><b>05</b></span>
+        </div>
+        <div class="dota-planner-proof"><span>{copy.editable}</span><span>{copy.roles}</span><span>{copy.local}</span></div>
+      </header>
+
+      <DotaItemNav lang={lang} active="planner" />
+      <DotaItemsStatus lang={lang} compact />
+
+      <section id="planner-model" class="section dota-planner-model" data-scenario-root data-scenario-key="dota-item-plan" aria-labelledby="dota-planner-model-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.inputKicker}</span><h2 id="dota-planner-model-title">{copy.inputTitle}</h2></div><span class="count">2-5 items · URL</span></div>
+        <div class="dota-planner-layout">
+          <div class="dota-planner-inputs">
+            <div class="dota-planner-context form-grid">
+              <div class="field"><label for="dota-plan-role">{copy.role}</label><select id="dota-plan-role" data-role="role"><option value="core">{copy.core}</option><option value="support">{copy.support}</option></select></div>
+              <div class="field"><label for="dota-plan-minute">{copy.currentMinute}</label><input id="dota-plan-minute" data-role="currentMinute" type="number" min="0" max="180" step="0.5" value="10" inputmode="decimal" /></div>
+              <div class="field"><label for="dota-plan-gpm">{copy.gpm}</label><input id="dota-plan-gpm" data-role="gpm" type="number" min="1" max="2500" step="10" value="500" inputmode="numeric" /></div>
+              <div class="field"><label for="dota-plan-gold">{copy.currentGold}</label><input id="dota-plan-gold" data-role="currentGold" type="number" min="0" max="100000" step="50" value="1000" inputmode="numeric" /></div>
+            </div>
+            <div class="dota-planner-item-inputs">
+              {defaults.map((value, index) => <label><span>{copy.item} {index + 1}{index > 1 && <small>{copy.optional}</small>}</span><select data-role={`item${index + 1}`}><option value="">{copy.optional}</option>{dotaItems.map((item) => <option value={item.key} selected={item.key === value}>{item.name} · {item.cost.toLocaleString("en-US")}</option>)}</select></label>)}
+            </div>
+            <p class="dota-planner-help">{copy.itemHelp}</p>
+            <ScenarioActions lang={lang} />
+          </div>
+
+          <div class="dota-planner-output" aria-live="polite">
+            <div class="dota-planner-output-head"><span>{copy.resultKicker}</span><h3>{copy.resultTitle}</h3></div>
+            <div class="dota-planner-summary"><div><strong data-plan-total-cost>6,300</strong><span>{copy.totalCost}</span></div><div><strong data-plan-finish>20.6</strong><span>{copy.finish} · {copy.minute}</span></div><div><strong data-plan-count>2</strong><span>{copy.selected}</span></div></div>
+            <div class="dota-planner-warning" data-plan-warning hidden></div>
+            <div class="dota-plan-results" data-plan-results></div>
+          </div>
+        </div>
+      </section>
+
+      <template data-plan-row-template>
+        <article class="dota-plan-row">
+          <div class="dota-plan-order"><b data-row-order></b><div><button type="button" data-move-up aria-label={copy.moveEarlier}>↑</button><button type="button" data-move-down aria-label={copy.moveLater}>↓</button></div></div>
+          <a data-row-link class="dota-plan-item"><span><img data-row-image alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" /></span><div><strong data-row-name></strong><small><span data-row-cost></span> {lang === "ru" ? "золота" : "gold"}</small></div></a>
+          <div class="dota-plan-metrics"><div><span>{copy.projected}</span><strong><b data-row-projected></b> {copy.minute}</strong></div><div><span>{copy.proMedian}</span><strong data-row-median></strong></div><div><span>{copy.delta}</span><strong data-row-delta></strong></div><div><span>{copy.sacrifice}</span><strong data-row-sacrifice></strong></div></div>
+          <div class="dota-plan-state" data-row-state></div>
+        </article>
+      </template>
+
+      <section class="section dota-planner-insights" aria-labelledby="dota-planner-insights-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.insightKicker}</span><h2 id="dota-planner-insights-title">{copy.insightTitle}</h2></div></div>
+        <div>{copy.insights.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
+      </section>
+
+      <section id="methodology" class="section dota-planner-assumptions" aria-labelledby="dota-planner-assumptions-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.assumptionsKicker}</span><h2 id="dota-planner-assumptions-title">{copy.assumptionsTitle}</h2></div><span class="count">OpenDota · {dotaItemsSnapshot.patch.label}</span></div>
+        <dl>{copy.assumptions.map(([title, text]) => <div><dt>{title}</dt><dd>{text}</dd></div>)}</dl>
+        <div class="dota-item-source-links">{dotaItemsSnapshot.sources.map((source) => <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label} · {copy.source} ↗</a>)}</div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
+
+<script is:inline type="application/json" data-planner-items set:html={plannerData}></script>
+<script>
+  interface PlannerItem { key: string; name: string; cost: number; image: string; path: string; timings: Partial<Record<"core" | "support", { n: number; p25: number; median: number; p75: number; purchaseRatePct: number }>>; }
+  const plannerReady = (callback: () => void) => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", callback, { once: true }) : callback();
+  plannerReady(() => {
+    const root = document.querySelector<HTMLElement>("[data-item-planner]");
+    const model = root?.querySelector<HTMLElement>("[data-scenario-root]");
+    const dataNode = document.querySelector<HTMLScriptElement>("[data-planner-items]");
+    const template = document.querySelector<HTMLTemplateElement>("[data-plan-row-template]");
+    const results = root?.querySelector<HTMLElement>("[data-plan-results]");
+    if (!root || !model || !dataNode || !template || !results) return;
+    const items = JSON.parse(dataNode.textContent ?? "[]") as PlannerItem[];
+    const byKey = new Map(items.map((item) => [item.key, item]));
+    const minimum = Number(root.dataset.minimumSample ?? 200);
+    const role = model.querySelector<HTMLSelectElement>("[data-role='role']")!;
+    const currentMinute = model.querySelector<HTMLInputElement>("[data-role='currentMinute']")!;
+    const gpm = model.querySelector<HTMLInputElement>("[data-role='gpm']")!;
+    const currentGold = model.querySelector<HTMLInputElement>("[data-role='currentGold']")!;
+    const itemControls = [...model.querySelectorAll<HTMLSelectElement>("select[data-role^='item']")];
+    const totalCostNode = model.querySelector<HTMLElement>("[data-plan-total-cost]")!;
+    const finishNode = model.querySelector<HTMLElement>("[data-plan-finish]")!;
+    const countNode = model.querySelector<HTMLElement>("[data-plan-count]")!;
+    const warning = model.querySelector<HTMLElement>("[data-plan-warning]")!;
+    const ru = document.documentElement.lang === "ru";
+    const messages = {
+      duplicate: ru ? "Один предмет выбран несколько раз. Убери повтор, чтобы порядок оставался интерпретируемым." : "The same item appears more than once. Remove the duplicate so the order remains interpretable.",
+      minimum: ru ? "Выбери минимум два разных предмета." : "Select at least two different items.",
+      noBenchmark: ru ? "Нет надёжной выборки для роли" : "No reliable role sample",
+      ahead: ru ? "Раньше наблюдаемой медианы" : "Earlier than observed median",
+      pace: ru ? "Внутри окна ±2 минуты" : "Inside the ±2 minute window",
+      late: ru ? "Позже наблюдаемой медианы" : "Later than observed median",
+      noData: ru ? "нет данных" : "no data"
+    };
+    const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
+    const format = (value: number, digits = 1) => value.toLocaleString(ru ? "ru-RU" : "en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+
+    const render = () => {
+      const selected = itemControls.map((control, index) => ({ control, index, item: byKey.get(control.value) })).filter((entry): entry is { control: HTMLSelectElement; index: number; item: PlannerItem } => Boolean(entry.item));
+      const duplicate = new Set(selected.map((entry) => entry.item.key)).size !== selected.length;
+      const invalid = duplicate || selected.length < 2;
+      warning.hidden = !invalid;
+      warning.textContent = duplicate ? messages.duplicate : selected.length < 2 ? messages.minimum : "";
+      const start = clamp(Number(currentMinute.value), 0, 180);
+      const pace = clamp(Number(gpm.value), 1, 2500);
+      const gold = clamp(Number(currentGold.value), 0, 100000);
+      const selectedRole = role.value === "support" ? "support" : "core";
+      let cumulative = 0;
+      results.replaceChildren();
+
+      selected.forEach((entry, visibleIndex) => {
+        cumulative += entry.item.cost;
+        const projected = start + Math.max(0, cumulative - gold) / pace;
+        const movedFirst = start + Math.max(0, entry.item.cost - gold) / pace;
+        const sacrifice = Math.max(0, projected - movedFirst);
+        const rawBenchmark = entry.item.timings[selectedRole];
+        const benchmark = rawBenchmark && rawBenchmark.n >= minimum ? rawBenchmark : null;
+        const delta = benchmark ? projected - benchmark.median : null;
+        const state = delta === null ? "no-benchmark" : delta < -2 ? "ahead" : delta > 2 ? "late" : "on-pace";
+        const fragment = template.content.cloneNode(true) as DocumentFragment;
+        const row = fragment.querySelector<HTMLElement>(".dota-plan-row")!;
+        row.dataset.state = state;
+        row.querySelector<HTMLElement>("[data-row-order]")!.textContent = String(visibleIndex + 1).padStart(2, "0");
+        const link = row.querySelector<HTMLAnchorElement>("[data-row-link]")!;
+        link.href = entry.item.path;
+        const image = row.querySelector<HTMLImageElement>("[data-row-image]")!;
+        image.src = entry.item.image;
+        image.onerror = () => { image.style.display = "none"; };
+        row.querySelector<HTMLElement>("[data-row-name]")!.textContent = entry.item.name;
+        row.querySelector<HTMLElement>("[data-row-cost]")!.textContent = entry.item.cost.toLocaleString("en-US");
+        row.querySelector<HTMLElement>("[data-row-projected]")!.textContent = format(projected);
+        row.querySelector<HTMLElement>("[data-row-median]")!.textContent = benchmark ? `${format(benchmark.median)} min · n ${benchmark.n}` : messages.noData;
+        const deltaNode = row.querySelector<HTMLElement>("[data-row-delta]")!;
+        deltaNode.textContent = delta === null ? messages.noData : `${delta > 0 ? "+" : ""}${format(delta)} min`;
+        row.querySelector<HTMLElement>("[data-row-sacrifice]")!.textContent = `${format(sacrifice)} min`;
+        row.querySelector<HTMLElement>("[data-row-state]")!.textContent = state === "ahead" ? messages.ahead : state === "late" ? messages.late : state === "on-pace" ? messages.pace : messages.noBenchmark;
+        const up = row.querySelector<HTMLButtonElement>("[data-move-up]")!;
+        const down = row.querySelector<HTMLButtonElement>("[data-move-down]")!;
+        up.disabled = visibleIndex === 0;
+        down.disabled = visibleIndex === selected.length - 1;
+        up.addEventListener("click", () => {
+          if (visibleIndex === 0) return;
+          const previous = selected[visibleIndex - 1]!;
+          const value = entry.control.value;
+          entry.control.value = previous.control.value;
+          previous.control.value = value;
+          entry.control.dispatchEvent(new Event("change", { bubbles: true }));
+          previous.control.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        down.addEventListener("click", () => {
+          if (visibleIndex >= selected.length - 1) return;
+          const following = selected[visibleIndex + 1]!;
+          const value = entry.control.value;
+          entry.control.value = following.control.value;
+          following.control.value = value;
+          entry.control.dispatchEvent(new Event("change", { bubbles: true }));
+          following.control.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        results.append(fragment);
+      });
+
+      totalCostNode.textContent = cumulative.toLocaleString("en-US");
+      const finish = selected.length ? start + Math.max(0, cumulative - gold) / pace : start;
+      finishNode.textContent = format(finish);
+      countNode.textContent = String(selected.length);
+    };
+
+    model.querySelectorAll("input, select").forEach((control) => {
+      control.addEventListener("input", render);
+      control.addEventListener("change", render);
+    });
+    requestAnimationFrame(render);
+  });
+</script>

@@ -1,0 +1,17 @@
+---
+import { getDotaItemPlannerPath, getDotaItemsPath, type DotaItemsLocale } from "../data/dota-items";
+
+interface Props { lang: DotaItemsLocale; active: "atlas" | "planner" | "item"; }
+const { lang, active } = Astro.props;
+const copy = lang === "ru"
+  ? { portal: "Портал Dota 2", atlas: "Атлас предметов", planner: "План сборки", tools: "Все инструменты" }
+  : { portal: "Dota 2 portal", atlas: "Item atlas", planner: "Build planner", tools: "All tools" };
+const root = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
+---
+
+<nav class="dota-items-nav" aria-label={lang === "ru" ? "Навигация по предметам Dota 2" : "Dota 2 item navigation"}>
+  <a href={root}><span>00</span><strong>{copy.portal}</strong></a>
+  <a href={getDotaItemsPath(lang)} aria-current={active === "atlas" || active === "item" ? "page" : undefined}><span>01</span><strong>{copy.atlas}</strong></a>
+  <a href={getDotaItemPlannerPath(lang)} aria-current={active === "planner" ? "page" : undefined}><span>02</span><strong>{copy.planner}</strong></a>
+  <a href={`${root}tools/`}><span>03</span><strong>{copy.tools}</strong></a>
+</nav>

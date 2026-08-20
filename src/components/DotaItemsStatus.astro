@@ -1,0 +1,37 @@
+---
+import { dotaItemsSnapshot, type DotaItemsLocale } from "../data/dota-items";
+
+interface Props { lang: DotaItemsLocale; compact?: boolean; }
+const { lang, compact = false } = Astro.props;
+const dateLocale = lang === "ru" ? "ru-RU" : "en-US";
+const checkedAt = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(dotaItemsSnapshot.fetchedAt));
+const copy = lang === "ru" ? {
+  label: "Живой срез",
+  matches: "профессиональных матчей",
+  coverage: "покрытие ролей",
+  checked: "получено",
+  method: "Методика",
+  note: "Тайминги показаны только при выборке от 200 покупок. Роли без классификации исключены."
+} : {
+  label: "Live snapshot",
+  matches: "professional matches",
+  coverage: "role coverage",
+  checked: "fetched",
+  method: "Methodology",
+  note: "Timings appear only at 200 or more purchases. Unclassified roles are excluded."
+};
+---
+
+<aside class:list={["dota-items-status", { "is-compact": compact }]} aria-label={copy.label}>
+  <div class="dota-items-status-signal"><span></span><strong>{copy.label}</strong></div>
+  <dl>
+    <div><dt>{dotaItemsSnapshot.patch.label}</dt><dd>{lang === "ru" ? "текущий срез" : "current cohort"}</dd></div>
+    <div><dt>{dotaItemsSnapshot.cohort.matches}</dt><dd>{copy.matches}</dd></div>
+    <div><dt>{dotaItemsSnapshot.cohort.roleCoveragePct}%</dt><dd>{copy.coverage}</dd></div>
+  </dl>
+  {!compact && <p>{copy.note}</p>}
+  <div class="dota-items-status-links">
+    <span>{copy.checked} {checkedAt}</span>
+    <a href="#methodology">{copy.method} ↓</a>
+  </div>
+</aside>

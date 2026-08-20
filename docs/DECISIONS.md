@@ -135,3 +135,15 @@ Net outcome, access cost, player attention and failure risk remain useful questi
 ## 2026-08-20: early GTA VI recommendations require repeated measurement
 
 The first 72-hour protocol records platform, game version, protagonist, story stage, starting state, all required costs and time categories. One run remains an observation. A working range needs repeated attempts under comparable conditions, and a recommendation must show both outcome spread and confidence. Later patches create new versions rather than silently rewriting the record.
+
+## 2026-08-20: Dota item medians are context, not prescriptions
+
+The item atlas uses first purchases from parsed professional matches in the current minor-patch window. P25, median, P75 and purchase rate appear only when a role reaches 200 first purchases. Unclassified roles are excluded and their coverage remains visible. A professional window may explain a player's deviation, but it cannot replace hero, draft, map or objective context.
+
+## 2026-08-20: item utility remains outside invented gold efficiency
+
+Money Meta prices only explicit attributes that have a clean base-item reference. Active abilities, passive effects, auras, slot compression, recipe convenience and timing value remain unpriced. The remainder between supported stats and item cost is labeled as unpriced, not as overpayment. The atlas must pair every percentage with a decision interpretation.
+
+## 2026-08-20: recurring data updates require review
+
+The Dota snapshot workflow writes only to the dedicated `automation/dota-item-snapshot` branch and creates or updates a pull request after validation, tests and build pass. It never writes directly to `main` and never merges itself. OpenDota is the first provider; the checked-in snapshot keeps a provider-neutral contract for a later validated STRATZ adapter.

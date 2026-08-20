@@ -1,0 +1,53 @@
+---
+import { dotaItemsSnapshot, getDotaItemPlannerPath, getDotaItemsPath, type DotaItemsLocale } from "../data/dota-items";
+import "../styles/dota-items.css";
+
+interface Props { lang: DotaItemsLocale; }
+const { lang } = Astro.props;
+const reliableCore = dotaItemsSnapshot.items.filter((item) => (item.timings.core?.n ?? 0) >= dotaItemsSnapshot.methodology.minimumSample).length;
+const reliableSupport = dotaItemsSnapshot.items.filter((item) => (item.timings.support?.n ?? 0) >= dotaItemsSnapshot.methodology.minimumSample).length;
+const copy = lang === "ru" ? {
+  kicker: "Новый слой решений",
+  title: "Предметы связаны с матчем, а не стоят отдельным списком.",
+  text: "Сначала посмотри фактический диапазон покупки по роли. Затем проверь цену характеристик, дерево компонентов и свой порядок сборки.",
+  atlas: "Атлас предметов",
+  atlasText: `${dotaItemsSnapshot.items.length} предметов и компонентов из текущей профессиональной выборки. У каждого есть отдельный разбор.`,
+  planner: "План сборки",
+  plannerText: "Поставь от двух до пяти предметов в очередь. Модель покажет минуту, разницу с профессиональной медианой и цену каждого предыдущего шага.",
+  open: "Открыть",
+  core: "надёжных таймингов коров",
+  support: "надёжных таймингов поддержки"
+} : {
+  kicker: "New decision layer",
+  title: "Items belong to match context, not an isolated list.",
+  text: "Start with the observed purchase range for your role. Then inspect priced stats, component structure and your own build order.",
+  atlas: "Item atlas",
+  atlasText: `${dotaItemsSnapshot.items.length} items and components from the current professional cohort, each with its own analysis.`,
+  planner: "Build planner",
+  plannerText: "Queue two to five items. The model shows the projected minute, difference from the pro median and the cost of every earlier step.",
+  open: "Open",
+  core: "reliable core timings",
+  support: "reliable support timings"
+};
+---
+
+<section class="section hub-section dota-item-gateway" aria-labelledby="dota-item-gateway-title">
+  <div class="section-head">
+    <div><span class="section-kicker">{copy.kicker}</span><h2 id="dota-item-gateway-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
+    <span class="count">OpenDota · {dotaItemsSnapshot.patch.label}</span>
+  </div>
+  <div class="dota-item-gateway-grid">
+    <a href={getDotaItemsPath(lang)}>
+      <div class="dota-item-gateway-mark"><span>01</span><b>ATLAS</b></div>
+      <div><h3>{copy.atlas}</h3><p>{copy.atlasText}</p></div>
+      <dl><div><dt>{reliableCore}</dt><dd>{copy.core}</dd></div><div><dt>{reliableSupport}</dt><dd>{copy.support}</dd></div></dl>
+      <strong>{copy.open} →</strong>
+    </a>
+    <a href={getDotaItemPlannerPath(lang)}>
+      <div class="dota-item-gateway-mark is-planner"><span>02</span><b>QUEUE</b></div>
+      <div><h3>{copy.planner}</h3><p>{copy.plannerText}</p></div>
+      <div class="dota-item-gateway-sequence"><span>1</span><i></i><span>2</span><i></i><span>3</span><i></i><span>4</span></div>
+      <strong>{copy.open} →</strong>
+    </a>
+  </div>
+</section>

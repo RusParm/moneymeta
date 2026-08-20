@@ -1,0 +1,14 @@
+---
+import DotaItemPage from "../../../../components/DotaItemPage.astro";
+import { dotaItems } from "../../../../data/dota-items";
+import type { DotaItemRecord } from "../../../../lib/dota-items";
+
+export function getStaticPaths() {
+  return dotaItems.filter((item) => item.key !== "planner").map((item) => ({ params: { item: item.key }, props: { item } }));
+}
+
+interface Props { item: DotaItemRecord; }
+const { item } = Astro.props;
+---
+
+<DotaItemPage lang="ru" item={item} />

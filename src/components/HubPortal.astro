@@ -223,6 +223,8 @@ const dotaPortalMedia = [dotaMedia.quellingBlade, dotaMedia.handOfMidas, dotaMed
 
       <HubDecisionGateway hub={hubId} lang={lang} />
 
+      <slot name="after-gateway" />
+
       <HubJourneyRail hub={hubId} lang={lang} />
 
       <section class="section hub-section portal-media-section" aria-labelledby={`${hubId}-media-title`}>

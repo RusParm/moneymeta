@@ -1,0 +1,286 @@
+---
+import {
+  dotaItems,
+  dotaItemsByKey,
+  dotaItemsSnapshot,
+  getDotaItemEditorial,
+  getDotaItemPath,
+  getDotaItemPlannerPath,
+  getDotaItemsPath,
+  roleLabel,
+  type DotaItemsLocale
+} from "../data/dota-items";
+import { calculateGoldEfficiency, hasReliableTiming, type DotaItemRecord, type DotaItemRole } from "../lib/dota-items";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import DotaItemNav from "./DotaItemNav.astro";
+import DotaItemsStatus from "./DotaItemsStatus.astro";
+import SiteFooter from "./SiteFooter.astro";
+import "../styles/dota-items.css";
+
+interface Props { lang: DotaItemsLocale; item: DotaItemRecord; }
+const { lang, item } = Astro.props;
+const path = getDotaItemPath(item, lang);
+const alternatePath = getDotaItemPath(item, lang === "ru" ? "en" : "ru");
+const atlasPath = getDotaItemsPath(lang);
+const minimumSample = dotaItemsSnapshot.methodology.minimumSample;
+const valuation = calculateGoldEfficiency(item);
+const editorial = getDotaItemEditorial(item);
+const components = item.components.map((key) => dotaItemsByKey.get(key)).filter((value): value is DotaItemRecord => Boolean(value));
+const componentCost = components.reduce((sum, component) => sum + component.cost, 0);
+const completionCost = Math.max(0, item.cost - componentCost);
+const reliableRoles = (["core", "support"] as DotaItemRole[]).filter((role) => hasReliableTiming(item, role, minimumSample));
+const relatedKeys = new Set(item.components);
+const related = [
+  ...components,
+  ...dotaItems
+    .filter((candidate) => candidate.key !== item.key && !relatedKeys.has(candidate.key))
+    .sort((left, right) => {
+      const leftRoleOverlap = reliableRoles.filter((role) => hasReliableTiming(left, role, minimumSample)).length;
+      const rightRoleOverlap = reliableRoles.filter((role) => hasReliableTiming(right, role, minimumSample)).length;
+      return rightRoleOverlap - leftRoleOverlap || Math.abs(left.cost - item.cost) - Math.abs(right.cost - item.cost);
+    })
+].filter((candidate, index, values) => values.findIndex((value) => value.key === candidate.key) === index).slice(0, 6);
+const dateLocale = lang === "ru" ? "ru-RU" : "en-US";
+const fetchedAt = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(dotaItemsSnapshot.fetchedAt));
+
+const copy = lang === "ru" ? {
+  back: "← К атласу предметов",
+  title: `${item.name}: цена и тайминги в Dota 2 7.41e | Money Meta`,
+  description: `${item.name} в Dota 2: стоимость, компоненты, прозрачная оценка характеристик и профессиональные тайминги для коров и поддержки в патче 7.41e.`,
+  kicker: `Dota 2 · предмет · ${dotaItemsSnapshot.patch.label}`,
+  cost: "стоимость",
+  build: item.components.length ? "дерево компонентов" : "покупается напрямую",
+  benchmark: reliableRoles.length ? `${reliableRoles.length} ролевых ориентира` : "нет надёжного тайминга",
+  purpose: "Зачем покупать",
+  bestWhen: "Когда работает",
+  risk: "Где ломается",
+  replay: "Вопрос к реплею",
+  planner: "Добавить в план сборки",
+  atlas: "Вернуться к каталогу",
+  timingKicker: "Профессиональное окно покупки",
+  timingTitle: "Не одна минута, а середина реальной выборки.",
+  timingText: "P25 и P75 очерчивают центральные 50% первых покупок. Это контекст профессиональных матчей, а не обязательный норматив для рейтинговой игры.",
+  cores: "Коры",
+  supports: "Поддержка",
+  median: "медиана",
+  range: "центральные 50%",
+  rate: "доля игроков роли",
+  purchases: "первых покупок",
+  reliable: "показываем",
+  hidden: "цифры скрыты",
+  insufficientTitle: "Выборка не достигла 200 покупок",
+  insufficientText: "Мы сохраняем факт слабой выборки, но не показываем квартиль, медиану и частоту как устойчивый ориентир.",
+  absentTitle: "Предмет не встречается в классифицированной выборке роли",
+  absentText: "Это не доказывает, что покупка неправильная. У текущего среза просто нет основания для числового сравнения.",
+  compare: "Вывод по ролям",
+  buildKicker: "Цена и путь сборки",
+  buildTitle: "Завершение важно ровно настолько, насколько полезен путь к нему.",
+  components: "Компоненты",
+  direct: "Предмет покупается напрямую. Между накоплением золота и готовым эффектом нет полезного промежуточного компонента.",
+  componentSum: "сумма показанных компонентов",
+  completion: "остаток до завершения",
+  gold: "золота",
+  statKicker: "Проверяемая оценка характеристик",
+  statTitle: "Считаем только то, для чего есть чистая базовая цена.",
+  statText: "Активные способности, ауры, экономия слота, удобство дерева и уникальные эффекты не переводятся в золото искусственно.",
+  priced: "оценено через базовые предметы",
+  remainder: "неоценённый остаток",
+  discount: "разница набора",
+  efficiency: "покрытие цены явными характеристиками",
+  noStats: "У предмета нет поддерживаемых явных характеристик. Это не означает нулевую ценность: решение полностью зависит от механики и времени применения.",
+  perUnit: "за единицу",
+  basedOn: "база",
+  abilityKicker: "Механика вне процента",
+  abilityTitle: "Что нельзя честно свести к цене характеристик.",
+  activeNote: "Названия механик приведены для идентификации. Точный текущий текст и числа проверяй в клиенте Dota 2; атлас оценивает решение, а не заменяет описание игры.",
+  relatedKicker: "Продолжить сравнение",
+  relatedTitle: "Компоненты и соседние решения по бюджету.",
+  methodology: "Методика и источники",
+  fetched: "Срез получен",
+  sourceBoundary: "OpenDota даёт наблюдаемые покупки и константы предметов. Money Meta рассчитывает квартиль, прозрачную оценку характеристик и интерпретацию. Valve задаёт границу текущего патча.",
+  source: "Открыть источник"
+} : {
+  back: "← Back to item atlas",
+  title: `${item.name}: Dota 2 7.41e cost and timings | Money Meta`,
+  description: `${item.name} in Dota 2: cost, components, transparent stat pricing and professional core and support timings in Patch 7.41e.`,
+  kicker: `Dota 2 · item · ${dotaItemsSnapshot.patch.label}`,
+  cost: "cost",
+  build: item.components.length ? "component tree" : "direct purchase",
+  benchmark: reliableRoles.length ? `${reliableRoles.length} role benchmarks` : "no reliable timing",
+  purpose: "Purchase purpose",
+  bestWhen: "When it works",
+  risk: "Where it breaks",
+  replay: "Replay question",
+  planner: "Add to build planner",
+  atlas: "Back to catalog",
+  timingKicker: "Professional purchase window",
+  timingTitle: "Not one minute, but the middle of an observed sample.",
+  timingText: "P25 and P75 bound the middle 50% of first purchases. This is professional-match context, not a mandatory target for ranked play.",
+  cores: "Cores",
+  supports: "Supports",
+  median: "median",
+  range: "middle 50%",
+  rate: "share of role players",
+  purchases: "first purchases",
+  reliable: "shown",
+  hidden: "numbers hidden",
+  insufficientTitle: "The sample has not reached 200 purchases",
+  insufficientText: "We preserve the weak-sample fact but do not present quartiles, median or rate as a stable benchmark.",
+  absentTitle: "The item does not appear in this classified role cohort",
+  absentText: "That does not prove the purchase is wrong. The current snapshot simply has no basis for a numeric comparison.",
+  compare: "Role conclusion",
+  buildKicker: "Cost and build path",
+  buildTitle: "A completion is only as useful as the path toward it.",
+  components: "Components",
+  direct: "This item is bought directly. There is no useful intermediate component between saved gold and the finished effect.",
+  componentSum: "shown component total",
+  completion: "remaining completion cost",
+  gold: "gold",
+  statKicker: "Auditable stat pricing",
+  statTitle: "Price only what has a clean base-item reference.",
+  statText: "Active abilities, auras, slot compression, build convenience and unique effects are never assigned invented gold values.",
+  priced: "priced through base items",
+  remainder: "unpriced remainder",
+  discount: "bundle difference",
+  efficiency: "cost covered by explicit stats",
+  noStats: "The item has no supported explicit stats. That does not mean zero value: the decision depends entirely on its mechanic and timing.",
+  perUnit: "per unit",
+  basedOn: "baseline",
+  abilityKicker: "Mechanics outside the percentage",
+  abilityTitle: "What cannot honestly be reduced to stat cost.",
+  activeNote: "Mechanic names identify the item. Check exact live wording and numbers in the Dota 2 client; the atlas evaluates the decision rather than replacing the game description.",
+  relatedKicker: "Continue comparing",
+  relatedTitle: "Components and nearby budget decisions.",
+  methodology: "Methodology and sources",
+  fetched: "Snapshot fetched",
+  sourceBoundary: "OpenDota supplies observed purchases and item constants. Money Meta calculates quartiles, transparent stat pricing and interpretation. Valve defines the current patch boundary.",
+  source: "Open source"
+};
+
+const roleCopy = (role: DotaItemRole) => role === "core" ? copy.cores : copy.supports;
+const comparison = (() => {
+  const core = hasReliableTiming(item, "core", minimumSample) ? item.timings.core! : null;
+  const support = hasReliableTiming(item, "support", minimumSample) ? item.timings.support! : null;
+  if (core && support) {
+    const earlier = core.median <= support.median ? "core" : "support";
+    const difference = Math.abs(core.median - support.median).toFixed(1);
+    return lang === "ru"
+      ? `В текущем срезе медиана ${roleLabel[earlier][lang]} наступает на ${difference} мин. раньше. Частота покупки: коры ${core.purchaseRatePct.toFixed(1)}%, поддержка ${support.purchaseRatePct.toFixed(1)}%. Разница описывает задачи ролей, а не универсально лучший порядок.`
+      : `In the current snapshot, the ${roleLabel[earlier][lang]} median arrives ${difference} min earlier. Purchase rate: cores ${core.purchaseRatePct.toFixed(1)}%, supports ${support.purchaseRatePct.toFixed(1)}%. The gap describes role jobs, not one universally better order.`;
+  }
+  if (core || support) {
+    const role = core ? "core" : "support";
+    return lang === "ru"
+      ? `Надёжный ориентир есть только для роли «${roleCopy(role)}». Для второй роли Money Meta не делает вывод из слабой выборки.`
+      : `Only the ${roleCopy(role)} role has a reliable benchmark. Money Meta does not infer a conclusion from the weaker role sample.`;
+  }
+  return lang === "ru"
+    ? "У предмета нет ролевой выборки n ≥ 200. Решение остаётся на уровне механики, состояния карты и собственного реплея."
+    : "The item has no role sample at n ≥ 200. The decision remains a question of mechanics, map state and your own replay.";
+})();
+---
+
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={path}
+  alternatePath={alternatePath}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: copy.title,
+    description: copy.description,
+    inLanguage: lang,
+    dateModified: dotaItemsSnapshot.fetchedAt,
+    about: [{ "@type": "VideoGame", name: "Dota 2", publisher: "Valve" }, { "@type": "Thing", name: item.name }],
+    breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Dota 2", item: new URL(lang === "ru" ? "/dota-2/" : "/en/dota-2/", Astro.site).href },
+      { "@type": "ListItem", position: 2, name: lang === "ru" ? "Атлас предметов" : "Item atlas", item: new URL(atlasPath, Astro.site).href },
+      { "@type": "ListItem", position: 3, name: item.name, item: new URL(path, Astro.site).href }
+    ] }
+  }}
+>
+  <main class="page dota-items-page dota-item-detail">
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getDotaItemPath(item, "ru")} enPath={getDotaItemPath(item, "en")} backPath={atlasPath} backLabel={copy.back} />
+
+      <header class="dota-item-detail-hero">
+        <div class="dota-item-detail-copy">
+          <nav class="dota-item-breadcrumb" aria-label="Breadcrumb"><a href={lang === "ru" ? "/dota-2/" : "/en/dota-2/"}>Dota 2</a><span>/</span><a href={atlasPath}>{lang === "ru" ? "Предметы" : "Items"}</a><span>/</span><strong>{item.name}</strong></nav>
+          <p class="eyebrow">{copy.kicker}</p>
+          <h1>{item.name}</h1>
+          <p class="lede">{editorial.purpose[lang]}</p>
+          <div class="dota-item-detail-facts"><span><b>{item.cost.toLocaleString("en-US")}</b>{copy.cost}</span><span><b>{item.components.length || "0"}</b>{copy.build}</span><span><b>{reliableRoles.length}</b>{copy.benchmark}</span></div>
+          <div class="hero-actions"><a class="button primary button-large" href={`${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=${item.key}`}>{copy.planner} →</a><a class="button ghost button-large" href={atlasPath}>{copy.atlas}</a></div>
+        </div>
+        <div class="dota-item-portrait"><span>{item.name.slice(0, 2).toUpperCase()}</span><img src={item.image} alt={item.name} width="352" height="256" loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" onerror="this.style.display='none'" /><small>Valve item icon · OpenDota constants</small></div>
+      </header>
+
+      <DotaItemNav lang={lang} active="item" />
+
+      <section class="dota-item-editorial-grid" aria-label={copy.purpose}>
+        {([[copy.purpose, editorial.purpose[lang]], [copy.bestWhen, editorial.bestWhen[lang]], [copy.risk, editorial.risk[lang]], [copy.replay, editorial.replayQuestion[lang]]] as string[][]).map(([title, text], index) => <article class:list={{ "is-question": index === 3 }}><span>0{index + 1}</span><h2>{title}</h2><p>{text}</p></article>)}
+      </section>
+
+      <section class="section dota-item-timings" aria-labelledby="dota-item-timings-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.timingKicker}</span><h2 id="dota-item-timings-title">{copy.timingTitle}</h2><p class="section-copy">{copy.timingText}</p></div><span class="count">OpenDota · {dotaItemsSnapshot.patch.label}</span></div>
+        <div class="dota-item-timing-grid">
+          {(["core", "support"] as DotaItemRole[]).map((role) => {
+            const timing = item.timings[role];
+            const reliable = hasReliableTiming(item, role, minimumSample);
+            const scale = timing ? Math.max(45, Math.ceil(timing.p75 + 5)) : 45;
+            return <article class:list={["dota-item-timing-panel", { "is-reliable": reliable }]}>
+              <header><div><span>{role === "core" ? "CORE" : "SUPPORT"}</span><h3>{roleCopy(role)}</h3></div><b>{reliable ? copy.reliable : copy.hidden}</b></header>
+              {reliable && timing ? <>
+                <div class="dota-timing-primary"><strong>{timing.median.toFixed(1)}</strong><span>{copy.median} · min</span></div>
+                <div class="dota-timing-axis" style={`--p25:${timing.p25 / scale * 100}%;--median:${timing.median / scale * 100}%;--p75:${timing.p75 / scale * 100}%`}><i></i><b></b><span></span><small>0</small><small>{scale} min</small></div>
+                <dl><div><dt>{copy.range}</dt><dd>{timing.p25.toFixed(1)} - {timing.p75.toFixed(1)} min</dd></div><div><dt>{copy.rate}</dt><dd>{timing.purchaseRatePct.toFixed(1)}%</dd></div><div><dt>{copy.purchases}</dt><dd>n {timing.n}</dd></div></dl>
+              </> : <div class="dota-timing-insufficient"><strong>{timing ? copy.insufficientTitle : copy.absentTitle}</strong><p>{timing ? copy.insufficientText : copy.absentText}</p><span>{timing ? `n ${timing.n} / ${minimumSample}` : `n 0 / ${minimumSample}`}</span></div>}
+            </article>;
+          })}
+        </div>
+        <div class="dota-role-comparison"><span>{copy.compare}</span><p>{comparison}</p></div>
+      </section>
+
+      <section class="section dota-item-build" aria-labelledby="dota-item-build-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.buildKicker}</span><h2 id="dota-item-build-title">{copy.buildTitle}</h2></div><span class="count">{item.cost.toLocaleString("en-US")} {copy.gold}</span></div>
+        {components.length ? <>
+          <div class="dota-component-flow">
+            {components.map((component, index) => <><a href={getDotaItemPath(component, lang)}><span><img src={component.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span><strong>{component.name}</strong><small>{component.cost.toLocaleString("en-US")}</small></a>{index < components.length - 1 && <i>+</i>}</>)}
+            <i>=</i><div class="dota-component-result"><span><img src={item.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span><strong>{item.name}</strong><small>{item.cost.toLocaleString("en-US")}</small></div>
+          </div>
+          <dl class="dota-component-ledger"><div><dt>{copy.componentSum}</dt><dd>{componentCost.toLocaleString("en-US")}</dd></div><div><dt>{copy.completion}</dt><dd>{completionCost.toLocaleString("en-US")}</dd></div></dl>
+        </> : <div class="dota-item-direct"><span>DIRECT</span><p>{copy.direct}</p></div>}
+      </section>
+
+      <section class="section dota-item-valuation" aria-labelledby="dota-item-valuation-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.statKicker}</span><h2 id="dota-item-valuation-title">{copy.statTitle}</h2><p class="section-copy">{copy.statText}</p></div><span class="count">Money Meta · auditable</span></div>
+        {valuation.lines.length ? <div class="dota-valuation-layout">
+          <div class="dota-valuation-summary">
+            <div><span>{copy.priced}</span><strong>{Math.round(valuation.pricedValue).toLocaleString("en-US")}</strong><small>{copy.gold}</small></div>
+            <div><span>{valuation.unpricedRemainder >= 0 ? copy.remainder : copy.discount}</span><strong>{Math.round(Math.abs(valuation.unpricedRemainder)).toLocaleString("en-US")}</strong><small>{copy.gold}</small></div>
+            <div><span>{copy.efficiency}</span><strong>{valuation.efficiencyPct?.toFixed(1)}%</strong><small>{valuation.lines.length} {lang === "ru" ? "групп характеристик" : "priced stat groups"}</small></div>
+          </div>
+          <div class="dota-valuation-lines">{valuation.lines.map((line) => <div><span>{line.label[lang]} · {line.quantity}</span><strong>{Math.round(line.goldValue).toLocaleString("en-US")}</strong><small>{Math.round(line.goldPerUnit * 100) / 100} {copy.perUnit} · {copy.basedOn}: {line.baseline}</small></div>)}</div>
+        </div> : <div class="dota-item-no-stats"><span>UNPRICED ≠ ZERO</span><p>{copy.noStats}</p></div>}
+
+        {item.abilities.length > 0 && <div class="dota-item-abilities"><div><span class="section-kicker">{copy.abilityKicker}</span><h3>{copy.abilityTitle}</h3><p>{copy.activeNote}</p></div><ul>{item.abilities.map((ability) => <li><span>{ability.type}</span><strong>{ability.title}</strong></li>)}</ul></div>}
+      </section>
+
+      <section class="section dota-item-related" aria-labelledby="dota-item-related-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.relatedKicker}</span><h2 id="dota-item-related-title">{copy.relatedTitle}</h2></div></div>
+        <div class="dota-item-related-grid">{related.map((candidate) => <a href={getDotaItemPath(candidate, lang)}><span><img src={candidate.image} alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.style.display='none'" /></span><div><strong>{candidate.name}</strong><small>{candidate.cost.toLocaleString("en-US")} {copy.gold}</small></div><b>→</b></a>)}</div>
+      </section>
+
+      <section id="methodology" class="section dota-item-source">
+        <div><span class="section-kicker">{copy.methodology}</span><h2>{copy.fetched}: {fetchedAt}</h2><p>{copy.sourceBoundary}</p></div>
+        <DotaItemsStatus lang={lang} compact />
+        <div class="dota-item-source-links">{dotaItemsSnapshot.sources.map((source) => <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label} · {copy.source} ↗</a>)}</div>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

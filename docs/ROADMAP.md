@@ -130,7 +130,15 @@
 - Weekly Meta with freshness guard.
 - Cross-device profile and result-card export.
 - Email capture and weekly brief.
-- Dota 2 public-data feasibility check for repeatable match-economy benchmarks.
+- Dota 2 item atlas and build-order planner with a recurring current-patch snapshot.
+
+## P2.1: v1.13 Dota item decision layer
+
+- Current-patch OpenDota snapshot with explicit cohort, role coverage and a minimum sample of 200 purchases.
+- Standalone RU/EN item atlas with filters, explicit pagination and one stable URL per observed item.
+- Transparent stat pricing that leaves active, passive and slot utility unpriced.
+- Shareable two-to-five-item planner with projected completion minute, pro median delta and build-order delay.
+- Scheduled snapshot updates through a dedicated automation pull request, never a direct `main` write.
 
 ## Later
 
