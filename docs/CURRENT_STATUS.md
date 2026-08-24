@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-08-19
+Updated: 2026-08-24
 
 ## Baseline
 
@@ -194,7 +194,7 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Added a daily automation that updates only a dedicated snapshot branch and pull request after validation, tests and static build pass.
 - The current snapshot contains 367 parsed professional matches, 3,183 classified player rows, 86.7% role coverage and 188 observed items or components.
 
-## Active release candidate: v1.14 compact decision portals
+## Production release: v1.14 compact decision portals
 
 - Rebuilt all five localized root hubs around three deliberate layers: current context, game-native quick start and a compact command center.
 - Removed the duplicated full destination grid, media gallery, long guide cards, expanded playbook rail and standalone source section from every root without removing their focused URLs.
@@ -203,3 +203,15 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Mobile gateway choices, destination cards, playbooks and guide entry points use contained horizontal rails. Text and marks occupy separate grid columns with explicit minimum-width guards.
 - Fixed the Dota item atlas cascade bug that rendered hidden cards. Pagination now shows twelve cards per page and has a regression test for both page size and hidden-state display.
 - Ninety automated tests pass. Five hundred sixty-five static pages build with zero Astro diagnostics. HTTPS preview browser QA remains required before production promotion.
+
+## Active release candidate: v1.15 growth foundation and WoW inventory turn
+
+- Keeps Vercel Web Analytics as the single analytics system and adds anonymous events for tool starts, tool and guide routes, weekly brief opens and update CTAs. Player-entered numeric values are never included.
+- Adds optional Google Search Console verification through `PUBLIC_GOOGLE_SITE_VERIFICATION`; property verification and sitemap submission still require the owner's token.
+- Adds context-aware update CTAs and a standalone RU/EN editorial desk. `PUBLIC_TELEGRAM_URL` switches the complete site to the real channel once supplied, while the pre-connection state uses useful internal destinations.
+- Adds a permanent RU/EN GTA Online Weekly address with a dated three-decision brief for Brand Wars through August 26. The expired August 21-23 VIP Work window is explicitly removed from the current plan.
+- Repackages three high-intent GTA Online analyses with a direct first-screen answer and a visible working-model boundary.
+- Adds a twenty-query RU/EN GTA VI roadmap with publication gates. The official dossier was rechecked on August 24 ahead of the August 27 Extended Look.
+- Adds a standalone RU/EN WoW Inventory Turn Planner with protected reserve, batch ceiling, first-cycle cash recovery, remaining stock at cost and time-to-90%-sold. The existing inventory-trap analysis now routes into this tool.
+- Adds a five-hub quality audit and a sequenced deepening plan that keeps every hub live rather than freezing four of them.
+- Ninety-eight automated tests pass. Five hundred seventy-one static pages build with zero Astro diagnostics, and the generated-site audit reports zero missing internal destinations. HTTPS desktop Preview QA passed across all five hubs and the new GTA Weekly, Updates and WoW Inventory Turn routes; the Dota section-rail mark collision found during QA is fixed and covered at desktop and mobile breakpoints. A physical mobile viewport remains the final gate before any production promotion.

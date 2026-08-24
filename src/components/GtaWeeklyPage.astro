@@ -1,0 +1,83 @@
+---
+import { weeklyMeta } from "../data/gta-businesses";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const path = lang === "ru" ? "/gta-online/weekly/" : "/en/gta-online/weekly/";
+const alternatePath = lang === "ru" ? "/en/gta-online/weekly/" : "/gta-online/weekly/";
+const hubPath = lang === "ru" ? "/gta-online/" : "/en/gta-online/";
+const modelPath = lang === "ru" ? "/gta-online/tools/" : "/en/gta-online/tools/";
+const analysisPath = `${lang === "ru" ? "" : "/en"}/insights/gta-online-when-weekly-bonus-changes-plan/`;
+const copy = lang === "ru" ? {
+  title: "Еженедельник GTA Online: бонусы и лучший план до 26 августа 2026",
+  description: "Короткий план GTA Online на неделю Brand Wars: что забрать бесплатно, какой 4X-маршрут проверить и какие завершённые бонусы не учитывать.",
+  back: "← GTA Online",
+  kicker: "Выпуск 01 · Brand Wars · 24 августа 2026",
+  heading: "До 26 августа: забери бесплатное, проверь 4X и не покупай актив ради уходящего окна.",
+  lede: "Это не пересказ Newswire. Ниже только три решения, их срок действия и граница, после которой недельный бонус перестаёт быть аргументом.",
+  verified: "Проверено по Rockstar Newswire",
+  valid: "Актуально до",
+  actions: "Три решения недели",
+  actionsText: "Выполняй сверху вниз. Если шаг не подходит твоему профилю, переходи дальше без чувства упущенной выгоды.",
+  order: [
+    ["01", "Сначала бесплатный актив", "Забери Hotring Sabre, только если он нужен для коллекции или гонок. Не записывай полную цену автомобиля в прибыль."],
+    ["02", "Затем короткий тест 4X", "Проведи 2-3 события свободного режима и запиши выплату вместе с ожиданием и перемещением. Сравни с обычным маршрутом."],
+    ["03", "После 26 августа сбрось сценарий", "Не оставляй множитель в калькуляторе. Производственные бизнесы снова сравниваются по обычному циклу."]
+  ],
+  source: "Официальный выпуск Rockstar",
+  model: "Проверить свой сценарий",
+  analysis: "Прочитать полный разбор",
+  boundary: "Что не меняется",
+  boundaryText: "Brand Wars не подтверждает новую постоянную выплату Кислотной лаборатории, Бункера или Ночного клуба. Их долгосрочные модели остаются без временного множителя, пока источник прямо не относится к конкретной продаже.",
+  next: "Следующая проверка",
+  nextText: "После публикации нового официального окна этот адрес обновится. Старый выпуск останется в истории данных, а не будет молча переписан."
+} : {
+  title: "GTA Online weekly: bonuses and best plan through August 26, 2026",
+  description: "A short Brand Wars plan: what to claim for free, which 4X route to test and which expired boost to remove from the current case.",
+  back: "← GTA Online",
+  kicker: "Issue 01 · Brand Wars · August 24, 2026",
+  heading: "Through August 26: claim the free option, test 4X and do not buy an asset for an expiring window.",
+  lede: "This is not a Newswire recap. It contains three decisions, their validity window and the boundary where a weekly boost stops being an investment argument.",
+  verified: "Verified against Rockstar Newswire",
+  valid: "Valid through",
+  actions: "Three decisions this week",
+  actionsText: "Run them top to bottom. If a step does not fit your profile, move on without treating it as lost profit.",
+  order: [
+    ["01", "Claim the free asset first", "Take the Hotring Sabre only when it belongs in your collection or race plan. Do not record its full list price as profit."],
+    ["02", "Run a short 4X sample", "Complete 2-3 Freemode events and record payout together with waiting and travel. Compare the realized result with your normal route."],
+    ["03", "Reset the scenario after August 26", "Remove the multiplier from the model. Production assets return to their normal unit economics."]
+  ],
+  source: "Open the official Rockstar issue",
+  model: "Test your own scenario",
+  analysis: "Read the full analysis",
+  boundary: "What does not change",
+  boundaryText: "Brand Wars does not confirm a new permanent Acid Lab, Bunker or Nightclub payout. Their long-horizon models remain multiplier-free unless the source explicitly applies to that sale.",
+  next: "Next check",
+  nextText: "This stable address updates after the next official window is published. The old issue remains in the data history instead of being silently rewritten."
+};
+---
+
+<BaseLayout title={`${copy.title} | Money Meta`} description={copy.description} lang={lang} canonicalPath={path} alternatePath={alternatePath} schema={{ "@context": "https://schema.org", "@type": "Article", headline: copy.title, dateModified: weeklyMeta.checkedAt, inLanguage: lang, author: { "@type": "Organization", name: "Money Meta" } }}>
+  <main class="page gta-weekly-page game-gta">
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/gta-online/weekly/" enPath="/en/gta-online/weekly/" backPath={hubPath} backLabel={copy.back} />
+      <header class="gta-weekly-hero">
+        <div><span class="section-kicker">{copy.kicker}</span><h1>{copy.heading}</h1><p>{copy.lede}</p></div>
+        <aside><span>{copy.verified}</span><strong>{copy.valid} {weeklyMeta.validThrough}</strong><a href={weeklyMeta.sourceUrl} target="_blank" rel="noopener noreferrer">{weeklyMeta.sourceLabel} ↗</a></aside>
+      </header>
+      <section class="gta-weekly-decisions" aria-labelledby="gta-weekly-decisions-title">
+        <header><span class="section-kicker">GTA$ / TIME / WINDOW</span><h2 id="gta-weekly-decisions-title">{copy.actions}</h2><p>{copy.actionsText}</p></header>
+        <div>{weeklyMeta.opportunities.map((item, index) => <article data-ended={item.id === "vip-work-weekend" ? "true" : undefined}><span>0{index + 1}</span><small>{item.signal[lang]}</small><h3>{item.title[lang]}</h3><p>{item.summary[lang]}</p><strong>{item.decision[lang]}</strong></article>)}</div>
+      </section>
+      <section class="gta-weekly-order" aria-label={copy.actions}>
+        {copy.order.map(([code, title, text]) => <article><span>{code}</span><div><h2>{title}</h2><p>{text}</p></div></article>)}
+      </section>
+      <section class="gta-weekly-boundary"><div><span class="section-kicker">MODEL BOUNDARY</span><h2>{copy.boundary}</h2><p>{copy.boundaryText}</p></div><nav><a class="button primary" href={modelPath} data-analytics-event="tool_open" data-analytics-surface="gta-weekly">{copy.model} →</a><a href={analysisPath} data-analytics-event="guide_open" data-analytics-surface="gta-weekly">{copy.analysis}</a><a href={weeklyMeta.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} ↗</a></nav></section>
+      <aside class="gta-weekly-next"><strong>{copy.next}</strong><p>{copy.nextText}</p></aside>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

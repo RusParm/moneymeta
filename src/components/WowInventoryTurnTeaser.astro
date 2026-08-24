@@ -1,0 +1,7 @@
+---
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const href = lang === "ru" ? "/wow/tools/inventory-turn/" : "/en/wow/tools/inventory-turn/";
+const copy = lang === "ru" ? { kicker: "Новый отдельный инструмент", title: "Планировщик оборота партии", text: "Ограничь объём защищённым резервом, долей продаж и сроком. Увидишь возврат денег и непроданный капитал до изготовления.", action: "Рассчитать размер партии" } : { kicker: "New dedicated tool", title: "Inventory Turn Planner", text: "Cap batch size with a protected reserve, sell-through and time horizon. See cash recovery and unsold capital before crafting.", action: "Set a safe batch" };
+---
+<aside class="wow-turn-teaser"><div><span>{copy.kicker}</span><h2>{copy.title}</h2><p>{copy.text}</p></div><a class="button primary" href={href} data-analytics-event="tool_open" data-analytics-surface="wow-tools">{copy.action} →</a></aside>

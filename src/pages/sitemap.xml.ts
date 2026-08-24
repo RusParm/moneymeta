@@ -12,6 +12,8 @@ const corePaths = [
   "/en/dota-2/",
   "/wow/",
   "/en/wow/",
+  "/wow/tools/inventory-turn/",
+  "/en/wow/tools/inventory-turn/",
   "/total-war/",
   "/en/total-war/",
   "/crusader-kings-3/",
@@ -20,6 +22,8 @@ const corePaths = [
   "/en/gta-online/",
   "/gta-online/calculators/business-roi/",
   "/en/gta-online/calculators/business-roi/",
+  "/gta-online/weekly/",
+  "/en/gta-online/weekly/",
   "/gta-6/",
   "/en/gta-6/",
   "/gta-6/economy/",
@@ -28,6 +32,8 @@ const corePaths = [
   "/en/gta-6/from-gta-online/",
   "/gta-6/launch-watch/",
   "/en/gta-6/launch-watch/",
+  "/updates/",
+  "/en/updates/",
   "/insights/",
   "/en/insights/"
 ];

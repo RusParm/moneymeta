@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { craftingBaseline, farmBaseline, orderBaseline } from "../src/data/wow-economy";
-import { calculateCraftingMetrics, calculateFarmMetrics, calculateMarketLedger, calculateWorkOrderMetrics, rankWowMarketRoutes } from "../src/lib/wow-economy";
+import { craftingBaseline, farmBaseline, inventoryTurnBaseline, orderBaseline } from "../src/data/wow-economy";
+import { calculateCraftingMetrics, calculateFarmMetrics, calculateInventoryTurn, calculateMarketLedger, calculateWorkOrderMetrics, rankWowMarketRoutes } from "../src/lib/wow-economy";
 
 describe("WoW crafting economics", () => {
   it("deducts the Auction House cut before measuring crafting profit", () => {
@@ -88,6 +88,40 @@ describe("WoW market ledger", () => {
     const metrics = calculateMarketLedger({ liquidGold: 10_000, listedInventoryValue: 150_000, sellThroughPercent: 20, auctionHouseCutPercent: 5, weeklyOperatingSpend: 8_000, cycleDays: 7 });
     expect(metrics.state).toBe("inventory-heavy");
     expect(metrics.inventoryAtRisk).toBeGreaterThan(metrics.expectedInventoryCash);
+  });
+});
+
+describe("WoW inventory turn planner", () => {
+  it("protects the reserve before setting a batch ceiling", () => {
+    const metrics = calculateInventoryTurn(inventoryTurnBaseline);
+
+    expect(metrics.deploymentBudget).toBe(25_000);
+    expect(metrics.safeBatchUnits).toBe(30);
+    expect(metrics.capitalDeployed).toBe(24_750);
+    expect(metrics.cashAfterDeployment).toBeGreaterThanOrEqual(inventoryTurnBaseline.protectedReserve);
+  });
+
+  it("keeps unsold stock separate from first-cycle cash", () => {
+    const metrics = calculateInventoryTurn(inventoryTurnBaseline);
+
+    expect(metrics.expectedFirstCycleCash).toBeCloseTo(17_634.375, 3);
+    expect(metrics.expectedRemainingUnits).toBeCloseTo(2.73375, 5);
+    expect(metrics.remainingCapitalAtCost).toBeGreaterThan(0);
+    expect(metrics.state).toBe("scalable");
+  });
+
+  it("blocks scaling when the sale price is below the net cost", () => {
+    const metrics = calculateInventoryTurn({ ...inventoryTurnBaseline, salePricePerUnit: 800 });
+
+    expect(metrics.expectedFirstCycleProfit).toBeLessThan(0);
+    expect(metrics.state).toBe("negative-margin");
+  });
+
+  it("flags a slow market as an inventory trap", () => {
+    const metrics = calculateInventoryTurn({ ...inventoryTurnBaseline, sellThroughPercentPerCycle: 15, targetCycles: 3 });
+
+    expect(metrics.expectedRemainingUnits).toBeGreaterThan(metrics.safeBatchUnits * 0.4);
+    expect(metrics.state).toBe("inventory-trap");
   });
 });
 

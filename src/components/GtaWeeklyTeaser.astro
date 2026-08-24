@@ -1,0 +1,8 @@
+---
+import { weeklyMeta } from "../data/gta-businesses";
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const href = lang === "ru" ? "/gta-online/weekly/" : "/en/gta-online/weekly/";
+const copy = lang === "ru" ? { kicker: "Новый постоянный адрес", title: "Еженедельник GTA Online", text: "Три решения по текущему окну: бесплатный актив, короткий тест множителя и явная дата, когда сценарий нужно сбросить.", action: "Открыть выпуск", checked: "проверено" } : { kicker: "New stable destination", title: "GTA Online Weekly", text: "Three decisions for the active window: a free asset, a short multiplier test and the exact date when the scenario must reset.", action: "Open the issue", checked: "checked" };
+---
+<aside class="gta-weekly-teaser"><div><span>{copy.kicker}</span><h2>{copy.title}</h2><p>{copy.text}</p></div><div><strong>{weeklyMeta.sourceLabel}</strong><small>{copy.checked} {weeklyMeta.checkedAt} · → {weeklyMeta.validThrough}</small><a class="button primary" href={href} data-analytics-event="weekly_open" data-analytics-surface="gta-meta">{copy.action} →</a></div></aside>

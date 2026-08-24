@@ -149,6 +149,16 @@
 - Fix Dota item atlas pagination so only twelve current-page cards are visible and the URL retains filter and page state.
 - Require local tests, static build and responsive HTTPS preview QA before any production decision.
 
+## P2.3: v1.15 acquisition foundation and sequential hub depth
+
+- Keep one analytics system and add a small anonymous event contract around decisions, not vanity interaction counts.
+- Prepare Search Console verification and a context-aware update/Telegram path without inventing external account details.
+- Publish a stable GTA Online Weekly route with dated decisions and a strict expired-bonus boundary.
+- Repackage three high-intent GTA Online answers and maintain a twenty-query official-only GTA VI roadmap.
+- Deepen one hub per sprint while all five remain on the freshness and correction board.
+- First deep focus: WoW protected-reserve and inventory-turn planning on a standalone route instead of lengthening the tools index.
+- Next focus: Total War campaign presets, then Crusader Kings dynasty runway, then Dota replay-economy capture.
+
 ## Later
 
 - Authentication and cross-device profiles.

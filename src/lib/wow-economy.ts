@@ -82,6 +82,33 @@ export interface MarketLedgerMetrics {
   state: "liquid" | "balanced" | "inventory-heavy";
 }
 
+export interface InventoryTurnInput {
+  liquidGold: number;
+  protectedReserve: number;
+  maxDeploymentPercent: number;
+  unitCost: number;
+  salePricePerUnit: number;
+  auctionHouseCutPercent: number;
+  sellThroughPercentPerCycle: number;
+  cycleDays: number;
+  targetCycles: number;
+}
+
+export interface InventoryTurnMetrics {
+  deploymentBudget: number;
+  safeBatchUnits: number;
+  capitalDeployed: number;
+  cashAfterDeployment: number;
+  netSalePricePerUnit: number;
+  expectedFirstCycleCash: number;
+  expectedFirstCycleProfit: number;
+  firstCycleCashRecoveryPercent: number;
+  expectedRemainingUnits: number;
+  remainingCapitalAtCost: number;
+  daysToNinetyPercentSold: number;
+  state: "no-budget" | "negative-margin" | "inventory-trap" | "test-batch" | "scalable";
+}
+
 export type WowRouteMetric = "capitalAccess" | "liquidity" | "timeFit" | "specializationMoat" | "priceResilience" | "lowFriction";
 
 export interface WowMarketRouteMetrics {
@@ -252,6 +279,64 @@ export function calculateMarketLedger(input: MarketLedgerInput): MarketLedgerMet
     liquidityRatioPercent,
     postCycleCash,
     capitalVelocityPerWeek,
+    state
+  };
+}
+
+export function calculateInventoryTurn(input: InventoryTurnInput): InventoryTurnMetrics {
+  const liquidGold = positive(input.liquidGold);
+  const protectedReserve = positive(input.protectedReserve);
+  const maxDeployment = percentage(input.maxDeploymentPercent);
+  const unitCost = positive(input.unitCost);
+  const salePrice = positive(input.salePricePerUnit);
+  const auctionHouseCut = percentage(input.auctionHouseCutPercent);
+  const sellThrough = percentage(input.sellThroughPercentPerCycle);
+  const cycleDays = Math.max(0.1, positive(input.cycleDays));
+  const targetCycles = Math.max(1, Math.round(positive(input.targetCycles)));
+
+  const availableAboveReserve = Math.max(0, liquidGold - protectedReserve);
+  const deploymentBudget = availableAboveReserve * maxDeployment;
+  const safeBatchUnits = unitCost > 0 ? Math.floor(deploymentBudget / unitCost) : 0;
+  const capitalDeployed = safeBatchUnits * unitCost;
+  const cashAfterDeployment = liquidGold - capitalDeployed;
+  const netSalePricePerUnit = salePrice * (1 - auctionHouseCut);
+  const expectedSoldFirstCycle = safeBatchUnits * sellThrough;
+  const expectedFirstCycleCash = expectedSoldFirstCycle * netSalePricePerUnit;
+  const expectedFirstCycleProfit = expectedSoldFirstCycle * (netSalePricePerUnit - unitCost);
+  const firstCycleCashRecoveryPercent = capitalDeployed > 0 ? expectedFirstCycleCash / capitalDeployed * 100 : 0;
+  const expectedRemainingUnits = safeBatchUnits * Math.pow(1 - sellThrough, targetCycles);
+  const remainingCapitalAtCost = expectedRemainingUnits * unitCost;
+  const cyclesToNinetyPercentSold = sellThrough <= 0
+    ? Number.POSITIVE_INFINITY
+    : sellThrough >= 1
+      ? 1
+      : Math.ceil(Math.log(0.1) / Math.log(1 - sellThrough));
+  const daysToNinetyPercentSold = Number.isFinite(cyclesToNinetyPercentSold)
+    ? cyclesToNinetyPercentSold * cycleDays
+    : Number.POSITIVE_INFINITY;
+  const remainingShare = safeBatchUnits > 0 ? expectedRemainingUnits / safeBatchUnits : 1;
+  const state = safeBatchUnits === 0
+    ? "no-budget"
+    : netSalePricePerUnit <= unitCost
+      ? "negative-margin"
+      : remainingShare > 0.4
+        ? "inventory-trap"
+        : firstCycleCashRecoveryPercent >= 70 && remainingShare <= 0.2
+          ? "scalable"
+          : "test-batch";
+
+  return {
+    deploymentBudget,
+    safeBatchUnits,
+    capitalDeployed,
+    cashAfterDeployment,
+    netSalePricePerUnit,
+    expectedFirstCycleCash,
+    expectedFirstCycleProfit,
+    firstCycleCashRecoveryPercent,
+    expectedRemainingUnits,
+    remainingCapitalAtCost,
+    daysToNinetyPercentSold,
     state
   };
 }

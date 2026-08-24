@@ -28,6 +28,8 @@ export interface LocalizedInsight {
   description: string;
   kicker: string;
   thesis: string;
+  answer?: string;
+  answerLabel?: string;
   readTime: string;
   takeaways: string[];
   sections: InsightSection[];
@@ -52,7 +54,7 @@ const coreInsights: Insight[] = [
   {
     slug: "gta-online-what-to-buy-with-2-5m",
     game: "gta",
-    updatedAt: "2026-08-12",
+    updatedAt: "2026-08-24",
     gameVersion: { ru: "GTA Online · расчётный набор за июль 2026", en: "GTA Online · July 2026 estimate set" },
     evidenceStatus: "estimated",
     audiences: ["returner", "casual"],
@@ -62,10 +64,12 @@ const coreInsights: Insight[] = [
     },
     content: {
       ru: {
-        title: "Что купить в GTA Online с GTA$2,5 млн после долгого перерыва",
-        description: "Разбираем, какой бизнес лучше купить вернувшемуся одиночному игроку с учётом окупаемости, чистой прибыли и нагрузки.",
+        title: "Что купить в GTA Online с GTA$2,5 млн: лучший первый бизнес для соло",
+        description: "Короткий ответ и расчёт: какой бизнес первым купить соло-игроку с GTA$2,5 млн после перерыва, с учётом окупаемости и нагрузки.",
         kicker: "GTA Online · куда вложить капитал",
         thesis: "При исходных допущениях Money Meta первой стоит рассмотреть Кислотную лабораторию. Не потому, что она всегда лучшая, а потому, что при ограниченном времени сочетает доступную цену, быструю окупаемость и удобную продажу в одиночку.",
+        answerLabel: "Короткий ответ при этих вводных",
+        answer: "Кислотная лаборатория: около GTA$1,0 млн на запуск, GTA$275 тыс. чистыми за цикл и примерно 17 часов производства до расчётной окупаемости.",
         readTime: "6 мин",
         takeaways: [
           "Стартовая модель: GTA$1,0 млн вложений и около GTA$275 тыс. чистыми за полный цикл.",
@@ -98,10 +102,12 @@ const coreInsights: Insight[] = [
         toolLabel: "Подобрать следующий шаг"
       },
       en: {
-        title: "What to buy in GTA Online with GTA$2.5m after a long break",
-        description: "Find the next best solo-returner business through payback, net profit and operating friction.",
+        title: "What to buy in GTA Online with GTA$2.5m: the best first solo business",
+        description: "A short answer and model for a returning solo player with GTA$2.5m, including payback, net profit and operating friction.",
         kicker: "GTA Online · Capital allocation",
         thesis: "Under the baseline assumptions, Money Meta looks at the Acid Lab first - not because it is always S-tier, but because limited-time solo players get an attractive mix of entry cost, capital efficiency and sale convenience.",
+        answerLabel: "Short answer under these inputs",
+        answer: "Acid Lab: roughly GTA$1.0m to start, GTA$275k net per cycle and about 17 production hours to modeled payback.",
         readTime: "6 min",
         takeaways: [
           "Baseline case: GTA$1.0m invested and roughly GTA$275k net per full cycle.",
@@ -138,7 +144,7 @@ const coreInsights: Insight[] = [
   {
     slug: "gta-online-acid-lab-vs-bunker-solo",
     game: "gta",
-    updatedAt: "2026-08-12",
+    updatedAt: "2026-08-24",
     gameVersion: { ru: "GTA Online · расчётный набор за июль 2026", en: "GTA Online · July 2026 estimate set" },
     evidenceStatus: "estimated",
     audiences: ["returner", "casual"],
@@ -152,6 +158,8 @@ const coreInsights: Insight[] = [
         description: "Сравниваем два популярных бизнеса по цене входа, чистому потоку, окупаемости и удобству для одиночного игрока.",
         kicker: "GTA Online · сравнение бизнесов",
         thesis: "В исходном сценарии Кислотная лаборатория выглядит сильнее как новая покупка для одиночного игрока: она требует меньше капитала и быстрее его возвращает. Бункер даёт близкий доход за час производства, но решение меняется, если он у тебя уже куплен.",
+        answerLabel: "Короткий ответ при новой покупке",
+        answer: "Кислотная лаборатория выигрывает по цене входа и окупаемости: около GTA$1,0 млн и 17 часов производства против GTA$2,375 млн и 41 часа у Бункера.",
         readTime: "5 мин",
         takeaways: [
           "Кислотная лаборатория: около GTA$1,0 млн на запуск, GTA$275 тыс. чистыми за цикл и примерно 17 часов производства до окупаемости.",
@@ -188,6 +196,8 @@ const coreInsights: Insight[] = [
         description: "Compare two production assets by entry cost, net flow, payback and solo friction.",
         kicker: "GTA Online · Asset comparison",
         thesis: "In the baseline, Acid Lab is the stronger new solo purchase because it locks less capital and pays back faster. Bunker stays close on production throughput and becomes a different decision when it is already owned.",
+        answerLabel: "Short answer for a new purchase",
+        answer: "Acid Lab leads on entry cost and payback: roughly GTA$1.0m and 17 production hours versus GTA$2.375m and 41 hours for Bunker.",
         readTime: "5 min",
         takeaways: [
           "Acid Lab: roughly GTA$1.0m entry, GTA$275k net per cycle and about 17 production hours to payback.",
@@ -310,7 +320,7 @@ const coreInsights: Insight[] = [
   {
     slug: "gta-online-best-business-four-hours-week",
     game: "gta",
-    updatedAt: "2026-08-12",
+    updatedAt: "2026-08-24",
     gameVersion: { ru: "GTA Online · расчётный набор за июль 2026", en: "GTA Online · July 2026 estimate set" },
     evidenceStatus: "estimated",
     audiences: ["casual", "returner"],
@@ -324,6 +334,8 @@ const coreInsights: Insight[] = [
         description: "Строим спокойный сценарий для одиночной игры и не гонимся за теоретическим максимумом дохода.",
         kicker: "GTA Online · маршрут при ограниченном времени",
         thesis: "При четырёх часах в неделю не хватает не только капитала, но и внимания. Сначала отсекаем бизнесы с нагрузкой выше 4 из 10, затем сравниваем только те циклы, которые действительно получится обслуживать.",
+        answerLabel: "Короткий ответ для профиля 4 ч / нед.",
+        answer: "Начни с одного удобного производственного цикла Кислотной лаборатории, оставь резерв и добавляй недельный бонус только после короткого теста фактической выплаты.",
         readTime: "5 мин",
         takeaways: [
           "Исходный профиль: GTA$2,5 млн, 4 часа в неделю, приоритет на удобство и допустимая нагрузка 4 из 10.",
@@ -360,6 +372,8 @@ const coreInsights: Insight[] = [
         description: "Build a calm solo scenario with a friction ceiling instead of maximizing theoretical income.",
         kicker: "GTA Online · Limited-time route",
         thesis: "At four hours a week, operating attention becomes a constraint alongside capital. Assets above friction 4/10 are removed first; only realistic serviceable loops are compared.",
+        answerLabel: "Short answer for a 4 h/week profile",
+        answer: "Start with one manageable Acid Lab production loop, keep a reserve and add a weekly boost only after a short realized-payout test.",
         readTime: "5 min",
         takeaways: [
           "Baseline profile: GTA$2.5m, four hours, a low-friction objective and a 4/10 ceiling.",
@@ -487,8 +501,8 @@ const coreInsights: Insight[] = [
     evidenceStatus: "verified",
     audiences: ["returner", "casual", "grinder"],
     toolPath: {
-      ru: "/gta-online/#weekly-pulse",
-      en: "/en/gta-online/#weekly-pulse"
+      ru: "/gta-online/weekly/",
+      en: "/en/gta-online/weekly/"
     },
     content: {
       ru: {
@@ -1407,17 +1421,20 @@ const coreInsights: Insight[] = [
   {
     slug: "wow-batch-size-inventory-trap",
     game: "wow",
-    updatedAt: "2026-08-12",
+    featuredInHub: true,
+    updatedAt: "2026-08-24",
     gameVersion: { ru: "WoW Retail · Curse of Ula’tek · модель рынка", en: "WoW Retail · Curse of Ula’tek market model" },
     evidenceStatus: "estimated",
     audiences: ["casual", "grinder"],
-    toolPath: { ru: "/wow/?wow-crafting.craft-count=20#crafting-margin", en: "/en/wow/?wow-crafting.craft-count=20#crafting-margin" },
+    toolPath: { ru: "/wow/tools/inventory-turn/", en: "/en/wow/tools/inventory-turn/" },
     content: {
       ru: {
         title: "Размер партии: как прибыльный крафт превращается в ловушку запасов",
         description: "Почему положительная маржа единицы не гарантирует, что рынок поглотит двадцать, пятьдесят или сто предметов.",
         kicker: "WoW Retail · оборотный капитал",
         thesis: "Маржа отвечает, выгодна ли одна единица при заданных условиях. Размер партии показывает, сколько таких единиц можно профинансировать до того, как нехватка ликвидности станет главным риском.",
+        answerLabel: "Рабочее правило партии",
+        answer: "Сначала защити резерв, затем направь в пробную партию только заданную долю свободного золота. Масштабируй после 2-3 циклов, если фактическая доля продаж совпадает с вводной.",
         readTime: "5 мин",
         takeaways: [
           "Большая партия одновременно умножает ожидаемую прибыль и капитал в непроданных запасах.",
@@ -1436,7 +1453,7 @@ const coreInsights: Insight[] = [
             heading: "Оборотный капитал становится узким местом",
             paragraphs: [
               "Каждый непроданный предмет сохраняет некоторую стоимость, но забирает доступное золото. Игрок видит богатые запасы и одновременно теряет возможность купить следующий набор реагентов.",
-              "Стоимость запасов под риском показывает непроданную часть по текущей цене. Это не гарантированный убыток, а сумма, судьбу которой ещё не определил рынок."
+              "Новый планировщик показывает непроданную часть по себестоимости. Это не гарантированный убыток, а капитал, который рынок ещё не вернул и которым нельзя профинансировать следующий цикл."
             ]
           },
           {
@@ -1454,6 +1471,8 @@ const coreInsights: Insight[] = [
         description: "Why positive unit margin does not prove that the market can absorb twenty, fifty or one hundred crafts.",
         kicker: "WoW Retail · Working capital",
         thesis: "Margin asks whether one unit is attractive under the inputs. Batch size asks how many units can be financed before liquidity becomes the primary risk.",
+        answerLabel: "Working batch rule",
+        answer: "Protect the reserve first, then deploy only a chosen share of free gold into a discovery batch. Scale after 2-3 cycles when realized sell-through confirms the input.",
         readTime: "5 min",
         takeaways: [
           "A larger batch multiplies expected profit and capital in unsold stock at the same time.",
@@ -1472,7 +1491,7 @@ const coreInsights: Insight[] = [
             heading: "Working capital becomes the constraint",
             paragraphs: [
               "Every unsold item retains some value but removes liquid gold. A player can look wealthy in inventory while losing the ability to fund another reagent cycle.",
-              "Inventory at risk measures the current listed value of the unsold portion. It is not a guaranteed loss; it is value whose outcome the market has not settled."
+              "The new planner carries the unsold portion at cost. It is not a guaranteed loss; it is capital the market has not returned and cannot fund the next loop."
             ]
           },
           {

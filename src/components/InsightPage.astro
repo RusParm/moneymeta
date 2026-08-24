@@ -87,6 +87,7 @@ const labels = lang === "ru" ? {
           </div>
           <p class="eyebrow">{content.kicker}</p>
           <h1>{content.title}</h1>
+          {content.answer && <div class="insight-direct-answer"><span>{content.answerLabel ?? labels.takeaways}</span><strong>{content.answer}</strong></div>}
           <p class="insight-thesis">{content.thesis}</p>
           <a class="button primary button-large" href={toolHref}>{content.toolLabel} →</a>
         </header>

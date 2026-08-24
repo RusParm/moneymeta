@@ -1,0 +1,45 @@
+---
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const path = Astro.url.pathname;
+const isGtaVi = path.includes("gta-6");
+const isGtaOnline = path.includes("gta-online");
+const telegramUrl = import.meta.env.PUBLIC_TELEGRAM_URL;
+const updatesPath = lang === "ru" ? "/updates/" : "/en/updates/";
+const fallbackPath = isGtaOnline
+  ? (lang === "ru" ? "/gta-online/weekly/" : "/en/gta-online/weekly/")
+  : isGtaVi
+    ? (lang === "ru" ? "/gta-6/launch-watch/" : "/en/gta-6/launch-watch/")
+    : updatesPath;
+
+const copy = lang === "ru"
+  ? isGtaOnline
+    ? { kicker: "GTA Online · раз в неделю", title: "Один короткий план вместо списка бонусов", text: "Что забрать, что проверить и когда временный множитель действительно меняет маршрут.", primary: telegramUrl ? "Подписаться в Telegram" : "Открыть еженедельник", secondary: "Как устроены обновления" }
+    : isGtaVi
+      ? { kicker: "GTA VI · только официальное", title: "Новый факт без шума и пересказа слухов", text: "Дата, платформы, цена, подтверждённые механики и границы неизвестного с датой каждой проверки.", primary: telegramUrl ? "Подписаться в Telegram" : "Открыть журнал запуска", secondary: "Как устроены обновления" }
+      : { kicker: "Money Meta · редакционный сигнал", title: "Получай только изменения, которые меняют решение", text: "Одна глубокая экономика за раз, новые модели и проверенные обновления без ежедневного шума.", primary: telegramUrl ? "Подписаться в Telegram" : "Открыть ленту обновлений", secondary: "Редакционный ритм" }
+  : isGtaOnline
+    ? { kicker: "GTA Online · weekly", title: "One short plan instead of a bonus dump", text: "What to claim, what to test and when a temporary multiplier truly changes the route.", primary: telegramUrl ? "Follow on Telegram" : "Open the weekly brief", secondary: "How updates work" }
+    : isGtaVi
+      ? { kicker: "GTA VI · official only", title: "New facts without rumor churn", text: "Release, platforms, pricing, confirmed mechanics and explicit unknowns with a check date.", primary: telegramUrl ? "Follow on Telegram" : "Open Launch Watch", secondary: "How updates work" }
+      : { kicker: "Money Meta · editorial signal", title: "Follow only changes that alter a decision", text: "One deep economy at a time, new models and verified updates without a daily content treadmill.", primary: telegramUrl ? "Follow on Telegram" : "Open the update desk", secondary: "Editorial cadence" };
+---
+
+<aside class="updates-cta" aria-labelledby="updates-cta-title">
+  <div>
+    <span>{copy.kicker}</span>
+    <h2 id="updates-cta-title">{copy.title}</h2>
+    <p>{copy.text}</p>
+  </div>
+  <nav>
+    <a
+      class="button primary"
+      href={telegramUrl || fallbackPath}
+      target={telegramUrl ? "_blank" : undefined}
+      rel={telegramUrl ? "noopener noreferrer" : undefined}
+      data-analytics-event="subscription_open"
+      data-analytics-surface={isGtaOnline ? "gta-online" : isGtaVi ? "gta-vi" : "network"}
+    >{copy.primary} →</a>
+    {fallbackPath !== updatesPath && <a class="updates-cta-secondary" href={updatesPath}>{copy.secondary}</a>}
+  </nav>
+</aside>

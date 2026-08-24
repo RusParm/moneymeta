@@ -22,10 +22,10 @@ export const gtaViInsights: Insight[] = [
     slug: "gta-vi-what-is-actually-confirmed-about-the-economy",
     game: "gta6",
     format: "guide",
-    updatedAt: "2026-08-20",
+    updatedAt: "2026-08-24",
     gameVersion: {
-      ru: "GTA VI · дорелизное досье · 20.08.2026",
-      en: "GTA VI · pre-release dossier · Aug 20, 2026"
+      ru: "GTA VI · дорелизное досье · 24.08.2026",
+      en: "GTA VI · pre-release dossier · Aug 24, 2026"
     },
     evidenceStatus: "verified",
     audiences: ["returner", "casual", "grinder"],
@@ -37,6 +37,8 @@ export const gtaViInsights: Insight[] = [
         description: "Разделяем официальные факты, сюжетные экономические сигналы и механики, которых Rockstar пока не подтверждала.",
         kicker: "GTA VI · разбор доказательств",
         thesis: "Официальные материалы уже показывают мир бизнеса, ограблений, контрабанды, недвижимости и музыкального продвижения. Они задают экономические темы GTA VI, но пока не подтверждают, что игрок сможет покупать эти активы, управлять ими или получать от них регулярный доход.",
+        answerLabel: "Подтверждено на 24 августа",
+        answer: "Выход 19 ноября 2026 года, версии для PS5 и Xbox Series X|S, одиночный формат и цена стандартного издания $79,99 в США. Экономика игрока, собственность и сетевой режим пока не подтверждены.",
         readTime: "8 мин",
         takeaways: [
           "Подтверждены дата выхода 19 ноября 2026 года, PS5 и Xbox Series X|S, а также одиночный формат игры.",
@@ -87,6 +89,8 @@ export const gtaViInsights: Insight[] = [
         description: "Separate official facts, narrative economic signals and mechanics Rockstar has not confirmed.",
         kicker: "GTA VI · Evidence review",
         thesis: "Official material already presents a world of enterprise, robbery, smuggling, property and music promotion. Those are economic themes in GTA VI, but they do not yet prove that players can buy, operate or earn recurring income from those assets.",
+        answerLabel: "Confirmed as of August 24",
+        answer: "A November 19, 2026 release, PS5 and Xbox Series X|S versions, a single-player format and a $79.99 US Standard Edition. Player economy, ownership and an online mode remain unconfirmed.",
         readTime: "8 min",
         takeaways: [
           "A November 19, 2026 release, PS5 and Xbox Series X|S, and a single-player product are confirmed.",
@@ -138,10 +142,10 @@ export const gtaViInsights: Insight[] = [
     slug: "gta-vi-lessons-from-gta-online-without-predictions",
     game: "gta6",
     format: "guide",
-    updatedAt: "2026-08-20",
+    updatedAt: "2026-08-24",
     gameVersion: {
-      ru: "GTA VI · дорелизное досье · 20.08.2026",
-      en: "GTA VI · pre-release dossier · Aug 20, 2026"
+      ru: "GTA VI · дорелизное досье · 24.08.2026",
+      en: "GTA VI · pre-release dossier · Aug 24, 2026"
     },
     evidenceStatus: "verified",
     audiences: ["returner", "casual", "grinder"],
@@ -254,10 +258,10 @@ export const gtaViInsights: Insight[] = [
     slug: "gta-vi-how-to-measure-the-first-72-hours",
     game: "gta6",
     format: "guide",
-    updatedAt: "2026-08-20",
+    updatedAt: "2026-08-24",
     gameVersion: {
-      ru: "GTA VI · протокол до релиза · 20.08.2026",
-      en: "GTA VI · pre-release protocol · Aug 20, 2026"
+      ru: "GTA VI · протокол до релиза · 24.08.2026",
+      en: "GTA VI · pre-release protocol · Aug 24, 2026"
     },
     evidenceStatus: "verified",
     audiences: ["returner", "casual", "grinder"],

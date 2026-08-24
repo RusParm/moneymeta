@@ -1,0 +1,144 @@
+---
+import { inventoryTurnBaseline, wowPatchContext } from "../data/wow-economy";
+import { wowMarks } from "../data/wow-hub";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import ScenarioActions from "./ScenarioActions.astro";
+import SiteFooter from "./SiteFooter.astro";
+import WowMarketMark from "./WowMarketMark.astro";
+import "../styles/wow-hub.css";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const path = lang === "ru" ? "/wow/tools/inventory-turn/" : "/en/wow/tools/inventory-turn/";
+const alternatePath = lang === "ru" ? "/en/wow/tools/inventory-turn/" : "/wow/tools/inventory-turn/";
+const toolsPath = lang === "ru" ? "/wow/tools/" : "/en/wow/tools/";
+const guidePath = `${lang === "ru" ? "" : "/en"}/insights/wow-batch-size-inventory-trap/`;
+const copy = lang === "ru" ? {
+  title: "Размер партии в WoW: калькулятор оборота и риска запасов",
+  description: "Рассчитай безопасный размер партии в WoW Retail, сохрани резерв золота и увидь возврат денег, непроданный запас и срок реализации.",
+  back: "← Инструменты WoW",
+  kicker: "WoW Retail · управление оборотным капиталом",
+  heading: "Партия должна проверять спрос, а не замораживать весь банк.",
+  lede: "Задай ликвидное золото, защищённый резерв, себестоимость и долю продаж. Модель ограничит объём до изготовления и покажет, сколько капитала рынок может не вернуть в выбранный срок.",
+  status: "Редактируемая модель · цены вводит игрок",
+  checked: "Контекст проверен",
+  inputTitle: "Ограничение партии",
+  fields: {
+    liquid: "Ликвидное золото", reserve: "Защищённый резерв", deployment: "Макс. доля свободного золота, %", cost: "Себестоимость / ед.", price: "Цена продажи / ед.", cut: "Комиссия аукциона, %", through: "Продажи за цикл, %", days: "Длина цикла, дней", cycles: "Горизонт, циклов"
+  },
+  result: "Решение по партии",
+  metrics: { budget: "Бюджет партии", units: "Безопасный объём", deployed: "Вложено в товар", cash: "Золото после изготовления", netPrice: "Чистая цена продажи", firstCash: "Деньги после первого цикла", firstProfit: "Прибыль проданных единиц", recovery: "Возврат денег за первый цикл", remaining: "Остаток после горизонта", risk: "Капитал в остатке", ninety: "До продажи 90% партии" },
+  note: "Ожидаемая прибыль относится только к проданным единицам. Остаток сохраняется как товар по себестоимости и не считается доступным золотом.",
+  labels: { scalable: "Партия проходит проверку оборота", test: "Начни с тестовой партии", trap: "Запас будет оборачиваться слишком медленно", negative: "Чистая цена ниже себестоимости", budget: "Сначала восстанови резерв" },
+  rulesTitle: "Три правила перед увеличением объёма",
+  rules: [
+    ["01", "Резерв защищается первым", "Бюджет строится только из золота выше защищённого остатка. Максимальная доля ограничивает даже этот свободный капитал."],
+    ["02", "Продажа и прибыль считаются отдельно", "Выручка первого цикла показывает возврат денег. Прибыль относится к проданным единицам, а непроданные остаются запасом."],
+    ["03", "Масштабирование требует факта", "Увеличивай следующую партию после двух-трёх реальных циклов, если доля продаж совпадает с вводной и запас не растёт."]
+  ],
+  formula: "Как читать модель",
+  formulaText: "Безопасный объём равен целой части бюджета партии, делённого на себестоимость единицы. Ожидаемый остаток после N циклов равен объёму партии × (1 − доля продаж)^N. Это сценарий, а не прогноз Blizzard.",
+  guide: "Разобрать ловушку партии",
+  tools: "Все инструменты WoW"
+} : {
+  title: "WoW batch size calculator: inventory turn and capital risk",
+  description: "Set a safe WoW Retail batch size, protect a gold reserve and see first-cycle cash recovery, unsold stock and time to realization.",
+  back: "← WoW tools",
+  kicker: "WoW Retail · working-capital control",
+  heading: "A batch should test demand, not freeze the entire bank.",
+  lede: "Enter liquid gold, a protected reserve, unit cost and sell-through. The model caps production before crafting and shows how much capital the market may not return within the chosen horizon.",
+  status: "Editable model · player-entered prices",
+  checked: "Context checked",
+  inputTitle: "Batch constraint",
+  fields: {
+    liquid: "Liquid gold", reserve: "Protected reserve", deployment: "Max share of free gold, %", cost: "Unit cost", price: "Sale price / unit", cut: "Auction House cut, %", through: "Sell-through / cycle, %", days: "Cycle length, days", cycles: "Horizon, cycles"
+  },
+  result: "Batch decision",
+  metrics: { budget: "Batch budget", units: "Safe batch", deployed: "Capital deployed", cash: "Cash after crafting", netPrice: "Net sale price", firstCash: "First-cycle cash", firstProfit: "Profit on sold units", recovery: "First-cycle cash recovery", remaining: "Units after horizon", risk: "Capital in remaining stock", ninety: "Days to sell 90%" },
+  note: "Expected profit applies only to sold units. Remaining inventory stays at cost and is not treated as deployable gold.",
+  labels: { scalable: "Batch clears the turn test", test: "Start with a discovery batch", trap: "Inventory turns too slowly", negative: "Net price is below unit cost", budget: "Restore the reserve first" },
+  rulesTitle: "Three rules before scaling",
+  rules: [
+    ["01", "Protect the reserve first", "The batch budget uses only gold above the protected floor. The deployment share constrains even that free capital."],
+    ["02", "Cash and profit stay separate", "First-cycle proceeds measure cash recovery. Profit belongs to sold units while the remainder stays inventory."],
+    ["03", "Scale verified demand", "Increase the next batch only after two or three realized cycles confirm sell-through without a growing stock balance."]
+  ],
+  formula: "How to read the model",
+  formulaText: "Safe batch is the integer batch budget divided by unit cost. Expected remainder after N cycles is batch × (1 − sell-through)^N. This is a scenario, not a Blizzard forecast.",
+  guide: "Read the inventory-trap analysis",
+  tools: "All WoW tools"
+};
+---
+
+<BaseLayout title={`${copy.title} | Money Meta`} description={copy.description} lang={lang} canonicalPath={path} alternatePath={alternatePath} schema={{ "@context": "https://schema.org", "@type": "WebApplication", name: copy.title, applicationCategory: "GameApplication", inLanguage: lang }}>
+  <main class="page game-page wow-inventory-page wow-living-hub" data-lang={lang}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/wow/tools/inventory-turn/" enPath="/en/wow/tools/inventory-turn/" backPath={toolsPath} backLabel={copy.back} />
+      <header class="wow-turn-hero"><div><span class="section-kicker">{copy.kicker}</span><h1>{copy.heading}</h1><p>{copy.lede}</p><div><span>{copy.status}</span><span>{copy.checked} {wowPatchContext.checkedAt}</span></div></div><WowMarketMark mark={wowMarks.reinvest} lang={lang} large /></header>
+
+      <section id="inventory-turn-model" class="wow-turn-model" data-wow-turn data-lang={lang} data-scenario-root data-scenario-key="wow-inventory-turn" aria-labelledby="wow-turn-model-title">
+        <form class="card wow-turn-input">
+          <div class="wow-turn-panel-head"><span>{copy.inputTitle}</span><strong>04</strong></div>
+          <div class="form-grid">
+            <div class="field"><label for="turn-liquid">{copy.fields.liquid}</label><input id="turn-liquid" data-role="liquidGold" type="number" min="0" step="1000" value={inventoryTurnBaseline.liquidGold} /></div>
+            <div class="field"><label for="turn-reserve">{copy.fields.reserve}</label><input id="turn-reserve" data-role="protectedReserve" type="number" min="0" step="1000" value={inventoryTurnBaseline.protectedReserve} /></div>
+            <div class="field"><label for="turn-deployment">{copy.fields.deployment}</label><input id="turn-deployment" data-role="maxDeploymentPercent" type="number" min="0" max="100" step="5" value={inventoryTurnBaseline.maxDeploymentPercent} /></div>
+            <div class="field"><label for="turn-cost">{copy.fields.cost}</label><input id="turn-cost" data-role="unitCost" type="number" min="0" step="25" value={inventoryTurnBaseline.unitCost} /></div>
+            <div class="field"><label for="turn-price">{copy.fields.price}</label><input id="turn-price" data-role="salePricePerUnit" type="number" min="0" step="25" value={inventoryTurnBaseline.salePricePerUnit} /></div>
+            <div class="field"><label for="turn-cut">{copy.fields.cut}</label><input id="turn-cut" data-role="auctionHouseCutPercent" type="number" min="0" max="100" step=".5" value={inventoryTurnBaseline.auctionHouseCutPercent} /></div>
+            <div class="field"><label for="turn-through">{copy.fields.through}</label><input id="turn-through" data-role="sellThroughPercentPerCycle" type="number" min="0" max="100" step="5" value={inventoryTurnBaseline.sellThroughPercentPerCycle} /></div>
+            <div class="field"><label for="turn-days">{copy.fields.days}</label><input id="turn-days" data-role="cycleDays" type="number" min=".1" step=".5" value={inventoryTurnBaseline.cycleDays} /></div>
+            <div class="field"><label for="turn-cycles">{copy.fields.cycles}</label><input id="turn-cycles" data-role="targetCycles" type="number" min="1" step="1" value={inventoryTurnBaseline.targetCycles} /></div>
+          </div>
+        </form>
+        <article class="card result-panel wow-turn-result" aria-live="polite">
+          <div class="wow-turn-result-head"><div><span class="result-label">{copy.result}</span><h2 id="wow-turn-model-title" data-turn-verdict>-</h2></div><WowMarketMark mark={wowMarks.capital} lang={lang} /></div>
+          <p class="result-reason">{copy.note}</p>
+          <div class="result-metrics wow-turn-metrics">
+            {Object.entries(copy.metrics).map(([key, label]) => <div class="result-metric"><span>{label}</span><strong data-turn-output={key}>-</strong></div>)}
+          </div>
+          <ScenarioActions lang={lang} />
+        </article>
+      </section>
+
+      <section class="wow-turn-rules" aria-labelledby="wow-turn-rules-title"><header><span class="section-kicker">CONTROL LOOP</span><h2 id="wow-turn-rules-title">{copy.rulesTitle}</h2></header><div>{copy.rules.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+      <section class="wow-turn-method"><div><span class="section-kicker">FORMULA</span><h2>{copy.formula}</h2><p>{copy.formulaText}</p></div><nav><a class="button primary" href={guidePath} data-analytics-event="guide_open" data-analytics-surface="wow-inventory-turn">{copy.guide} →</a><a href={toolsPath}>{copy.tools}</a><a href={wowPatchContext.sources[0]!.url} target="_blank" rel="noopener noreferrer">Blizzard · {wowPatchContext.release} ↗</a></nav></section>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { calculateInventoryTurn } from "../lib/wow-economy";
+  document.querySelectorAll<HTMLElement>("[data-wow-turn]").forEach((root) => {
+    const lang = root.dataset.lang === "ru" ? "ru" : "en";
+    const inputs = [...root.querySelectorAll<HTMLInputElement>("input[data-role]")];
+    const output = (key: string) => root.querySelector<HTMLElement>(`[data-turn-output='${key}']`)!;
+    const value = (key: string) => Number(inputs.find((input) => input.dataset.role === key)?.value ?? 0) || 0;
+    const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(value)} ${lang === "ru" ? "зол." : "g"}` : "∞";
+    const labels = lang === "ru"
+      ? { scalable: "Партия проходит проверку оборота", test: "Начни с тестовой партии", trap: "Запас будет оборачиваться слишком медленно", negative: "Чистая цена ниже себестоимости", budget: "Сначала восстанови резерв", days: "дн.", units: "ед." }
+      : { scalable: "Batch clears the turn test", test: "Start with a discovery batch", trap: "Inventory turns too slowly", negative: "Net price is below unit cost", budget: "Restore the reserve first", days: "days", units: "units" };
+    const render = () => {
+      const metrics = calculateInventoryTurn({ liquidGold: value("liquidGold"), protectedReserve: value("protectedReserve"), maxDeploymentPercent: value("maxDeploymentPercent"), unitCost: value("unitCost"), salePricePerUnit: value("salePricePerUnit"), auctionHouseCutPercent: value("auctionHouseCutPercent"), sellThroughPercentPerCycle: value("sellThroughPercentPerCycle"), cycleDays: value("cycleDays"), targetCycles: value("targetCycles") });
+      const verdict = root.querySelector<HTMLElement>("[data-turn-verdict]")!;
+      verdict.textContent = metrics.state === "scalable" ? labels.scalable : metrics.state === "test-batch" ? labels.test : metrics.state === "inventory-trap" ? labels.trap : metrics.state === "negative-margin" ? labels.negative : labels.budget;
+      root.querySelector<HTMLElement>(".wow-turn-result")!.dataset.state = metrics.state === "scalable" ? "positive" : metrics.state === "test-batch" ? "caution" : "negative";
+      output("budget").textContent = gold(metrics.deploymentBudget);
+      output("units").textContent = `${formatter.format(metrics.safeBatchUnits)} ${labels.units}`;
+      output("deployed").textContent = gold(metrics.capitalDeployed);
+      output("cash").textContent = gold(metrics.cashAfterDeployment);
+      output("netPrice").textContent = gold(metrics.netSalePricePerUnit);
+      output("firstCash").textContent = gold(metrics.expectedFirstCycleCash);
+      output("firstProfit").textContent = gold(metrics.expectedFirstCycleProfit);
+      output("recovery").textContent = `${formatter.format(metrics.firstCycleCashRecoveryPercent)}%`;
+      output("remaining").textContent = `${formatter.format(metrics.expectedRemainingUnits)} ${labels.units}`;
+      output("risk").textContent = gold(metrics.remainingCapitalAtCost);
+      output("ninety").textContent = Number.isFinite(metrics.daysToNinetyPercentSold) ? `${formatter.format(metrics.daysToNinetyPercentSold)} ${labels.days}` : "∞";
+    };
+    inputs.forEach((input) => input.addEventListener("input", render));
+    render();
+  });
+</script>

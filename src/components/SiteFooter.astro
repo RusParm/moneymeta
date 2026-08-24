@@ -1,12 +1,14 @@
 ---
+import UpdatesCta from "./UpdatesCta.astro";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 ---
 
 <footer class="footer">
+  <UpdatesCta lang={lang} />
   <div class="footer-status">
     <span class="console-signal">Money Meta · {lang === "ru" ? "Работает" : "Live"}</span>
-    <span>{lang === "ru" ? "5 живых экономик · досье GTA VI · 15 моделей · RU/EN" : "5 live economies · GTA VI dossier · 15 models · RU/EN"}</span>
+    <span>{lang === "ru" ? "5 живых экономик · досье GTA VI · 16 моделей · RU/EN" : "5 live economies · GTA VI dossier · 16 models · RU/EN"}</span>
   </div>
   <div class="footer-grid">
     <p>

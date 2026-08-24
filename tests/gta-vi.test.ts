@@ -23,7 +23,7 @@ const routeFiles = import.meta.glob("../src/pages/{gta-6,en/gta-6}/**/*.astro", 
 
 describe("GTA VI Economy Watch", () => {
   it("keeps a dated, primary-source-only fact registry", () => {
-    expect(gtaViWatch.checkedAt).toBe("2026-08-20");
+    expect(gtaViWatch.checkedAt).toBe("2026-08-24");
     expect(gtaViWatch.releaseDate).toBe("2026-11-19");
     expect(gtaViSources.length).toBeGreaterThanOrEqual(6);
     gtaViSources.forEach((source) => {

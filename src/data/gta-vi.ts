@@ -32,7 +32,7 @@ export interface GtaViMediaItem {
 }
 
 export const gtaViWatch = {
-  checkedAt: "2026-08-20",
+  checkedAt: "2026-08-24",
   staleAfterDays: 8,
   releaseDate: "2026-11-19",
   nextOfficialEvent: {
@@ -45,8 +45,8 @@ export const gtaViWatch = {
   },
   platforms: "PlayStation 5 · Xbox Series X|S",
   version: {
-    ru: "Дорелизное досье · проверено 20.08.2026",
-    en: "Pre-release dossier · checked Aug 20, 2026"
+    ru: "Дорелизное досье · проверено 24.08.2026",
+    en: "Pre-release dossier · checked Aug 24, 2026"
   }
 } as const;
 
