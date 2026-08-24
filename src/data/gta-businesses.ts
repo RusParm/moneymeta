@@ -166,7 +166,7 @@ export interface WeeklyMetaSnapshot {
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  checkedAt: "2026-08-19",
+  checkedAt: "2026-08-24",
   validThrough: "2026-08-26",
   status: "verified",
   sourceUrl: "https://www.rockstargames.com/newswire/article/9k2kok31k3a8k9/declare-your-allegiance-and-determine-who-owns-los-santos-in-the-brand",
@@ -174,12 +174,12 @@ export const weeklyMeta: WeeklyMetaSnapshot = {
   items: {
     ru: [
       "До 26 августа: бесплатно забери Declasse Hotring Sabre и отдели эту экономию от дохода бизнеса.",
-      "4X GTA$/RP действует в испытаниях и событиях свободного режима; 21-23 августа VIP Work приносит 5X GTA$/RP.",
+      "4X GTA$/RP действует в испытаниях и событиях свободного режима. Окно 5X для VIP Work завершилось 23 августа.",
       "Временные множители не применяются автоматически к долгосрочным моделям производственных активов."
     ],
     en: [
       "Through August 26: claim the Declasse Hotring Sabre for free and keep that acquisition saving separate from business income.",
-      "Freemode Challenges and Events pay 4X GTA$/RP; VIP Work pays 5X GTA$/RP from August 21 through 23.",
+      "Freemode Challenges and Events pay 4X GTA$/RP. The 5X VIP Work window ended on August 23.",
       "Temporary multipliers are not automatically applied to long-horizon production-asset models."
     ]
   },
@@ -215,16 +215,16 @@ export const weeklyMeta: WeeklyMetaSnapshot = {
     {
       id: "vip-work-weekend",
       status: "verified",
-      title: { ru: "Подготовь короткое окно VIP Work", en: "Prepare the VIP Work window" },
+      title: { ru: "Не планируй неделю вокруг завершённого окна", en: "Do not plan around the expired VIP window" },
       summary: {
-        ru: "С 21 по 23 августа VIP Work приносит 5X GTA$/RP.",
-        en: "VIP Work pays 5X GTA$/RP from August 21 through 23."
+        ru: "5X для VIP Work действовал с 21 по 23 августа и уже завершился.",
+        en: "The 5X VIP Work boost ran from August 21 through 23 and has ended."
       },
       decision: {
-        ru: "Выдели один короткий сеанс, если у тебя уже есть доступ. Не покупай дорогую инфраструктуру только ради трёхдневного множителя.",
-        en: "Reserve one short session when access already exists. Do not buy expensive infrastructure only for a three-day multiplier."
+        ru: "Верни VIP Work к обычному сравнению. Не переноси завершившийся множитель в текущую оценку дохода.",
+        en: "Return VIP Work to its normal comparison. Do not carry an expired multiplier into current income estimates."
       },
-      signal: { ru: "5X · 21-23 авг.", en: "5X · Aug 21-23" }
+      signal: { ru: "завершено 23 авг.", en: "ended Aug 23" }
     }
   ]
 };

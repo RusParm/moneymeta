@@ -26,6 +26,7 @@ const {
 
 const canonical = new URL(canonicalPath, Astro.site);
 const alternate = alternatePath ? new URL(alternatePath, Astro.site) : null;
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION;
 ---
 
 <!doctype html>
@@ -37,6 +38,7 @@ const alternate = alternatePath ? new URL(alternatePath, Astro.site) : null;
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content="index, follow" />
+    {googleSiteVerification && <meta name="google-site-verification" content={googleSiteVerification} />}
     <meta name="theme-color" content="#0d0a17" />
     <link rel="canonical" href={canonical} />
     {alternate && <link rel="alternate" hreflang={lang === "ru" ? "en" : "ru"} href={alternate} />}
@@ -55,5 +57,43 @@ const alternate = alternatePath ? new URL(alternatePath, Astro.site) : null;
   </head>
   <body>
     <slot />
+    <script>
+      import { track } from "@vercel/analytics";
+
+      const trackedModels = new Set<string>();
+
+      document.addEventListener("click", (event) => {
+        const origin = event.target instanceof Element ? event.target : null;
+        const target = origin?.closest<HTMLElement>("[data-analytics-event]");
+        const link = origin?.closest<HTMLAnchorElement>("a");
+        const destination = link ? new URL(link.href, window.location.href).pathname : "interaction";
+        const inferred = link?.closest(".lang-switch")
+          ? "language_switch"
+          : destination.includes("/weekly/")
+            ? "weekly_open"
+            : destination.includes("/tools/") || destination.includes("/calculators/") || destination.includes("/goal-planner/") || destination.includes("/items/planner/")
+              ? "tool_open"
+              : destination.includes("/insights/")
+                ? "guide_open"
+                : undefined;
+        const name = target?.dataset.analyticsEvent ?? inferred;
+        if (!name) return;
+        const surfaceRoot = document.querySelector<HTMLElement>("[data-hub], [data-hub-portal]");
+        track(name, {
+          surface: target?.dataset.analyticsSurface ?? surfaceRoot?.dataset.hub ?? surfaceRoot?.dataset.hubPortal ?? "site",
+          destination
+        });
+      });
+
+      document.addEventListener("input", (event) => {
+        const target = event.target instanceof Element ? event.target : null;
+        const model = target?.closest<HTMLElement>("[data-scenario-root]");
+        if (!model) return;
+        const key = model.dataset.scenarioKey ?? "unknown-model";
+        if (trackedModels.has(key)) return;
+        trackedModels.add(key);
+        track("tool_start", { model: key, path: window.location.pathname });
+      });
+    </script>
   </body>
 </html>

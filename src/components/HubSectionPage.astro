@@ -25,6 +25,7 @@ import GtaEconomyMap from "./GtaEconomyMap.astro";
 import GtaPlayerPaths from "./GtaPlayerPaths.astro";
 import GtaPulse from "./GtaPulse.astro";
 import GtaRankings from "./GtaRankings.astro";
+import GtaWeeklyTeaser from "./GtaWeeklyTeaser.astro";
 import HubGameMark from "./HubGameMark.astro";
 import HubGuideLibrary from "./HubGuideLibrary.astro";
 import HubJourneyContext from "./HubJourneyContext.astro";
@@ -38,6 +39,7 @@ import WowMarketLedger from "./WowMarketLedger.astro";
 import WowPlayerPaths from "./WowPlayerPaths.astro";
 import WowPulse from "./WowPulse.astro";
 import WowRankings from "./WowRankings.astro";
+import WowInventoryTurnTeaser from "./WowInventoryTurnTeaser.astro";
 
 interface Props {
   hub: HubPortalId;
@@ -165,7 +167,7 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
 
         {hubId === "gta" && sectionSlug === "economy" && <GtaEconomyMap lang={lang} />}
         {hubId === "gta" && sectionSlug === "player-paths" && <GtaPlayerPaths lang={lang} />}
-        {hubId === "gta" && sectionSlug === "meta" && <><GtaPulse lang={lang} /><GtaRankings lang={lang} /></>}
+        {hubId === "gta" && sectionSlug === "meta" && <><GtaWeeklyTeaser lang={lang} /><GtaPulse lang={lang} /><GtaRankings lang={lang} /></>}
         {hubId === "gta" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
         {hubId === "gta" && sectionSlug === "tools" && <><GtaDecisionDeck lang={lang} /><GtaCapitalLab lang={lang} /></>}
 
@@ -179,7 +181,7 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
         {hubId === "wow" && sectionSlug === "player-paths" && <WowPlayerPaths lang={lang} />}
         {hubId === "wow" && sectionSlug === "meta" && <><WowPulse lang={lang} /><WowRankings lang={lang} /></>}
         {hubId === "wow" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
-        {hubId === "wow" && sectionSlug === "tools" && <><WowDecisionDeck lang={lang} /><WowCalculators lang={lang} /></>}
+        {hubId === "wow" && sectionSlug === "tools" && <><WowInventoryTurnTeaser lang={lang} /><WowDecisionDeck lang={lang} /><WowCalculators lang={lang} /></>}
 
         {(hubId === "total-war" || hubId === "ck3") && <StrategySectionContent lang={lang} hub={hubId} section={sectionSlug} data={strategyData} />}
       </div>

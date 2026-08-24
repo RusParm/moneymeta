@@ -161,7 +161,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     stats: [
       { value: "7", label: t("звеньев рынка", "market links") },
       { value: "3", label: t("рыночных маршрута", "market routes") },
-      { value: "3", label: t("живые модели", "live models") },
+      { value: "5", label: t("живых моделей", "live models") },
       { value: guideCount("wow"), label: t("полных разборов", "full analyses") }
     ],
     sections: [
@@ -169,7 +169,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
       section("player-paths", "02", "ЗН", t("Маршруты", "Player paths"), t("Сбор, производство или заказы", "Gathering, crafting or orders"), t("Три рыночные роли с разным риском капитала, требованиями к знаниям и нагрузкой на время.", "Three market roles with different capital risk, Knowledge requirements and time load."), t("Выберешь короткий проверяемый цикл", "Choose a short, testable loop"), t("Какой маршрут подходит моему капиталу и времени?", "Which route fits my capital and time?")),
       section("meta", "03", "УЛ", t("Мета", "Meta"), t("Curse of Ula’tek и изменения спроса", "Curse of Ula’tek and demand shifts"), t("Официальный контекст, рыночные гипотезы и условные рейтинги без обещания универсальной профессии.", "Official context, market hypotheses and conditional rankings without promising one universal profession."), t("Поймёшь, что проверять маленькой партией", "Know what to test with a discovery batch"), t("Как обновление меняет спрос, но не гарантирует маржу?", "How does the update change demand without guaranteeing margin?")),
       section("guides", "04", "КН", t("Гайды", "Guides"), t("Рыночные планы и разбор ловушек", "Market plans and inventory traps"), t("Планы первой недели, размер партии, сброс знаний и сравнение фарма с производством.", "Opening-week plans, batch sizing, Knowledge reset and gathering versus crafting."), t("Получишь протокол проверки рынка", "Get a market-verification protocol"), t("Как войти в рынок без дорогой ошибки?", "How do I enter a market without an expensive mistake?")),
-      section("tools", "05", "Σ", t("Инструменты", "Tools"), t("Маржа, ликвидность и минимальная комиссия", "Margin, liquidity and commission floor"), t("Три редактируемые модели и готовые ситуации для рецепта, фарм-сессии и заказа.", "Three editable models and prepared cases for a recipe, farm session and work order."), t("Посчитаешь полученное золото, а не витрину", "Calculate realized gold, not the storefront"), t("Окупается ли этот цикл после всех потерь?", "Does this loop pay after every haircut?"))
+      section("tools", "05", "Σ", t("Инструменты", "Tools"), t("Маржа, ликвидность, комиссия и оборот партии", "Margin, liquidity, commission and inventory turn"), t("Пять связанных моделей: баланс капитала, безопасная партия, рецепт, фарм-сессия и заказ.", "Five connected models for capital balance, safe batch size, recipe, farm session and work order."), t("Посчитаешь полученное золото, а не витрину", "Calculate realized gold, not the storefront"), t("Окупается ли этот цикл после всех потерь?", "Does this loop pay after every haircut?"))
     ],
     media: [
       {

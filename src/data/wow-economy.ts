@@ -8,7 +8,7 @@ export interface WowEconomySource {
 
 export const wowPatchContext = {
   release: "Midnight · Curse of Ula’tek",
-  checkedAt: "2026-08-19",
+  checkedAt: "2026-08-24",
   status: "mixed evidence" as const,
   note: {
     ru: "Текущий контекст Retail подтверждён материалами Blizzard. Рыночные цены, вероятность продажи, комиссия аукциона и исходные значения остаются редактируемой моделью. Их нужно сверять со своим регионом, сервером и категорией товара.",
@@ -24,8 +24,8 @@ export const wowPatchContext = {
       }
     },
     {
-      label: { ru: "Blizzard · исправления от 17 августа", en: "Blizzard · August 17 hotfixes" },
-      url: "https://worldofwarcraft.blizzard.com/news/24296142/hotfixes-august-17-2026",
+      label: { ru: "Blizzard · исправления от 21 августа", en: "Blizzard · August 21 hotfixes" },
+      url: "https://worldofwarcraft.blizzard.com/news/24296142/hotfixes-august-21-2026",
       note: {
         ru: "Последняя официальная проверка исправлений. В опубликованном списке не заявлена новая универсальная формула рыночной прибыли.",
         en: "Latest official hotfix review. The published list does not establish a new universal market-profit formula."
@@ -102,4 +102,16 @@ export const orderBaseline = {
   serviceMinutes: 6,
   targetGoldPerHour: 8_000,
   orders: 5
+};
+
+export const inventoryTurnBaseline = {
+  liquidGold: 80_000,
+  protectedReserve: 30_000,
+  maxDeploymentPercent: 50,
+  unitCost: 825,
+  salePricePerUnit: 1_125,
+  auctionHouseCutPercent: 5,
+  sellThroughPercentPerCycle: 55,
+  cycleDays: 2,
+  targetCycles: 3
 };

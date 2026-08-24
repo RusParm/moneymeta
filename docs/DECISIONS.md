@@ -155,3 +155,15 @@ The root of a game is a decision router, not a compressed copy of every destinat
 ## 2026-08-20: hidden pagination state must win the CSS cascade
 
 Any client-side catalog that uses the HTML `hidden` attribute must ship an explicit author-level `[hidden]` display rule. Component display declarations such as `display: grid` must never make an inactive page visible. The Dota item atlas shows twelve cards per page, preserves search and page state in the URL and covers the visibility contract with an automated regression test.
+
+## 2026-08-24: one measurement system before another dashboard
+
+Vercel Web Analytics remains the single product analytics system. New events measure a reader moving into a tool, beginning a model or choosing an update path without transmitting numeric scenario values. Search Console supplies acquisition queries after ownership verification. GA4, Plausible and additional trackers are deferred until a named decision cannot be answered by this stack.
+
+## 2026-08-24: subscription UI cannot invent an external destination
+
+Update CTAs may ship before a Telegram channel exists only when their fallback is a useful internal route. The public channel URL is environment configuration, not source content. No placeholder handle, fake waitlist or nonfunctional form is allowed.
+
+## 2026-08-24: hub depth is sequential, not exclusive
+
+One hub receives a substantial model-and-guide layer per sprint so quality remains reviewable. The other four are not frozen: they remain subject to freshness checks, corrections, shared navigation and measurement. A new deep tool should usually receive its own focused URL instead of extending the hub root or turning a section index back into an endless page.

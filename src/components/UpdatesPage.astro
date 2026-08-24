@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const path = lang === "ru" ? "/updates/" : "/en/updates/";
+const alternatePath = lang === "ru" ? "/en/updates/" : "/updates/";
+const telegramUrl = import.meta.env.PUBLIC_TELEGRAM_URL;
+const copy = lang === "ru" ? {
+  title: "Обновления Money Meta: GTA Online, GTA VI и игровые экономики",
+  description: "Редакционная лента Money Meta: еженедельник GTA Online, официальное досье GTA VI и последовательное развитие пяти игровых экономик.",
+  back: "← На главную",
+  eyebrow: "Редакционный пульт · без ежедневного шума",
+  heading: "Публикуем тогда, когда меняется решение игрока.",
+  lede: "Money Meta не строит ленту ради частоты. У каждого формата есть обещание, источник и понятная точка возврата.",
+  channel: telegramUrl ? "Открыть Telegram-канал" : "Telegram-канал готовится",
+  channelNote: telegramUrl ? "Канал откроется в новой вкладке." : "Интерфейс уже готов. После подключения адреса кнопки на всём сайте автоматически начнут вести в канал.",
+  items: [
+    ["01", "GTA Online · еженедельник", "По четвергам: что забрать, какой бонус проверить и почему короткое событие не переписывает долгосрочную экономику.", "/gta-online/weekly/", "Открыть текущий выпуск"],
+    ["02", "GTA VI · журнал запуска", "Только официальные факты Rockstar и Take-Two, явные неизвестные и протокол проверки первых 72 часов.", "/gta-6/launch-watch/", "Открыть досье"],
+    ["03", "Пять живых экономик", "Каждую неделю один хаб получает глубокий слой: модель, гайд или новый связанный маршрут. Остальные остаются в аудите, а не замораживаются.", "/#economies", "Выбрать игру"]
+  ]
+} : {
+  title: "Money Meta updates: GTA Online, GTA VI and game economies",
+  description: "The Money Meta editorial desk: a GTA Online weekly brief, official-only GTA VI watch and deliberate development across five game economies.",
+  back: "← Home",
+  eyebrow: "Editorial desk · no daily noise",
+  heading: "We publish when a player decision changes.",
+  lede: "Money Meta does not manufacture a feed for frequency. Every format has a promise, a source and a clear return point.",
+  channel: telegramUrl ? "Open the Telegram channel" : "Telegram channel in preparation",
+  channelNote: telegramUrl ? "The channel opens in a new tab." : "The interface is ready. Once a channel URL is connected, every site CTA switches automatically.",
+  items: [
+    ["01", "GTA Online · weekly brief", "Every Thursday: what to claim, which boost to test and why a short event does not rewrite long-horizon economics.", "/en/gta-online/weekly/", "Open the current issue"],
+    ["02", "GTA VI · Launch Watch", "Only official Rockstar and Take-Two facts, explicit unknowns and a first-72-hours verification protocol.", "/en/gta-6/launch-watch/", "Open the dossier"],
+    ["03", "Five living economies", "One hub receives a deep new layer every week: a model, guide or connected route. The others stay on the audit board rather than being frozen.", "/en/#economies", "Choose a game"]
+  ]
+};
+---
+
+<BaseLayout title={`${copy.title} | Money Meta`} description={copy.description} lang={lang} canonicalPath={path} alternatePath={alternatePath}>
+  <main class="page updates-page">
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/updates/" enPath="/en/updates/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
+      <header class="updates-hero">
+        <span class="section-kicker">{copy.eyebrow}</span>
+        <h1>{copy.heading}</h1>
+        <p>{copy.lede}</p>
+        <div class="updates-channel" data-state={telegramUrl ? "live" : "pending"}>
+          <span>{telegramUrl ? "LIVE" : "READY"}</span>
+          <div><strong>{copy.channel}</strong><p>{copy.channelNote}</p></div>
+          {telegramUrl && <a class="button primary" href={telegramUrl} target="_blank" rel="noopener noreferrer" data-analytics-event="subscription_open" data-analytics-surface="updates-page">{copy.channel} →</a>}
+        </div>
+      </header>
+      <section class="updates-formats" aria-label={lang === "ru" ? "Форматы обновлений" : "Update formats"}>
+        {copy.items.map(([code, title, text, href, label]) => <article><span>{code}</span><h2>{title}</h2><p>{text}</p><a href={href} data-analytics-event="updates_route_open" data-analytics-surface="updates-page">{label} →</a></article>)}
+      </section>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
