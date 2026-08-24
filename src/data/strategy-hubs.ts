@@ -159,17 +159,17 @@ export const totalWarHub: StrategyHubData = {
   shortName: "Total War",
   publisher: "SEGA / Creative Assembly",
   worldCode: ruEn("КАПИТАЛ КАМПАНИИ / 8.1.1", "CAMPAIGN CAPITAL / 8.1.1"),
-  checkedAt: "2026-08-19",
+  checkedAt: "2026-08-24",
   staleAfterDays: 45,
   version: ruEn("Хотфикс 8.1.1 · экономика патча 8.1", "Hotfix 8.1.1 · Patch 8.1 economy"),
   currencyUnit: ruEn("зол.", "gold"),
   periodUnit: ruEn("ход.", "turns"),
   meta: {
     title: ruEn("Экономика Total War: Warhammer III: казна, армии и провинции | Money Meta", "Total War: Warhammer III Economy Hub: treasury, armies and provinces | Money Meta"),
-    description: ruEn("Интерактивный разбор экономики Total War: Warhammer III: текущий хотфикс 8.1.1, экономические изменения патча 8.1 и модели для зданий, военного резерва и захвата.", "An interactive Total War: Warhammer III campaign economy with current Hotfix 8.1.1, Patch 8.1 economic changes and models for buildings, war reserves and conquest choices.")
+    description: ruEn("Экономика Total War: Warhammer III для конкретной кампании: хотфикс 8.1.1, пресеты по фазам, стресс-тест казны и модели для зданий, военного резерва и захвата.", "A save-specific Total War: Warhammer III economy with Hotfix 8.1.1 context, phase presets, treasury stress testing and models for buildings, war reserves and conquest choices.")
   },
   hero: {
-    live: ruEn("Хотфикс 8.1.1 · проверено 2026-08-19", "Hotfix 8.1.1 · checked 2026-08-19"),
+    live: ruEn("Хотфикс 8.1.1 · проверено 2026-08-24", "Hotfix 8.1.1 · checked 2026-08-24"),
     eyebrow: ruEn("Total War: Warhammer III · экономика кампании", "Total War: Warhammer III · Campaign Economy"),
     heading: ruEn("Армия выигрывает битву. Казна решает, переживёшь ли войну.", "An army wins the battle. The treasury decides whether you survive the war."),
     lede: ruEn("Свяжи доход провинций, строительство, содержание армий и захват территорий в одну систему. Проверяй решение в горизонте ходов, а не по самой большой цифре на экране.", "Connect provincial income, construction, army upkeep and conquest into one system. Test a decision across a turn horizon instead of chasing the largest number on screen."),

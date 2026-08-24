@@ -1,0 +1,46 @@
+---
+import { getTotalWarCampaignPresetsPath, totalWarCampaignContext } from "../data/total-war-campaign-presets";
+import StrategyMark from "./StrategyMark.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const copy = lang === "ru" ? {
+  kicker: "Новый отдельный штаб",
+  title: "Пресеты кампании по фазам",
+  text: "Выбери развитие, мобилизацию, закрепление или позднюю игру. Получишь готовый стресс-сценарий казны и полевой порядок действий без выдуманных цен фракции.",
+  facts: [["4", "режима"], ["9", "вводных"], ["2", "сценария"]],
+  action: "Открыть штаб кампании",
+  note: "Все значения редактируются"
+} : {
+  kicker: "New dedicated command tool",
+  title: "Phase-aware campaign presets",
+  text: "Choose development, mobilization, consolidation or late-game pressure. Start with a treasury stress case and field order without invented faction prices.",
+  facts: [["4", "modes"], ["9", "inputs"], ["2", "cases"]],
+  action: "Open campaign command",
+  note: "Every value is editable"
+};
+---
+
+<aside class="tw-command-teaser">
+  <StrategyMark mark="T" lang={lang} large />
+  <div><span>{copy.kicker}</span><h2>{copy.title}</h2><p>{copy.text}</p><small>{totalWarCampaignContext.currentVersion[lang]} · {copy.note}</small></div>
+  <dl>{copy.facts.map(([value, label]) => <div><dt>{value}</dt><dd>{label}</dd></div>)}</dl>
+  <a class="button primary strategy-primary" href={getTotalWarCampaignPresetsPath(lang)} data-analytics-event="tool_open" data-analytics-surface="total-war-tools">{copy.action} →</a>
+</aside>
+
+<style>
+  .tw-command-teaser { display: grid; min-width: 0; grid-template-columns: 88px minmax(0,1fr) auto; gap: 20px; align-items: center; margin-top: 95px; padding: clamp(23px, 4vw, 38px); border: 1px solid rgba(var(--strategy-accent-rgb), .34); border-radius: 22px; background: radial-gradient(circle at 86% 0, rgba(var(--strategy-accent-rgb), .14), transparent 35%), rgba(8,9,12,.97); box-shadow: var(--shadow); }
+  .tw-command-teaser > .strategy-mark { width: 88px; height: 80px; flex-basis: 88px; }
+  .tw-command-teaser > div { min-width: 0; }
+  .tw-command-teaser > div > span { color: var(--strategy-accent); font: 700 9px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; }
+  .tw-command-teaser h2 { margin-top: 8px; font-size: clamp(35px, 4.7vw, 56px); line-height: .94; overflow-wrap: anywhere; }
+  .tw-command-teaser p { max-width: 730px; margin-top: 11px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+  .tw-command-teaser small { display: block; margin-top: 12px; color: var(--muted-dim); font: 700 8px/1.45 "JetBrains Mono", monospace; text-transform: uppercase; }
+  .tw-command-teaser dl { display: grid; min-width: 220px; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; margin: 0; }
+  .tw-command-teaser dl > div { min-width: 0; padding: 11px; border: 1px solid rgba(var(--strategy-accent-rgb), .15); border-radius: 10px; background: rgba(7,8,11,.68); }
+  .tw-command-teaser dt { color: var(--strategy-accent); font: 800 23px/.9 "Roboto Condensed", sans-serif; }
+  .tw-command-teaser dd { margin: 7px 0 0; color: var(--muted-dim); font: 700 7px/1.4 "JetBrains Mono", monospace; text-transform: uppercase; overflow-wrap: anywhere; }
+  .tw-command-teaser > a { grid-column: 3; justify-self: end; }
+  @media (max-width: 980px) { .tw-command-teaser { grid-template-columns: 78px minmax(0,1fr); } .tw-command-teaser > .strategy-mark { width: 78px; height: 72px; flex-basis: 78px; } .tw-command-teaser dl { grid-column: 2; } .tw-command-teaser > a { grid-column: 2; justify-self: start; } }
+  @media (max-width: 620px) { .tw-command-teaser { grid-template-columns: 62px minmax(0,1fr); padding: 20px 16px; } .tw-command-teaser > .strategy-mark { width: 62px; height: 57px; flex-basis: 62px; } .tw-command-teaser dl, .tw-command-teaser > a { grid-column: 1/-1; } .tw-command-teaser dl { min-width: 0; } }
+</style>

@@ -413,8 +413,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Чистый прирост дохода", "Incremental net income"),
           t("Риск нового фронта", "New-front risk")
         ],
-        primary: { label: t("Рассчитать окупаемость здания", "Calculate building payback"), href: t("/total-war/tools/#building-payback", "/en/total-war/tools/#building-payback") },
-        secondary: { label: t("Открыть путь развития", "Open the development path"), href: t("/total-war/player-paths/", "/en/total-war/player-paths/") }
+        primary: { label: t("Открыть режим развития", "Open the development mode"), href: t("/total-war/tools/campaign-presets/?total-war-campaign-command.preset=cathay-provinces#campaign-stress-test", "/en/total-war/tools/campaign-presets/?total-war-campaign-command.preset=cathay-provinces#campaign-stress-test") },
+        secondary: { label: t("Рассчитать окупаемость здания", "Calculate building payback"), href: t("/total-war/tools/#building-payback", "/en/total-war/tools/#building-payback") }
       },
       {
         id: "reserve",
@@ -431,8 +431,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Чистый расход за ход", "Net outflow per turn"),
           t("Обязательный остаток казны", "Required treasury floor")
         ],
-        primary: { label: t("Рассчитать военный резерв", "Calculate the war reserve"), href: t("/total-war/tools/#war-reserve", "/en/total-war/tools/#war-reserve") },
-        secondary: { label: t("Проверить изменения патча", "Review patch changes"), href: t("/total-war/meta/", "/en/total-war/meta/") }
+        primary: { label: t("Провести мобилизацию", "Run mobilization"), href: t("/total-war/tools/campaign-presets/?total-war-campaign-command.preset=frontier-mobilization#campaign-stress-test", "/en/total-war/tools/campaign-presets/?total-war-campaign-command.preset=frontier-mobilization#campaign-stress-test") },
+        secondary: { label: t("Рассчитать военный резерв", "Calculate the war reserve"), href: t("/total-war/tools/#war-reserve", "/en/total-war/tools/#war-reserve") }
       },
       {
         id: "conquest",
@@ -449,8 +449,8 @@ export const hubGateways: Record<HubGatewayId, HubGatewayConfig> = {
           t("Доход после стабилизации", "Income after stabilization"),
           t("Риск и стоимость удержания", "Holding risk and cost")
         ],
-        primary: { label: t("Сравнить варианты захвата", "Compare conquest options"), href: t("/total-war/tools/#conquest-choice", "/en/total-war/tools/#conquest-choice") },
-        secondary: { label: t("Открыть решения по фазам", "Open campaign lenses"), href: t("/total-war/meta/", "/en/total-war/meta/") }
+        primary: { label: t("Проверить закрепление", "Test consolidation"), href: t("/total-war/tools/campaign-presets/?total-war-campaign-command.preset=post-conquest#campaign-stress-test", "/en/total-war/tools/campaign-presets/?total-war-campaign-command.preset=post-conquest#campaign-stress-test") },
+        secondary: { label: t("Сравнить варианты захвата", "Compare conquest options"), href: t("/total-war/tools/#conquest-choice", "/en/total-war/tools/#conquest-choice") }
       }
     ]
   },

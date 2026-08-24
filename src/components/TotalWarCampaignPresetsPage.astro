@@ -1,0 +1,318 @@
+---
+import { Image } from "astro:assets";
+import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
+import { getTotalWarCampaignPresetsPath, totalWarCampaignContext, totalWarCampaignPresets } from "../data/total-war-campaign-presets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import ScenarioActions from "./ScenarioActions.astro";
+import SiteFooter from "./SiteFooter.astro";
+import StrategyMark from "./StrategyMark.astro";
+import "../styles/strategy-hub.css";
+import "../styles/total-war-campaign-presets.css";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const path = getTotalWarCampaignPresetsPath(lang);
+const alternatePath = getTotalWarCampaignPresetsPath(lang === "ru" ? "en" : "ru");
+const toolsPath = `${lang === "en" ? "/en" : ""}/total-war/tools/`;
+const guidePath = `${lang === "en" ? "/en" : ""}/insights/total-war-campaign-capital-presets-field-guide/`;
+const metaPath = `${lang === "en" ? "/en" : ""}/total-war/meta/`;
+const initialPreset = totalWarCampaignPresets[0]!;
+
+const copy = lang === "ru" ? {
+  title: "Пресеты кампании Total War: стресс-тест казны по фазам",
+  description: "Выбери фазу кампании Total War: Warhammer III, замени демонстрационные вводные своими и проверь казну, резерв и цену второго фронта.",
+  back: "← Инструменты Total War",
+  kicker: "Total War: Warhammer III · штаб кампании",
+  heading: "Не считай кампанию с пустого листа. Начни с её текущей фазы.",
+  lede: "Четыре пресета задают правильный порядок вопросов для развития, мобилизации, закрепления и поздней игры. Они не подставляют «правильные» игровые цены. Все значения ниже являются редактируемым черновиком и должны быть заменены цифрами твоего сохранения.",
+  facts: [["4", "режима кампании"], ["9", "редактируемых вводных"], ["2", "сценария казны"], ["8.1.1", "текущий хотфикс"]],
+  chooseKicker: "01 · выбери исходную ситуацию",
+  chooseTitle: "Пресет задаёт вопросы, а не ответ",
+  chooseText: "Фракционный слой используется только там, где есть подтверждённая механика. Остальные режимы привязаны к фазе кампании и работают для любой фракции.",
+  faction: "Фракционный контекст",
+  phase: "Фаза кампании",
+  openPreset: "Применить пресет",
+  selected: "Выбран",
+  modelKicker: "02 · проведи стресс-тест",
+  modelTitle: "Казна у контрольного хода",
+  modelText: "Базовый сценарий показывает план без сбоя. Стресс-сценарий дополнительно вычитает временную потерю дохода и один срочный платёж.",
+  baseline: "Демонстрационные значения Money Meta. Не данные Creative Assembly.",
+  fields: {
+    preset: "Режим кампании", treasury: "Казна сейчас", income: "Чистый доход / ход", oneOff: "Разовый расход", upkeep: "Новое содержание / ход", horizon: "До пересмотра, ходов", reserve: "Защищённый резерв", riskIncome: "Доход под угрозой / ход", riskTurns: "Сбой, ходов", emergency: "Срочный платёж"
+  },
+  result: "Результат штаба",
+  verdicts: { funded: "План выдерживает стресс-сценарий", fragile: "Резерв формально цел, но план хрупкий", breach: "План пробивает защищённый резерв" },
+  resultNote: "Стресс-потеря является сценарным допущением. Модель не предсказывает ход ИИ и не оценивает неденежную ценность позиции.",
+  metrics: { stressCash: "Казна после стресса", buffer: "Сверх резерва", baseCash: "Базовая казна", stressLoss: "Цена плохого случая", flow: "Чистый поток / ход", coverage: "Покрытие резерва", ceiling: "Предел разового расхода", upkeepCeiling: "Предел нового содержания", committed: "Капитал обязательств" },
+  briefKicker: "03 · полевой приказ",
+  when: "Когда применять",
+  rule: "Правило решения",
+  stop: "Условие остановки",
+  checks: "Три проверки до конца хода",
+  boundary: "Что подтверждает источник",
+  source: "Открыть официальный источник",
+  fullGuide: "Открыть полный полевой гайд",
+  formulaKicker: "04 · границы модели",
+  formulaTitle: "Два сценария. Ни одной спрятанной вероятности.",
+  formulaText: "Базовая казна = казна − разовый расход + (чистый доход − новое содержание) × горизонт. Стресс-казна дополнительно вычитает доход под угрозой × длительность сбоя и срочный платёж. Режим считается хрупким, если резерв уцелел, но чистый поток стал отрицательным. Значение риска вводит игрок.",
+  current: "Живой слой",
+  future: "Следующая проверка",
+  futureText: "Lords of the End Times и крупное обновление заявлены на 24 сентября 2026 года. До релиза будущие изменения не входят в расчёт.",
+  patchImageAlt: "Официальный баннер патча 8.1 Total War: Warhammer III",
+  patchCaption: "Официальный патч задаёт контекст ИИ. Числа сохранения остаются вводными игрока.",
+  existing: "Три базовые модели Total War",
+  meta: "Проверить живой контекст"
+} : {
+  title: "Total War campaign presets: a phase-aware treasury stress test",
+  description: "Choose a Total War: Warhammer III campaign phase, replace demonstration inputs and test treasury, reserve and second-front cost.",
+  back: "← Total War tools",
+  kicker: "Total War: Warhammer III · campaign command",
+  heading: "Do not begin with a blank model. Begin with the campaign phase.",
+  lede: "Four presets establish the right questions for development, mobilization, consolidation and late-game pressure. They do not inject supposedly correct game prices. Every value is an editable draft that must be replaced with numbers from your save.",
+  facts: [["4", "campaign modes"], ["9", "editable inputs"], ["2", "treasury cases"], ["8.1.1", "current hotfix"]],
+  chooseKicker: "01 · choose the starting situation",
+  chooseTitle: "A preset supplies questions, not an answer",
+  chooseText: "Faction context appears only where a sourced mechanic exists. The remaining modes are campaign-phase lenses that work with any faction.",
+  faction: "Faction context",
+  phase: "Campaign phase",
+  openPreset: "Apply preset",
+  selected: "Selected",
+  modelKicker: "02 · run the stress test",
+  modelTitle: "Treasury at the review turn",
+  modelText: "The base case runs without disruption. The stress case also subtracts temporary income loss and one emergency response cost.",
+  baseline: "Money Meta demonstration inputs. Not Creative Assembly data.",
+  fields: {
+    preset: "Campaign mode", treasury: "Treasury now", income: "Net income / turn", oneOff: "One-off cost", upkeep: "New upkeep / turn", horizon: "Turns to review", reserve: "Protected reserve", riskIncome: "Income at risk / turn", riskTurns: "Disruption, turns", emergency: "Emergency cost"
+  },
+  result: "Command result",
+  verdicts: { funded: "The plan survives the stress case", fragile: "Reserve survives, but the plan is fragile", breach: "The plan breaks the protected reserve" },
+  resultNote: "Stress loss is a scenario assumption. The model does not predict AI behavior or price non-cash positional value.",
+  metrics: { stressCash: "Stress-case treasury", buffer: "Above reserve", baseCash: "Base-case treasury", stressLoss: "Adverse-case cost", flow: "Net flow / turn", coverage: "Reserve coverage", ceiling: "One-off spend ceiling", upkeepCeiling: "New upkeep ceiling", committed: "Committed capital" },
+  briefKicker: "03 · field order",
+  when: "When to use it",
+  rule: "Decision rule",
+  stop: "Stop condition",
+  checks: "Three checks before ending the turn",
+  boundary: "What the source establishes",
+  source: "Open the primary source",
+  fullGuide: "Open the full field guide",
+  formulaKicker: "04 · model boundary",
+  formulaTitle: "Two cases. No hidden probability.",
+  formulaText: "Base treasury = treasury − one-off cost + (net income − new upkeep) × horizon. Stress treasury also subtracts income at risk × disruption duration and the emergency cost. A plan is fragile when the reserve survives but net flow turns negative. The player supplies the risk case.",
+  current: "Live layer",
+  future: "Next review",
+  futureText: "Lords of the End Times and its major update are announced for September 24, 2026. Future changes remain outside this model until release.",
+  patchImageAlt: "Official Total War: Warhammer III Patch 8.1 banner",
+  patchCaption: "The official patch defines AI context. Save-specific numbers remain player inputs.",
+  existing: "Three core Total War models",
+  meta: "Review live context"
+};
+---
+
+<BaseLayout
+  title={`${copy.title} | Money Meta`}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={path}
+  alternatePath={alternatePath}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: copy.title,
+    description: copy.description,
+    applicationCategory: "GameApplication",
+    operatingSystem: "Web",
+    isAccessibleForFree: true,
+    inLanguage: lang,
+    about: { "@type": "VideoGame", name: "Total War: Warhammer III", publisher: "SEGA / Creative Assembly" }
+  }}
+>
+  <main class="page game-page strategy-living-hub strategy-total-war total-war-presets-page" data-lang={lang}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/total-war/tools/campaign-presets/" enPath="/en/total-war/tools/campaign-presets/" backPath={toolsPath} backLabel={copy.back} />
+
+      <header class="tw-command-hero">
+        <Image class="tw-command-hero-art" src={totalWarWorld} alt="" widths={[640, 960, 1280, 1672]} sizes="(max-width: 1180px) calc(100vw - 40px), 1180px" loading="eager" decoding="async" fetchpriority="high" />
+        <div class="tw-command-hero-shade" aria-hidden="true"></div>
+        <div class="tw-command-hero-copy">
+          <span class="section-kicker">{copy.kicker}</span>
+          <h1>{copy.heading}</h1>
+          <p>{copy.lede}</p>
+          <div class="tw-command-proof">
+            {copy.facts.map(([value, label]) => <div><strong>{value}</strong><span>{label}</span></div>)}
+          </div>
+        </div>
+        <aside class="tw-command-boundary"><StrategyMark mark="T" lang={lang} large /><div><span>{totalWarCampaignContext.currentVersion[lang]}</span><strong>{copy.baseline}</strong><small>{totalWarCampaignContext.checkedAt}</small></div></aside>
+      </header>
+
+      <section class="tw-preset-picker" aria-labelledby="tw-preset-picker-title">
+        <header><div><span class="section-kicker">{copy.chooseKicker}</span><h2 id="tw-preset-picker-title">{copy.chooseTitle}</h2><p>{copy.chooseText}</p></div><span>TW-P01 / TW-P04</span></header>
+        <div class="tw-preset-grid" role="list">
+          {totalWarCampaignPresets.map((preset, index) => (
+            <button type="button" role="listitem" class="tw-preset-card" data-preset-button={preset.id} aria-pressed={index === 0 ? "true" : "false"}>
+              <StrategyMark mark={preset.mark} lang={lang} />
+              <div><span>{preset.code} · {preset.scope === "faction" ? copy.faction : copy.phase}</span><strong>{preset.title[lang]}</strong><small>{preset.label[lang]}</small></div>
+              <b><span data-preset-action>{copy.openPreset}</span><i aria-hidden="true">→</i></b>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section id="campaign-stress-test" class="tw-command-model" data-tw-command data-lang={lang} data-scenario-root data-scenario-key="total-war-campaign-command" aria-labelledby="tw-command-model-title">
+        <header class="tw-command-model-head"><div><span class="section-kicker">{copy.modelKicker}</span><h2 id="tw-command-model-title">{copy.modelTitle}</h2><p>{copy.modelText}</p></div><span>{copy.baseline}</span></header>
+        <div class="tw-command-model-grid">
+          <form class="card tw-command-input">
+            <div class="tw-command-input-head"><span>{copy.fields.preset}</span><strong>INPUT / 09</strong></div>
+            <div class="field tw-preset-select"><label for="tw-preset-select">{copy.fields.preset}</label><select id="tw-preset-select" data-role="preset">{totalWarCampaignPresets.map((preset) => <option value={preset.id}>{preset.label[lang]} · {preset.title[lang]}</option>)}</select></div>
+            <div class="form-grid tw-command-form-grid">
+              <div class="field"><label for="tw-treasury">{copy.fields.treasury}</label><input id="tw-treasury" data-role="treasury" type="number" min="0" step="500" value={initialPreset.inputs.treasury} /></div>
+              <div class="field"><label for="tw-income">{copy.fields.income}</label><input id="tw-income" data-role="netIncomePerTurn" type="number" step="100" value={initialPreset.inputs.netIncomePerTurn} /></div>
+              <div class="field"><label for="tw-one-off">{copy.fields.oneOff}</label><input id="tw-one-off" data-role="oneOffCost" type="number" min="0" step="250" value={initialPreset.inputs.oneOffCost} /></div>
+              <div class="field"><label for="tw-upkeep">{copy.fields.upkeep}</label><input id="tw-upkeep" data-role="additionalUpkeepPerTurn" type="number" min="0" step="100" value={initialPreset.inputs.additionalUpkeepPerTurn} /></div>
+              <div class="field"><label for="tw-horizon">{copy.fields.horizon}</label><input id="tw-horizon" data-role="horizonTurns" type="number" min="1" step="1" value={initialPreset.inputs.horizonTurns} /></div>
+              <div class="field"><label for="tw-reserve">{copy.fields.reserve}</label><input id="tw-reserve" data-role="protectedReserve" type="number" min="0" step="250" value={initialPreset.inputs.protectedReserve} /></div>
+              <div class="field"><label for="tw-risk-income">{copy.fields.riskIncome}</label><input id="tw-risk-income" data-role="incomeAtRiskPerTurn" type="number" min="0" step="100" value={initialPreset.inputs.incomeAtRiskPerTurn} /></div>
+              <div class="field"><label for="tw-risk-turns">{copy.fields.riskTurns}</label><input id="tw-risk-turns" data-role="disruptionTurns" type="number" min="0" step="1" value={initialPreset.inputs.disruptionTurns} /></div>
+              <div class="field"><label for="tw-emergency">{copy.fields.emergency}</label><input id="tw-emergency" data-role="emergencyCost" type="number" min="0" step="250" value={initialPreset.inputs.emergencyCost} /></div>
+            </div>
+          </form>
+
+          <article class="card result-panel tw-command-result" aria-live="polite">
+            <div class="tw-command-result-head"><div><span class="result-label">{copy.result}</span><h2 data-command-verdict>-</h2></div><StrategyMark mark="¤" lang={lang} /></div>
+            <p class="result-reason">{copy.resultNote}</p>
+            <div class="result-metrics tw-command-metrics">
+              {Object.entries(copy.metrics).map(([key, label]) => <div class:list={["result-metric", { "is-primary": key === "stressCash", "is-positive": key === "buffer" }]}><span>{label}</span><strong data-command-output={key}>-</strong></div>)}
+            </div>
+            <ScenarioActions lang={lang} />
+          </article>
+        </div>
+      </section>
+
+      <section class="tw-field-order" aria-labelledby="tw-field-order-title">
+        <header><div><span class="section-kicker">{copy.briefKicker}</span><h2 id="tw-field-order-title" data-preset-title>{initialPreset.title[lang]}</h2><p data-preset-question>{initialPreset.question[lang]}</p></div><StrategyMark mark={initialPreset.mark} lang={lang} large /></header>
+        <div class="tw-field-order-grid">
+          <div class="tw-field-order-copy">
+            <article><span>{copy.when}</span><p data-preset-when>{initialPreset.when[lang]}</p></article>
+            <article><span>{copy.rule}</span><p data-preset-rule>{initialPreset.decisionRule[lang]}</p></article>
+            <article class="is-stop"><span>{copy.stop}</span><p data-preset-stop>{initialPreset.stopRule[lang]}</p></article>
+          </div>
+          <aside>
+            <span>{copy.checks}</span>
+            <ol data-preset-checks>{initialPreset.checks.map((check) => <li><strong>{check.label[lang]}</strong><p>{check.text[lang]}</p></li>)}</ol>
+          </aside>
+        </div>
+        <div class="tw-source-boundary"><div><span>{copy.boundary}</span><p data-preset-boundary>{initialPreset.sourceBoundary[lang]}</p></div><a data-preset-source href={initialPreset.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} ↗</a><a class="button primary strategy-primary" href={guidePath}>{copy.fullGuide} →</a></div>
+      </section>
+
+      <section class="tw-command-method" aria-labelledby="tw-command-method-title">
+        <div class="tw-command-method-copy"><span class="section-kicker">{copy.formulaKicker}</span><h2 id="tw-command-method-title">{copy.formulaTitle}</h2><p>{copy.formulaText}</p><dl><div><dt>{copy.current}</dt><dd>{totalWarCampaignContext.currentVersion[lang]} · {totalWarCampaignContext.checkedAt}</dd></div><div><dt>{copy.future}</dt><dd>{copy.futureText}</dd></div></dl><nav><a href={toolsPath}>{copy.existing} →</a><a href={metaPath}>{copy.meta} →</a><a href={totalWarCampaignContext.sources.endTimes.url} target="_blank" rel="noopener noreferrer">{totalWarCampaignContext.sources.endTimes.label[lang]} ↗</a></nav></div>
+        <figure><img src="https://medias.community.creative-assembly.com/forums/ca-kinggobbo-4380/twwh3_Patch_Notes_G2G_blog_banner_1920x432_8.1.jpg" alt={copy.patchImageAlt} loading="lazy" decoding="async" /><figcaption><span>Creative Assembly · Patch 8.1</span><p>{copy.patchCaption}</p></figcaption></figure>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { totalWarCampaignPresets } from "../data/total-war-campaign-presets";
+  import { calculateCampaignCapital } from "../lib/total-war-campaign";
+
+  const ready = (callback: () => void) => {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", callback, { once: true });
+    else callback();
+  };
+
+  ready(() => {
+    document.querySelectorAll<HTMLElement>("[data-tw-command]").forEach((root) => {
+      const lang = root.dataset.lang === "ru" ? "ru" : "en";
+      const locale = lang === "ru" ? "ru-RU" : "en-US";
+      const formatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+      const controls = [...root.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-role]")];
+      const select = root.querySelector<HTMLSelectElement>("[data-role='preset']")!;
+      const output = (key: string) => root.querySelector<HTMLElement>(`[data-command-output='${key}']`)!;
+      const value = (key: string) => Number(root.querySelector<HTMLInputElement>(`[data-role='${key}']`)?.value ?? 0) || 0;
+      const gold = (number: number) => `${formatter.format(number)} ${lang === "ru" ? "зол." : "g"}`;
+      const turn = (number: number) => `${formatter.format(number)} ${lang === "ru" ? "ход." : "turn"}`;
+      const labels = lang === "ru"
+        ? { funded: "План выдерживает стресс-сценарий", fragile: "Резерв формально цел, но план хрупкий", breach: "План пробивает защищённый резерв", selected: "Выбран", apply: "Применить пресет" }
+        : { funded: "The plan survives the stress case", fragile: "Reserve survives, but the plan is fragile", breach: "The plan breaks the protected reserve", selected: "Selected", apply: "Apply preset" };
+
+      const render = () => {
+        const metrics = calculateCampaignCapital({
+          treasury: value("treasury"),
+          netIncomePerTurn: value("netIncomePerTurn"),
+          oneOffCost: value("oneOffCost"),
+          additionalUpkeepPerTurn: value("additionalUpkeepPerTurn"),
+          horizonTurns: value("horizonTurns"),
+          protectedReserve: value("protectedReserve"),
+          incomeAtRiskPerTurn: value("incomeAtRiskPerTurn"),
+          disruptionTurns: value("disruptionTurns"),
+          emergencyCost: value("emergencyCost")
+        });
+        root.querySelector<HTMLElement>("[data-command-verdict]")!.textContent = labels[metrics.state];
+        root.querySelector<HTMLElement>(".tw-command-result")!.dataset.state = metrics.state === "funded" ? "positive" : metrics.state === "fragile" ? "caution" : "negative";
+        output("stressCash").textContent = gold(metrics.stressCashAtHorizon);
+        output("buffer").textContent = gold(metrics.reserveBuffer);
+        output("baseCash").textContent = gold(metrics.baseCashAtHorizon);
+        output("stressLoss").textContent = gold(metrics.stressLoss);
+        output("flow").textContent = gold(metrics.netFlowPerTurn);
+        output("coverage").textContent = `${formatter.format(metrics.reserveCoveragePercent)}%`;
+        output("ceiling").textContent = gold(metrics.maxOneOffCost);
+        output("upkeepCeiling").textContent = `${gold(metrics.maxAdditionalUpkeepPerTurn)} / ${turn(1)}`;
+        output("committed").textContent = gold(metrics.committedCapital);
+      };
+
+      const renderBrief = (id: string) => {
+        const preset = totalWarCampaignPresets.find((item) => item.id === id) ?? totalWarCampaignPresets[0]!;
+        document.querySelectorAll<HTMLButtonElement>("[data-preset-button]").forEach((button) => {
+          const active = button.dataset.presetButton === preset.id;
+          button.setAttribute("aria-pressed", String(active));
+          const action = button.querySelector<HTMLElement>("[data-preset-action]");
+          if (action) action.textContent = active ? labels.selected : labels.apply;
+        });
+        const section = document.querySelector<HTMLElement>(".tw-field-order")!;
+        section.querySelector<HTMLElement>("[data-preset-title]")!.textContent = preset.title[lang];
+        section.querySelector<HTMLElement>("[data-preset-question]")!.textContent = preset.question[lang];
+        section.querySelector<HTMLElement>("[data-preset-when]")!.textContent = preset.when[lang];
+        section.querySelector<HTMLElement>("[data-preset-rule]")!.textContent = preset.decisionRule[lang];
+        section.querySelector<HTMLElement>("[data-preset-stop]")!.textContent = preset.stopRule[lang];
+        section.querySelector<HTMLElement>("[data-preset-boundary]")!.textContent = preset.sourceBoundary[lang];
+        const source = section.querySelector<HTMLAnchorElement>("[data-preset-source]")!;
+        source.href = preset.sourceUrl;
+        const checks = section.querySelector<HTMLOListElement>("[data-preset-checks]")!;
+        checks.replaceChildren(...preset.checks.map((check) => {
+          const item = document.createElement("li");
+          const strong = document.createElement("strong");
+          const paragraph = document.createElement("p");
+          strong.textContent = check.label[lang];
+          paragraph.textContent = check.text[lang];
+          item.append(strong, paragraph);
+          return item;
+        }));
+      };
+
+      const applyPreset = (id: string) => {
+        const preset = totalWarCampaignPresets.find((item) => item.id === id) ?? totalWarCampaignPresets[0]!;
+        select.value = preset.id;
+        Object.entries(preset.inputs).forEach(([key, inputValue]) => {
+          const input = root.querySelector<HTMLInputElement>(`[data-role='${key}']`);
+          if (input) input.value = String(inputValue);
+        });
+        renderBrief(preset.id);
+        render();
+      };
+
+      document.querySelectorAll<HTMLButtonElement>("[data-preset-button]").forEach((button) => button.addEventListener("click", () => {
+        applyPreset(button.dataset.presetButton ?? totalWarCampaignPresets[0]!.id);
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        root.scrollIntoView({ behavior: "smooth", block: "start" });
+      }));
+      select.addEventListener("change", () => applyPreset(select.value));
+      controls.filter((control) => control !== select).forEach((control) => control.addEventListener("input", render));
+      renderBrief(select.value);
+      render();
+    });
+  });
+</script>

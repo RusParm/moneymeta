@@ -11,7 +11,7 @@ This is an internal editorial score, not a traffic claim. Each axis is scored fr
 | GTA Online | 5 | 5 | 4 | 5 | 5 | Full Nightclub portfolio economics after source/data audit |
 | Dota 2 | 5 | 5 | 4 | 4 | 5 | Replay-economy input layer connected to item timings |
 | WoW Retail | 5 | 5 | 5 | 4 | 4 | Regional price ingestion and saved profession portfolio, only with supported data |
-| Total War: Warhammer III | 5 | 3 | 4 | 4 | 3 | Faction-aware campaign presets with explicit patch boundaries |
+| Total War: Warhammer III | 5 | 5 | 5 | 5 | 4 | Validate preset usage, then add only the faction cases players actually need |
 | Crusader Kings III | 5 | 3 | 4 | 4 | 3 | Save-state dynasty runway across domain, war and succession |
 
 ## Findings by hub
@@ -30,7 +30,7 @@ The hub already separated listed value from cash and connected gathering, crafti
 
 ### Total War: Warhammer III
 
-The campaign-capital model is coherent, but the three generic models must become more recognizably useful inside actual campaigns. The next sprint should add a small set of faction/phase presets only where current rules can be sourced and all economic values remain editable. The September 24 release stays a review trigger, not a source of live formulas.
+The campaign-capital layer now starts from four recognizable situations: Cathay province development, frontier mobilization, post-conquest consolidation and late-game two-front pressure. A standalone command page carries treasury, recurring burn, protected reserve and one adverse case through the same review horizon before routing into the three narrower models. The Cathay lens uses the sourced Provinces technology branch without inventing faction prices. The September 24 release remains a review trigger, not a source of live formulas. The next Total War expansion should be driven by observed preset use rather than another speculative faction pack.
 
 ### Crusader Kings III
 
@@ -38,9 +38,9 @@ The dynasty-capital framing is differentiated, especially the succession buffer.
 
 ## Sequenced work, not a freeze
 
-1. Current sprint: WoW inventory turn, GTA weekly utility and acquisition measurement.
-2. Next deep sprint: Total War campaign presets and a faction/phase field guide.
-3. Then: Crusader Kings dynasty runway connecting domain, war and succession.
+1. Complete: WoW inventory turn, GTA weekly utility and acquisition measurement.
+2. Active release candidate: Total War campaign presets and a faction/phase field guide.
+3. Next: Crusader Kings dynasty runway connecting domain, war and succession.
 4. Then: Dota replay-economy capture linked to item timings.
 5. GTA remains on a weekly editorial cadence throughout; the Nightclub portfolio layer enters when its input contract is complete.
 

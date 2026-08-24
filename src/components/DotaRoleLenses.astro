@@ -4,6 +4,7 @@ import DotaMedia from "./DotaMedia.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
+const toolsPath = `${lang === "en" ? "/en" : ""}/dota-2/tools/#decision-deck`;
 
 const copy = lang === "ru" ? {
   kicker: "Приоритеты разных ролей",
@@ -88,7 +89,7 @@ const copy = lang === "ru" ? {
         <div class="ranking-note">
           <span>{copy.caveat}</span>
           <p>{lens.note[lang]}</p>
-          <a href="#decision-deck">{copy.open} →</a>
+          <a href={toolsPath}>{copy.open} →</a>
         </div>
       </div>
     ))}

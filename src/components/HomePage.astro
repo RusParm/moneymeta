@@ -31,6 +31,10 @@ const wowPath = lang === "ru" ? "/wow/" : "/en/wow/";
 const totalWarPath = lang === "ru" ? "/total-war/" : "/en/total-war/";
 const ck3Path = lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/";
 const calculatorPath = `${gtaPath}calculators/business-roi/`;
+const dotaToolsPath = `${dotaPath}tools/`;
+const wowToolsPath = `${wowPath}tools/`;
+const totalWarToolsPath = `${totalWarPath}tools/`;
+const ck3ToolsPath = `${ck3Path}tools/`;
 const featuredInsights = insights.filter((insight) => insight.featuredInHub);
 const pulseFreshness = {
   gta: isExpired(weeklyMeta.validThrough),
@@ -100,19 +104,19 @@ const copy = lang === "ru" ? {
   dotaTag: "Экономика матча",
   dotaTitle: "Dota 2",
   dotaText: "Каждая покупка меняет силу героя сейчас и его возможности позже. Сравни оба варианта на цифрах.",
-  dotaQuestions: [["Окупится ли Hand of Midas?", `${dotaPath}#midas-irr`], ["Хватит ли золота на выкуп?", `${dotaPath}#buyback-reserve`]],
+  dotaQuestions: [["Окупится ли Hand of Midas?", `${dotaToolsPath}#midas-irr`], ["Хватит ли золота на выкуп?", `${dotaToolsPath}#buyback-reserve`]],
   wowTag: "Рыночная экономика",
   wowTitle: "WoW Retail",
   wowText: "Цена на аукционе ещё не означает прибыль. Комиссия, скорость продаж и непроданные запасы меняют итог.",
-  wowQuestions: [["Этот крафт реально прибыльный?", `${wowPath}#crafting-margin`], ["Сколько золота фарм приносит на деле?", `${wowPath}#farm-liquidity`]],
+  wowQuestions: [["Этот крафт реально прибыльный?", `${wowToolsPath}#crafting-margin`], ["Сколько золота фарм приносит на деле?", `${wowToolsPath}#farm-liquidity`]],
   totalWarTag: "Экономика кампании",
   totalWarTitle: "Total War: Warhammer III",
   totalWarText: "Казна, провинции, содержание армий и завоевания должны работать как одна система.",
-  totalWarQuestions: [["Окупится ли доходное здание?", `${totalWarPath}#building-payback`], ["Хватит ли казны на новую армию?", `${totalWarPath}#war-reserve`], ["Разграбить или занять?", `${totalWarPath}#conquest-choice`]],
+  totalWarQuestions: [["Окупится ли доходное здание?", `${totalWarToolsPath}#building-payback`], ["Хватит ли казны на новую армию?", `${totalWarToolsPath}#war-reserve`], ["Разграбить или занять?", `${totalWarToolsPath}#conquest-choice`]],
   ck3Tag: "Экономика династии",
   ck3Title: "Crusader Kings III",
   ck3Text: "Богатство правителя имеет смысл, только если казна переживёт войну и смену наследника.",
-  ck3Questions: [["Окупится ли здание домена?", `${ck3Path}#domain-payback`], ["Хватит ли золота на войну?", `${ck3Path}#war-chest`], ["Какой запас получит наследник?", `${ck3Path}#succession-buffer`]],
+  ck3Questions: [["Окупится ли здание домена?", `${ck3ToolsPath}#domain-payback`], ["Хватит ли золота на войну?", `${ck3ToolsPath}#war-chest`], ["Какой запас получит наследник?", `${ck3ToolsPath}#succession-buffer`]],
   featuredKicker: "Главные разборы",
   featuredTitle: "Цифры, которые меняют решение.",
   featuredText: "Короткие разборы ведут от популярного совета к проверяемому выводу и инструменту.",
@@ -210,19 +214,19 @@ const copy = lang === "ru" ? {
   dotaTag: "Match economy",
   dotaTitle: "Dota 2",
   dotaText: "Every purchase trades tempo now for value later. Put a number on that trade-off.",
-  dotaQuestions: [["Will Hand of Midas pay back?", `${dotaPath}#midas-irr`], ["Can I fund buyback in time?", `${dotaPath}#buyback-reserve`]],
+  dotaQuestions: [["Will Hand of Midas pay back?", `${dotaToolsPath}#midas-irr`], ["Can I fund buyback in time?", `${dotaToolsPath}#buyback-reserve`]],
   wowTag: "Market economy",
   wowTitle: "WoW Retail",
   wowText: "An Auction House price is not profit. Fees, sell-through and inventory change the answer.",
-  wowQuestions: [["Is this craft actually profitable?", `${wowPath}#crafting-margin`], ["What does this farm really earn?", `${wowPath}#farm-liquidity`]],
+  wowQuestions: [["Is this craft actually profitable?", `${wowToolsPath}#crafting-margin`], ["What does this farm really earn?", `${wowToolsPath}#farm-liquidity`]],
   totalWarTag: "Campaign economy",
   totalWarTitle: "Total War: Warhammer III",
   totalWarText: "Treasury, provinces, army upkeep and conquest need to work as one system.",
-  totalWarQuestions: [["Will the income building pay back?", `${totalWarPath}#building-payback`], ["Can the treasury fund another army?", `${totalWarPath}#war-reserve`], ["Sack or occupy?", `${totalWarPath}#conquest-choice`]],
+  totalWarQuestions: [["Will the income building pay back?", `${totalWarToolsPath}#building-payback`], ["Can the treasury fund another army?", `${totalWarToolsPath}#war-reserve`], ["Sack or occupy?", `${totalWarToolsPath}#conquest-choice`]],
   ck3Tag: "Dynasty economy",
   ck3Title: "Crusader Kings III",
   ck3Text: "A rich reign matters only when the treasury survives war and succession.",
-  ck3Questions: [["Will the domain building pay back?", `${ck3Path}#domain-payback`], ["Can the treasury fund the war?", `${ck3Path}#war-chest`], ["What buffer will the heir receive?", `${ck3Path}#succession-buffer`]],
+  ck3Questions: [["Will the domain building pay back?", `${ck3ToolsPath}#domain-payback`], ["Can the treasury fund the war?", `${ck3ToolsPath}#war-chest`], ["What buffer will the heir receive?", `${ck3ToolsPath}#succession-buffer`]],
   featuredKicker: "Flagship analysis",
   featuredTitle: "Numbers that change the decision.",
   featuredText: "Focused field notes move from a popular claim to a testable conclusion and a tool.",

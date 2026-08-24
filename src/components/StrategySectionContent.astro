@@ -6,6 +6,7 @@ import { isOlderThanDays } from "../lib/freshness";
 import HubGuideLibrary from "./HubGuideLibrary.astro";
 import StrategyCalculators from "./StrategyCalculators.astro";
 import StrategyMark from "./StrategyMark.astro";
+import TotalWarCampaignPresetsTeaser from "./TotalWarCampaignPresetsTeaser.astro";
 
 interface Props {
   lang: HubLocale;
@@ -211,11 +212,12 @@ const copy = lang === "ru" ? {
 
 {section === "tools" && (
   <>
+    {hub === "total-war" && <TotalWarCampaignPresetsTeaser lang={lang} />}
     <section class="section hub-section strategy-focused-scenarios" aria-labelledby={`${hub}-focused-scenarios-title`}>
       <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.toolsKicker}</span><h2 id={`${hub}-focused-scenarios-title`}>{copy.toolsTitle}</h2><p class="section-copy">{copy.toolsText}</p></div><span class="count">6 → 3</span></div>
       <div class="decision-deck-grid strategy-decision-deck">
         {data.scenarios.map((scenario, index) => (
-          <a class:list={["decision-deck-card", "strategy-decision-card", { "is-featured": index === 1 }]} href={toolsHref(scenario.href)}>
+          <a class:list={["decision-deck-card", "strategy-decision-card", { "is-featured": index === 1 }]} href={routeForLegacyHref(scenario.href)}>
             <div class="decision-deck-top"><span>0{index + 1} · {scenario.mode[lang]}</span><StrategyMark mark={scenario.mark} lang={lang} /></div>
             <div><span class="game-tag">{scenario.eyebrow[lang]}</span><h3>{scenario.question[lang]}</h3><p>{scenario.outcome[lang]}</p></div>
             <strong>{copy.model} →</strong>

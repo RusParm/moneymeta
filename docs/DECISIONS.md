@@ -167,3 +167,7 @@ Update CTAs may ship before a Telegram channel exists only when their fallback i
 ## 2026-08-24: hub depth is sequential, not exclusive
 
 One hub receives a substantial model-and-guide layer per sprint so quality remains reviewable. The other four are not frozen: they remain subject to freshness checks, corrections, shared navigation and measurement. A new deep tool should usually receive its own focused URL instead of extending the hub root or turning a section index back into an endless page.
+
+## 2026-08-24: a campaign preset supplies a stress case, not faction truth
+
+Total War presets may name a faction only when an official source supports the relevant campaign direction. A preset never supplies an authoritative price, income, probability or build order. It supplies a review horizon, a protected-reserve check and one explicit adverse case, while every economic value remains editable. The September 24 release is a mandatory source-review trigger and does not enter Patch 8.1 calculations before release.
