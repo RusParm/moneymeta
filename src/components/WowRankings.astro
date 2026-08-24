@@ -6,6 +6,7 @@ import WowMarketMark from "./WowMarketMark.astro";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const rankings = Object.fromEntries(wowRankingLenses.map((lens) => [lens.id, rankWowMarketRoutes(wowMarketRoutes, lens)]));
+const toolsPath = `${lang === "en" ? "/en" : ""}/wow/tools/#decision-deck`;
 
 const copy = lang === "ru" ? {
   kicker: "Рейтинги под разные ограничения",
@@ -69,7 +70,7 @@ const copy = lang === "ru" ? {
             </article>
           ))}
         </div>
-        <div class="ranking-note"><span>{copy.why}</span><p>{lens.note[lang]}</p><a href="#decision-deck">{copy.model} →</a></div>
+        <div class="ranking-note"><span>{copy.why}</span><p>{lens.note[lang]}</p><a href={toolsPath}>{copy.model} →</a></div>
       </div>
     ))}
   </div>

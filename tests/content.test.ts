@@ -155,7 +155,7 @@ describe("five-hub guide edition", () => {
   });
 
   it("adds standalone research depth to both strategy hubs", () => {
-    expect(insights.filter((insight) => insight.game === "totalwar")).toHaveLength(4);
+    expect(insights.filter((insight) => insight.game === "totalwar")).toHaveLength(5);
     expect(insights.filter((insight) => insight.game === "ck3")).toHaveLength(4);
   });
 

@@ -4,6 +4,7 @@ import { getHubJourneyPath, hubJourneyList } from "../data/hub-journeys";
 import { HUB_SECTION_SLUGS, getHubPath, hubPortalList } from "../data/hub-portals";
 import { insights } from "../data/insights";
 import { dotaItems, getDotaItemPath, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
+import { getTotalWarCampaignPresetsPath } from "../data/total-war-campaign-presets";
 
 const corePaths = [
   "/",
@@ -40,6 +41,7 @@ const corePaths = [
 
 export const sitemapPaths = [...new Set([
   ...corePaths,
+  ...(["ru", "en"] as const).map((lang) => getTotalWarCampaignPresetsPath(lang)),
   ...(["ru", "en"] as const).flatMap((lang) => [getDotaItemsPath(lang), getDotaItemPlannerPath(lang)]),
   ...dotaItems.flatMap((item) => [getDotaItemPath(item, "ru"), getDotaItemPath(item, "en")]),
   ...hubPortalList.flatMap((hub) => HUB_SECTION_SLUGS.flatMap((section) => [

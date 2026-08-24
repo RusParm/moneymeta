@@ -5,12 +5,158 @@ const totalWarSource = {
   url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101"
 };
 
+const totalWarUpdate80Source = {
+  label: { ru: "Creative Assembly · заметки обновления 8.0", en: "Creative Assembly · Update 8.0 notes" },
+  url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/98"
+};
+
+const totalWarHotfixSource = {
+  label: { ru: "Creative Assembly · хотфикс 8.1.1", en: "Creative Assembly · Hotfix 8.1.1" },
+  url: "https://community.creative-assembly.com/total-war/total-war-warhammer/forums/7-patch-notes-amp-announcements/threads/14865"
+};
+
+const totalWarEndTimesSource = {
+  label: { ru: "Creative Assembly · Lords of the End Times", en: "Creative Assembly · Lords of the End Times" },
+  url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/102"
+};
+
 const ck3Source = {
   label: { ru: "Paradox · обновление Crusader Kings III 1.19.0.6", en: "Paradox · Crusader Kings III Update 1.19.0.6" },
   url: "https://store.steampowered.com/news/app/1158310/view/677373278422041207"
 };
 
 export const strategyInsights = [
+  {
+    slug: "total-war-campaign-capital-presets-field-guide",
+    game: "totalwar",
+    format: "guide",
+    updatedAt: "2026-08-24",
+    gameVersion: { ru: "Total War: Warhammer III · хотфикс 8.1.1 · экономика патча 8.1", en: "Total War: Warhammer III · Hotfix 8.1.1 · Patch 8.1 economy" },
+    evidenceStatus: "estimated",
+    audiences: ["returner", "casual", "grinder"],
+    toolPath: { ru: "/total-war/tools/campaign-presets/", en: "/en/total-war/tools/campaign-presets/" },
+    sources: [totalWarHotfixSource, totalWarSource, totalWarUpdate80Source, totalWarEndTimesSource],
+    content: {
+      ru: {
+        title: "Четыре режима казны Total War: полевой гайд по фазам кампании",
+        description: "Как перевести состояние кампании Total War: Warhammer III в стресс-тест казны для развития, войны, закрепления и второго фронта.",
+        kicker: "Total War: Warhammer III · штаб кампании",
+        thesis: "Один и тот же запас золота означает разные вещи перед стройкой, войной и после захвата. Поэтому сначала нужно назвать фазу кампании, затем защитить обязательный резерв и только после этого проверять новое вложение. Пресет не выбирает за игрока и не подставляет цену фракции. Он не даёт забыть расход, который обычно становится виден через несколько ходов.",
+        answerLabel: "Короткий порядок перед концом хода",
+        answer: "Назови контрольный ход, отдели защищённый резерв, посчитай новый постоянный расход и проведи один плохой сценарий с потерей дохода и срочным платежом.",
+        readTime: "11 мин",
+        takeaways: [
+          "Чистый доход вводится после текущего содержания. Новая армия идёт отдельной строкой.",
+          "Фракционный пресет Cathay опирается только на подтверждённое разделение технологий Military и Provinces. Все экономические значения остаются вводными сохранения.",
+          "Анонс обновления на 24 сентября является датой пересмотра, а не частью живой формулы патча 8.1."
+        ],
+        sections: [
+          {
+            heading: "Сначала сделай снимок, который помещается на одном экране",
+            paragraphs: [
+              "Запиши казну и чистый доход после уже существующего содержания. Затем отдельно добавь разовую цену нового решения, его постоянный расход, число ходов до пересмотра и резерв, который нельзя тратить. Это базовый сценарий без неприятного сюрприза.",
+              "Для стресс-сценария нужны ещё три значения: доход территории под угрозой, сколько ходов он может отсутствовать и один срочный платёж. Это не попытка угадать ИИ. Ты проверяешь, останется ли у плана выход, если спокойная линия не сработает."
+            ]
+          },
+          {
+            heading: "Развитие Grand Cathay: источник задаёт направление, не очередь строительства",
+            paragraphs: [
+              "В заметках обновления 8.0 Creative Assembly разделила технологии Cathay на Military и Provinces. Ветка Provinces относится к управлению провинциями, экономике и действиям кампании. Это достаточная опора для отдельного режима развития, но не для универсального списка технологий или готовой цены вложения.",
+              "В этом режиме контрольный ход ставится перед следующей большой войной. Стройка проходит только тогда, когда стресс-остаток сохраняет резерв, а отдельная модель окупаемости показывает возврат вложения до контрольной точки. Прирост дохода нужно брать с экрана конкретного решения."
+            ]
+          },
+          {
+            heading: "Перед войной: цена найма является только первым платежом",
+            paragraphs: [
+              "Пограничная мобилизация начинается с разовой цены набора, но решение определяется новым содержанием на всём горизонте. Если поток становится отрицательным, плану нужна конкретная дата выхода: мир, добыча, роспуск дорогого набора или другой подтверждённый источник денег.",
+              "Стресс-сценарий добавляет временную потерю пограничного дохода и один срочный ответ. Когда после этого казна ниже защищённого остатка, армия может быть доступна сегодня, но кампания ещё не готова её содержать."
+            ]
+          },
+          {
+            heading: "После захвата: новая территория может быть активом и обязательством одновременно",
+            paragraphs: [
+              "После победы легко смотреть только на добычу и будущий доход. Сначала собери расходы первых ходов: восстановление, срочные постройки, пополнение и защиту новой границы. Если удержание требует отдельной армии, её содержание относится к цене территории.",
+              "Не растягивай ожидаемый доход до конца кампании. Выбери реальную точку пересмотра и проверь, успевает ли территория создать свободный капитал внутри этого окна. Если весь поток уходит на защиту, экономическая ценность удержания пока равна не доходу, а стратегической позиции."
+            ]
+          },
+          {
+            heading: "Поздняя игра: второй фронт проверяется отдельными деньгами",
+            paragraphs: [
+              "Патч 8.1 изменил приоритеты ИИ кампании, в том числе снизил вес части оборонительных задач поздней игры и немного повысил приоритет действий против сил противника. Это подтверждённый контекст для стресс-теста, но не универсальная вероятность нападения.",
+              "Выдели доход, потеря которого ломает длинную войну, и цену одного срочного ответа на другом направлении. Если этот случай использует резерв первого фронта, план считает одни деньги дважды. Масштаб войны нужно сократить до уровня, при котором второй ответ остаётся профинансирован."
+            ]
+          },
+          {
+            heading: "24 сентября является точкой пересмотра, а не будущей цифрой",
+            paragraphs: [
+              "Creative Assembly объявила Lords of the End Times и крупное обновление на 24 сентября 2026 года. В анонс входят новые лорды, переработки и изменения кампании. Пока обновление не вышло, этот материал не подтверждает новые доходы, расходы или формулы.",
+              "Сохрани ссылку на свой сценарий и после релиза снова проверь официальный список изменений. До этого момента рабочим слоем остаются хотфикс 8.1.1, экономический контекст патча 8.1 и фактические значения твоего сохранения."
+            ]
+          }
+        ],
+        toolLabel: "Открыть штаб кампании"
+      },
+      en: {
+        title: "Four Total War treasury modes: a campaign-phase field guide",
+        description: "Turn a Total War: Warhammer III save state into a treasury stress test for development, war, consolidation and second-front pressure.",
+        kicker: "Total War: Warhammer III · Campaign command",
+        thesis: "The same gold balance means different things before construction, before war and after conquest. Name the campaign phase first, protect the required reserve and only then test the new commitment. A preset neither chooses for the player nor inserts a faction price. It prevents the cost that appears several turns later from disappearing from the decision.",
+        answerLabel: "The short order before ending the turn",
+        answer: "Set a review turn, separate the protected reserve, price the new recurring burn and run one adverse case with temporary income loss and an emergency payment.",
+        readTime: "11 min",
+        takeaways: [
+          "Enter net income after current upkeep. Put the new army on its own line.",
+          "The Cathay preset uses only the sourced Military and Provinces technology split. Every economic value remains a save-specific input.",
+          "The September 24 update announcement is a review date, not part of the live Patch 8.1 formula."
+        ],
+        sections: [
+          {
+            heading: "Begin with a snapshot that fits on one screen",
+            paragraphs: [
+              "Record treasury and net income after existing upkeep. Then separate the one-off price of the decision, its recurring burn, turns to review and the reserve that cannot be spent. This is the base case without disruption.",
+              "The stress case needs three more inputs: income exposed to loss, the number of disrupted turns and one emergency response cost. This is not an AI forecast. It tests whether the plan retains an exit when the calm line fails."
+            ]
+          },
+          {
+            heading: "Grand Cathay development: the source defines direction, not a build order",
+            paragraphs: [
+              "Creative Assembly's Update 8.0 notes split Cathayan technologies into Military and Provinces. The Provinces branch covers provincial management, economy and campaign actions. That supports a dedicated development mode, but not a universal technology order or ready-made investment price.",
+              "In this mode, the review turn sits before the next major war. Construction passes only when stress cash preserves the reserve and the separate payback model returns capital before that point. Read marginal income from the actual campaign decision."
+            ]
+          },
+          {
+            heading: "Before war: recruitment price is only the first payment",
+            paragraphs: [
+              "Frontier mobilization begins with recruitment cost, but recurring upkeep across the horizon determines sustainability. Negative flow needs a dated exit: peace, loot, disbanding an expensive force or another observable source of cash.",
+              "The stress case adds temporary frontier income loss and one emergency response. When treasury then falls below the protected floor, the army may be affordable today while the campaign is not ready to carry it."
+            ]
+          },
+          {
+            heading: "After conquest: territory can be an asset and a liability together",
+            paragraphs: [
+              "Loot and future flow are visible after victory. First collect the opening-turn costs: recovery, urgent construction, replenishment and defence of the new frontier. If holding requires another army, assign its upkeep to the territory.",
+              "Do not extend expected flow to the end of the campaign. Set a real review point and test whether the territory creates deployable capital inside that window. If defence consumes all flow, the value of holding is currently positional rather than financial."
+            ]
+          },
+          {
+            heading: "Late game: the second front needs separate funding",
+            paragraphs: [
+              "Patch 8.1 changed campaign AI priorities, including less weight on some late-game defensive tasks and slightly more priority on actions targeting enemy forces. This is sourced context for a stress test, not a universal attack probability.",
+              "Identify the income whose loss breaks the long war and price one emergency response elsewhere. If that case spends the first front's reserve, the plan assigns the same gold twice. Reduce war scope until the second response remains funded."
+            ]
+          },
+          {
+            heading: "September 24 is a review point, not a future value",
+            paragraphs: [
+              "Creative Assembly announced Lords of the End Times and a major update for September 24, 2026. The announcement covers new lords, reworks and campaign changes. Before release, it confirms no new income, cost or formula.",
+              "Save the scenario link and review official notes again after release. Until then, Hotfix 8.1.1, Patch 8.1 context and actual values from the save remain the working layer."
+            ]
+          }
+        ],
+        toolLabel: "Open campaign command"
+      }
+    }
+  },
   {
     slug: "total-war-warhammer-3-building-payback-before-war",
     game: "totalwar",

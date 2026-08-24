@@ -215,3 +215,13 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Adds a standalone RU/EN WoW Inventory Turn Planner with protected reserve, batch ceiling, first-cycle cash recovery, remaining stock at cost and time-to-90%-sold. The existing inventory-trap analysis now routes into this tool.
 - Adds a five-hub quality audit and a sequenced deepening plan that keeps every hub live rather than freezing four of them.
 - Ninety-eight automated tests pass. Five hundred seventy-one static pages build with zero Astro diagnostics, and the generated-site audit reports zero missing internal destinations. HTTPS desktop Preview QA passed across all five hubs and the new GTA Weekly, Updates and WoW Inventory Turn routes; the Dota section-rail mark collision found during QA is fixed and covered at desktop and mobile breakpoints. A physical mobile viewport remains the final gate before any production promotion.
+
+## Active release candidate: v1.16 Total War campaign command
+
+- Adds a standalone RU/EN Campaign Command route with four phase-aware entry presets rather than making the Total War root or tools index longer.
+- Adds a transparent treasury stress test across nine editable inputs: current treasury, net flow, one-off cost, new upkeep, review horizon, protected reserve, exposed income, disruption duration and emergency cost.
+- Separates a calm base case from an adverse case and classifies a plan as funded, fragile negative-flow or reserve-breaking without a hidden probability threshold.
+- Uses Update 8.0 only to establish Cathay's Provinces technology direction and Patch 8.1 only as current AI context. All economic values remain save-specific demonstration inputs.
+- Adds a complete eleven-minute RU/EN field guide and routes the Total War gateway, tools page, guide library and sitemap into the new layer.
+- Repairs legacy root-fragment links so homepage questions and focused context actions open the actual tools, guides or meta destination after the compact-portal migration.
+- One hundred three automated tests pass. Five hundred seventy-five static pages build with zero Astro diagnostics; 23,020 generated internal links resolve with zero missing destinations or fragments. Branch Preview and responsive browser QA remain required before promotion.

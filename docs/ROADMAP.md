@@ -159,6 +159,16 @@
 - First deep focus: WoW protected-reserve and inventory-turn planning on a standalone route instead of lengthening the tools index.
 - Next focus: Total War campaign presets, then Crusader Kings dynasty runway, then Dota replay-economy capture.
 
+## P2.4: v1.16 Total War campaign command
+
+- One standalone RU/EN campaign-command route instead of extending the Total War root or tools index.
+- Four phase-aware entry presets: Cathay province development, frontier mobilization, post-conquest consolidation and late-game two-front pressure.
+- One transparent treasury stress model carrying one-off cost, new upkeep, protected reserve, exposed income and an emergency response through a player-defined horizon.
+- A substantial RU/EN field guide that states what official Patch 8.0/8.1 sources establish and what remains a save-specific assumption.
+- Direct routing from the Total War gateway, tools page, guide library and sitemap.
+- September 24 remains a recheck date. Unreleased Lords of the End Times changes remain outside live calculations.
+- Crusader Kings dynasty runway becomes the next deep hub sprint after Preview approval.
+
 ## Later
 
 - Authentication and cross-device profiles.
@@ -168,6 +178,6 @@
 - Live WoW Token and regional price data through Blizzard's supported APIs.
 - WoW profession portfolio, recipe comparison and saved market profiles.
 - Expanded Dota 2 match-economy tools: reliable/unreliable gold, death cost and item timing comparisons.
-- Total War scenario presets by faction and campaign phase after usage data identifies the highest-value cases.
+- Additional Total War faction packs only after usage data identifies the highest-value cases.
 - Crusader Kings III Silk & Silver model update only after the Q4 2026 mechanics are released and verified.
 - Civilization and Age of Empires after search demand, repeat-use potential and reliable data workflows are validated.

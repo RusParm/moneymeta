@@ -65,7 +65,7 @@ const hubSlug = hub === "gta" ? "gta-online" : hub === "dota" ? "dota-2" : hub =
 const guidesPath = `${lang === "en" ? "/en" : ""}/${hubSlug}/guides/`;
 ---
 
-<section class:list={["section", "hub-section", "portal-guide-library", { "is-compact": compact }]} data-hub-guide-library>
+<section id={compact ? undefined : "research-library"} class:list={["section", "hub-section", "portal-guide-library", { "is-compact": compact }]} data-hub-guide-library>
   <div class="section-head hub-section-head portal-guide-head">
     <div>
       <span class="section-kicker">{copy.kicker}</span>
