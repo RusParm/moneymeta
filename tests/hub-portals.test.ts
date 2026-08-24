@@ -66,4 +66,8 @@ describe("v1.9 hub portals", () => {
     expect(portalSource).not.toContain("portal-media-section");
     expect(portalSource).not.toContain("portal-source-rail");
   });
+
+  it("keeps Dota hero marks inside the compact section rail icon column", () => {
+    expect(portalSource).toMatch(/\.portal-section-rail \.hub-game-mark \.dota-media\s*\{[^}]*width:\s*46px;[^}]*height:\s*42px;[^}]*flex-basis:\s*46px;/u);
+  });
 });
