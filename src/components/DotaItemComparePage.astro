@@ -210,16 +210,19 @@ const initialQueue = `${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=blink
   .compare-intro > p:last-child { max-width: 800px; margin: 0; color: #b9acbf; font-size: .94rem; line-height: 1.7; }
   .compare-model { padding: 24px 0 0; }
   .compare-model h2 { font-size: 1.15rem; margin: 0 0 18px; }
+  .compare-model .field { min-width: 0; }
   .compare-inputs { padding: 22px; border: 1px solid #493441; border-radius: 14px; background: #19131e; }
   .compare-context { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
   .compare-context label { display: block; min-height: 32px; font-size: .74rem; line-height: 1.4; }
-  .compare-context input, .compare-context select, .compare-pickers select { width: 100%; min-height: 46px; font-size: .9rem; }
+  .compare-context input, .compare-context select, .compare-pickers select { width: 100%; min-width: 0; min-height: 46px; font-size: 1rem; }
   .compare-help { color: #a99aaf; font-size: .75rem; line-height: 1.7; margin: 14px 0; }
-  .compare-pickers { display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 16px; margin: 26px 0 8px; }
+  .compare-pickers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) auto; align-items: end; gap: 16px; margin: 26px 0 8px; }
   .compare-pickers label { display: block; margin: 0 0 8px; font-size: .8rem; color: #ddc5be; }
-  .compare-pickers button { min-height: 46px; }
+  .compare-pickers button { min-height: 46px; padding: 10px 14px; font-size: .8rem; line-height: 1.4; }
+  .compare-model :global(.scenario-actions .mini-action) { min-height: 44px; max-width: 100%; padding: 10px 12px; font-size: .75rem; line-height: 1.5; }
+  .compare-model :global(.scenario-feedback) { min-width: 0; font-size: .75rem; line-height: 1.6; letter-spacing: normal; text-transform: none; overflow-wrap: anywhere; }
   .compare-presets { display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; font-size: .72rem; color: #b49ba7; }
-  .compare-presets button { border: 0; background: transparent; color: #d3af94; cursor: pointer; padding: 13px 0; font: inherit; }
+  .compare-presets button { min-height: 44px; border: 0; background: transparent; color: #d3af94; cursor: pointer; padding: 13px 0; font: inherit; }
   .compare-presets button:hover { color: #f1ce9a; }
   .compare-summary { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; border-top: 1px solid #42303c; padding: 19px 0; }
   .compare-summary strong { color: #f1c775; font-size: .91rem; }
@@ -229,10 +232,12 @@ const initialQueue = `${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=blink
   .compare-option { min-width: 0; display: flex; flex-direction: column; border: 1px solid #513846; border-radius: 14px; padding: 23px; background: linear-gradient(155deg, #211821, #16111c); }
   .compare-option:nth-child(2) { border-color: #3b4356; background: linear-gradient(155deg, #1c1b29, #16111c); }
   .compare-item-heading { display: flex; align-items: center; gap: 17px; }
-  .compare-item-heading img { object-fit: contain; border-radius: 5px; }
+  .compare-item-heading img { flex: 0 0 88px; object-fit: contain; border-radius: 5px; }
+  .compare-item-heading > div { min-width: 0; overflow-wrap: anywhere; }
   .compare-item-heading span { color: #a492a5; font-size: .7rem; }
-  .compare-item-heading h2 { margin: 5px 0 0; font-size: 1.22rem; }
-  .compare-numbers { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; padding: 22px 0; margin: 20px 0 0; border-top: 1px solid #44303d; border-bottom: 1px solid #44303d; }
+  .compare-item-heading h2 { margin: 5px 0 0; font-size: 1.22rem; line-height: 1.3; }
+  .compare-numbers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; padding: 22px 0; margin: 20px 0 0; border-top: 1px solid #44303d; border-bottom: 1px solid #44303d; }
+  .compare-numbers > div { min-width: 0; overflow-wrap: anywhere; }
   .compare-numbers dt { font-size: .7rem; color: #b4a0b5; }
   .compare-numbers dd { margin: 7px 0 0; color: #ead9bc; font: 550 1.1rem/1.45 'JetBrains Mono Variable', monospace; }
   .compare-option h3 { margin: 0 0 8px; color: #d6c6d8; font-size: .8rem; }
@@ -262,6 +267,7 @@ const initialQueue = `${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=blink
   .compare-queue a { flex-shrink: 0; }
   [data-dota-comparison] [hidden] { display: none !important; }
   .compare-model :is(button, a, input, select, summary):focus-visible { outline: 2px solid #e7c28c; outline-offset: 3px; }
-  @media (max-width: 850px) { .compare-context { grid-template-columns: 1fr 1fr; } .compare-pickers { grid-template-columns: 1fr 1fr; } .compare-pickers button { grid-column: 1 / -1; justify-self: start; } }
-  @media (max-width: 620px) { .compare-options, .compare-pickers { grid-template-columns: 1fr; } .compare-option, .compare-inputs { padding: 18px; } .compare-intro { padding-top: 25px; } .compare-queue { flex-direction: column; align-items: flex-start; gap: 8px; } .compare-stats :global(th), .compare-stats :global(td) { padding: 12px 8px; font-size: .73rem; } }
+  @media (max-width: 850px) { .compare-context, .compare-pickers { grid-template-columns: repeat(2, minmax(0, 1fr)); } .compare-pickers button { grid-column: 1 / -1; justify-self: start; } }
+  @media (max-width: 620px) { .compare-options, .compare-pickers { grid-template-columns: minmax(0, 1fr); } .compare-option, .compare-inputs { padding: 18px; } .compare-intro { padding-top: 25px; } .compare-queue { flex-direction: column; align-items: flex-start; gap: 8px; } .compare-queue a { max-width: 100%; white-space: normal; } .compare-stats :global(th), .compare-stats :global(td) { padding: 12px 8px; font-size: .73rem; } }
+  @media (max-width: 380px) { .compare-context { grid-template-columns: minmax(0, 1fr); } .compare-context label { min-height: 0; } }
 </style>
