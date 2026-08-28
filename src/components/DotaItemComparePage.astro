@@ -249,10 +249,10 @@ const initialQueue = `${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=blink
   .compare-stats { margin: 30px 0; }
   .compare-table-wrap { overflow-x: auto; }
   .compare-stats table { width: 100%; border-collapse: collapse; font-size: .82rem; table-layout: fixed; }
-  .compare-stats th, .compare-stats td { padding: 15px; border-bottom: 1px solid #3b2c43; text-align: left; overflow-wrap: anywhere; }
-  .compare-stats thead th { background: #211827; color: #d3c1dd; font-weight: 550; }
-  .compare-stats tbody th { color: #ac9ab9; font-weight: 400; }
-  .compare-stats td { color: #e5d7b9; font-family: 'JetBrains Mono Variable', monospace; }
+  .compare-stats :global(th), .compare-stats :global(td) { padding: 15px; border-bottom: 1px solid #3b2c43; text-align: left; overflow-wrap: anywhere; }
+  .compare-stats :global(thead th) { background: #211827; color: #d3c1dd; font-weight: 550; }
+  .compare-stats :global(tbody th) { color: #ac9ab9; font-weight: 400; }
+  .compare-stats :global(td) { color: #e5d7b9; font-family: 'JetBrains Mono Variable', monospace; }
   .compare-stats > p { color: #a99aaf; font-size: .78rem; line-height: 1.7; }
   .compare-limits { padding: 22px; border: 1px solid #403043; border-radius: 12px; }
   .compare-limits p { margin: 10px 0 0; color: #a999b5; font-size: .79rem; line-height: 1.8; }
@@ -263,5 +263,5 @@ const initialQueue = `${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=blink
   [data-dota-comparison] [hidden] { display: none !important; }
   .compare-model :is(button, a, input, select, summary):focus-visible { outline: 2px solid #e7c28c; outline-offset: 3px; }
   @media (max-width: 850px) { .compare-context { grid-template-columns: 1fr 1fr; } .compare-pickers { grid-template-columns: 1fr 1fr; } .compare-pickers button { grid-column: 1 / -1; justify-self: start; } }
-  @media (max-width: 620px) { .compare-options, .compare-pickers { grid-template-columns: 1fr; } .compare-option, .compare-inputs { padding: 18px; } .compare-intro { padding-top: 25px; } .compare-queue { flex-direction: column; align-items: flex-start; gap: 8px; } .compare-stats th, .compare-stats td { padding: 12px 8px; font-size: .73rem; } }
+  @media (max-width: 620px) { .compare-options, .compare-pickers { grid-template-columns: 1fr; } .compare-option, .compare-inputs { padding: 18px; } .compare-intro { padding-top: 25px; } .compare-queue { flex-direction: column; align-items: flex-start; gap: 8px; } .compare-stats :global(th), .compare-stats :global(td) { padding: 12px 8px; font-size: .73rem; } }
 </style>
