@@ -2,8 +2,9 @@ import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { mkdir } from "node:fs/promises";
-import { dotaItemsConfig as config, dotaItemsUserAgent } from "./config.mjs";
+import { dotaItemsConfig as config } from "./config.mjs";
 import { assertDotaItemsSnapshot } from "./schema.mjs";
+import { fetchJson, fetchJsonFromSources } from "./fetch-json.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
 const outputPath = resolve(root, config.outputPath);
@@ -82,33 +83,6 @@ JOIN role_totals rt ON rt.role = fp.role
 GROUP BY fp.role, fp.item_key, rt.players, rt.matches
 ORDER BY fp.item_key, fp.role`;
 
-const sleep = (milliseconds) => new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds));
-
-async function fetchJson(url, label, attempts = 3) {
-  let lastError;
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 50_000);
-    try {
-      const response = await fetch(url, {
-        headers: { "User-Agent": dotaItemsUserAgent, Accept: "application/json" },
-        signal: controller.signal
-      });
-      if (!response.ok) {
-        const detail = (await response.text()).slice(0, 500).replace(/\s+/g, " ").trim();
-        throw new Error(`${response.status} ${response.statusText}${detail ? `: ${detail}` : ""}`);
-      }
-      return await response.json();
-    } catch (error) {
-      lastError = error;
-      if (attempt < attempts) await sleep(attempt * 2_000);
-    } finally {
-      clearTimeout(timeout);
-    }
-  }
-  throw new Error(`${label} failed after ${attempts} attempts: ${lastError instanceof Error ? lastError.message : String(lastError)}`);
-}
-
 const explorerUrl = (sql) => {
   const url = new URL(config.explorerUrl);
   url.searchParams.set("sql", sql.replace(/\s+/g, " ").trim());
@@ -169,22 +143,30 @@ async function previousSnapshot() {
 }
 
 async function main() {
-  const [constants, patches, cohortResponse, timingResponse] = await Promise.all([
-    fetchJson(config.itemConstantsUrl, "OpenDota item constants"),
-    fetchJson(config.patchConstantsUrl, "OpenDota patch constants"),
-    fetchJson(explorerUrl(cohortSql), "OpenDota cohort query"),
-    fetchJson(explorerUrl(timingSql), "OpenDota timing query")
-  ]);
-
-  const cohortRows = cohortResponse?.rows;
-  const timingRows = timingResponse?.rows;
-  if (!constants || typeof constants !== "object" || !Array.isArray(patches) || !Array.isArray(cohortRows) || !Array.isArray(timingRows)) {
-    throw new Error("OpenDota returned an unexpected response shape");
-  }
+  const constantsOptions = { attempts: 2, timeoutMs: 15_000 };
+  const patchSource = await fetchJsonFromSources(
+    [config.patchConstantsUrl, config.patchConstantsFallbackUrl], "OpenDota patch constants",
+    { ...constantsOptions, validate: (data) => Array.isArray(data) && data.length > 0 && data.every((patch) => patch && typeof patch.name === "string" && Number.isFinite(Number(patch.id))) }
+  );
+  const patches = patchSource.data;
   const latestPatch = patches.toSorted((left, right) => Number(left.id) - Number(right.id)).at(-1);
   if (latestPatch?.name !== config.patchFamily) {
     throw new Error(`Configured patch family ${config.patchFamily} is no longer current in OpenDota (latest: ${latestPatch?.name ?? "unknown"}). Review the Valve patch boundary before refreshing.`);
   }
+
+  const [itemSource, cohortResponse, timingResponse] = await Promise.all([
+    fetchJsonFromSources([config.itemConstantsUrl, config.itemConstantsFallbackUrl], "OpenDota item constants", {
+      ...constantsOptions,
+      validate: (data) => Boolean(data && typeof data === "object" && !Array.isArray(data) && Number.isFinite(data.blink?.cost) && data.blink.cost > 0)
+    }),
+    fetchJson(explorerUrl(cohortSql), "OpenDota cohort query"),
+    fetchJson(explorerUrl(timingSql), "OpenDota timing query")
+  ]);
+  const constants = itemSource.data;
+  const cohortRows = cohortResponse?.rows;
+  const timingRows = timingResponse?.rows;
+  if (!Array.isArray(cohortRows) || !Array.isArray(timingRows)) throw new Error("OpenDota returned an unexpected match-statistics shape");
+  console.log(`Constants retrieved from ${itemSource.url}; patch families from ${patchSource.url}.`);
 
   const firstCohortRow = cohortRows[0];
   if (!firstCohortRow) throw new Error("The current-patch cohort is empty");
@@ -255,19 +237,22 @@ async function main() {
       catalogRule: "Items observed in the cohort plus their component tree; zero-cost and recipe records are excluded."
     },
     sources: [
-      { label: "Valve · Patch 7.41e", url: config.patchSourceUrl },
+      { label: `Valve · Patch ${config.patch}`, url: config.patchSourceUrl },
       { label: "OpenDota", url: config.openDotaUrl },
       { label: "OpenDota API documentation", url: config.openDotaDocsUrl },
-      { label: "odota/dotaconstants", url: config.dotaConstantsUrl }
+      { label: "odota/dotaconstants", url: config.dotaConstantsUrl },
+      { label: "Item constants retrieval source", url: itemSource.url },
+      { label: "Patch-family retrieval source", url: patchSource.url }
     ],
     items
   };
   const dataHash = createHash("sha256").update(JSON.stringify(stable)).digest("hex");
   const previous = await previousSnapshot();
-  const fetchedAt = previous?.dataHash === dataHash && safeText(previous.fetchedAt)
-    ? previous.fetchedAt
-    : new Date().toISOString();
-  const snapshot = { ...stable, fetchedAt, dataHash };
+  const fetchedAt = new Date().toISOString();
+  const dataUpdatedAt = previous?.dataHash === dataHash
+    ? previous.dataUpdatedAt ?? previous.fetchedAt
+    : fetchedAt;
+  const snapshot = { ...stable, fetchedAt, dataUpdatedAt, dataHash };
 
   assertDotaItemsSnapshot(snapshot);
   await mkdir(dirname(outputPath), { recursive: true });

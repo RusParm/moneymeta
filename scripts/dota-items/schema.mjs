@@ -10,6 +10,7 @@ export function validateDotaItemsSnapshot(snapshot) {
   if (snapshot.schemaVersion !== 1) fail("schemaVersion", "expected 1");
   if (snapshot.provider !== "opendota") fail("provider", "expected opendota");
   if (!nonEmpty(snapshot.fetchedAt) || Number.isNaN(Date.parse(snapshot.fetchedAt))) fail("fetchedAt", "expected an ISO date");
+  if (snapshot.dataUpdatedAt !== undefined && (!nonEmpty(snapshot.dataUpdatedAt) || Number.isNaN(Date.parse(snapshot.dataUpdatedAt)) || Date.parse(snapshot.dataUpdatedAt) > Date.parse(snapshot.fetchedAt))) fail("dataUpdatedAt", "expected a date no later than fetchedAt");
   if (!nonEmpty(snapshot.dataHash) || !/^[a-f0-9]{64}$/.test(snapshot.dataHash)) fail("dataHash", "expected a sha256 hash");
 
   if (!snapshot.patch || typeof snapshot.patch !== "object") fail("patch", "expected an object");

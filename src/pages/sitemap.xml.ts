@@ -3,7 +3,7 @@ import { getGoalPlannerPath } from "../data/goal-planners";
 import { getHubJourneyPath, hubJourneyList } from "../data/hub-journeys";
 import { HUB_SECTION_SLUGS, getHubPath, hubPortalList } from "../data/hub-portals";
 import { insights } from "../data/insights";
-import { dotaItems, getDotaItemPath, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
+import { dotaItems, getDotaItemComparePath, getDotaItemPath, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
 
 const corePaths = [
   "/",
@@ -34,7 +34,7 @@ const corePaths = [
 
 export const sitemapPaths = [...new Set([
   ...corePaths,
-  ...(["ru", "en"] as const).flatMap((lang) => [getDotaItemsPath(lang), getDotaItemPlannerPath(lang)]),
+  ...(["ru", "en"] as const).flatMap((lang) => [getDotaItemsPath(lang), getDotaItemComparePath(lang), getDotaItemPlannerPath(lang)]),
   ...dotaItems.flatMap((item) => [getDotaItemPath(item, "ru"), getDotaItemPath(item, "en")]),
   ...hubPortalList.flatMap((hub) => HUB_SECTION_SLUGS.flatMap((section) => [
     getHubPath(hub.id, "ru", section),

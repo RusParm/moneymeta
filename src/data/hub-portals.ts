@@ -1,11 +1,19 @@
 import { dotaPatchContext } from "./dota-economy";
+import { dotaPulse } from "./dota-hub";
 import { weeklyMeta } from "./gta-businesses";
 import { insights } from "./insights";
 import { crusaderKingsHub, totalWarHub } from "./strategy-hubs";
 import { wowPatchContext } from "./wow-economy";
+import { wowPulse } from "./wow-hub";
+import type { FreshnessPolicy } from "../lib/freshness";
 
 export type HubLocale = "ru" | "en";
 export type HubPortalId = "gta" | "dota" | "wow" | "total-war" | "ck3";
+export function getHubFreshnessPolicy(id: HubPortalId): FreshnessPolicy {
+  if (id === "gta") return { checkedAt: weeklyMeta.checkedAt, validThrough: weeklyMeta.validThrough };
+  const source = { dota: dotaPulse, wow: wowPulse, "total-war": totalWarHub, ck3: crusaderKingsHub }[id];
+  return { checkedAt: source.checkedAt, staleAfterDays: source.staleAfterDays };
+}
 export const HUB_SECTION_SLUGS = ["economy", "player-paths", "meta", "guides", "tools"] as const;
 export type HubSectionSlug = (typeof HUB_SECTION_SLUGS)[number];
 export type HubLocalized = Record<HubLocale, string>;

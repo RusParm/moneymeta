@@ -8,10 +8,13 @@ if (!validateDotaItemsSnapshot(rawSnapshot)) throw new Error("The bundled Dota i
 
 export const dotaItemsSnapshot = rawSnapshot as DotaItemsSnapshot;
 export const dotaItems = dotaItemsSnapshot.items;
+// Daily collection may miss a run; after two days the saved snapshot needs an update.
+export const DOTA_SNAPSHOT_MAX_AGE_HOURS = 48;
 export const dotaItemsByKey = new Map(dotaItems.map((item) => [item.key, item]));
 
 export const getDotaItemsPath = (lang: DotaItemsLocale) => lang === "ru" ? "/dota-2/items/" : "/en/dota-2/items/";
 export const getDotaItemPlannerPath = (lang: DotaItemsLocale) => `${getDotaItemsPath(lang)}planner/`;
+export const getDotaItemComparePath = (lang: DotaItemsLocale) => `${getDotaItemsPath(lang)}compare/`;
 export const getDotaItemSlug = (item: Pick<DotaItemRecord, "key"> | string) => (typeof item === "string" ? item : item.key).replaceAll("_", "-");
 export const getDotaItemPath = (item: Pick<DotaItemRecord, "key"> | string, lang: DotaItemsLocale) => `${getDotaItemsPath(lang)}${getDotaItemSlug(item)}/`;
 

@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { fetchJson, fetchJsonFromSources } from "../scripts/dota-items/fetch-json.mjs";
 import {
   calculateGoldEfficiency,
   calculateItemPlan,
+  compareDotaItems,
+  getComparableAttributes,
   hasReliableTiming,
   validateDotaItemsSnapshot,
   type DotaItemRecord
@@ -57,10 +60,78 @@ describe("Dota item stat valuation", () => {
   });
 });
 
+describe("Dota source retrieval", () => {
+  it("retries an upstream failure, then retrieves constants from the maintained fallback", async () => {
+    const fetchImpl = vi.fn()
+      .mockResolvedValueOnce(new Response("", { status: 522 }))
+      .mockResolvedValueOnce(new Response("", { status: 522 }))
+      .mockResolvedValueOnce(Response.json({ blink: { cost: 2250 } }));
+    const result = await fetchJsonFromSources(["https://api.example/items", "https://source.example/items"], "Item constants", { attempts: 2, retryDelayMs: 0, fetchImpl });
+    expect(result.url).toBe("https://source.example/items");
+    expect(result.data.blink.cost).toBe(2250);
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
+  });
+
+  it("rejects a success response with the wrong shape before trying the fallback", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(Response.json({ error: "maintenance" })).mockResolvedValueOnce(Response.json([{ id: 1, name: "7.41" }]));
+    const result = await fetchJsonFromSources(["https://api.example/patch", "https://source.example/patch"], "Patches", { attempts: 1, fetchImpl, validate: Array.isArray });
+    expect(result.data).toEqual([{ id: 1, name: "7.41" }]);
+  });
+
+  it("fails closed when match statistics are unavailable", async () => {
+    const fetchImpl = vi.fn().mockRejectedValue(new Error("timeout"));
+    await expect(fetchJson("https://api.example/explorer", "Match statistics", { attempts: 2, retryDelayMs: 0, fetchImpl })).rejects.toThrow("Match statistics failed after 2 attempts: timeout");
+  });
+
+  it("reports total constants failure instead of returning a fabricated response", async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(new Response("", { status: 503 }));
+    await expect(fetchJsonFromSources(["https://api.example/items", "https://source.example/items"], "Item constants", { attempts: 1, fetchImpl })).rejects.toThrow("all maintained sources failed");
+  });
+});
+
 describe("Dota pro timing guard", () => {
   it("hides role timings below the 200-player threshold", () => {
     expect(hasReliableTiming(item(), "core")).toBe(true);
     expect(hasReliableTiming(item(), "support")).toBe(false);
+  });
+});
+
+describe("Dota item alternatives", () => {
+  const blink = item({ id: 1, key: "blink", name: "Blink Dagger", cost: 2_250, attributes: [] });
+  const options = [blink, item()];
+  const input = { itemKeys: ["blink", "black_king_bar"], availableGold: 1_000, goldPerMinute: 500, currentMinute: 10, role: "core" as const };
+
+  it("compares independent purchases from the same budget, not a cumulative queue", () => {
+    const [left, right] = compareDotaItems(options, input);
+    expect(left?.goldNeeded).toBe(1_250);
+    expect(left?.projectedMinute).toBe(12.5);
+    expect(right?.goldNeeded).toBe(3_050);
+    expect(right?.projectedMinute).toBe(16.1);
+  });
+
+  it("keeps an affordable item available at zero GPM and does not invent a wait for the other", () => {
+    const [left, right] = compareDotaItems(options, { ...input, availableGold: 3_000, goldPerMinute: 0 });
+    expect(left?.minutesToAfford).toBe(0);
+    expect(left?.goldLeftNow).toBe(750);
+    expect(right?.minutesToAfford).toBeNull();
+    expect(right?.projectedMinute).toBeNull();
+  });
+
+  it("fails safely on invalid inputs and unknown item keys", () => {
+    const rows = compareDotaItems(options, { ...input, itemKeys: ["missing", "blink"], availableGold: Number.NaN, goldPerMinute: -10, currentMinute: Infinity });
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.goldNeeded).toBe(2_250);
+    expect(rows[0]?.projectedMinute).toBeNull();
+  });
+
+  it("does not expose small role samples, even when a lower threshold is supplied", () => {
+    const rows = compareDotaItems(options, { ...input, role: "support", minimumSample: 1 });
+    expect(rows.every((row) => row.benchmark === null)).toBe(true);
+  });
+
+  it("compares explicit stats without assigning zero to an absent stat or pricing an active", () => {
+    const rows = getComparableAttributes(options);
+    expect(rows.map((row) => row.values)).toEqual([[null, "10"], [null, "24"]]);
   });
 });
 
@@ -101,7 +172,7 @@ describe("Dota snapshot shape", () => {
     expect(validateDotaItemsSnapshot({ schemaVersion: 1, provider: "opendota", items: [] })).toBe(false);
   });
 
-  it("bundles a live current-patch cohort instead of a development fixture", () => {
+  it("bundles a collected patch cohort instead of a development fixture", () => {
     expect(dotaItemsSnapshot.patch.label).toBe("7.41e");
     expect(dotaItemsSnapshot.cohort.matches).toBeGreaterThanOrEqual(300);
     expect(dotaItemsSnapshot.cohort.roleCoveragePct).toBeGreaterThanOrEqual(80);
@@ -144,6 +215,8 @@ describe("Dota snapshot shape", () => {
   it("publishes both localized atlas, planner and item routes in the sitemap", () => {
     expect(sitemapPaths).toContain("/dota-2/items/");
     expect(sitemapPaths).toContain("/en/dota-2/items/planner/");
+    expect(sitemapPaths).toContain("/dota-2/items/compare/");
+    expect(sitemapPaths).toContain("/en/dota-2/items/compare/");
     expect(sitemapPaths).toContain("/dota-2/items/black-king-bar/");
     expect(sitemapPaths).toContain("/en/dota-2/items/black-king-bar/");
     expect(new Set(sitemapPaths).size).toBe(sitemapPaths.length);
