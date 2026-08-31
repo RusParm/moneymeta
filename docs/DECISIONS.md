@@ -164,6 +164,10 @@ Two-item comparison gives each alternative the entire entered budget. The existi
 
 `fetchedAt` records the last complete successful retrieval, even when the payload is unchanged. `dataUpdatedAt` records the last content change. Neither date verifies a new patch or promises recent professional matches; the latest observed match is shown separately. Missing match statistics must fail the refresh without changing the saved timestamp. Maintained OpenDota constants may use a repository fallback, but cached statistics may not be relabeled as newly retrieved. Minor-patch boundaries still require editorial review, and snapshot PRs never merge automatically.
 
+## 2026-08-31: Role quality is a match-level cohort gate
+
+The raw OpenDota league cohort and the role-eligible timing cohort are separate counts. A match enters item timing statistics only when at least eight of its ten players have a current `notable_players.fantasy_role` value. Cohort totals and item timings must use the same eligibility query. The existing minimums of 300 eligible matches and 80% classified-player coverage remain release guards; a low-quality raw cohort is excluded, not accepted by lowering those guards.
+
 ## 2026-08-20: hidden pagination state must win the CSS cascade
 
 Any client-side catalog that uses the HTML `hidden` attribute must ship an explicit author-level `[hidden]` display rule. Component display declarations such as `display: grid` must never make an inactive page visible. The Dota item atlas shows twelve cards per page, preserves search and page state in the URL and covers the visibility contract with an automated regression test.

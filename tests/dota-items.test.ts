@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { fetchJson, fetchJsonFromSources } from "../scripts/dota-items/fetch-json.mjs";
+import { dotaItemsConfig } from "../scripts/dota-items/config.mjs";
+import { createDotaItemQueries } from "../scripts/dota-items/queries.mjs";
 import {
   calculateGoldEfficiency,
   calculateItemPlan,
@@ -61,6 +63,14 @@ describe("Dota item stat valuation", () => {
 });
 
 describe("Dota source retrieval", () => {
+  it("uses the same per-match role-quality gate for cohort totals and item timings", () => {
+    const queries = createDotaItemQueries(dotaItemsConfig);
+    const gate = `HAVING count(*) FILTER (WHERE np.fantasy_role IN (1, 2, 3, 4)) >= ${dotaItemsConfig.minimumClassifiedPlayersPerMatch}`;
+    expect(queries.cohortSql).toContain(gate);
+    expect(queries.timingSql).toContain(gate);
+    expect(queries.cohortSql).toContain("FROM raw_cohort");
+  });
+
   it("retries an upstream failure, then retrieves constants from the maintained fallback", async () => {
     const fetchImpl = vi.fn()
       .mockResolvedValueOnce(new Response("", { status: 522 }))
@@ -174,6 +184,7 @@ describe("Dota snapshot shape", () => {
 
   it("bundles a collected patch cohort instead of a development fixture", () => {
     expect(dotaItemsSnapshot.patch.label).toBe("7.41e");
+    expect(dotaItemsSnapshot.cohort.rawMatches).toBeGreaterThanOrEqual(dotaItemsSnapshot.cohort.matches);
     expect(dotaItemsSnapshot.cohort.matches).toBeGreaterThanOrEqual(300);
     expect(dotaItemsSnapshot.cohort.roleCoveragePct).toBeGreaterThanOrEqual(80);
     expect(dotaItemsSnapshot.items.length).toBeGreaterThanOrEqual(150);

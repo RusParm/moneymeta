@@ -23,10 +23,11 @@ export function validateDotaItemsSnapshot(snapshot) {
 
   if (!snapshot.cohort || typeof snapshot.cohort !== "object") fail("cohort", "expected an object");
   else {
-    for (const key of ["matches", "players", "classifiedPlayers", "roleCoveragePct"]) {
+    for (const key of ["rawMatches", "matches", "players", "classifiedPlayers", "roleCoveragePct"]) {
       if (!finite(snapshot.cohort[key]) || snapshot.cohort[key] < 0) fail(`cohort.${key}`, "expected a non-negative number");
     }
     if (snapshot.cohort.classifiedPlayers > snapshot.cohort.players) fail("cohort.classifiedPlayers", "cannot exceed players");
+    if (snapshot.cohort.matches > snapshot.cohort.rawMatches) fail("cohort.matches", "cannot exceed rawMatches");
     if (snapshot.cohort.roleCoveragePct > 100) fail("cohort.roleCoveragePct", "cannot exceed 100");
     for (const role of ["core", "support"]) {
       const value = snapshot.cohort.roles?.[role];

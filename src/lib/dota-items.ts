@@ -42,6 +42,7 @@ export interface DotaItemsSnapshot {
   dataHash: string;
   patch: { label: string; family: string; startedAt: string; sourceUrl: string };
   cohort: {
+    rawMatches: number;
     matches: number;
     players: number;
     classifiedPlayers: number;

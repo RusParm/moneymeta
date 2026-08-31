@@ -6,6 +6,7 @@ export const dotaItemsConfig = Object.freeze({
   patchStartedAt: "2026-07-30T00:00:00.000Z",
   patchSourceUrl: "https://www.dota2.com/patches/7.41e",
   minimumSample: 200,
+  minimumClassifiedPlayersPerMatch: 8,
   itemConstantsUrl: "https://api.opendota.com/api/constants/items",
   itemConstantsFallbackUrl: "https://raw.githubusercontent.com/odota/dotaconstants/master/build/items.json",
   patchConstantsUrl: "https://api.opendota.com/api/constants/patch",
