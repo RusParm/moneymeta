@@ -6,9 +6,9 @@ import dotaWorld from "../assets/game-worlds/dota-economy-world.webp";
 import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
 import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
 import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
-import { dotaItemsSnapshot, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
+import { dotaItemsSnapshot, getDotaItemComparePath, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
 import { getHubJourneyPath, hubJourneys } from "../data/hub-journeys";
-import { getHubPath, hubPortals, type HubLocale, type HubPortalId } from "../data/hub-portals";
+import { getHubFreshnessPolicy, getHubPath, hubPortals, type HubLocale, type HubPortalId } from "../data/hub-portals";
 import { insights, type InsightGame } from "../data/insights";
 import "../styles/wow-hub.css";
 import "../styles/strategy-hub.css";
@@ -18,6 +18,7 @@ import BrandHeader from "./BrandHeader.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
 import HubGameMark from "./HubGameMark.astro";
 import SiteFooter from "./SiteFooter.astro";
+import FreshnessIndicator from "./FreshnessIndicator.astro";
 
 interface Props {
   hub: HubPortalId;
@@ -26,6 +27,8 @@ interface Props {
 
 const { hub: hubId, lang } = Astro.props;
 const hub = hubPortals[hubId];
+const freshness = getHubFreshnessPolicy(hubId);
+const staleLabel = lang === "ru" ? (hubId === "gta" ? "Событие завершилось" : "Контекст требует проверки") : (hubId === "gta" ? "Event has ended" : "Context needs a review");
 const root = getHubPath(hubId, lang);
 const alternate = getHubPath(hubId, lang === "ru" ? "en" : "ru");
 const worlds: Record<HubPortalId, ImageMetadata> = {
@@ -73,6 +76,7 @@ const copy = lang === "ru" ? {
   dotaLayer: "Предметный слой Dota 2",
   dotaLayerText: "Найди предмет или заранее проверь порядок сборки, не открывая полный каталог внутри хаба.",
   atlas: "Атлас предметов",
+  compare: "Сравнить предметы",
   planner: "План сборки",
   context: "Актуальный контекст",
   sourceText: "Факты версии и вывод Money Meta остаются разными слоями.",
@@ -102,6 +106,7 @@ const copy = lang === "ru" ? {
   dotaLayer: "Dota 2 item layer",
   dotaLayerText: "Find an item or test a build order without placing the full catalog inside the hub.",
   atlas: "Item atlas",
+  compare: "Compare items",
   planner: "Build planner",
   context: "Current context",
   sourceText: "Version facts and Money Meta conclusions remain separate layers.",
@@ -160,7 +165,7 @@ const copy = lang === "ru" ? {
         />
         <div class="portal-hero-shade" aria-hidden="true"></div>
         <div class="portal-hero-copy">
-          <div class="portal-live"><span></span>{copy.live} · {hub.version[lang]} · {copy.checked} {hub.checkedAt}</div>
+          <FreshnessIndicator lang={lang} policy={freshness} current={copy.live} stale={staleLabel} dateLabel={copy.checked} />
           <p class="eyebrow">{hub.eyebrow[lang]}</p>
           <h1 id={`${hubId}-portal-title`}>{hub.heading[lang]}</h1>
           <p class="lede">{hub.lede[lang]}</p>
@@ -228,6 +233,7 @@ const copy = lang === "ru" ? {
                 </div>
                 <nav>
                   <a href={getDotaItemsPath(lang)}><span>{dotaItemsSnapshot.items.length}</span><strong>{copy.atlas}</strong><b>→</b></a>
+                  <a href={getDotaItemComparePath(lang)}><span>A/B</span><strong>{copy.compare}</strong><b>→</b></a>
                   <a href={getDotaItemPlannerPath(lang)}><span>2-5</span><strong>{copy.planner}</strong><b>→</b></a>
                 </nav>
               </section>
@@ -262,7 +268,7 @@ const copy = lang === "ru" ? {
             </section>
 
             <aside class="portal-freshness-card">
-              <div><span>{copy.context}</span><strong>{hub.version[lang]}</strong><small>{copy.checked} {hub.checkedAt}</small></div>
+              <div><strong>{hub.version[lang]}</strong><FreshnessIndicator lang={lang} policy={freshness} current={copy.context} stale={staleLabel} dateLabel={copy.checked} /></div>
               <p>{copy.sourceText}</p>
               <a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} · {copy.openSource} ↗</a>
               <small>{copy.independent}</small>

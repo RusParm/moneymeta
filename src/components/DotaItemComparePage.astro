@@ -1,0 +1,273 @@
+---
+import { dotaItems, dotaItemsSnapshot, getDotaItemComparePath, getDotaItemEditorial, getDotaItemPath, getDotaItemPlannerPath, getDotaItemsPath, type DotaItemsLocale } from "../data/dota-items";
+import { compareDotaItems, getComparableAttributes } from "../lib/dota-items";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import DotaItemNav from "./DotaItemNav.astro";
+import DotaItemsStatus from "./DotaItemsStatus.astro";
+import ScenarioActions from "./ScenarioActions.astro";
+import SiteFooter from "./SiteFooter.astro";
+import "../styles/dota-items.css";
+
+interface Props { lang: DotaItemsLocale; }
+const { lang } = Astro.props;
+const path = getDotaItemComparePath(lang);
+const minimumSample = dotaItemsSnapshot.methodology.minimumSample;
+const defaults = { itemKeys: ["blink", "force_staff"], availableGold: 1000, goldPerMinute: 400, currentMinute: 12, role: "core" as const, minimumSample };
+const initial = compareDotaItems(dotaItems, defaults);
+const attributes = getComparableAttributes(initial.map((row) => row.item));
+const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+const copy = lang === "ru" ? {
+  title: "Сравнение предметов Dota 2: цена, время и задачи | Money Meta",
+  description: "Сравни два предмета Dota 2 на одном бюджете: сколько золота не хватает, когда получится купить, какие характеристики и задачи у каждого варианта.",
+  back: "← К атласу предметов", kicker: "Dota 2 · выбор следующего предмета", heading: "Два предмета. Один бюджет.",
+  lede: "Выбери альтернативы и укажи свои вводные. Сравни цену и время накопления, затем проверь, какую задачу решает каждый предмет.",
+  inputs: "Твоя ситуация", gold: "Золото на покупку", gpm: "Доход на покупки, золота/мин", minute: "Текущая минута", role: "Роль для статистики", core: "Кор", support: "Поддержка",
+  incomeNote: "Укажи доход, который сможешь откладывать дальше, уже после расходников и других трат. Имеющиеся компоненты пока не вычитаются.",
+  option: "Вариант", swap: "Поменять местами", examples: "Примеры", different: "Выбери два разных предмета, чтобы увидеть разницу.",
+  cost: "Цена", needed: "Не хватает", left: "Останется, если купить сейчас", wait: "Время накопления", projected: "Покупка на минуте", ready: "Можно купить сейчас", noIncome: "Без дохода не накопить", min: "мин", currency: "золота",
+  difference: "Разница в цене", sameCost: "Стоимость одинакова", notWinner: "Более низкая цена сама по себе не делает предмет лучшим.",
+  purpose: "Какую задачу решает", details: "Когда полезен и что учесть", useful: "Когда полезен", risk: "Риск выбора", inspect: "Подробнее о предмете",
+  benchmark: "Первые покупки в профматчах", median: "медиана", range: "центральные 50%", sample: "покупок", noSample: "Недостаточно данных для этой роли", sampleRule: `Числовой ориентир скрыт при выборке меньше ${minimumSample} покупок.`,
+  benchmarkNote: "Это наблюдение по роли без подбора героя и ситуации. Медиана не означает рекомендуемую минуту покупки.",
+  stats: "Явные характеристики", stat: "Характеристика", statNote: "Прочерк означает, что явного значения нет в справочнике. Активные способности и уникальные эффекты не сводятся к сумме характеристик.", noStats: "У этих предметов нет сопоставимых явных характеристик. Смотри их способности и задачу покупки.",
+  limits: "Что предполагает расчёт", limitsText: "Каждый вариант получает весь указанный бюджет отдельно. Доход постоянный; смерть, потеря фарма, продажа вещей, имеющиеся компоненты и ограничения момента покупки не учитываются. Это время накопления полной цены, а не обещание доставки или доступности предмета.",
+  formula: "Время накопления = max(0, цена − доступное золото) / доход в минуту.", queue: "Поставить оба в очередь", queueNote: "Нужны оба предмета? В планировщике бюджет будет общим, а покупки последовательными.", noScript: "Для изменения расчёта нужен JavaScript. Ниже показан исходный пример: 1 000 золота, доход 400 в минуту, 12-я минута матча."
+} : {
+  title: "Compare Dota 2 items: cost, timing and purpose | Money Meta",
+  description: "Compare two Dota 2 items using the same budget: missing gold, time to afford each option, explicit stats and the job each item does.",
+  back: "← Item atlas", kicker: "Dota 2 · your next item", heading: "Two items. One budget.",
+  lede: "Choose two alternatives and enter your own inputs. Compare cost and saving time, then check the job each item does.",
+  inputs: "Your situation", gold: "Gold for this purchase", gpm: "Gold saved per minute", minute: "Current match minute", role: "Role for statistics", core: "Core", support: "Support",
+  incomeNote: "Use the income you can save from now on, after consumables and other spending. Components you already own are not deducted yet.",
+  option: "Option", swap: "Swap items", examples: "Examples", different: "Choose two different items to see a meaningful comparison.",
+  cost: "Cost", needed: "Gold missing", left: "Gold left if bought now", wait: "Time to save", projected: "Purchase at match minute", ready: "Affordable now", noIncome: "Cannot save without income", min: "min", currency: "gold",
+  difference: "Price difference", sameCost: "The prices are equal", notWinner: "A lower price alone does not make an item the better choice.",
+  purpose: "What it does", details: "When it helps and what to consider", useful: "When it helps", risk: "Choice risk", inspect: "Full item analysis",
+  benchmark: "First purchases in pro matches", median: "median", range: "middle 50%", sample: "purchases", noSample: "Not enough data for this role", sampleRule: `The numerical benchmark is hidden below ${minimumSample} purchases.`,
+  benchmarkNote: "This is a role-level observation without matching the hero or situation. The median is not a recommended purchase minute.",
+  stats: "Explicit stats", stat: "Stat", statNote: "A dash means no explicit value is available in the catalog. Active abilities and unique effects cannot be reduced to a sum of stats.", noStats: "These items have no comparable explicit stats. Check their abilities and the purpose of the purchase.",
+  limits: "Calculation assumptions", limitsText: "Each option gets the entire entered budget independently. Income is constant; deaths, lost farm, item sales, owned components and purchase-time restrictions are excluded. This estimates time to save the full price, not delivery or item availability.",
+  formula: "Time to save = max(0, cost − available gold) / gold saved per minute.", queue: "Put both in a queue", queueNote: "Need both items? The planner uses a shared budget and consecutive purchases.", noScript: "JavaScript is needed to change the calculation. The default example below uses 1,000 gold, 400 gold saved per minute and match minute 12."
+};
+const payload = JSON.stringify({
+  lang, copy, minimumSample, plannerPath: getDotaItemPlannerPath(lang),
+  items: dotaItems.map((item) => {
+    const note = getDotaItemEditorial(item);
+    return { ...item, abilities: [], components: [], path: getDotaItemPath(item, lang), note: { purpose: note.purpose[lang], bestWhen: note.bestWhen[lang], risk: note.risk[lang] } };
+  })
+}).replace(/</g, "\\u003c");
+const sortedItems = [...dotaItems].sort((a, b) => a.name.localeCompare(b.name, "en"));
+const initialDifference = Math.abs(initial[0]!.item.cost - initial[1]!.item.cost);
+const initialQueue = `${getDotaItemPlannerPath(lang)}?dota-item-plan.item1=blink&dota-item-plan.item2=force_staff&dota-item-plan.item3=&dota-item-plan.item4=&dota-item-plan.item5=&dota-item-plan.currentGold=1000&dota-item-plan.gpm=400&dota-item-plan.currentMinute=12&dota-item-plan.role=core`;
+---
+
+<BaseLayout title={copy.title} description={copy.description} lang={lang} canonicalPath={path} alternatePath={getDotaItemComparePath(lang === "ru" ? "en" : "ru")}>
+  <main class="page dota-items-page dota-comparison" data-dota-comparison>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getDotaItemComparePath("ru")} enPath={getDotaItemComparePath("en")} backPath={getDotaItemsPath(lang)} backLabel={copy.back} />
+      <header class="compare-intro"><p class="eyebrow">{copy.kicker}</p><h1>{copy.heading}</h1><p>{copy.lede}</p></header>
+      <DotaItemNav lang={lang} active="compare" />
+      <DotaItemsStatus lang={lang} compact />
+      <section id="item-comparison" class="compare-model" data-scenario-root data-scenario-key="dota-compare" aria-labelledby="compare-inputs-title">
+        <div class="compare-inputs">
+          <h2 id="compare-inputs-title">{copy.inputs}</h2>
+          <div class="compare-context">
+            <div class="field"><label for="compare-gold">{copy.gold}</label><input id="compare-gold" data-role="gold" type="number" min="0" max="100000" step="1" value="1000" inputmode="numeric" /></div>
+            <div class="field"><label for="compare-gpm">{copy.gpm}</label><input id="compare-gpm" data-role="gpm" type="number" min="0" max="2500" step="1" value="400" inputmode="decimal" /></div>
+            <div class="field"><label for="compare-minute">{copy.minute}</label><input id="compare-minute" data-role="minute" type="number" min="0" max="180" step="0.1" value="12" inputmode="decimal" /></div>
+            <div class="field"><label for="compare-role">{copy.role}</label><select id="compare-role" data-role="role"><option value="core">{copy.core}</option><option value="support">{copy.support}</option></select></div>
+          </div>
+          <p class="compare-help">{copy.incomeNote}</p>
+          <ScenarioActions lang={lang} />
+        </div>
+        <noscript><p class="compare-warning">{copy.noScript}</p></noscript>
+        <div class="compare-pickers">
+          {defaults.itemKeys.map((key, index) => <div class="field"><label for={`compare-item-${index}`}>{copy.option} {index === 0 ? "A" : "B"}</label><select id={`compare-item-${index}`} data-role={index === 0 ? "item-a" : "item-b"}>{sortedItems.map((item) => <option value={item.key} selected={item.key === key}>{item.name} · {number.format(item.cost)}</option>)}</select></div>)}
+          <button class="mini-action" type="button" data-compare-swap>{copy.swap} ⇄</button>
+        </div>
+        <div class="compare-presets"><span>{copy.examples}:</span><button type="button" data-pair="blink,force_staff">Blink / Force Staff</button><button type="button" data-pair="black_king_bar,manta">BKB / Manta</button><button type="button" data-pair="glimmer_cape,force_staff">Glimmer / Force Staff</button></div>
+        <div class="compare-summary" aria-live="polite"><strong data-compare-summary>{copy.difference}: {number.format(initialDifference)} {copy.currency}</strong><span>{copy.notWinner}</span></div>
+        <p class="compare-warning" data-compare-warning hidden>{copy.different}</p>
+        <div class="compare-options">
+          {initial.map((row, index) => {
+            const note = getDotaItemEditorial(row.item);
+            return <article class="compare-option" data-compare-option={index} aria-labelledby={`compare-name-${index}`}>
+              <div class="compare-item-heading"><img data-item-image src={row.item.image} alt="" width="88" height="64" /><div><span>{copy.option} {index === 0 ? "A" : "B"}</span><h2 id={`compare-name-${index}`} data-item-name>{row.item.name}</h2></div></div>
+              <dl class="compare-numbers"><div><dt>{copy.cost}</dt><dd data-item-cost>{number.format(row.item.cost)}</dd></div><div><dt>{copy.needed}</dt><dd data-item-needed>{number.format(row.goldNeeded)}</dd></div><div><dt>{copy.wait}</dt><dd data-item-wait>≈ {number.format(row.minutesToAfford!)} {copy.min}</dd></div><div><dt>{copy.projected}</dt><dd data-item-projected>{number.format(row.projectedMinute!)}</dd></div></dl>
+              <p class="compare-remaining" data-item-remaining hidden></p>
+              <div class="compare-purpose"><h3>{copy.purpose}</h3><p data-item-purpose>{note.purpose[lang]}</p></div>
+              <div class="compare-benchmark"><h3>{copy.benchmark}</h3><strong data-item-benchmark>{row.benchmark ? `${number.format(row.benchmark.median)} ${copy.min} · ${copy.median}` : copy.noSample}</strong><p data-item-range>{row.benchmark ? `${copy.range}: ${number.format(row.benchmark.p25)}-${number.format(row.benchmark.p75)} ${copy.min} · n = ${number.format(row.benchmark.n)}` : copy.sampleRule}</p></div>
+              <details><summary>{copy.details}</summary><h3>{copy.useful}</h3><p data-item-useful>{note.bestWhen[lang]}</p><h3>{copy.risk}</h3><p data-item-risk>{note.risk[lang]}</p></details>
+              <a data-item-link href={getDotaItemPath(row.item, lang)}>{copy.inspect} →</a>
+            </article>;
+          })}
+        </div>
+        <p class="compare-help">{copy.benchmarkNote}</p>
+        <section class="compare-stats" aria-labelledby="compare-stats-title"><h2 id="compare-stats-title">{copy.stats}</h2><div class="compare-table-wrap"><table data-compare-stats hidden={!attributes.length}><thead><tr><th scope="col">{copy.stat}</th>{initial.map((row, index) => <th scope="col" data-stat-item={index}>{row.item.name}</th>)}</tr></thead><tbody data-stat-rows>{attributes.map((attribute) => <tr><th scope="row">{attribute.label[lang]}</th>{attribute.values.map((value) => <td>{value ?? "-"}</td>)}</tr>)}</tbody></table></div><p data-no-stats hidden={Boolean(attributes.length)}>{copy.noStats}</p><p class="compare-help">{copy.statNote}</p></section>
+        <aside class="compare-limits"><h2>{copy.limits}</h2><p>{copy.limitsText}</p><p class="compare-formula">{copy.formula}</p></aside>
+        <div class="compare-queue"><p>{copy.queueNote}</p><a class="button ghost" data-compare-queue href={initialQueue}>{copy.queue} →</a></div>
+      </section>
+      <SiteFooter lang={lang} />
+    </div>
+    <script is:inline type="application/json" data-compare-data set:html={payload} />
+  </main>
+</BaseLayout>
+
+<script>
+  import { compareDotaItems, getComparableAttributes, type DotaItemRecord } from "../lib/dota-items";
+  const root = document.querySelector<HTMLElement>("[data-dota-comparison]");
+  if (root) {
+    type ClientItem = DotaItemRecord & { path: string; note: { purpose: string; bestWhen: string; risk: string } };
+    const data = JSON.parse(root.querySelector("[data-compare-data]")?.textContent ?? "{}");
+    const items: ClientItem[] = data.items;
+    const byKey = new Map(items.map((item) => [item.key, item]));
+    const copy: Record<string, string> = data.copy;
+    const lang: "ru" | "en" = data.lang;
+    const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+    const control = (role: string) => root.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-role="${role}"]`)!;
+    const readNumber = (role: string, maximum: number) => {
+      const value = Number(control(role).value);
+      return Number.isFinite(value) ? Math.min(maximum, Math.max(0, value)) : 0;
+    };
+    const write = (parent: Element, selector: string, value: string) => { const node = parent.querySelector(selector); if (node) node.textContent = value; };
+    const render = () => {
+      const keys = ["item-a", "item-b"].map((role, index) => {
+        const field = control(role);
+        if (!byKey.has(field.value)) field.value = index === 0 ? "blink" : "force_staff";
+        return field.value;
+      });
+      const role = control("role").value === "support" ? "support" : "core";
+      const input = { itemKeys: keys, role, availableGold: readNumber("gold", 100000), goldPerMinute: readNumber("gpm", 2500), currentMinute: readNumber("minute", 180), minimumSample: data.minimumSample } as const;
+      const rows = compareDotaItems(items, input);
+      rows.forEach((row, index) => {
+        const card = root.querySelector<HTMLElement>(`[data-compare-option="${index}"]`)!;
+        const item = byKey.get(row.item.key)!;
+        write(card, "[data-item-name]", item.name);
+        write(card, "[data-item-cost]", number.format(item.cost));
+        write(card, "[data-item-needed]", number.format(row.goldNeeded));
+        write(card, "[data-item-wait]", row.minutesToAfford === null ? copy.noIncome! : row.minutesToAfford === 0 ? copy.ready! : `≈ ${number.format(row.minutesToAfford)} ${copy.min}`);
+        write(card, "[data-item-projected]", row.projectedMinute === null ? "-" : number.format(row.projectedMinute));
+        const remainder = card.querySelector<HTMLElement>("[data-item-remaining]")!;
+        remainder.hidden = row.goldNeeded > 0;
+        remainder.textContent = `${copy.left}: ${number.format(row.goldLeftNow)} ${copy.currency}`;
+        card.querySelector<HTMLImageElement>("[data-item-image]")!.src = item.image;
+        card.querySelector<HTMLAnchorElement>("[data-item-link]")!.href = item.path;
+        write(card, "[data-item-purpose]", item.note.purpose);
+        write(card, "[data-item-useful]", item.note.bestWhen);
+        write(card, "[data-item-risk]", item.note.risk);
+        write(card, "[data-item-benchmark]", row.benchmark ? `${number.format(row.benchmark.median)} ${copy.min} · ${copy.median}` : copy.noSample!);
+        write(card, "[data-item-range]", row.benchmark ? `${copy.range}: ${number.format(row.benchmark.p25)}-${number.format(row.benchmark.p75)} ${copy.min} · n = ${number.format(row.benchmark.n)}` : `${copy.sampleRule} n = ${number.format(item.timings[role]?.n ?? 0)}`);
+        write(root, `[data-stat-item="${index}"]`, item.name);
+      });
+      const difference = Math.abs(rows[0]!.item.cost - rows[1]!.item.cost);
+      write(root, "[data-compare-summary]", difference ? `${copy.difference}: ${number.format(difference)} ${copy.currency}` : copy.sameCost!);
+      root.querySelector<HTMLElement>("[data-compare-warning]")!.hidden = keys[0] !== keys[1];
+      const attributes = getComparableAttributes(rows.map((row) => row.item));
+      const tbody = root.querySelector("[data-stat-rows]")!;
+      tbody.replaceChildren(...attributes.map((attribute) => {
+        const tr = document.createElement("tr");
+        const th = document.createElement("th");
+        th.scope = "row";
+        th.textContent = attribute.label[lang];
+        tr.append(th);
+        attribute.values.forEach((value) => { const td = document.createElement("td"); td.textContent = value ?? "-"; tr.append(td); });
+        return tr;
+      }));
+      root.querySelector<HTMLElement>("[data-compare-stats]")!.hidden = !attributes.length;
+      root.querySelector<HTMLElement>("[data-no-stats]")!.hidden = Boolean(attributes.length);
+      const queue = new URL(data.plannerPath, location.origin);
+      const values = { item1: keys[0]!, item2: keys[1]!, item3: "", item4: "", item5: "", currentGold: String(input.availableGold), gpm: String(input.goldPerMinute), currentMinute: String(input.currentMinute), role };
+      Object.entries(values).forEach(([key, value]) => queue.searchParams.set(`dota-item-plan.${key}`, value));
+      const queueLink = root.querySelector<HTMLAnchorElement>("[data-compare-queue]")!;
+      // The existing queue requires positive GPM. Do not silently turn zero into income.
+      queueLink.hidden = input.goldPerMinute === 0;
+      queueLink.href = `${queue.pathname}${queue.search}`;
+    };
+    const choosePair = (a: string, b: string) => {
+      control("item-a").value = a;
+      control("item-b").value = b;
+      control("item-a").dispatchEvent(new Event("change", { bubbles: true }));
+      control("item-b").dispatchEvent(new Event("change", { bubbles: true }));
+    };
+    root.querySelector("[data-compare-swap]")?.addEventListener("click", () => choosePair(control("item-b").value, control("item-a").value));
+    root.querySelectorAll<HTMLButtonElement>("[data-pair]").forEach((button) => button.addEventListener("click", () => { const [a, b] = button.dataset.pair!.split(","); if (a && b) choosePair(a, b); }));
+    root.querySelectorAll<HTMLInputElement | HTMLSelectElement>("input[data-role], select[data-role]").forEach((input) => {
+      input.addEventListener("input", render);
+      input.addEventListener("change", () => {
+        if (input instanceof HTMLInputElement) input.value = String(readNumber(input.dataset.role!, Number(input.max)));
+        render();
+      });
+    });
+    render();
+  }
+</script>
+
+<style>
+  .dota-comparison .shell { max-width: 1200px; }
+  .compare-intro { padding: 32px 0 24px; }
+  .compare-intro h1 { margin: 12px 0; font-size: clamp(2rem, 4.4vw, 3.4rem); line-height: 1.12; letter-spacing: -.035em; }
+  .compare-intro > p:last-child { max-width: 800px; margin: 0; color: #b9acbf; font-size: .94rem; line-height: 1.7; }
+  .compare-model { padding: 24px 0 0; }
+  .compare-model h2 { font-size: 1.15rem; margin: 0 0 18px; }
+  .compare-model .field { min-width: 0; }
+  .compare-inputs { padding: 22px; border: 1px solid #493441; border-radius: 14px; background: #19131e; }
+  .compare-context { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .compare-context label { display: block; min-height: 32px; font-size: .74rem; line-height: 1.4; }
+  .compare-context input, .compare-context select, .compare-pickers select { width: 100%; min-width: 0; min-height: 46px; font-size: 1rem; }
+  .compare-help { color: #a99aaf; font-size: .75rem; line-height: 1.7; margin: 14px 0; }
+  .compare-pickers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) auto; align-items: end; gap: 16px; margin: 26px 0 8px; }
+  .compare-pickers label { display: block; margin: 0 0 8px; font-size: .8rem; color: #ddc5be; }
+  .compare-pickers button { min-height: 46px; padding: 10px 14px; font-size: .8rem; line-height: 1.4; }
+  .compare-model :global(.scenario-actions .mini-action) { min-height: 44px; max-width: 100%; padding: 10px 12px; font-size: .75rem; line-height: 1.5; }
+  .compare-model :global(.scenario-feedback) { min-width: 0; font-size: .75rem; line-height: 1.6; letter-spacing: normal; text-transform: none; overflow-wrap: anywhere; }
+  .compare-presets { display: flex; flex-wrap: wrap; align-items: center; gap: 0 18px; font-size: .72rem; color: #b49ba7; }
+  .compare-presets button { min-height: 44px; border: 0; background: transparent; color: #d3af94; cursor: pointer; padding: 13px 0; font: inherit; }
+  .compare-presets button:hover { color: #f1ce9a; }
+  .compare-summary { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; border-top: 1px solid #42303c; padding: 19px 0; }
+  .compare-summary strong { color: #f1c775; font-size: .91rem; }
+  .compare-summary span { color: #a69aaf; font-size: .75rem; }
+  .compare-warning { padding: 15px; background: #38281e; color: #f0c28d; border-radius: 8px; font-size: .85rem; }
+  .compare-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .compare-option { min-width: 0; display: flex; flex-direction: column; border: 1px solid #513846; border-radius: 14px; padding: 23px; background: linear-gradient(155deg, #211821, #16111c); }
+  .compare-option:nth-child(2) { border-color: #3b4356; background: linear-gradient(155deg, #1c1b29, #16111c); }
+  .compare-item-heading { display: flex; align-items: center; gap: 17px; }
+  .compare-item-heading img { flex: 0 0 88px; object-fit: contain; border-radius: 5px; }
+  .compare-item-heading > div { min-width: 0; overflow-wrap: anywhere; }
+  .compare-item-heading span { color: #a492a5; font-size: .7rem; }
+  .compare-item-heading h2 { margin: 5px 0 0; font-size: 1.22rem; line-height: 1.3; }
+  .compare-numbers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; padding: 22px 0; margin: 20px 0 0; border-top: 1px solid #44303d; border-bottom: 1px solid #44303d; }
+  .compare-numbers > div { min-width: 0; overflow-wrap: anywhere; }
+  .compare-numbers dt { font-size: .7rem; color: #b4a0b5; }
+  .compare-numbers dd { margin: 7px 0 0; color: #ead9bc; font: 550 1.1rem/1.45 'JetBrains Mono Variable', monospace; }
+  .compare-option h3 { margin: 0 0 8px; color: #d6c6d8; font-size: .8rem; }
+  .compare-option p { margin: 0; color: #b4a6be; font-size: .8rem; line-height: 1.75; }
+  .compare-option .compare-remaining { color: #c5d6aa; margin-top: 12px; }
+  .compare-purpose { padding-top: 23px; flex: 1; }
+  .compare-benchmark { margin: 20px 0 15px; padding: 16px; border-radius: 8px; background: #0d0b1277; }
+  .compare-benchmark strong { display: block; color: #d4c7df; font-size: .89rem; font-weight: 550; margin: 8px 0; }
+  .compare-benchmark p { font-size: .71rem; }
+  .compare-option details { border-top: 1px solid #44303d; padding: 7px 0; }
+  .compare-option summary { cursor: pointer; padding: 11px 0; font-size: .77rem; color: #cbb0c0; }
+  .compare-option details p { margin: 6px 0 15px; }
+  .compare-option > a { padding: 13px 0 3px; color: #dfb5a0; font-size: .79rem; }
+  .compare-stats { margin: 30px 0; }
+  .compare-table-wrap { overflow-x: auto; }
+  .compare-stats table { width: 100%; border-collapse: collapse; font-size: .82rem; table-layout: fixed; }
+  .compare-stats :global(th), .compare-stats :global(td) { padding: 15px; border-bottom: 1px solid #3b2c43; text-align: left; overflow-wrap: anywhere; }
+  .compare-stats :global(thead th) { background: #211827; color: #d3c1dd; font-weight: 550; }
+  .compare-stats :global(tbody th) { color: #ac9ab9; font-weight: 400; }
+  .compare-stats :global(td) { color: #e5d7b9; font-family: 'JetBrains Mono Variable', monospace; }
+  .compare-stats > p { color: #a99aaf; font-size: .78rem; line-height: 1.7; }
+  .compare-limits { padding: 22px; border: 1px solid #403043; border-radius: 12px; }
+  .compare-limits p { margin: 10px 0 0; color: #a999b5; font-size: .79rem; line-height: 1.8; }
+  .compare-limits .compare-formula { color: #c7b3ca; font-size: .74rem; }
+  .compare-queue { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin: 25px 0 40px; }
+  .compare-queue p { font-size: .79rem; color: #b19dbe; line-height: 1.6; }
+  .compare-queue a { flex-shrink: 0; }
+  [data-dota-comparison] [hidden] { display: none !important; }
+  .compare-model :is(button, a, input, select, summary):focus-visible { outline: 2px solid #e7c28c; outline-offset: 3px; }
+  @media (max-width: 850px) { .compare-context, .compare-pickers { grid-template-columns: repeat(2, minmax(0, 1fr)); } .compare-pickers button { grid-column: 1 / -1; justify-self: start; } }
+  @media (max-width: 620px) { .compare-options, .compare-pickers { grid-template-columns: minmax(0, 1fr); } .compare-option, .compare-inputs { padding: 18px; } .compare-intro { padding-top: 25px; } .compare-queue { flex-direction: column; align-items: flex-start; gap: 8px; } .compare-queue a { max-width: 100%; white-space: normal; } .compare-stats :global(th), .compare-stats :global(td) { padding: 12px 8px; font-size: .73rem; } }
+  @media (max-width: 380px) { .compare-context { grid-template-columns: minmax(0, 1fr); } .compare-context label { min-height: 0; } }
+</style>

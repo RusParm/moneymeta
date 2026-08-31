@@ -149,7 +149,7 @@
   top: 126px;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
   margin: 22px 0 18px;
   overflow: hidden;

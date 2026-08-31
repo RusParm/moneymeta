@@ -1,0 +1,53 @@
+---
+import { needsRefresh, type FreshnessPolicy } from "../lib/freshness";
+
+interface Props {
+  policy: FreshnessPolicy;
+  current: string;
+  stale: string;
+  dateLabel: string;
+  lang: "ru" | "en";
+}
+const { policy, current, stale, dateLabel, lang } = Astro.props;
+const expired = needsRefresh(policy);
+const timestamp = Date.parse(policy.checkedAt);
+const date = Number.isFinite(timestamp)
+  ? new Intl.DateTimeFormat(lang === "ru" ? "ru-RU" : "en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(timestamp)
+  : lang === "ru" ? "дата неизвестна" : "date unknown";
+---
+<span class:list={["freshness-indicator", { "is-stale": expired }]} data-freshness-indicator
+  data-checked-at={policy.checkedAt} data-valid-through={policy.validThrough}
+  data-stale-after-days={policy.staleAfterDays} data-max-age-hours={policy.maxAgeHours}
+  data-current-label={current} data-stale-label={stale}>
+  <span class="freshness-indicator-state"><i aria-hidden="true"></i><strong data-freshness-label>{expired ? stale : current}</strong></span>
+  <span>{dateLabel} <time datetime={Number.isFinite(timestamp) ? policy.checkedAt : undefined}>{date}</time></span>
+</span>
+
+<script>
+  import { needsRefresh } from "../lib/freshness";
+  function refreshIndicators() {
+    document.querySelectorAll<HTMLElement>("[data-freshness-indicator]").forEach((indicator) => {
+      const stale = needsRefresh({
+        checkedAt: indicator.dataset.checkedAt ?? "",
+        ...(indicator.dataset.validThrough !== undefined ? { validThrough: indicator.dataset.validThrough } : {}),
+        ...(indicator.dataset.staleAfterDays !== undefined ? { staleAfterDays: Number(indicator.dataset.staleAfterDays) } : {}),
+        ...(indicator.dataset.maxAgeHours !== undefined ? { maxAgeHours: Number(indicator.dataset.maxAgeHours) } : {})
+      });
+      indicator.classList.toggle("is-stale", stale);
+      const label = indicator.querySelector<HTMLElement>("[data-freshness-label]");
+      if (label) label.textContent = (stale ? indicator.dataset.staleLabel : indicator.dataset.currentLabel) ?? "";
+    });
+  }
+  refreshIndicators();
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshIndicators(); });
+  window.setInterval(refreshIndicators, 60_000);
+</script>
+
+<style>
+  .freshness-indicator { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: .76rem; line-height: 1.5; color: var(--muted, #aaa4b7); }
+  .freshness-indicator-state { display: inline-flex; align-items: center; gap: 7px; }
+  .freshness-indicator strong { font-size: inherit; color: #bbb5cd; font-weight: 500; }
+  .freshness-indicator i { width: 6px; height: 6px; border-radius: 50%; background: #8e83a8; flex: 0 0 6px; }
+  .freshness-indicator.is-stale strong { color: #e9bc70; }
+  .freshness-indicator.is-stale i { background: #e9bc70; }
+</style>

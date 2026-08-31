@@ -1,37 +1,43 @@
 ---
-import { dotaItemsSnapshot, type DotaItemsLocale } from "../data/dota-items";
+import { DOTA_SNAPSHOT_MAX_AGE_HOURS, dotaItemsSnapshot, getDotaItemsPath, type DotaItemsLocale } from "../data/dota-items";
+import FreshnessIndicator from "./FreshnessIndicator.astro";
 
 interface Props { lang: DotaItemsLocale; compact?: boolean; }
 const { lang, compact = false } = Astro.props;
-const dateLocale = lang === "ru" ? "ru-RU" : "en-US";
-const checkedAt = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(dotaItemsSnapshot.fetchedAt));
 const copy = lang === "ru" ? {
-  label: "Живой срез",
-  matches: "профессиональных матчей",
+  label: "Данные для сравнения",
+  matches: `из ${dotaItemsSnapshot.cohort.rawMatches} матчей прошли проверку ролей`,
   coverage: "покрытие ролей",
   checked: "получено",
   method: "Методика",
-  note: "Тайминги показаны только при выборке от 200 покупок. Роли без классификации исключены."
+  lastMatch: "последний матч",
+  note: `Тайминги показаны от ${dotaItemsSnapshot.methodology.minimumSample} покупок. Это наблюдения за профи, а не рекомендуемая минута покупки.`,
+  current: "Срез недавно получен",
+  stale: "Срез требует обновления"
 } : {
-  label: "Live snapshot",
-  matches: "professional matches",
+  label: "Comparison data",
+  matches: `of ${dotaItemsSnapshot.cohort.rawMatches} matches passed role check`,
   coverage: "role coverage",
   checked: "fetched",
   method: "Methodology",
-  note: "Timings appear only at 200 or more purchases. Unclassified roles are excluded."
+  lastMatch: "last match",
+  note: `Timings appear at ${dotaItemsSnapshot.methodology.minimumSample} or more purchases. These are pro observations, not recommended purchase minutes.`,
+  current: "Recently collected snapshot",
+  stale: "Snapshot needs an update"
 };
 ---
 
 <aside class:list={["dota-items-status", { "is-compact": compact }]} aria-label={copy.label}>
-  <div class="dota-items-status-signal"><span></span><strong>{copy.label}</strong></div>
+  <div class="dota-items-status-signal"><strong>{copy.label}</strong></div>
   <dl>
-    <div><dt>{dotaItemsSnapshot.patch.label}</dt><dd>{lang === "ru" ? "текущий срез" : "current cohort"}</dd></div>
+    <div><dt>{dotaItemsSnapshot.patch.label}</dt><dd>{lang === "ru" ? "патч среза" : "snapshot patch"}</dd></div>
     <div><dt>{dotaItemsSnapshot.cohort.matches}</dt><dd>{copy.matches}</dd></div>
     <div><dt>{dotaItemsSnapshot.cohort.roleCoveragePct}%</dt><dd>{copy.coverage}</dd></div>
   </dl>
   {!compact && <p>{copy.note}</p>}
   <div class="dota-items-status-links">
-    <span>{copy.checked} {checkedAt}</span>
-    <a href="#methodology">{copy.method} ↓</a>
+    <FreshnessIndicator lang={lang} policy={{ checkedAt: dotaItemsSnapshot.fetchedAt, maxAgeHours: DOTA_SNAPSHOT_MAX_AGE_HOURS }} current={copy.current} stale={copy.stale} dateLabel={copy.checked} />
+    <span>{copy.lastMatch}: <time datetime={dotaItemsSnapshot.cohort.lastMatchAt}>{new Intl.DateTimeFormat(lang === "ru" ? "ru-RU" : "en-GB", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" }).format(new Date(dotaItemsSnapshot.cohort.lastMatchAt))}</time></span>
+    <a href={`${getDotaItemsPath(lang)}#methodology`}>{copy.method} →</a>
   </div>
 </aside>

@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-08-19
+Updated: 2026-08-31
 
 ## Baseline
 
@@ -203,3 +203,16 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Mobile gateway choices, destination cards, playbooks and guide entry points use contained horizontal rails. Text and marks occupy separate grid columns with explicit minimum-width guards.
 - Fixed the Dota item atlas cascade bug that rendered hidden cards. Pagination now shows twelve cards per page and has a regression test for both page size and hidden-state display.
 - Ninety automated tests pass. Five hundred sixty-five static pages build with zero Astro diagnostics. HTTPS preview browser QA remains required before production promotion.
+
+## Preview candidate: shorter home, item comparison and honest freshness
+
+- Replaced the long homepage introduction with a short explanation, a concrete Dota comparison and direct entry points for all five game hubs. Existing focused routes, guides and the GTA VI dossier remain available in both languages.
+- Added `/dota-2/items/compare/` and its English equivalent. Each alternative receives the same independent budget; the model shows full price, missing gold, time to save, explicit stats, editorial purpose and guarded role observations. It never assigns a universal winner.
+- Reused local scenario storage and share links, with input validation and storage-failure handling. A positive-income scenario can transfer both items into the existing consecutive-purchase planner.
+- Added a shared freshness indicator that checks dates at build time and in the browser. Dota collection expires after 48 hours. GTA weekly events stop looking current after their end date. Collection dates, last observed match and mechanics-review dates remain separate.
+- Audited the failed scheduled refreshes through August 30. Earlier runs exposed upstream HTTP failures; the latest run retrieved 700 matches but correctly stopped when the global role coverage fell to 65.1%. Constants can fall back to OpenDota's maintained GitHub repository, while match statistics still fail closed. Successful retrievals advance `fetchedAt`, while `dataUpdatedAt` records content changes.
+- Role quality is now checked per match before a match enters timing statistics. The raw patch cohort remains visible in the snapshot, and the same eligibility rule is used for cohort totals and item timings. The automation still requires at least 300 eligible matches and at least 80% role coverage.
+- A real refresh on August 31 succeeded: 719 raw league matches, 422 role-eligible matches, 3,969 classified player appearances, 94.1% role coverage and 188 items. The latest eligible match is from August 31.
+- Added retrieval, role-cohort, independent-budget, zero-income, weak-sample and freshness boundary tests. All 102 tests pass and 567 pages build with zero Astro diagnostics.
+- Desktop preview checks confirm the homepage entry, live recalculation, zero-income handling, sample suppression, copied URL restoration, invalid-input handling, English rendering and transfer into the cumulative planner. At the same 1363px viewport, homepage height fell from 7229px to 2128px and game selection moved from 3154px to 683px. No production promotion is authorized.
+- Responsive CSS review added shrinking grid tracks, wrapping item names, 16px comparison inputs and 44px scenario buttons. Comparison fields stack below 380px. The owner reviewed the branch preview and reported no blocking visual issue; a fresh preview check is still required after the role-cohort update. No production promotion is authorized.

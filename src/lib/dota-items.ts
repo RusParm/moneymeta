@@ -38,9 +38,11 @@ export interface DotaItemsSnapshot {
   schemaVersion: 1;
   provider: "opendota";
   fetchedAt: string;
+  dataUpdatedAt?: string;
   dataHash: string;
   patch: { label: string; family: string; startedAt: string; sourceUrl: string };
   cohort: {
+    rawMatches: number;
     matches: number;
     players: number;
     classifiedPlayers: number;
@@ -141,6 +143,57 @@ export function calculateGoldEfficiency(item: DotaItemRecord): GoldEfficiencyRes
 export function hasReliableTiming(item: DotaItemRecord, role: DotaItemRole, minimumSample = 200) {
   const timing = item.timings[role];
   return Boolean(timing && timing.n >= minimumSample);
+}
+
+export interface ItemComparisonInput {
+  itemKeys: string[];
+  availableGold: number;
+  goldPerMinute: number;
+  currentMinute: number;
+  role: DotaItemRole;
+  minimumSample?: number;
+}
+
+export interface ItemComparisonOption {
+  item: DotaItemRecord;
+  goldNeeded: number;
+  goldLeftNow: number;
+  minutesToAfford: number | null;
+  projectedMinute: number | null;
+  benchmark: DotaItemTiming | null;
+}
+
+/** Each alternative starts with the same budget. This is not a purchase queue. */
+export function compareDotaItems(items: DotaItemRecord[], input: ItemComparisonInput): ItemComparisonOption[] {
+  const bounded = (value: number, maximum: number) => Number.isFinite(value) ? Math.min(maximum, Math.max(0, value)) : 0;
+  const gold = bounded(input.availableGold, 100_000);
+  const gpm = bounded(input.goldPerMinute, 2_500);
+  const minute = bounded(input.currentMinute, 180);
+  const threshold = Math.max(200, Number.isFinite(input.minimumSample) ? input.minimumSample! : 200);
+  const byKey = new Map(items.map((item) => [item.key, item]));
+  return input.itemKeys.slice(0, 2).flatMap((key) => {
+    const item = byKey.get(key);
+    if (!item) return [];
+    const goldNeeded = Math.max(0, item.cost - gold);
+    const minutesToAfford = goldNeeded === 0 ? 0 : gpm > 0 ? goldNeeded / gpm : null;
+    const timing = item.timings[input.role];
+    return [{
+      item,
+      goldNeeded,
+      goldLeftNow: Math.max(0, gold - item.cost),
+      minutesToAfford,
+      projectedMinute: minutesToAfford === null ? null : minute + minutesToAfford,
+      benchmark: timing && timing.n >= threshold ? timing : null
+    }];
+  });
+}
+
+/** Missing explicit stats remain unknown; they are not converted to zero. */
+export function getComparableAttributes(items: DotaItemRecord[]) {
+  return statPricingRules.flatMap((rule) => {
+    const values = items.map((item) => rule.keys.map((key) => item.attributes.find((attribute) => attribute.key === key)).find(Boolean)?.value ?? null);
+    return values.some((value) => value !== null) ? [{ label: rule.label, values }] : [];
+  });
 }
 
 export type ItemPlanState = "ahead" | "on-pace" | "late" | "no-benchmark";

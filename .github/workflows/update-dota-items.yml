@@ -16,6 +16,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       ASTRO_TELEMETRY_DISABLED: "1"
     steps:
@@ -34,6 +35,7 @@ jobs:
         run: npm ci
 
       - name: Refresh current-patch snapshot
+        id: refresh
         run: npm run data:dota:refresh
 
       - name: Validate data and product
@@ -81,3 +83,9 @@ jobs:
       - name: Report unchanged snapshot
         if: steps.changes.outputs.changed != 'true'
         run: echo "The current-patch snapshot is unchanged." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report failed refresh or validation
+        if: failure()
+        run: |
+          echo "## Dota snapshot workflow failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "Check the failed step for an upstream outage, a changed patch boundary, a validation error, or a branch/PR publishing failure. A failed retrieval never advances the saved collection date. Production is never updated by this workflow; a successful snapshot PR still requires review." >> "$GITHUB_STEP_SUMMARY"

@@ -84,7 +84,7 @@ const copy = lang === "ru" ? {
   methodIntro: "Каждый тайминг является первой покупкой предмета одним игроком. Повторные покупки не увеличивают выборку.",
   rules: [
     ["PATCH", "Только текущий патч", "Семейство 7.41 ограничено официальным временем выхода 7.41e. Старые матчи не смешиваются с текущим окном."],
-    ["ROLE", "Роль с известной границей", "Коры объединяют fantasy_role 1, 3 и 4; поддержка использует роль 2. Неклассифицированные строки исключены."],
+    ["ROLE", "Роли проверены до выборки", "Матч входит в ролевые тайминги, только если OpenDota знает роль минимум 8 из 10 игроков. Коры объединяют fantasy_role 1, 3 и 4; поддержка использует роль 2."],
     ["N≥200", "Слабая выборка скрыта", "Квартиль, медиана и частота не показываются для роли, если предмет купили меньше 200 раз."],
     ["PRICE", "Цена не равна ценности", "Оценка характеристик учитывает только явные параметры с чистым базовым компонентом. Активные и пассивные эффекты остаются отдельно."]
   ],
@@ -141,7 +141,7 @@ const copy = lang === "ru" ? {
   methodIntro: "Every timing is one player's first purchase of the item. Repeat purchases do not inflate the sample.",
   rules: [
     ["PATCH", "Current patch only", "Patch family 7.41 is bounded by the official 7.41e release timestamp. Older matches do not enter the window."],
-    ["ROLE", "A role with a boundary", "Cores combine fantasy_role 1, 3 and 4; supports use role 2. Unclassified rows are excluded."],
+    ["ROLE", "Roles checked before sampling", "A match enters role timings only when OpenDota knows at least 8 of 10 player roles. Cores combine fantasy_role 1, 3 and 4; supports use role 2."],
     ["N≥200", "Weak samples stay hidden", "Quartiles, median and rate do not appear for a role until the item has at least 200 purchases."],
     ["PRICE", "Cost is not value", "Stat pricing includes only explicit attributes with a clean base component. Active and passive effects remain separate."]
   ],

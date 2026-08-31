@@ -152,6 +152,22 @@ The Dota snapshot workflow writes only to the dedicated `automation/dota-item-sn
 
 The root of a game is a decision router, not a compressed copy of every destination. It contains the current context, one game-native quick start, five focused destinations, three authored playbooks, two editorial entry points and a compact source boundary. Full media galleries, complete guide cards, detailed playbook cards and repeated source explanations stay on their dedicated URLs. On narrow screens, route, guide and choice collections scroll horizontally inside their own rail instead of extending the whole document vertically.
 
+## 2026-08-28: Show the tool before the long explanation
+
+The homepage introduces the product briefly, demonstrates one useful calculation and immediately exposes all five games. Deep explanation remains available without delaying the first useful action. This does not freeze the other game hubs or make Money Meta a Dota-only product.
+
+## 2026-08-28: Item alternatives are not a purchase queue
+
+Two-item comparison gives each alternative the entire entered budget. The existing build planner remains responsible for cumulative spending and purchase order. Item cost, saving time, explicit stats and contextual utility stay separate; no scalar score is presented as a universal item recommendation.
+
+## 2026-08-28: Fresh retrieval is different from changed data
+
+`fetchedAt` records the last complete successful retrieval, even when the payload is unchanged. `dataUpdatedAt` records the last content change. Neither date verifies a new patch or promises recent professional matches; the latest observed match is shown separately. Missing match statistics must fail the refresh without changing the saved timestamp. Maintained OpenDota constants may use a repository fallback, but cached statistics may not be relabeled as newly retrieved. Minor-patch boundaries still require editorial review, and snapshot PRs never merge automatically.
+
+## 2026-08-31: Role quality is a match-level cohort gate
+
+The raw OpenDota league cohort and the role-eligible timing cohort are separate counts. A match enters item timing statistics only when at least eight of its ten players have a current `notable_players.fantasy_role` value. Cohort totals and item timings must use the same eligibility query. The existing minimums of 300 eligible matches and 80% classified-player coverage remain release guards; a low-quality raw cohort is excluded, not accepted by lowering those guards.
+
 ## 2026-08-20: hidden pagination state must win the CSS cascade
 
 Any client-side catalog that uses the HTML `hidden` attribute must ship an explicit author-level `[hidden]` display rule. Component display declarations such as `display: grid` must never make an inactive page visible. The Dota item atlas shows twelve cards per page, preserves search and page state in the URL and covers the visibility contract with an automated regression test.

@@ -10,6 +10,7 @@ export function validateDotaItemsSnapshot(snapshot) {
   if (snapshot.schemaVersion !== 1) fail("schemaVersion", "expected 1");
   if (snapshot.provider !== "opendota") fail("provider", "expected opendota");
   if (!nonEmpty(snapshot.fetchedAt) || Number.isNaN(Date.parse(snapshot.fetchedAt))) fail("fetchedAt", "expected an ISO date");
+  if (snapshot.dataUpdatedAt !== undefined && (!nonEmpty(snapshot.dataUpdatedAt) || Number.isNaN(Date.parse(snapshot.dataUpdatedAt)) || Date.parse(snapshot.dataUpdatedAt) > Date.parse(snapshot.fetchedAt))) fail("dataUpdatedAt", "expected a date no later than fetchedAt");
   if (!nonEmpty(snapshot.dataHash) || !/^[a-f0-9]{64}$/.test(snapshot.dataHash)) fail("dataHash", "expected a sha256 hash");
 
   if (!snapshot.patch || typeof snapshot.patch !== "object") fail("patch", "expected an object");
@@ -22,10 +23,11 @@ export function validateDotaItemsSnapshot(snapshot) {
 
   if (!snapshot.cohort || typeof snapshot.cohort !== "object") fail("cohort", "expected an object");
   else {
-    for (const key of ["matches", "players", "classifiedPlayers", "roleCoveragePct"]) {
+    for (const key of ["rawMatches", "matches", "players", "classifiedPlayers", "roleCoveragePct"]) {
       if (!finite(snapshot.cohort[key]) || snapshot.cohort[key] < 0) fail(`cohort.${key}`, "expected a non-negative number");
     }
     if (snapshot.cohort.classifiedPlayers > snapshot.cohort.players) fail("cohort.classifiedPlayers", "cannot exceed players");
+    if (snapshot.cohort.matches > snapshot.cohort.rawMatches) fail("cohort.matches", "cannot exceed rawMatches");
     if (snapshot.cohort.roleCoveragePct > 100) fail("cohort.roleCoveragePct", "cannot exceed 100");
     for (const role of ["core", "support"]) {
       const value = snapshot.cohort.roles?.[role];
