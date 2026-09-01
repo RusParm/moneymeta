@@ -149,6 +149,14 @@
 - Fix Dota item atlas pagination so only twelve current-page cards are visible and the URL retains filter and page state.
 - Require local tests, static build and responsive HTTPS preview QA before any production decision.
 
+## P2.3: v1.15 gamer-first homepage
+
+- Turn the homepage into a five-game launcher with a recognizable player situation instead of a platform architecture pitch.
+- Use the owned cinematic world art as the primary interaction surface, with a distinct accent and direct decision routes for each economy.
+- Put one real Dota 2 calculation on the homepage using the same formula and boundaries as the full comparison tool.
+- Keep freshness, selected analysis, GTA VI watch and methodology available as compact depth after the first useful action.
+- Require keyboard interaction, RU/EN parity, mobile controls, local tests, static build and an HTTPS branch preview before production promotion.
+
 ## Later
 
 - Authentication and cross-device profiles.

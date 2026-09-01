@@ -171,3 +171,9 @@ The raw OpenDota league cohort and the role-eligible timing cohort are separate 
 ## 2026-08-20: hidden pagination state must win the CSS cascade
 
 Any client-side catalog that uses the HTML `hidden` attribute must ship an explicit author-level `[hidden]` display rule. Component display declarations such as `display: grid` must never make an inactive page visible. The Dota item atlas shows twelve cards per page, preserves search and page state in the URL and covers the visibility contract with an automated regression test.
+
+## 2026-09-01: homepage starts with a player situation
+
+The homepage is a game launcher and working surface, not a diagram of the platform. A visitor first chooses a familiar game, sees one recognizable decision and gets a direct route into an editable model. Product architecture and methodology remain available below the useful action instead of competing with it in the first viewport.
+
+The default Dota 2 surface includes a real two-item timing calculation powered by the same tested comparison function as the full tool. It may show timing, missing gold and the consequence of changed inputs, but it must not turn close prices into a universal item winner. All five live economies keep equal launcher access and their own visual accent, question and input language.

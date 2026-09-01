@@ -98,6 +98,20 @@ describe("editorial style", () => {
     expect(offenders).toEqual([]);
   });
 
+  it("keeps the homepage centered on a playable decision", () => {
+    const home = sourceFiles["../src/components/HomePage.astro"] ?? "";
+    const gameIds = home.match(/id: "(?:gta|dota|wow|total-war|ck3)"/gu) ?? [];
+
+    expect(gameIds).toHaveLength(5);
+    expect(home).toContain("data-home-launcher");
+    expect(home).toContain('role="tablist"');
+    expect(home).toContain("data-home-demo");
+    expect(home).toContain("compareDotaItems");
+    expect(home).toContain('name="availableGold"');
+    expect(home).toContain('name="goldPerMinute"');
+    expect(home).toContain('name="currentMinute"');
+  });
+
   it("keeps decorative path media out of the reading layer", () => {
     const gtaPaths = sourceFiles["../src/components/GtaPlayerPaths.astro"] ?? "";
     const dotaPaths = sourceFiles["../src/components/DotaPlayerPaths.astro"] ?? "";

@@ -216,3 +216,13 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Added retrieval, role-cohort, independent-budget, zero-income, weak-sample and freshness boundary tests. All 102 tests pass and 567 pages build with zero Astro diagnostics.
 - Desktop preview checks confirm the homepage entry, live recalculation, zero-income handling, sample suppression, copied URL restoration, invalid-input handling, English rendering and transfer into the cumulative planner. At the same 1363px viewport, homepage height fell from 7229px to 2128px and game selection moved from 3154px to 683px. No production promotion is authorized.
 - Responsive CSS review added shrinking grid tracks, wrapping item names, 16px comparison inputs and 44px scenario buttons. Comparison fields stack below 380px. The owner reviewed the branch preview and reported no blocking visual issue; a fresh preview check is still required after the role-cohort update. No production promotion is authorized.
+
+## Active release candidate: v1.15 gamer-first homepage
+
+- Replaced the compact card-grid homepage with a cinematic five-game launcher. Each game opens one recognizable player situation, names the inputs that matter and offers two direct action routes plus the full hub.
+- Defaulted the launcher to Dota 2 and added a real homepage timing check for Blink Dagger and Force Staff. Gold now, gold per minute and current minute update both completion times and the contextual verdict through the shared tested item-comparison function.
+- Kept the conclusion deliberately conditional: a close timing does not produce a universal item winner, and zero farming rate does not produce an invented completion minute.
+- Promoted the existing owned game-world art from small thumbnails to the main decision surface. Each game changes the launcher accent without changing the shared interaction contract.
+- Collapsed freshness, three selected analyses, the GTA VI dossier and the evidence boundary into compact lower sections so the first useful action no longer waits behind product explanation.
+- Added keyboard tab behavior, explicit hidden-state CSS, responsive horizontal game selection and single-column mobile controls.
+- Local gate: 103 automated tests pass, 567 pages build and Astro reports zero diagnostics. Branch preview and responsive browser review remain required before production promotion.

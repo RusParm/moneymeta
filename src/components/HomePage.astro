@@ -5,140 +5,712 @@ import dotaWorld from "../assets/game-worlds/dota-economy-world.webp";
 import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
 import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
 import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
-import { DOTA_SNAPSHOT_MAX_AGE_HOURS, dotaItemsByKey, dotaItemsSnapshot, getDotaItemComparePath } from "../data/dota-items";
+import {
+  DOTA_SNAPSHOT_MAX_AGE_HOURS,
+  dotaItemsByKey,
+  dotaItemsSnapshot,
+  getDotaItemComparePath
+} from "../data/dota-items";
 import { getHubFreshnessPolicy, getHubPath, hubPortals, type HubPortalId } from "../data/hub-portals";
 import { insightGameLabels, insights } from "../data/insights";
+import { compareDotaItems } from "../lib/dota-items";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import FreshnessIndicator from "./FreshnessIndicator.astro";
 import SiteFooter from "./SiteFooter.astro";
 import "../styles/home.css";
 
-interface Props { lang: "ru" | "en"; }
+interface Props {
+  lang: "ru" | "en";
+}
+
+interface HomeGame {
+  id: HubPortalId;
+  image: typeof gtaWorld;
+  accent: string;
+  accentRgb: string;
+  question: string;
+  text: string;
+  inputNote: string;
+  actions: Array<{ label: string; path: string }>;
+}
+
 const { lang } = Astro.props;
 const prefix = lang === "ru" ? "" : "/en";
 const homePath = `${prefix}/`;
 const format = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US");
+
 const copy = lang === "ru" ? {
-  title: "Money Meta | экономика игр, гайды и расчёты",
-  description: "Сравни покупки, заработок и планы в GTA Online, Dota 2, WoW, Total War и Crusader Kings III. Гайды и расчёты с твоими вводными.",
-  kicker: "GTA · DOTA · WOW · СТРАТЕГИИ",
-  heading: "Пойми экономику игры.", accent: "Выбери следующий ход.",
-  lede: "Гайды и расчёты, которые помогают тратить игровое золото и время с умом. Сравни покупки и проверь свой план на конкретных цифрах.",
-  choose: "Выбрать игру", how: "Как это работает", free: "Без регистрации. Со своими вводными.",
-  example: "Попробуй на примере Dota 2", exampleTitle: "Blink или Force Staff?",
-  exampleText: "Близкая цена, разные задачи. Посмотри, на что хватит золота и сколько придётся копить на каждый вариант.",
-  purposes: ["Выход на дистанцию инициации", "Смещение себя или союзника"],
-  compare: "Сравнить предметы", gold: "золота", snapshot: "патч среза",
-  games: "Начни со своей игры", gamesNote: "Выбери вопрос или открой весь раздел.",
-  updates: "Данные и обновления", updatesNote: "Дата получения статистики и проверка механик учитываются отдельно.",
-  guides: "Что почитать", allGuides: "Все разборы", open: "Открыть раздел",
-  recent: "Срез получен недавно", old: "Срез требует обновления", fetched: "получено", checked: "проверено",
-  context: "В пределах срока проверки", recheck: "Нужна проверка", ended: "Событие завершилось",
-  watch: "Наблюдаем за GTA VI", watchText: "Подтверждённые факты и вопросы к будущей экономике игры. Без расчётов на выдуманных механиках.", watchLink: "Открыть досье",
-  howTitle: "Как пользоваться Money Meta",
-  howText: "Выбери игру и задачу. Измени бюджет, доход или время под свою ситуацию. Сравни результат, сохрани сценарий или отправь ссылку другу.",
-  trust: "Мы разделяем проверенные механики, наблюдаемую статистику и твои допущения. Расчёт объясняет последствия выбора, но не обещает победу или гарантированный доход."
+  title: "Money Meta | следующий ход в экономике игры",
+  description: "Выбери ситуацию в GTA Online, Dota 2, WoW, Total War или Crusader Kings III. Подставь свои цифры и проверь следующий ход.",
+  kicker: "ЭКОНОМИКА ИГР БЕЗ ОБЩИХ СОВЕТОВ",
+  heading: "Что тебе выгоднее сделать в игре прямо сейчас?",
+  lede: "Выбери игру и свой вопрос. Подставь банк, доход или свободное время и получи конкретный следующий ход, а не ещё один общий гайд.",
+  jumpToDemo: "Попробовать на Dota 2",
+  noAccount: "Без регистрации. Вводные можно менять.",
+  chooseGame: "Выбери игру",
+  chooseHint: "Один экран, пять разных экономик",
+  situation: "Твоя ситуация",
+  openHub: "Открыть весь раздел",
+  checked: "проверено",
+  fetched: "получено",
+  current: "Данные в пределах срока проверки",
+  recent: "Срез получен недавно",
+  recheck: "Данные нужно перепроверить",
+  snapshotOld: "Срез требует обновления",
+  eventEnded: "Событие завершилось",
+  demoKicker: "Рабочий пример · Dota 2",
+  demoTitle: "Успеешь купить предмет к следующей драке?",
+  demoText: "Проверь не цену в магазине, а минуту готовности. Модель считает, что всё следующее золото идёт в эту покупку.",
+  demoGold: "Золото сейчас",
+  demoGpm: "Золото в минуту",
+  demoMinute: "Текущая минута",
+  demoInputGold: "золота",
+  demoInputGpm: "золота/мин",
+  demoInputMinute: "минута",
+  demoFirstMove: "Первый вход",
+  demoSave: "Смещение и спасение",
+  demoCost: "Цена",
+  demoReady: "Будет готов",
+  demoEnough: "золота хватает",
+  demoMissing: "не хватает",
+  demoNow: "можно купить",
+  demoNoIncome: "нет темпа фарма",
+  demoFull: "Открыть полное сравнение",
+  demoPatch: "Данные предметов",
+  proofTitle: "Почему вывод не врёт",
+  proofText: "Тайминг отвечает только на вопрос «когда». Победителя между предметами определяет задача в ближайшей драке.",
+  updates: "Что сейчас можно проверить",
+  updatesText: "Рядом с каждым выводом видна версия игры и дата проверки.",
+  statusKicker: "АКТУАЛЬНОСТЬ",
+  open: "Открыть",
+  guides: "Разборы для следующей сессии",
+  allGuides: "Все разборы",
+  watch: "GTA VI: отделяем факты от ожиданий",
+  watchText: "Собираем только подтверждённые сведения о будущей экономике игры. Выдуманных доходов и фальшивых расчётов здесь нет.",
+  watchLink: "Открыть досье",
+  howTitle: "Что Money Meta считает, а что оставляет тебе",
+  howText: "Сайт считает стоимость, время, окупаемость и последствия порядка действий. Ты выбираешь цель, риск и тот игровой момент, ради которого тратишь ресурс.",
+  trust: "Проверенные механики, наблюдаемая статистика и твои допущения показаны отдельно. Расчёт помогает увидеть цену выбора, но не обещает победу."
 } : {
-  title: "Money Meta | game economies, guides and calculators",
-  description: "Compare purchases, earnings and plans in GTA Online, Dota 2, WoW, Total War and Crusader Kings III. Guides and calculators using your own inputs.",
-  kicker: "GTA · DOTA · WOW · STRATEGY",
-  heading: "Understand the game economy.", accent: "Choose your next move.",
-  lede: "Guides and calculators to help you spend in-game gold and time wisely. Compare purchases and test your plan with real numbers.",
-  choose: "Choose a game", how: "How it works", free: "No account needed. Use your own inputs.",
-  example: "Try a Dota 2 example", exampleTitle: "Blink or Force Staff?",
-  exampleText: "Similar prices, different jobs. See what you can afford and how long each option would take to save for.",
-  purposes: ["Reach an initiation position", "Reposition yourself or an ally"],
-  compare: "Compare items", gold: "gold", snapshot: "snapshot patch",
-  games: "Start with your game", gamesNote: "Choose a question or explore the full hub.",
-  updates: "Data and updates", updatesNote: "Statistics collection and mechanics reviews have separate dates.",
-  guides: "Worth a read", allGuides: "All guides", open: "Explore hub",
-  recent: "Recently collected", old: "Snapshot needs an update", fetched: "fetched", checked: "checked",
-  context: "Within review window", recheck: "Review needed", ended: "Event has ended",
-  watch: "Following GTA VI", watchText: "Confirmed facts and open questions about its economy. No calculations based on invented mechanics.", watchLink: "Open the dossier",
-  howTitle: "How to use Money Meta",
-  howText: "Choose a game and a question. Adjust the budget, income or time to fit your situation. Compare the result, save your scenario or share a link with a friend.",
-  trust: "We separate verified mechanics, observed statistics and your assumptions. A calculation explains the consequences of a choice; it cannot promise a win or a guaranteed return."
+  title: "Money Meta | your next move in a game economy",
+  description: "Choose a situation in GTA Online, Dota 2, WoW, Total War or Crusader Kings III. Use your own numbers and test the next move.",
+  kicker: "GAME ECONOMIES WITHOUT GENERIC ADVICE",
+  heading: "What is the best move in your game right now?",
+  lede: "Choose your game and your question. Add your bank, income or available time and get a concrete next move instead of another generic guide.",
+  jumpToDemo: "Try it with Dota 2",
+  noAccount: "No account needed. Change every input.",
+  chooseGame: "Choose your game",
+  chooseHint: "One screen, five different economies",
+  situation: "Your situation",
+  openHub: "Explore the full hub",
+  checked: "checked",
+  fetched: "fetched",
+  current: "Data is within its review window",
+  recent: "Snapshot collected recently",
+  recheck: "Data needs another review",
+  snapshotOld: "Snapshot needs an update",
+  eventEnded: "The event has ended",
+  demoKicker: "Working example · Dota 2",
+  demoTitle: "Can you finish the item before the next fight?",
+  demoText: "Check the completion minute, not just the shop price. The model assumes all new gold goes into this purchase.",
+  demoGold: "Gold now",
+  demoGpm: "Gold per minute",
+  demoMinute: "Current minute",
+  demoInputGold: "gold",
+  demoInputGpm: "gold/min",
+  demoInputMinute: "minute",
+  demoFirstMove: "First move",
+  demoSave: "Reposition and save",
+  demoCost: "Cost",
+  demoReady: "Ready at",
+  demoEnough: "enough gold",
+  demoMissing: "missing",
+  demoNow: "available now",
+  demoNoIncome: "no farming rate",
+  demoFull: "Open the full comparison",
+  demoPatch: "Item data",
+  proofTitle: "Why the result stays honest",
+  proofText: "Timing only answers “when”. The job in the next fight decides which item is actually better.",
+  updates: "What you can check now",
+  updatesText: "Every conclusion shows the game version and its review date.",
+  statusKicker: "STATUS",
+  open: "Open",
+  guides: "Analysis for your next session",
+  allGuides: "All analyses",
+  watch: "GTA VI: separating facts from expectations",
+  watchText: "We collect confirmed information about the future game economy. There are no invented earnings or fake calculations here.",
+  watchLink: "Open the dossier",
+  howTitle: "What Money Meta calculates and what remains your call",
+  howText: "The site calculates cost, time, payback and the consequences of action order. You choose the goal, the risk and the moment worth spending for.",
+  trust: "Verified mechanics, observed statistics and your assumptions are shown separately. A calculation reveals the price of a choice; it cannot promise a win."
 };
-const games: Array<{ id: HubPortalId; image: typeof gtaWorld; text: string; questions: [string, string][] }> = [
-  { id: "gta", image: gtaWorld, text: lang === "ru" ? "Бизнесы, доход и время на продажи." : "Businesses, earnings and time spent selling.", questions: [[lang === "ru" ? "Что купить следующим?" : "What should I buy next?", "calculators/business-roi/#next-move"], [lang === "ru" ? "Что с недельными бонусами?" : "What about weekly bonuses?", "meta/"]] },
-  { id: "dota", image: dotaWorld, text: lang === "ru" ? "Цена предметов и время до покупки." : "Item costs and time to the next purchase.", questions: [[lang === "ru" ? "Какой предмет выбрать?" : "Which item should I choose?", "items/compare/"], [lang === "ru" ? "Когда соберу свой билд?" : "When can I finish my build?", "items/planner/"]] },
-  { id: "wow", image: wowWorld, text: lang === "ru" ? "Крафт, аукцион и прибыль от фарма." : "Crafting, auctions and farming profit.", questions: [[lang === "ru" ? "Этот крафт принесёт прибыль?" : "Will this craft make a profit?", "tools/#crafting-margin"], [lang === "ru" ? "Сколько приносит фарм?" : "What does farming really earn?", "tools/#farm-liquidity"]] },
-  { id: "total-war", image: totalWarWorld, text: lang === "ru" ? "Доход провинций и содержание армий." : "Province income and army upkeep.", questions: [[lang === "ru" ? "Когда окупится здание?" : "When will a building pay back?", "tools/#building-payback"], [lang === "ru" ? "Хватит ли казны на армию?" : "Can I afford another army?", "tools/#war-reserve"]] },
-  { id: "ck3", image: ck3World, text: lang === "ru" ? "Домен, войны и казна наследника." : "Your domain, wars and the heir’s treasury.", questions: [[lang === "ru" ? "Стоит ли улучшать домен?" : "Should I improve my domain?", "tools/#domain-payback"], [lang === "ru" ? "Что останется наследнику?" : "What will my heir inherit?", "tools/#succession-buffer"]] }
+
+const games: HomeGame[] = [
+  {
+    id: "gta",
+    image: gtaWorld,
+    accent: "#39e3c6",
+    accentRgb: "57, 227, 198",
+    question: lang === "ru"
+      ? "У меня 2 500 000 GTA$. Что купить, чтобы следующая цель стала ближе?"
+      : "I have GTA$2,500,000. What purchase gets me closer to the next goal?",
+    text: lang === "ru"
+      ? "Сравни стоимость бизнеса, ручную нагрузку и чистый доход. Недельный бонус не подменяет постоянную экономику."
+      : "Compare business cost, active workload and net income. A weekly bonus never replaces the permanent economy.",
+    inputNote: lang === "ru" ? "Банк + цель + время на игру" : "Bank + goal + play time",
+    actions: [
+      { label: lang === "ru" ? "Рассчитать следующую покупку" : "Calculate the next purchase", path: "calculators/business-roi/#next-move" },
+      { label: lang === "ru" ? "Проверить бонусы недели" : "Check this week’s bonuses", path: "meta/" }
+    ]
+  },
+  {
+    id: "dota",
+    image: dotaWorld,
+    accent: "#e7b95b",
+    accentRgb: "231, 185, 91",
+    question: lang === "ru"
+      ? "До драки пять минут. Какой предмет я реально успею собрать?"
+      : "The next fight is five minutes away. Which item can I actually finish?",
+    text: lang === "ru"
+      ? "Свяжи цену предмета с золотом сейчас, темпом фарма и задачей героя. Близкая цена ещё не означает одинаковый выбор."
+      : "Connect item cost to current gold, farming rate and the hero’s job. A similar price does not mean an equal choice.",
+    inputNote: lang === "ru" ? "Золото + темп фарма + минута" : "Gold + farming rate + minute",
+    actions: [
+      { label: lang === "ru" ? "Сравнить два предмета" : "Compare two items", path: "items/compare/" },
+      { label: lang === "ru" ? "Собрать очередь покупок" : "Build an item queue", path: "items/planner/" }
+    ]
+  },
+  {
+    id: "wow",
+    image: wowWorld,
+    accent: "#78bfff",
+    accentRgb: "120, 191, 255",
+    question: lang === "ru"
+      ? "Крафт выглядит прибыльным. Сколько золота останется после продажи?"
+      : "The craft looks profitable. How much gold remains after the sale?",
+    text: lang === "ru"
+      ? "Комиссия, вероятность продажи и непроданный запас превращают красивую маржу в совсем другой результат."
+      : "Fees, sell-through and unsold stock can turn an attractive margin into a very different result.",
+    inputNote: lang === "ru" ? "Материалы + комиссия + шанс продажи" : "Materials + fees + sell-through",
+    actions: [
+      { label: lang === "ru" ? "Посчитать реальную маржу" : "Calculate realized margin", path: "tools/#crafting-margin" },
+      { label: lang === "ru" ? "Оценить прибыль от фарма" : "Estimate farming profit", path: "tools/#farm-liquidity" }
+    ]
+  },
+  {
+    id: "total-war",
+    image: totalWarWorld,
+    accent: "#e2ad55",
+    accentRgb: "226, 173, 85",
+    question: lang === "ru"
+      ? "Эта постройка окупится до того, как мне понадобится новая армия?"
+      : "Will this building pay back before I need another army?",
+    text: lang === "ru"
+      ? "Сравни срок окупаемости с военным окном и не замораживай казну в доходе, который придёт слишком поздно."
+      : "Compare payback time with the military window and avoid locking the treasury into income that arrives too late.",
+    inputNote: lang === "ru" ? "Цена + доход за ход + военный срок" : "Cost + income per turn + war deadline",
+    actions: [
+      { label: lang === "ru" ? "Проверить окупаемость" : "Check building payback", path: "tools/#building-payback" },
+      { label: lang === "ru" ? "Рассчитать запас на войну" : "Calculate a war reserve", path: "tools/#war-reserve" }
+    ]
+  },
+  {
+    id: "ck3",
+    image: ck3World,
+    accent: "#8fbda7",
+    accentRgb: "143, 189, 167",
+    question: lang === "ru"
+      ? "Сколько оставить наследнику, чтобы первая война не закончила правление?"
+      : "How much should the heir keep so the first war does not end the reign?",
+    text: lang === "ru"
+      ? "Улучшение домена конкурирует с подарками, наёмниками и запасом после наследования. Здесь важен порядок, а не только сумма."
+      : "Domain upgrades compete with gifts, mercenaries and the post-succession reserve. Order matters as much as the amount.",
+    inputNote: lang === "ru" ? "Казна + доход + риск наследования" : "Treasury + income + succession risk",
+    actions: [
+      { label: lang === "ru" ? "Оценить улучшение домена" : "Evaluate a domain upgrade", path: "tools/#domain-payback" },
+      { label: lang === "ru" ? "Собрать подушку наследника" : "Build an heir’s reserve", path: "tools/#succession-buffer" }
+    ]
+  }
 ];
-const exampleItems = ["blink", "force_staff"].map((key) => dotaItemsByKey.get(key)!);
-const featuredInsights = insights.filter((insight) => insight.featuredInHub);
-const snapshotPolicy = { checkedAt: dotaItemsSnapshot.fetchedAt, maxAgeHours: DOTA_SNAPSHOT_MAX_AGE_HOURS };
+
+const activeGameId: HubPortalId = "dota";
+const activeGame = games.find((game) => game.id === activeGameId)!;
+const snapshotPolicy = {
+  checkedAt: dotaItemsSnapshot.fetchedAt,
+  maxAgeHours: DOTA_SNAPSHOT_MAX_AGE_HOURS
+};
+const featuredInsights = insights.filter((insight) => insight.featuredInHub).slice(0, 3);
+const demoItems = ["blink", "force_staff"].map((key) => dotaItemsByKey.get(key)!);
+const demoInput = {
+  itemKeys: demoItems.map((item) => item.key),
+  availableGold: 1000,
+  goldPerMinute: 400,
+  currentMinute: 12,
+  role: "core" as const
+};
+const initialComparison = compareDotaItems(demoItems, demoInput);
+const demoItemsJson = JSON.stringify(demoItems.map((item) => ({
+  ...item,
+  components: [],
+  attributes: [],
+  abilities: []
+})));
+
+const formatClock = (minute: number | null) => {
+  if (minute === null) return copy.demoNoIncome;
+  let whole = Math.floor(minute);
+  let seconds = Math.round((minute - whole) * 60);
+  if (seconds === 60) {
+    whole += 1;
+    seconds = 0;
+  }
+  return `${whole}:${String(seconds).padStart(2, "0")}`;
+};
+
+const initialConclusion = lang === "ru"
+  ? "По таймингу почти ничья. Решает задача: Blink Dagger даёт первый вход, Force Staff даёт управляемое смещение и спасение."
+  : "The timing is almost even. The job decides it: Blink Dagger creates the first move, while Force Staff provides controlled repositioning and a save.";
 ---
 
-<BaseLayout title={copy.title} description={copy.description} lang={lang} canonicalPath={homePath} alternatePath={lang === "ru" ? "/en/" : "/"} schema={{ "@context": "https://schema.org", "@type": "WebSite", name: "Money Meta", url: "https://themoneymeta.com", inLanguage: lang }}>
-  <main class="page mm-home">
+<BaseLayout
+  title={copy.title}
+  description={copy.description}
+  lang={lang}
+  canonicalPath={homePath}
+  alternatePath={lang === "ru" ? "/en/" : "/"}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Money Meta",
+    url: "https://themoneymeta.com",
+    inLanguage: lang
+  }}
+>
+  <main
+    class="page mm-home"
+    style={`--home-accent: ${activeGame.accent}; --home-accent-rgb: ${activeGame.accentRgb};`}
+  >
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/" enPath="/en/" />
-      <section class="mm-home-intro" aria-labelledby="home-title">
+
+      <section class="mm-home-hero" aria-labelledby="home-title">
         <div class="mm-home-pitch">
           <span class="section-kicker">{copy.kicker}</span>
-          <h1 id="home-title">{copy.heading} <span>{copy.accent}</span></h1>
+          <h1 id="home-title">{copy.heading}</h1>
           <p>{copy.lede}</p>
-          <div class="mm-home-actions"><a class="button primary" href="#choose-game">{copy.choose} ↓</a><a href="#how-it-works">{copy.how}</a></div>
-          <small>{copy.free}</small>
-        </div>
-        <aside class="mm-home-example" aria-labelledby="example-title">
-          <div class="mm-home-example-meta"><span>{copy.example}</span><small>{copy.snapshot} {dotaItemsSnapshot.patch.label}</small></div>
-          <h2 id="example-title">{copy.exampleTitle}</h2>
-          <div class="mm-home-item-pair">
-            {exampleItems.map((item, index) => <div><img src={item.image} alt="" width="66" height="48" loading="eager" /><strong>{item.name}</strong><b>{format.format(item.cost)} <small>{copy.gold}</small></b><p>{copy.purposes[index]}</p></div>)}
+          <div class="mm-home-pitch-actions">
+            <a class="button primary" href="#dota-check">{copy.jumpToDemo} <span aria-hidden="true">↓</span></a>
+            <small>{copy.noAccount}</small>
           </div>
-          <p class="mm-home-example-note">{copy.exampleText}</p>
-          <a class="mm-home-compare" href={getDotaItemComparePath(lang)}>{copy.compare} <span aria-hidden="true">→</span></a>
-          <FreshnessIndicator policy={snapshotPolicy} current={copy.recent} stale={copy.old} dateLabel={copy.fetched} lang={lang} />
-        </aside>
+        </div>
+
+        <div class="mm-home-launcher" data-home-launcher>
+          <div class="mm-home-launcher-head">
+            <h2>{copy.chooseGame}</h2>
+            <span>{copy.chooseHint}</span>
+          </div>
+
+          <div
+            class="mm-home-game-tabs"
+            role="tablist"
+            aria-label={copy.chooseGame}
+          >
+            {games.map((game) => {
+              const hub = hubPortals[game.id];
+              const selected = game.id === activeGameId;
+              return (
+                <button
+                  type="button"
+                  role="tab"
+                  id={`home-tab-${game.id}`}
+                  aria-controls={`home-stage-${game.id}`}
+                  aria-selected={selected ? "true" : "false"}
+                  tabindex={selected ? 0 : -1}
+                  data-home-game-tab
+                  data-game-id={game.id}
+                  data-accent={game.accent}
+                  data-accent-rgb={game.accentRgb}
+                >
+                  <Image
+                    src={game.image}
+                    alt=""
+                    widths={[112, 168]}
+                    sizes="56px"
+                    loading="eager"
+                    decoding="async"
+                  />
+                  <span>{hub.shortName}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div class="mm-home-stage">
+            {games.map((game) => {
+              const hub = hubPortals[game.id];
+              const root = getHubPath(game.id, lang);
+              const isDota = game.id === "dota";
+              return (
+                <article
+                  id={`home-stage-${game.id}`}
+                  class="mm-home-stage-panel"
+                  role="tabpanel"
+                  aria-labelledby={`home-tab-${game.id}`}
+                  data-home-game-panel
+                  data-game-id={game.id}
+                  hidden={game.id !== activeGameId}
+                >
+                  <Image
+                    class="mm-home-stage-art"
+                    src={game.image}
+                    alt=""
+                    widths={[720, 1080, 1500]}
+                    sizes="(max-width: 760px) 100vw, 1100px"
+                    loading={isDota ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                  <div class="mm-home-stage-shade"></div>
+                  <div class="mm-home-stage-content">
+                    <div class="mm-home-stage-meta">
+                      <span>{hub.name}</span>
+                      <small>{hub.version[lang]}</small>
+                    </div>
+                    <span class="mm-home-stage-kicker">{copy.situation}</span>
+                    <h3>{game.question}</h3>
+                    <p>{game.text}</p>
+                    <div class="mm-home-stage-input-note">{game.inputNote}</div>
+                    <div class="mm-home-stage-actions">
+                      {game.actions.map((action, index) => (
+                        <a class:list={["button", { primary: index === 0 }]} href={`${root}${action.path}`}>
+                          {action.label} <span aria-hidden="true">→</span>
+                        </a>
+                      ))}
+                      <a class="mm-home-stage-hub" href={root}>{copy.openHub} {hub.shortName}</a>
+                    </div>
+                    <FreshnessIndicator
+                      policy={isDota ? snapshotPolicy : getHubFreshnessPolicy(game.id)}
+                      current={isDota ? copy.recent : copy.current}
+                      stale={game.id === "gta" ? copy.eventEnded : isDota ? copy.snapshotOld : copy.recheck}
+                      dateLabel={isDota ? copy.fetched : copy.checked}
+                      lang={lang}
+                    />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
-      <section id="choose-game" class="mm-home-games" aria-labelledby="games-title">
-        <div class="mm-home-section-head"><h2 id="games-title">{copy.games}</h2><p>{copy.gamesNote}</p></div>
-        <div class="mm-home-game-grid">
-          {games.map((game) => {
+      <section
+        id="dota-check"
+        class="mm-home-demo"
+        aria-labelledby="demo-title"
+        data-home-demo
+        data-lang={lang}
+        data-demo-items={demoItemsJson}
+      >
+        <div class="mm-home-demo-head">
+          <div>
+            <span class="section-kicker">{copy.demoKicker}</span>
+            <h2 id="demo-title">{copy.demoTitle}</h2>
+            <p>{copy.demoText}</p>
+          </div>
+          <div class="mm-home-demo-source">
+            <span>{copy.demoPatch}</span>
+            <strong>{dotaItemsSnapshot.patch.label}</strong>
+          </div>
+        </div>
+
+        <div class="mm-home-demo-workbench">
+          <form class="mm-home-demo-inputs" data-demo-form>
+            <label>
+              <span>{copy.demoGold}</span>
+              <div>
+                <input
+                  name="availableGold"
+                  type="number"
+                  min="0"
+                  max="100000"
+                  step="50"
+                  value={demoInput.availableGold}
+                  inputmode="numeric"
+                />
+                <small>{copy.demoInputGold}</small>
+              </div>
+            </label>
+            <label>
+              <span>{copy.demoGpm}</span>
+              <div>
+                <input
+                  name="goldPerMinute"
+                  type="number"
+                  min="0"
+                  max="2500"
+                  step="25"
+                  value={demoInput.goldPerMinute}
+                  inputmode="numeric"
+                />
+                <small>{copy.demoInputGpm}</small>
+              </div>
+            </label>
+            <label>
+              <span>{copy.demoMinute}</span>
+              <div>
+                <input
+                  name="currentMinute"
+                  type="number"
+                  min="0"
+                  max="180"
+                  step="1"
+                  value={demoInput.currentMinute}
+                  inputmode="numeric"
+                />
+                <small>{copy.demoInputMinute}</small>
+              </div>
+            </label>
+          </form>
+
+          <div class="mm-home-demo-results">
+            {initialComparison.map((option, index) => (
+              <article
+                class:list={["mm-home-demo-result", { "is-ready": option.goldNeeded === 0 }]}
+                data-demo-result
+                data-item-key={option.item.key}
+              >
+                <div class="mm-home-demo-item">
+                  <img src={option.item.image} alt="" width="80" height="60" loading="lazy" />
+                  <div>
+                    <span>{index === 0 ? copy.demoFirstMove : copy.demoSave}</span>
+                    <h3>{option.item.name}</h3>
+                  </div>
+                </div>
+                <dl>
+                  <div>
+                    <dt>{copy.demoCost}</dt>
+                    <dd>{format.format(option.item.cost)}</dd>
+                  </div>
+                  <div>
+                    <dt>{copy.demoReady}</dt>
+                    <dd data-demo-ready>{option.minutesToAfford === 0 ? copy.demoNow : formatClock(option.projectedMinute)}</dd>
+                  </div>
+                </dl>
+                <p data-demo-gap>
+                  {option.goldNeeded === 0
+                    ? copy.demoEnough
+                    : `${copy.demoMissing} ${format.format(option.goldNeeded)} ${copy.demoInputGold}`}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div class="mm-home-demo-verdict">
+            <span aria-hidden="true">Σ</span>
+            <div>
+              <strong>{copy.proofTitle}</strong>
+              <p data-demo-verdict aria-live="polite">{initialConclusion}</p>
+            </div>
+            <a href={getDotaItemComparePath(lang)}>{copy.demoFull} <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="mm-home-depth" aria-labelledby="updates-title">
+        <div class="mm-home-section-head">
+          <div>
+            <span class="section-kicker">{copy.statusKicker}</span>
+            <h2 id="updates-title">{copy.updates}</h2>
+          </div>
+          <p>{copy.updatesText}</p>
+        </div>
+        <div class="mm-home-status-board">
+          {games.map((game, index) => {
             const hub = hubPortals[game.id];
-            const root = getHubPath(game.id, lang);
-            return <article class={`mm-home-game mm-home-game-${game.id}`}>
-              <a class="mm-home-game-cover" href={root}>
-                <Image src={game.image} alt="" widths={[280, 440]} sizes="(max-width: 1050px) 220px, 240px" loading="eager" decoding="async" />
-                <h3>{hub.name}</h3><span aria-hidden="true">↗</span>
+            const isDota = game.id === "dota";
+            const statusPath = isDota
+              ? `${getHubPath(game.id, lang)}items/`
+              : getHubPath(game.id, lang, "meta");
+            return (
+              <a href={statusPath}>
+                <span class="mm-home-status-index">{String(index + 1).padStart(2, "0")}</span>
+                <div class="mm-home-status-game">
+                  <strong>{hub.name}</strong>
+                  <span>{hub.version[lang]}</span>
+                </div>
+                <FreshnessIndicator
+                  policy={isDota ? snapshotPolicy : getHubFreshnessPolicy(game.id)}
+                  current={isDota ? copy.recent : copy.current}
+                  stale={game.id === "gta" ? copy.eventEnded : isDota ? copy.snapshotOld : copy.recheck}
+                  dateLabel={isDota ? copy.fetched : copy.checked}
+                  lang={lang}
+                />
+                <b>{copy.open} <span aria-hidden="true">↗</span></b>
               </a>
-              <div class="mm-home-game-body"><p>{game.text}</p><div>{game.questions.map(([question, path]) => <a href={`${root}${path}`}>{question}<span aria-hidden="true">→</span></a>)}</div><a class="mm-home-hub-link" href={root}>{copy.open} →</a></div>
-            </article>;
+            );
           })}
         </div>
       </section>
 
-      <div class="mm-home-lower">
-        <section id="money-meta-pulse" aria-labelledby="updates-title">
-          <div class="mm-home-section-head"><h2 id="updates-title">{copy.updates}</h2><p>{copy.updatesNote}</p></div>
-          <div class="mm-home-updates">{games.map(({ id }) => {
-            const hub = hubPortals[id];
-            return <a href={getHubPath(id, lang, id === "dota" ? undefined : "meta") + (id === "dota" ? "items/" : "")}>
-              <div><strong>{hub.shortName}</strong><span>{id === "dota" ? `${copy.snapshot} ${dotaItemsSnapshot.patch.label}` : hub.version[lang]}</span></div>
-              <FreshnessIndicator policy={id === "dota" ? snapshotPolicy : getHubFreshnessPolicy(id)} current={id === "dota" ? copy.recent : copy.context} stale={id === "gta" ? copy.ended : id === "dota" ? copy.old : copy.recheck} dateLabel={id === "dota" ? copy.fetched : copy.checked} lang={lang} />
-            </a>;
-          })}</div>
+      <div class="mm-home-bottom">
+        <section class="mm-home-guides" aria-labelledby="guides-title">
+          <div class="mm-home-guides-head">
+            <h2 id="guides-title">{copy.guides}</h2>
+            <a href={`${prefix}/insights/`}>{copy.allGuides} →</a>
+          </div>
+          <div class="mm-home-guide-list">
+            {featuredInsights.map((insight) => (
+              <a href={`${prefix}/insights/${insight.slug}/`}>
+                <span>{insightGameLabels[insight.game]} · {insight.content[lang].readTime}</span>
+                <strong>{insight.content[lang].title}</strong>
+                <b aria-hidden="true">↗</b>
+              </a>
+            ))}
+          </div>
         </section>
-        <section aria-labelledby="guides-title">
-          <div class="mm-home-section-head mm-home-guides-head"><h2 id="guides-title">{copy.guides}</h2><a href={`${prefix}/insights/`}>{copy.allGuides} →</a></div>
-          <div class="mm-home-guides">{featuredInsights.map((insight) => <a href={`${prefix}/insights/${insight.slug}/`}><span>{insightGameLabels[insight.game]} · {insight.content[lang].readTime}</span><strong>{insight.content[lang].title}</strong><b aria-hidden="true">↗</b></a>)}</div>
-        </section>
+
+        <aside class="mm-home-watch">
+          <span class="section-kicker">GTA VI</span>
+          <h2>{copy.watch}</h2>
+          <p>{copy.watchText}</p>
+          <a href={`${prefix}/gta-6/`}>{copy.watchLink} →</a>
+        </aside>
       </div>
-      <aside class="mm-home-watch"><div><h2>{copy.watch}</h2><p>{copy.watchText}</p></div><a href={`${prefix}/gta-6/`}>{copy.watchLink} →</a></aside>
-      <details id="how-it-works" class="mm-home-how"><summary>{copy.howTitle}</summary><p>{copy.howText}</p><p>{copy.trust}</p></details>
+
+      <details class="mm-home-how">
+        <summary>{copy.howTitle}</summary>
+        <div>
+          <p>{copy.howText}</p>
+          <p>{copy.trust}</p>
+        </div>
+      </details>
+
       <SiteFooter lang={lang} />
     </div>
   </main>
 </BaseLayout>
 
 <script>
-  const details = document.querySelector<HTMLDetailsElement>("#how-it-works");
-  const revealHow = () => { if (details && location.hash === "#how-it-works") details.open = true; };
-  revealHow();
-  window.addEventListener("hashchange", revealHow);
+  import { compareDotaItems, type DotaItemRecord } from "../lib/dota-items";
+
+  const launcher = document.querySelector<HTMLElement>("[data-home-launcher]");
+  const home = launcher?.closest<HTMLElement>(".mm-home");
+  const tabs = Array.from(launcher?.querySelectorAll<HTMLButtonElement>("[data-home-game-tab]") ?? []);
+  const panels = Array.from(launcher?.querySelectorAll<HTMLElement>("[data-home-game-panel]") ?? []);
+
+  function selectGame(tab: HTMLButtonElement, focus = false) {
+    const gameId = tab.dataset.gameId;
+    if (!gameId) return;
+
+    tabs.forEach((candidate) => {
+      const selected = candidate === tab;
+      candidate.setAttribute("aria-selected", String(selected));
+      candidate.tabIndex = selected ? 0 : -1;
+    });
+    panels.forEach((panel) => {
+      panel.hidden = panel.dataset.gameId !== gameId;
+    });
+    home?.style.setProperty("--home-accent", tab.dataset.accent ?? "#e7b95b");
+    home?.style.setProperty("--home-accent-rgb", tab.dataset.accentRgb ?? "231, 185, 91");
+    if (focus) tab.focus();
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => selectGame(tab));
+    tab.addEventListener("keydown", (event) => {
+      let next = index;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % tabs.length;
+      else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index - 1 + tabs.length) % tabs.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      selectGame(tabs[next]!, true);
+    });
+  });
+
+  const demo = document.querySelector<HTMLElement>("[data-home-demo]");
+  const form = demo?.querySelector<HTMLFormElement>("[data-demo-form]");
+
+  if (demo && form) {
+    const lang = demo.dataset.lang === "en" ? "en" : "ru";
+    const locale = lang === "ru" ? "ru-RU" : "en-US";
+    const number = new Intl.NumberFormat(locale);
+    const items = JSON.parse(demo.dataset.demoItems ?? "[]") as DotaItemRecord[];
+    const resultCards = Array.from(demo.querySelectorAll<HTMLElement>("[data-demo-result]"));
+    const verdict = demo.querySelector<HTMLElement>("[data-demo-verdict]");
+
+    const value = (name: string) => Number(new FormData(form).get(name) ?? 0);
+    const clock = (minute: number | null) => {
+      if (minute === null) return lang === "ru" ? "нет темпа фарма" : "no farming rate";
+      let whole = Math.floor(minute);
+      let seconds = Math.round((minute - whole) * 60);
+      if (seconds === 60) {
+        whole += 1;
+        seconds = 0;
+      }
+      return `${whole}:${String(seconds).padStart(2, "0")}`;
+    };
+    const duration = (minutes: number) => {
+      const seconds = Math.max(1, Math.round(minutes * 60));
+      if (seconds < 60) return lang === "ru" ? `${seconds} сек.` : `${seconds} sec`;
+      const rounded = Math.round(minutes * 10) / 10;
+      return lang === "ru" ? `${rounded} мин.` : `${rounded} min`;
+    };
+
+    const update = () => {
+      const options = compareDotaItems(items, {
+        itemKeys: ["blink", "force_staff"],
+        availableGold: value("availableGold"),
+        goldPerMinute: value("goldPerMinute"),
+        currentMinute: value("currentMinute"),
+        role: "core"
+      });
+
+      resultCards.forEach((card) => {
+        const option = options.find((candidate) => candidate.item.key === card.dataset.itemKey);
+        if (!option) return;
+        const ready = card.querySelector<HTMLElement>("[data-demo-ready]");
+        const gap = card.querySelector<HTMLElement>("[data-demo-gap]");
+        card.classList.toggle("is-ready", option.goldNeeded === 0);
+        if (ready) {
+          ready.textContent = option.minutesToAfford === 0
+            ? (lang === "ru" ? "можно купить" : "available now")
+            : clock(option.projectedMinute);
+        }
+        if (gap) {
+          gap.textContent = option.goldNeeded === 0
+            ? (lang === "ru" ? "золота хватает" : "enough gold")
+            : lang === "ru"
+              ? `не хватает ${number.format(option.goldNeeded)} золота`
+              : `${number.format(option.goldNeeded)} gold missing`;
+        }
+      });
+
+      if (!verdict || options.length < 2) return;
+      const [blink, force] = options;
+      if (blink!.projectedMinute === null || force!.projectedMinute === null) {
+        verdict.textContent = lang === "ru"
+          ? "Без темпа фарма нельзя назвать минуту покупки. Добавь ожидаемое золото в минуту."
+          : "A completion minute needs a farming rate. Add the gold you expect to earn each minute.";
+      } else if (blink!.goldNeeded === 0 && force!.goldNeeded === 0) {
+        verdict.textContent = lang === "ru"
+          ? "На оба предмета уже хватает. Решает задача: первый вход или управляемое смещение и спасение."
+          : "You can afford both. The job decides it: first move or controlled repositioning and a save.";
+      } else if (force!.goldNeeded === 0 && blink!.goldNeeded > 0) {
+        verdict.textContent = lang === "ru"
+          ? `Force Staff доступен сейчас. До Blink Dagger ещё ${duration(blink!.minutesToAfford ?? 0)} Если драка уже начинается, эта разница реальна.`
+          : `Force Staff is available now. Blink Dagger needs another ${duration(blink!.minutesToAfford ?? 0)} If the fight is starting, that gap is real.`;
+      } else {
+        const difference = Math.abs((blink!.projectedMinute ?? 0) - (force!.projectedMinute ?? 0));
+        verdict.textContent = lang === "ru"
+          ? `По таймингу почти ничья: разница ${duration(difference)} Решает не цена, а первый вход против управляемого смещения и спасения.`
+          : `The timing is almost even: a ${duration(difference)} gap. The decision is not price, but first move versus controlled repositioning and a save.`;
+      }
+    };
+
+    form.addEventListener("submit", (event) => event.preventDefault());
+    form.addEventListener("input", update);
+    update();
+  }
 </script>
