@@ -183,15 +183,15 @@ const games: HomeGame[] = [
     status: "live",
     freshness: getHubFreshnessPolicy("gta"),
     question: lang === "ru"
-      ? "У меня 2 500 000 GTA$. Что купить, чтобы следующая цель стала ближе?"
-      : "I have GTA$2,500,000. What purchase gets me closer to the next goal?",
+      ? "До конца недели три часа. Стоит ли менять привычный денежный маршрут?"
+      : "Three hours remain this week. Should I leave my normal money route?",
     text: lang === "ru"
-      ? "Сравни стоимость бизнеса, ручную нагрузку и чистый доход. Недельный бонус не подменяет постоянную экономику."
-      : "Compare business cost, active workload and net income. A weekly bonus never replaces the permanent economy.",
-    inputNote: lang === "ru" ? "Банк + цель + время на игру" : "Bank + goal + play time",
+      ? "Сравни 3X и 2X активности со своим реальным GTA$/ч. Сайт учтёт время, повторяемость и разовую награду, но не придумает выплату за тебя."
+      : "Compare the 3X and 2X activities with your realized GTA$/h. The site accounts for time, repeatability and one-time rewards without inventing a payout.",
+    inputNote: lang === "ru" ? "Обычный темп + один замер + время" : "Normal rate + one sample + time",
     actions: [
-      { label: lang === "ru" ? "Рассчитать следующую покупку" : "Calculate the next purchase", path: "calculators/business-roi/#next-move" },
-      { label: lang === "ru" ? "Проверить бонусы недели" : "Check this week’s bonuses", path: "meta/" }
+      { label: lang === "ru" ? "Собрать план на эту неделю" : "Build this week's plan", path: "meta/#weekly-plan" },
+      { label: lang === "ru" ? "Рассчитать следующую покупку" : "Calculate the next purchase", path: "calculators/business-roi/#next-move" }
     ]
   },
   {

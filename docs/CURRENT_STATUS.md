@@ -2,6 +2,18 @@
 
 Updated: 2026-09-01
 
+## Active release candidate: v1.17 GTA weekly decision loop
+
+- Replaced the expired Brand Wars pulse with Rockstar's August 27 through September 2 Random Transform Races snapshot.
+- Added a complete RU/EN weekly planner for 3X Random Transform Races, 2X Drift Races and 2X Auto Shop Robbery Contracts.
+- The planner waits for the player's normal GTA$/h, observed base payout and observed run time instead of publishing an invented average.
+- Session comparison includes route-switching time, repeatability, a player-defined lift threshold and the full normal-route opportunity cost.
+- The GTA$100,000 Drift reward activates only after three complete runs; Auto Shop contracts remain ineligible without an already owned property.
+- Scenario inputs, share URL and a new-week marker remain local to the browser with no account or network data channel.
+- The expired August 28 through 30 6X window is labeled archive and excluded from every result.
+- GTA homepage entry and the focused meta route now lead directly to the weekly decision surface; long-term business rankings remain a separate layer below it.
+- Release gates currently pass with 129 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links.
+
 ## Baseline
 
 The production repository contained three standalone HTML files with CDN Tailwind on two pages and a separate CSS system on the calculator. There was no package manifest, build step, type checking or test suite.

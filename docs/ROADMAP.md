@@ -168,6 +168,18 @@
 - Expand the gamer-first launcher to seven worlds while clearly labeling six live economies and one pre-release dossier.
 - Require formula tests, content provenance tests, local-boundary tests, static build, link audit and responsive HTTPS preview QA before production promotion.
 
+## P2.5: v1.17 GTA weekly decision loop
+
+- Replace the expired GTA Brand Wars surface with the official August 27 through September 2 Rockstar Newswire snapshot.
+- Turn 3X Random Transform Races, 2X Drift Races and 2X Auto Shop Robbery Contracts into a personal session decision instead of a bonus list.
+- Require the player's normal GTA$/h, one observed base payout and one observed run time before producing a recommendation.
+- Apply the GTA$100,000 Drift Weekly Challenge reward only when at least three complete runs fit the session.
+- Gate Auto Shop contracts behind an already owned asset and never infer that a short 2X window pays back a new property purchase.
+- Compare the weekly route with the full normal session after switching time, confidence and a player-selected lift threshold.
+- Save the scenario and weekly return marker locally, expose a shareable URL and start no network connection.
+- Keep the expired August 28 through 30 6X weekend visible only as archive context.
+- Require formula tests, UI-contract tests, RU/EN parity, static build, link audit and responsive HTTPS preview QA before production promotion.
+
 ## Later
 
 - Authentication and cross-device profiles.

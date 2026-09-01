@@ -1,0 +1,460 @@
+---
+import { weeklyMeta } from "../data/gta-businesses";
+import "../styles/gta-weekly.css";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const copy = lang === "ru" ? {
+  kicker: "ТВОЙ ПЛАН НА ЭТУ НЕДЕЛЮ",
+  title: "Стоит ли менять обычный денежный маршрут?",
+  text: "Добавь свой реальный темп и один замер активности. Модель сравнит весь доступный сеанс, учтёт переключение, шанс повторить результат и твой минимальный порог выгоды.",
+  snapshot: "Официальный срез",
+  live: "Активно до 2 сентября",
+  checked: "Проверено 1 сентября 2026",
+  newWeek: "Новая неделя",
+  seenWeek: "Проверено на этом устройстве",
+  markSeen: "Отметить проверенной",
+  source: "Rockstar Newswire",
+  routeKicker: "01 / Выбери активность",
+  routeTitle: "Три маршрута с разной ценой входа",
+  openAccess: "Без покупки актива",
+  autoShop: "Нужен уже купленный Auto Shop",
+  inputKicker: "02 / Добавь свой замер",
+  inputTitle: "Твоя сессия, не чужая таблица",
+  hours: "Сколько часов ты ещё сыграешь до конца недели",
+  routine: "Твой обычный чистый доход, GTA$/ч",
+  routineHelp: "Возьми темп из своей привычной сессии.",
+  payout: "Базовая выплата за один заход, GTA$",
+  payoutHelp: "Введи выплату до множителя. Если видишь итог, раздели его на 3 или 2.",
+  minutes: "Минут на один полный заход",
+  minutesHelp: "Считай от запуска до готовности начать следующий.",
+  switch: "Минут уйдёт на переключение",
+  confidence: "Насколько результат повторяем",
+  lift: "Минимальная выгода для смены маршрута",
+  owns: "У меня уже есть Auto Shop",
+  ownershipNote: "Покупка Auto Shop не включается в этот короткий расчёт.",
+  resultKicker: "03 / Решение",
+  resultTitle: "Нужны твои реальные числа",
+  resultText: "Введи обычный GTA$/ч, базовую выплату и длительность одного захода. До этого сайт не будет придумывать вывод.",
+  weeklyCash: "Недельный маршрут",
+  routineCash: "Обычный маршрут",
+  difference: "Разница",
+  runs: "Полных заходов",
+  breakEven: "Нужная базовая выплата",
+  reward: "Разовая награда",
+  share: "Скопировать мой план",
+  saved: "Вводные сохраняются только в этом браузере.",
+  archived: "Закрытое спецокно",
+  archiveRule: "Не участвует в расчёте и не выдаётся за действующий бонус."
+} : {
+  kicker: "YOUR PLAN FOR THIS WEEK",
+  title: "Should you leave your normal money route?",
+  text: "Add your realized rate and one activity sample. The model compares the full session, switching time, repeatability and your minimum lift threshold.",
+  snapshot: "Official snapshot",
+  live: "Live through September 2",
+  checked: "Checked September 1, 2026",
+  newWeek: "New week",
+  seenWeek: "Checked on this device",
+  markSeen: "Mark as checked",
+  source: "Rockstar Newswire",
+  routeKicker: "01 / Choose an activity",
+  routeTitle: "Three routes with different access costs",
+  openAccess: "No asset purchase required",
+  autoShop: "Requires an Auto Shop you already own",
+  inputKicker: "02 / Add your sample",
+  inputTitle: "Your session, not somebody else's table",
+  hours: "Hours you will still play before the week ends",
+  routine: "Your normal net income, GTA$/h",
+  routineHelp: "Use the rate from your usual session.",
+  payout: "Base payout for one run, GTA$",
+  payoutHelp: "Enter payout before the multiplier. If you only see the final payout, divide it by 3 or 2.",
+  minutes: "Minutes for one complete run",
+  minutesHelp: "Count from launch until you can start the next run.",
+  switch: "Minutes spent switching routes",
+  confidence: "How repeatable is the result",
+  lift: "Minimum lift required to switch",
+  owns: "I already own an Auto Shop",
+  ownershipNote: "Buying an Auto Shop is outside this short-window model.",
+  resultKicker: "03 / Decision",
+  resultTitle: "Your realized measurements are still missing",
+  resultText: "Enter normal GTA$/h, base payout and run time. Until then the site will not invent a conclusion.",
+  weeklyCash: "Weekly route",
+  routineCash: "Normal route",
+  difference: "Difference",
+  runs: "Complete runs",
+  breakEven: "Required base payout",
+  reward: "One-time reward",
+  share: "Copy my plan",
+  saved: "Inputs stay only in this browser.",
+  archived: "Closed special window",
+  archiveRule: "Excluded from the model and never presented as a live bonus."
+};
+const archive = weeklyMeta.closedWindows[0]!;
+---
+
+<section
+  id="weekly-plan"
+  class="section hub-section gta-weekly-planner"
+  data-gta-weekly
+  data-lang={lang}
+  data-snapshot-id={weeklyMeta.id}
+  aria-labelledby="gta-weekly-title"
+>
+  <header class="gta-weekly-head">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="gta-weekly-title">{copy.title}</h2>
+      <p>{copy.text}</p>
+    </div>
+    <aside class="gta-weekly-snapshot">
+      <span>{copy.snapshot}</span>
+      <strong>{copy.live}</strong>
+      <small>{copy.checked}</small>
+      <a href={weeklyMeta.sourceUrl} target="_blank" rel="noopener noreferrer">{copy.source} ↗</a>
+    </aside>
+  </header>
+
+  <div class="gta-weekly-return" data-weekly-return data-state="new">
+    <span class="gta-weekly-return-light" aria-hidden="true"></span>
+    <div><small>{weeklyMeta.id}</small><strong data-weekly-return-label>{copy.newWeek}</strong></div>
+    <button type="button" data-mark-week>{copy.markSeen}</button>
+  </div>
+
+  <div class="gta-weekly-route-head">
+    <div><span>{copy.routeKicker}</span><h3>{copy.routeTitle}</h3></div>
+    <small>{weeklyMeta.opportunities.length} / {weeklyMeta.sourceLabel}</small>
+  </div>
+  <div class="gta-weekly-routes" role="radiogroup" aria-label={copy.routeTitle}>
+    {weeklyMeta.opportunities.map((route, index) => (
+      <button
+        type="button"
+        role="radio"
+        aria-checked={index === 0 ? "true" : "false"}
+        tabindex={index === 0 ? 0 : -1}
+        data-weekly-route={route.id}
+      >
+        <span class="gta-weekly-route-index">0{index + 1}</span>
+        <span class="gta-weekly-route-copy"><strong>{route.title[lang]}</strong><small>{route.summary[lang]}</small></span>
+        <span class="gta-weekly-route-signal">{route.signal[lang]}</span>
+        <span class="gta-weekly-route-access">{route.requiredAsset ? copy.autoShop : copy.openAccess}</span>
+      </button>
+    ))}
+  </div>
+
+  <div class="gta-weekly-workbench">
+    <form class="gta-weekly-inputs" data-weekly-form>
+      <header><span>{copy.inputKicker}</span><h3>{copy.inputTitle}</h3></header>
+      <div class="gta-weekly-fields">
+        <label>
+          <span>{copy.hours}</span>
+          <input name="hours" type="number" min="0.25" max="168" step="0.25" value="3" inputmode="decimal" />
+        </label>
+        <label>
+          <span>{copy.routine}</span>
+          <input name="routine" type="number" min="1" max="100000000" step="1000" value="" inputmode="numeric" autocomplete="off" />
+          <small>{copy.routineHelp}</small>
+        </label>
+        <label>
+          <span>{copy.payout}</span>
+          <input name="payout" type="number" min="1" max="100000000" step="1000" value="" inputmode="numeric" autocomplete="off" />
+          <small data-payout-help>{copy.payoutHelp}</small>
+        </label>
+        <label>
+          <span>{copy.minutes}</span>
+          <input name="minutes" type="number" min="1" max="360" step="1" value="" inputmode="decimal" autocomplete="off" />
+          <small>{copy.minutesHelp}</small>
+        </label>
+        <label>
+          <span>{copy.switch}</span>
+          <input name="switch" type="number" min="0" max="180" step="1" value="10" inputmode="decimal" />
+        </label>
+        <label class="gta-weekly-range">
+          <span>{copy.confidence}</span>
+          <div><input name="confidence" type="range" min="20" max="100" step="5" value="80" /><output data-output="confidence">80%</output></div>
+        </label>
+        <label class="gta-weekly-range">
+          <span>{copy.lift}</span>
+          <div><input name="lift" type="range" min="0" max="100" step="5" value="15" /><output data-output="lift">15%</output></div>
+        </label>
+        <label class="gta-weekly-ownership" data-ownership hidden>
+          <input name="owns" type="checkbox" />
+          <span><strong>{copy.owns}</strong><small>{copy.ownershipNote}</small></span>
+        </label>
+      </div>
+    </form>
+
+    <aside class="gta-weekly-result" data-weekly-result data-state="incomplete" aria-live="polite">
+      <header><span>{copy.resultKicker}</span><b data-route-signal>{weeklyMeta.opportunities[0]!.signal[lang]}</b></header>
+      <div class="gta-weekly-verdict">
+        <span data-verdict-mark>?</span>
+        <div><h3 data-verdict-title>{copy.resultTitle}</h3><p data-verdict-text>{copy.resultText}</p></div>
+      </div>
+
+      <div class="gta-weekly-bars" aria-hidden="true">
+        <div><span>{copy.weeklyCash}</span><i><b data-bar="weekly"></b></i><strong data-cash="weekly">...</strong></div>
+        <div><span>{copy.routineCash}</span><i><b data-bar="routine"></b></i><strong data-cash="routine">...</strong></div>
+      </div>
+
+      <dl class="gta-weekly-metrics">
+        <div><dt>{copy.difference}</dt><dd data-metric="difference">...</dd></div>
+        <div><dt>{copy.runs}</dt><dd data-metric="runs">...</dd></div>
+        <div><dt>{copy.breakEven}</dt><dd data-metric="break-even">...</dd></div>
+        <div><dt>{copy.reward}</dt><dd data-metric="reward">...</dd></div>
+      </dl>
+
+      <p class="gta-weekly-proof" data-weekly-proof>{copy.saved}</p>
+      <button class="gta-weekly-share" type="button" data-share-weekly>{copy.share} ↗</button>
+      <small data-weekly-feedback>{copy.saved}</small>
+    </aside>
+  </div>
+
+  <aside class="gta-weekly-archive">
+    <span>{copy.archived}</span>
+    <div><strong>{archive.title[lang]}</strong><p>{archive.summary[lang]} {copy.archiveRule}</p></div>
+    <b>{archive.signal[lang]}</b>
+  </aside>
+</section>
+
+<script>
+  import { weeklyMeta } from "../data/gta-businesses";
+  import { calculateGtaWeeklyPlan, type GtaWeeklyDecisionStatus } from "../lib/gta-weekly";
+
+  type WeeklyControl = HTMLInputElement;
+
+  const ready = (callback: () => void) => {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", callback, { once: true });
+    else callback();
+  };
+
+  ready(() => {
+    document.querySelectorAll<HTMLElement>("[data-gta-weekly]").forEach((root) => {
+      if (root.dataset.ready === "true") return;
+      root.dataset.ready = "true";
+      const lang = root.dataset.lang === "ru" ? "ru" : "en";
+      const messages = lang === "ru" ? {
+        incompleteTitle: "Нужны твои реальные числа",
+        incompleteText: "Заполни обычный GTA$/ч, базовую выплату и время одного захода. Без них честного сравнения нет.",
+        expiredTitle: "Недельное окно закончилось",
+        expiredText: "Расчёт отключён, потому что официальный срок уже прошёл. Срез остаётся архивом до следующего обновления.",
+        ineligibleTitle: "Оставь этот маршрут на потом",
+        ineligibleText: "Для контрактов нужен уже купленный Auto Shop. Не покупай его вслепую ради короткого 2X окна.",
+        noFitTitle: "В сеанс не помещается полный заход",
+        noFitText: "Увеличь доступное время или выбери более короткий реальный замер.",
+        stayTitle: "Оставайся на обычном маршруте",
+        stayText: "После поправки на время и повторяемость недельная активность не обгоняет привычный заработок.",
+        closeTitle: "Сначала проверь один заход",
+        closeText: "Недельный маршрут выглядит лучше обычного, но не достигает выбранного порога выгоды.",
+        switchTitle: "Переключай этот сеанс",
+        switchText: "По твоим вводным недельный маршрут проходит заданный порог выгоды.",
+        checked: "Проверено на этом устройстве",
+        copied: "Ссылка на план скопирована",
+        manual: "Адрес обновлён. Скопируй его из строки браузера.",
+        saved: "План сохранён локально",
+        runs: "заходов",
+        rewardLocked: "не достигнут порог",
+        noReward: "нет",
+        required: "за заход до бонуса",
+        proof: "Официальны только множитель, награда и срок. Выплата, время, темп и надёжность взяты из твоих полей. RP и удовольствие модель не оценивает."
+      } : {
+        incompleteTitle: "Your realized numbers are required",
+        incompleteText: "Add normal GTA$/h, base payout and one run time. An honest comparison cannot exist without them.",
+        expiredTitle: "The weekly window has ended",
+        expiredText: "Calculation is disabled because the official window has passed. This snapshot remains archived until the next update.",
+        ineligibleTitle: "Leave this route for later",
+        ineligibleText: "Contracts require an Auto Shop you already own. Do not buy one blind for a short 2X window.",
+        noFitTitle: "A complete run does not fit",
+        noFitText: "Increase available time or use a shorter observed run.",
+        stayTitle: "Stay on your normal route",
+        stayText: "After time and repeatability adjustments, the weekly activity does not beat your normal earnings.",
+        closeTitle: "Test one run first",
+        closeText: "The weekly route looks better than normal, but it misses your chosen lift threshold.",
+        switchTitle: "Switch this session",
+        switchText: "With your inputs, the weekly route clears your required lift.",
+        checked: "Checked on this device",
+        copied: "Plan link copied",
+        manual: "The address is updated. Copy it from the browser bar.",
+        saved: "Plan saved locally",
+        runs: "runs",
+        rewardLocked: "threshold not reached",
+        noReward: "none",
+        required: "per run before bonus",
+        proof: "Only the multiplier, reward and window are official. Payout, time, rate and confidence come from your fields. The model does not value RP or fun."
+      };
+      const statuses: Record<GtaWeeklyDecisionStatus, { title: string; text: string; mark: string }> = {
+        incomplete: { title: messages.incompleteTitle, text: messages.incompleteText, mark: "?" },
+        expired: { title: messages.expiredTitle, text: messages.expiredText, mark: "X" },
+        ineligible: { title: messages.ineligibleTitle, text: messages.ineligibleText, mark: "!" },
+        "no-fit": { title: messages.noFitTitle, text: messages.noFitText, mark: "0" },
+        stay: { title: messages.stayTitle, text: messages.stayText, mark: "=" },
+        close: { title: messages.closeTitle, text: messages.closeText, mark: "~" },
+        switch: { title: messages.switchTitle, text: messages.switchText, mark: "+" }
+      };
+      const form = root.querySelector<HTMLFormElement>("[data-weekly-form]");
+      const resultRoot = root.querySelector<HTMLElement>("[data-weekly-result]");
+      const routeButtons = [...root.querySelectorAll<HTMLButtonElement>("[data-weekly-route]")];
+      if (!form || !resultRoot || !routeButtons.length) return;
+      const controls = [...form.querySelectorAll<WeeklyControl>("input")];
+      const byName = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+      const storageKey = "money-meta:gta-weekly:v1";
+      const seenKey = "money-meta:gta-weekly:last-seen";
+      const snapshotId = root.dataset.snapshotId ?? weeklyMeta.id;
+      let activeRouteId = routeButtons[0]!.dataset.weeklyRoute ?? weeklyMeta.opportunities[0]!.id;
+      const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
+      const cash = (value: number) => `GTA$${number.format(Math.round(value))}`;
+      const value = (name: string) => Number(byName(name).value);
+      const route = () => weeklyMeta.opportunities.find((item) => item.id === activeRouteId) ?? weeklyMeta.opportunities[0]!;
+      const feedback = root.querySelector<HTMLElement>("[data-weekly-feedback]");
+
+      const setFeedback = (message: string) => {
+        if (!feedback) return;
+        feedback.textContent = message;
+        window.setTimeout(() => { feedback.textContent = messages.saved; }, 1800);
+      };
+
+      const state = () => ({
+        route: activeRouteId,
+        hours: byName("hours").value,
+        routine: byName("routine").value,
+        payout: byName("payout").value,
+        minutes: byName("minutes").value,
+        switch: byName("switch").value,
+        confidence: byName("confidence").value,
+        lift: byName("lift").value,
+        owns: byName("owns").checked ? "1" : "0"
+      });
+
+      const save = () => {
+        try { localStorage.setItem(storageKey, JSON.stringify(state())); } catch { /* Local persistence is optional. */ }
+      };
+
+      const draw = () => {
+        const selected = route();
+        const plan = calculateGtaWeeklyPlan({
+          route: selected,
+          validThrough: weeklyMeta.validThrough,
+          hoursAvailable: value("hours"),
+          routineHourly: value("routine"),
+          basePayoutPerRun: value("payout"),
+          minutesPerRun: value("minutes"),
+          switchMinutes: value("switch"),
+          confidencePercent: value("confidence"),
+          minimumLiftPercent: value("lift"),
+          ownsRequiredAsset: byName("owns").checked
+        });
+        const message = statuses[plan.status];
+        resultRoot.dataset.state = plan.status;
+        const title = resultRoot.querySelector<HTMLElement>("[data-verdict-title]");
+        const text = resultRoot.querySelector<HTMLElement>("[data-verdict-text]");
+        const mark = resultRoot.querySelector<HTMLElement>("[data-verdict-mark]");
+        const signal = resultRoot.querySelector<HTMLElement>("[data-route-signal]");
+        if (title) title.textContent = message.title;
+        if (text) text.textContent = message.text;
+        if (mark) mark.textContent = message.mark;
+        if (signal) signal.textContent = selected.signal[lang];
+        const populated = ["stay", "close", "switch"].includes(plan.status);
+        const weeklyCash = resultRoot.querySelector<HTMLElement>("[data-cash='weekly']");
+        const routineCash = resultRoot.querySelector<HTMLElement>("[data-cash='routine']");
+        const difference = resultRoot.querySelector<HTMLElement>("[data-metric='difference']");
+        const runs = resultRoot.querySelector<HTMLElement>("[data-metric='runs']");
+        const breakEven = resultRoot.querySelector<HTMLElement>("[data-metric='break-even']");
+        const reward = resultRoot.querySelector<HTMLElement>("[data-metric='reward']");
+        if (weeklyCash) weeklyCash.textContent = populated ? cash(plan.expectedRouteCash) : "...";
+        if (routineCash) routineCash.textContent = populated ? cash(plan.routineAlternative) : "...";
+        if (difference) difference.textContent = populated ? `${plan.delta >= 0 ? "+" : "-"}${cash(Math.abs(plan.delta))}` : "...";
+        if (runs) runs.textContent = plan.runs > 0 ? `${number.format(plan.runs)} ${messages.runs}` : "...";
+        if (breakEven) breakEven.textContent = plan.requiredBasePayoutPerRun === null ? "..." : `${cash(plan.requiredBasePayoutPerRun)} ${messages.required}`;
+        if (reward) {
+          const offered = selected.fixedReward ?? 0;
+          reward.textContent = !offered ? messages.noReward : plan.fixedReward ? cash(plan.fixedReward) : messages.rewardLocked;
+        }
+        const maximum = Math.max(plan.expectedRouteCash, plan.routineAlternative, 1);
+        const weeklyBar = resultRoot.querySelector<HTMLElement>("[data-bar='weekly']");
+        const routineBar = resultRoot.querySelector<HTMLElement>("[data-bar='routine']");
+        if (weeklyBar) weeklyBar.style.width = populated ? `${Math.max(3, plan.expectedRouteCash / maximum * 100)}%` : "0%";
+        if (routineBar) routineBar.style.width = populated ? `${Math.max(3, plan.routineAlternative / maximum * 100)}%` : "0%";
+        const proof = resultRoot.querySelector<HTMLElement>("[data-weekly-proof]");
+        if (proof) proof.textContent = messages.proof;
+        root.querySelectorAll<HTMLOutputElement>("[data-output]").forEach((output) => {
+          output.textContent = `${byName(output.dataset.output ?? "").value}%`;
+        });
+      };
+
+      const selectRoute = (id: string, focus = false) => {
+        if (!weeklyMeta.opportunities.some((item) => item.id === id)) return;
+        activeRouteId = id;
+        routeButtons.forEach((button) => {
+          const selected = button.dataset.weeklyRoute === id;
+          button.setAttribute("aria-checked", String(selected));
+          button.tabIndex = selected ? 0 : -1;
+          if (selected && focus) button.focus();
+        });
+        const ownership = root.querySelector<HTMLElement>("[data-ownership]");
+        if (ownership) ownership.hidden = !route().requiredAsset;
+        draw();
+        save();
+      };
+
+      routeButtons.forEach((button, index) => {
+        button.addEventListener("click", () => selectRoute(button.dataset.weeklyRoute ?? ""));
+        button.addEventListener("keydown", (event) => {
+          if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+          event.preventDefault();
+          const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
+          const next = routeButtons[(index + direction + routeButtons.length) % routeButtons.length];
+          if (next) selectRoute(next.dataset.weeklyRoute ?? "", true);
+        });
+      });
+
+      controls.forEach((control) => {
+        control.addEventListener("input", () => { draw(); save(); });
+        control.addEventListener("change", () => { draw(); save(); });
+      });
+
+      const defaults = state();
+      const params = new URLSearchParams(window.location.search);
+      const fromUrl = Object.fromEntries(Object.keys(defaults).map((key) => [key, params.get(`gta-weekly.${key}`)]).filter((entry): entry is [string, string] => entry[1] !== null));
+      let stored: Record<string, string> = {};
+      try {
+        const parsed: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "{}");
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) stored = parsed as Record<string, string>;
+      } catch { /* Ignore unavailable or corrupt local state. */ }
+      const restored = Object.keys(fromUrl).length ? fromUrl : stored;
+      controls.forEach((control) => {
+        const restoredValue = restored[control.name];
+        if (typeof restoredValue !== "string") return;
+        if (control.type === "checkbox") control.checked = restoredValue === "1";
+        else if (restoredValue === "" || Number.isFinite(Number(restoredValue))) control.value = restoredValue;
+      });
+      selectRoute(restored.route ?? activeRouteId);
+
+      const returnRoot = root.querySelector<HTMLElement>("[data-weekly-return]");
+      const returnLabel = root.querySelector<HTMLElement>("[data-weekly-return-label]");
+      const markWeek = root.querySelector<HTMLButtonElement>("[data-mark-week]");
+      let seen = "";
+      try { seen = localStorage.getItem(seenKey) ?? ""; } catch { /* Local return marker is optional. */ }
+      const drawSeen = () => {
+        const isSeen = seen === snapshotId;
+        if (returnRoot) returnRoot.dataset.state = isSeen ? "seen" : "new";
+        if (returnLabel) returnLabel.textContent = isSeen ? messages.checked : (lang === "ru" ? "Новая неделя" : "New week");
+        if (markWeek) markWeek.hidden = isSeen;
+      };
+      drawSeen();
+      markWeek?.addEventListener("click", () => {
+        seen = snapshotId;
+        try { localStorage.setItem(seenKey, snapshotId); } catch { /* Local return marker is optional. */ }
+        drawSeen();
+      });
+
+      root.querySelector<HTMLButtonElement>("[data-share-weekly]")?.addEventListener("click", async () => {
+        const url = new URL(window.location.href);
+        Object.entries(state()).forEach(([key, current]) => url.searchParams.set(`gta-weekly.${key}`, current));
+        url.hash = "weekly-plan";
+        window.history.replaceState({}, "", url);
+        try {
+          await navigator.clipboard.writeText(url.toString());
+          setFeedback(messages.copied);
+        } catch { setFeedback(messages.manual); }
+      });
+    });
+  });
+</script>

@@ -189,3 +189,15 @@ Fable enters as a pre-release watch surface. Official Xbox material confirms job
 ## 2026-09-01: local connection begins with explicit file selection
 
 Local data access starts with browser-only import of the Money Meta scenario JSON format. Reading a file does not automatically persist it; the player chooses whether to keep a local copy. A future companion is permitted only when browser access is insufficient and must use loopback, read-only access, explicit pairing, path allowlists and a local audit log. Process memory, injection, background scanning, credentials and writes to game files remain prohibited.
+
+## 2026-09-01: GTA weekly meta must end in a player decision
+
+A current bonus list is useful evidence but not enough reason to return. The GTA meta page must compare the player's normal GTA$/h with one observed run under the current official multiplier, then answer whether to stay, test once or switch the remaining session. Missing player measurements produce no numeric recommendation.
+
+## 2026-09-01: official weekly facts and player observations are separate layers
+
+Rockstar supplies the multiplier, fixed challenge reward, access condition and validity window. The player supplies base payout, run time, normal earnings, available hours, switching cost, repeatability and the lift required to justify disruption. The model values GTA$ only; RP, LS Car Meet reputation and enjoyment remain visible but unpriced.
+
+## 2026-09-01: short bonuses cannot justify an unmodeled property purchase
+
+Auto Shop Robbery Contracts enter the weekly comparison only when the player already owns an Auto Shop. The weekly model does not include acquisition price, setup time or long-horizon use, so it cannot claim that purchasing the property for a short 2X window is rational. The expired 6X weekend remains archive context and never enters a live result.
