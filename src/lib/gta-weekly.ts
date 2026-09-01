@@ -45,6 +45,16 @@ export interface GtaWeeklyPlanResult {
   requiredBasePayoutPerRun: number | null;
 }
 
+export function getGtaWeeklyRunNoun(count: number, locale: "ru" | "en"): string {
+  const safeCount = Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0;
+  if (locale === "en") return safeCount === 1 ? "run" : "runs";
+  const mod100 = safeCount % 100;
+  const mod10 = safeCount % 10;
+  if (mod10 === 1 && mod100 !== 11) return "заход";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "захода";
+  return "заходов";
+}
+
 const finiteFloor = (value: number, minimum = 0): number =>
   Number.isFinite(value) ? Math.max(minimum, value) : minimum;
 

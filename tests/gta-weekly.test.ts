@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculateGtaWeeklyPlan, type GtaWeeklyRouteFacts } from "../src/lib/gta-weekly";
+import { calculateGtaWeeklyPlan, getGtaWeeklyRunNoun, type GtaWeeklyRouteFacts } from "../src/lib/gta-weekly";
 
 const route: GtaWeeklyRouteFacts = { id: "race", multiplier: 3 };
 const current = new Date("2026-09-01T12:00:00Z");
@@ -18,6 +18,23 @@ const base = {
 };
 
 describe("GTA weekly plan", () => {
+  it("uses the correct Russian run noun", () => {
+    expect([1, 2, 5, 11, 21, 22, 25].map((count) => getGtaWeeklyRunNoun(count, "ru"))).toEqual([
+      "заход",
+      "захода",
+      "заходов",
+      "заходов",
+      "заход",
+      "захода",
+      "заходов"
+    ]);
+  });
+
+  it("uses singular and plural English run nouns", () => {
+    expect(getGtaWeeklyRunNoun(1, "en")).toBe("run");
+    expect(getGtaWeeklyRunNoun(2, "en")).toBe("runs");
+  });
+
   it("fails closed after the verified window", () => {
     expect(calculateGtaWeeklyPlan({ ...base, asOf: new Date("2026-09-03T00:00:00Z") }).status).toBe("expired");
   });

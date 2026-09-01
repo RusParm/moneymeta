@@ -12,7 +12,7 @@ Updated: 2026-09-01
 - Scenario inputs, share URL and a new-week marker remain local to the browser with no account or network data channel.
 - The expired August 28 through 30 6X window is labeled archive and excluded from every result.
 - GTA homepage entry and the focused meta route now lead directly to the weekly decision surface; long-term business rankings remain a separate layer below it.
-- Release gates currently pass with 129 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links.
+- Release gates currently pass with 131 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links.
 
 ## Baseline
 

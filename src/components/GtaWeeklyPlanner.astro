@@ -217,7 +217,7 @@ const archive = weeklyMeta.closedWindows[0]!;
 
 <script>
   import { weeklyMeta } from "../data/gta-businesses";
-  import { calculateGtaWeeklyPlan, type GtaWeeklyDecisionStatus } from "../lib/gta-weekly";
+  import { calculateGtaWeeklyPlan, getGtaWeeklyRunNoun, type GtaWeeklyDecisionStatus } from "../lib/gta-weekly";
 
   type WeeklyControl = HTMLInputElement;
 
@@ -250,7 +250,6 @@ const archive = weeklyMeta.closedWindows[0]!;
         copied: "Ссылка на план скопирована",
         manual: "Адрес обновлён. Скопируй его из строки браузера.",
         saved: "План сохранён локально",
-        runs: "заходов",
         rewardLocked: "не достигнут порог",
         noReward: "нет",
         required: "за заход до бонуса",
@@ -274,7 +273,6 @@ const archive = weeklyMeta.closedWindows[0]!;
         copied: "Plan link copied",
         manual: "The address is updated. Copy it from the browser bar.",
         saved: "Plan saved locally",
-        runs: "runs",
         rewardLocked: "threshold not reached",
         noReward: "none",
         required: "per run before bonus",
@@ -361,7 +359,7 @@ const archive = weeklyMeta.closedWindows[0]!;
         if (weeklyCash) weeklyCash.textContent = populated ? cash(plan.expectedRouteCash) : "...";
         if (routineCash) routineCash.textContent = populated ? cash(plan.routineAlternative) : "...";
         if (difference) difference.textContent = populated ? `${plan.delta >= 0 ? "+" : "-"}${cash(Math.abs(plan.delta))}` : "...";
-        if (runs) runs.textContent = plan.runs > 0 ? `${number.format(plan.runs)} ${messages.runs}` : "...";
+        if (runs) runs.textContent = plan.runs > 0 ? `${number.format(plan.runs)} ${getGtaWeeklyRunNoun(plan.runs, lang)}` : "...";
         if (breakEven) breakEven.textContent = plan.requiredBasePayoutPerRun === null ? "..." : `${cash(plan.requiredBasePayoutPerRun)} ${messages.required}`;
         if (reward) {
           const offered = selected.fixedReward ?? 0;
