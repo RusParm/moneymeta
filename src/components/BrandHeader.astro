@@ -17,9 +17,12 @@ const links = [
   { id: "wow", label: "WoW Retail", href: lang === "ru" ? "/wow/" : "/en/wow/" },
   { id: "total-war", label: "Total War", href: lang === "ru" ? "/total-war/" : "/en/total-war/" },
   { id: "ck3", label: "CK3", href: lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/" },
-  { id: "insights", label: lang === "ru" ? "Разборы" : "Field Notes", href: lang === "ru" ? "/insights/" : "/en/insights/" }
+  { id: "civ7", label: "Civilization VII", href: lang === "ru" ? "/civilization-7/" : "/en/civilization-7/" },
+  { id: "fable", label: "Fable", href: lang === "ru" ? "/fable/" : "/en/fable/" },
+  { id: "insights", label: lang === "ru" ? "Разборы" : "Field Notes", href: lang === "ru" ? "/insights/" : "/en/insights/" },
+  { id: "connect", label: lang === "ru" ? "Локально" : "Local", href: lang === "ru" ? "/connect/" : "/en/connect/" }
 ];
-const active = currentPath.includes("insights") ? "insights" : currentPath.includes("gta-6") ? "gta6" : currentPath.includes("gta-online") ? "gta" : currentPath.includes("dota-2") ? "dota" : currentPath.includes("wow") ? "wow" : currentPath.includes("total-war") ? "total-war" : currentPath.includes("crusader-kings-3") ? "ck3" : "home";
+const active = currentPath.includes("connect") ? "connect" : currentPath.includes("insights") ? "insights" : currentPath.includes("civilization-7") ? "civ7" : currentPath.includes("fable") ? "fable" : currentPath.includes("gta-6") ? "gta6" : currentPath.includes("gta-online") ? "gta" : currentPath.includes("dota-2") ? "dota" : currentPath.includes("wow") ? "wow" : currentPath.includes("total-war") ? "total-war" : currentPath.includes("crusader-kings-3") ? "ck3" : "home";
 ---
 
 <div class="site-chrome">

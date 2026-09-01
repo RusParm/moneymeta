@@ -157,6 +157,17 @@
 - Keep freshness, selected analysis, GTA VI watch and methodology available as compact depth after the first useful action.
 - Require keyboard interaction, RU/EN parity, mobile controls, local tests, static build and an HTTPS branch preview before production promotion.
 
+## P2.4: v1.16 Civilization, Fable and local trust foundation
+
+- Add Civilization VII as the sixth live economy after official Update 1.4.1 and Test of Time review.
+- Ship three editable models using values from the player's game: building payback window, settlement development choice and Economic Victory GDP gap.
+- Add Fable as a bounded pre-release dossier with confirmed economy signals, explicit unknowns, first-72-hours measurement protocol and no invented calculator.
+- Add original owned Money Meta world art for Civilization VII and Fable without publisher logos, characters or screenshots.
+- Publish a bilingual local-connection contract and working browser-only Money Meta scenario JSON import.
+- Keep future save connectors read-only, explicit, allowlisted and outside game process memory or anti-cheat surfaces.
+- Expand the gamer-first launcher to seven worlds while clearly labeling six live economies and one pre-release dossier.
+- Require formula tests, content provenance tests, local-boundary tests, static build, link audit and responsive HTTPS preview QA before production promotion.
+
 ## Later
 
 - Authentication and cross-device profiles.
@@ -168,4 +179,4 @@
 - Expanded Dota 2 match-economy tools: reliable/unreliable gold, death cost and item timing comparisons.
 - Total War scenario presets by faction and campaign phase after usage data identifies the highest-value cases.
 - Crusader Kings III Silk & Silver model update only after the Q4 2026 mechanics are released and verified.
-- Civilization and Age of Empires after search demand, repeat-use potential and reliable data workflows are validated.
+- Age of Empires after search demand, repeat-use potential and a reliable data workflow are validated.

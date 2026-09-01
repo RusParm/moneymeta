@@ -1,0 +1,278 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import civilizationWorld from "../assets/game-worlds/civilization-economy-world.webp";
+import fableWorld from "../assets/game-worlds/fable-economy-world.webp";
+import {
+  frontierHubs,
+  getFrontierPath,
+  getFrontierSource,
+  type FrontierHubId,
+  type FrontierLocale,
+  type FrontierSectionSlug
+} from "../data/frontier-hubs";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/frontier-hub.css";
+import BrandHeader from "./BrandHeader.astro";
+import CivilizationTools from "./CivilizationTools.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props {
+  hub: FrontierHubId;
+  section: FrontierSectionSlug;
+  lang: FrontierLocale;
+}
+
+const { hub: hubId, section: sectionSlug, lang } = Astro.props;
+const hub = frontierHubs[hubId];
+const section = hub.sections.find((item) => item.slug === sectionSlug);
+if (!section) throw new Error(`Unknown ${hubId} section: ${sectionSlug}`);
+const image: ImageMetadata = hubId === "civ7" ? civilizationWorld : fableWorld;
+const root = getFrontierPath(hubId, lang);
+const canonical = getFrontierPath(hubId, lang, sectionSlug);
+const alternate = getFrontierPath(hubId, lang === "ru" ? "en" : "ru", sectionSlug);
+const source = hub.sources[0]!;
+
+const copy = lang === "ru" ? {
+  back: "← К хабу игры",
+  breadcrumb: "Текущий раздел",
+  question: "Вопрос",
+  outcome: "Результат",
+  context: "Контекст",
+  checked: "проверено",
+  sections: "Разделы хаба",
+  economyKicker: "ЭКОНОМИЧЕСКАЯ ЦЕПОЧКА",
+  economyTitle: "Ресурс ценен только после конверсии в цель.",
+  economyText: "Карта не выдаёт готовый ответ. Следующий ход проходит через специализацию поселения, производственную очередь и контрольный срок.",
+  decisionKicker: "ТРИ ТИПА РЕШЕНИЙ",
+  decisionTitle: "Сначала ограничение. Потом действие.",
+  input: "Что записать",
+  failure: "Когда решение меняется",
+  metaKicker: "ВЕРСИЯ 1.4.1",
+  metaTitle: "Пять изменений, которые требуют нового мышления.",
+  metaText: "Каждая карточка показывает официальный факт и границу вывода Money Meta. Это защищает модель от старых советов и лишней уверенности.",
+  fact: "Факт",
+  boundary: "Граница",
+  sourceLabel: "Первоисточник",
+  fableEconomyKicker: "ПОДТВЕРЖДЁННАЯ СИСТЕМА",
+  fableEconomyTitle: "Работа, собственность и репутация связаны. Доходность пока неизвестна.",
+  fableEconomyText: "Мы можем построить карту экономических действий, но не можем честно назначить им цены, время и рейтинг до релиза.",
+  unknownKicker: "НЕИЗВЕСТНО ДО РЕЛИЗА",
+  unknownTitle: "Шесть вопросов, которые блокируют калькулятор.",
+  launchKicker: "ПРОТОКОЛ ПЕРВЫХ 72 ЧАСОВ",
+  launchTitle: "Первая рекомендация появляется только после повторяемого наблюдения.",
+  launchText: "Один удачный маршрут не становится метой. Нужны сопоставимые условия, полный вход и диапазон результата.",
+  gateKicker: "ДОПУСК К ПУБЛИКАЦИИ",
+  gateTitle: "Что должно быть выполнено до первой модели",
+  sourcesKicker: "РЕЕСТР ДОКАЗАТЕЛЬСТВ",
+  sourcesTitle: "Каждое утверждение можно открыть и перепроверить.",
+  sourcesText: "Мы храним дату, прямой источник, формулировку и ограничение. Новая информация создаёт новую версию, а не переписывает историю незаметно.",
+  sourcePublished: "опубликовано",
+  sourceChecked: "проверено",
+  openQuestions: "Открытые вопросы",
+  methodology: "Методика и независимость",
+  methodologyTitle: "Источник задаёт границу. Сценарий остаётся твоим.",
+  methodologyText: hub.status === "live"
+    ? "Официальные материалы подтверждают структуру текущей версии. Все числовые значения берутся из интерфейса партии и сохраняются только на устройстве."
+    : "До релиза Money Meta публикует только подтверждённые сигналы и план измерения. Расчёты появятся после повторяемых наблюдений.",
+  openSource: "Открыть основной источник",
+  connect: "Безопасное локальное подключение"
+} : {
+  back: "← Back to the game hub",
+  breadcrumb: "Current section",
+  question: "Question",
+  outcome: "Outcome",
+  context: "Context",
+  checked: "checked",
+  sections: "Hub sections",
+  economyKicker: "ECONOMIC CHAIN",
+  economyTitle: "A Resource matters only after it converts into the objective.",
+  economyText: "The map does not provide a ready answer. The next move passes through settlement specialization, the production queue and a real checkpoint.",
+  decisionKicker: "THREE DECISION CLASSES",
+  decisionTitle: "Constraint first. Action second.",
+  input: "What to record",
+  failure: "When the choice changes",
+  metaKicker: "VERSION 1.4.1",
+  metaTitle: "Five changes that require a new mental model.",
+  metaText: "Every card shows an official fact and the boundary of Money Meta's inference. This protects the model from stale advice and false confidence.",
+  fact: "Fact",
+  boundary: "Boundary",
+  sourceLabel: "Primary source",
+  fableEconomyKicker: "CONFIRMED SYSTEM",
+  fableEconomyTitle: "Jobs, property and reputation are connected. Returns remain unknown.",
+  fableEconomyText: "We can map the economic actions, but cannot honestly assign prices, time or a ranking before launch.",
+  unknownKicker: "UNKNOWN BEFORE LAUNCH",
+  unknownTitle: "Six questions blocking a calculator.",
+  launchKicker: "FIRST 72 HOURS PROTOCOL",
+  launchTitle: "The first recommendation waits for a repeatable observation.",
+  launchText: "One successful route does not become the meta. We need matched conditions, full entry cost and a range of outcomes.",
+  gateKicker: "PUBLICATION GATE",
+  gateTitle: "What must be true before the first model",
+  sourcesKicker: "EVIDENCE REGISTRY",
+  sourcesTitle: "Every claim can be opened and checked.",
+  sourcesText: "We store the date, direct source, claim and boundary. New information creates a new version instead of silently rewriting history.",
+  sourcePublished: "published",
+  sourceChecked: "checked",
+  openQuestions: "Open questions",
+  methodology: "Method and independence",
+  methodologyTitle: "The source sets the boundary. The scenario stays yours.",
+  methodologyText: hub.status === "live"
+    ? "Official material confirms the structure of the current version. Every numeric value comes from the game interface and stays on the device."
+    : "Before launch, Money Meta publishes only confirmed signals and a measurement plan. Calculations follow repeatable observations.",
+  openSource: "Open main source",
+  connect: "Safe local connection"
+};
+
+const civChain = lang === "ru" ? [
+  ["01", "Карта", "Клетки, соседи и доступ к ресурсам задают ограничения."],
+  ["02", "Роль поселения", "Город или специализированное поселение создают разный поток."],
+  ["03", "Очередь", "Каждая постройка задерживает юнит, поселенца или другой район."],
+  ["04", "Соседство", "Контекст постройки меняет реальную, а не номинальную пользу."],
+  ["05", "Ресурсы", "Размещённые ресурсы и Treasure Convoys участвуют в валовом продукте."],
+  ["06", "Победа", "Полезность становится ценностью только относительно выбранной цели."]
+] : [
+  ["01", "Map", "Tiles, neighbors and Resource access define the constraints."],
+  ["02", "Settlement role", "A city and a specialized settlement create different flows."],
+  ["03", "Queue", "Every building delays a unit, Settler or another district."],
+  ["04", "Adjacency", "Building context changes actual rather than nominal benefit."],
+  ["05", "Resources", "Slotted Resources and Treasure Convoys contribute to GDP."],
+  ["06", "Victory", "Utility becomes value only in relation to the selected objective."]
+];
+
+const civDecisions = lang === "ru" ? [
+  { mark: "BLD", title: "Строить сейчас или позже", text: "Проверь, успевает ли поток после строительства вернуть полную стоимость до контрольного срока.", input: "Стоимость, задержка, полезность за ход, срок", failure: "Война или переход эпохи наступают раньше окупаемости", href: "#building-payback" },
+  { mark: "SET", title: "Развивать поселение или сохранить роль", text: "Считай только дополнительную пользу после перехода и цену потерянной специализации.", input: "Цена перехода, текущий поток, новый поток, срок", failure: "Текущая роль создаёт ценность, не вошедшую в оценку", href: "#settlement-choice" },
+  { mark: "GDP", title: "Закрывать разрыв до победы", text: "Собери подтверждённые источники валового продукта и снизь план на недоступную часть.", input: "Текущий разрыв, ресурсы, конвои, постройки", failure: "Доступ к источнику зависит от ещё не выполненного действия", href: "#victory-gap" }
+] : [
+  { mark: "BLD", title: "Build now or later", text: "Test whether the post-build flow returns the full cost before the checkpoint.", input: "Cost, delay, value per turn, checkpoint", failure: "War or the Age transition arrives before payback", href: "#building-payback" },
+  { mark: "SET", title: "Develop or preserve the role", text: "Price only the incremental value after the transition and the lost specialization.", input: "Transition cost, current flow, new flow, horizon", failure: "The current role creates value omitted from the estimate", href: "#settlement-choice" },
+  { mark: "GDP", title: "Close the Victory gap", text: "Collect confirmed GDP sources and discount the share that is not yet accessible.", input: "Current gap, Resources, Convoys, Buildings", failure: "A source depends on another unfinished action", href: "#victory-gap" }
+];
+
+const publicationGates = lang === "ru" ? [
+  ["01", "Повторяемость", "Не менее трёх сопоставимых попыток с одинаковой версией, поселением и уровнем репутации."],
+  ["02", "Полная стоимость", "Цена входа, обязательные траты, активное время и неудачные попытки записаны отдельно."],
+  ["03", "Граница версии", "Платформа, патч и этап сюжета видны рядом с результатом. Новая версия не смешивается со старой."],
+  ["04", "Чувствительность", "Вывод переживает разумное изменение цены, времени и риска или явно показывает точку переворота."]
+] : [
+  ["01", "Repeatability", "At least three comparable attempts with the same version, settlement and reputation level."],
+  ["02", "Full cost", "Entry price, required spend, active time and failed attempts are captured separately."],
+  ["03", "Version boundary", "Platform, patch and story stage appear beside the result. A new version never blends into the old one."],
+  ["04", "Sensitivity", "The conclusion survives a reasonable change in price, time and risk or shows its exact flip point."]
+];
+---
+
+<BaseLayout
+  title={`${section.title[lang]} · ${hub.shortName} | Money Meta`}
+  description={`${section.description[lang]} ${section.outcome[lang]}`}
+  lang={lang}
+  canonicalPath={canonical}
+  alternatePath={alternate}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: section.title[lang],
+    description: section.description[lang],
+    inLanguage: lang,
+    about: { "@type": "VideoGame", name: hub.name, publisher: hub.publisher },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: hub.shortName, item: new URL(root, Astro.site).toString() },
+        { "@type": "ListItem", position: 2, name: section.label[lang], item: new URL(canonical, Astro.site).toString() }
+      ]
+    }
+  }}
+>
+  <main class={`page frontier-hub frontier-${hubId} frontier-section-page`} data-frontier-section={sectionSlug}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getFrontierPath(hubId, "ru", sectionSlug)} enPath={getFrontierPath(hubId, "en", sectionSlug)} backPath={root} backLabel={copy.back} />
+
+      <section class="frontier-section-hero" aria-labelledby={`${hubId}-${sectionSlug}-title`}>
+        <Image class="frontier-section-art" src={image} alt="" widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 28px), 560px" loading="eager" decoding="async" />
+        <div class="frontier-section-copy">
+          <nav aria-label="Breadcrumb"><a href={root}>{hub.shortName}</a><span>/</span><span>{section.label[lang]}</span></nav>
+          <div class="frontier-section-title"><span>{section.code}</span><b>{section.mark}</b><div><small>{copy.breadcrumb}</small><h1 id={`${hubId}-${sectionSlug}-title`}>{section.title[lang]}</h1></div></div>
+          <p>{section.description[lang]}</p>
+          <dl>
+            <div><dt>{copy.question}</dt><dd>{section.question[lang]}</dd></div>
+            <div><dt>{copy.outcome}</dt><dd>{section.outcome[lang]}</dd></div>
+          </dl>
+          <div class="frontier-section-version"><span>{copy.context}</span><strong>{hub.version[lang]}</strong><small>{copy.checked} {hub.checkedAt}</small></div>
+        </div>
+      </section>
+
+      <nav class="frontier-rail frontier-section-nav" aria-label={copy.sections}>
+        {hub.sections.map((item) => (
+          <a href={getFrontierPath(hubId, lang, item.slug)} aria-current={item.slug === sectionSlug ? "page" : undefined}>
+            <span class="frontier-section-mark">{item.mark}</span><span>{item.code}</span><strong>{item.label[lang]}</strong>
+          </a>
+        ))}
+      </nav>
+
+      {hubId === "civ7" && sectionSlug === "economy" && (
+        <div class="frontier-section-body">
+          <section class="frontier-chain" aria-labelledby="civ-chain-title">
+            <header class="frontier-section-head"><div><span class="section-kicker">{copy.economyKicker}</span><h2 id="civ-chain-title">{copy.economyTitle}</h2></div><p>{copy.economyText}</p></header>
+            <ol>{civChain.map(([code, title, text]) => <li><span>{code}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
+          </section>
+          <section class="frontier-decision-classes" aria-labelledby="civ-decisions-title">
+            <header><span class="section-kicker">{copy.decisionKicker}</span><h2 id="civ-decisions-title">{copy.decisionTitle}</h2></header>
+            <div>{civDecisions.map((item) => <article><span>{item.mark}</span><h3>{item.title}</h3><p>{item.text}</p><dl><div><dt>{copy.input}</dt><dd>{item.input}</dd></div><div><dt>{copy.failure}</dt><dd>{item.failure}</dd></div></dl><a href={getFrontierPath("civ7", lang, "tools") + item.href}>{section.outcome[lang]} →</a></article>)}</div>
+          </section>
+        </div>
+      )}
+
+      {hubId === "civ7" && sectionSlug === "meta" && (
+        <section class="frontier-registry" aria-labelledby="civ-meta-title">
+          <header class="frontier-section-head"><div><span class="section-kicker">{copy.metaKicker}</span><h2 id="civ-meta-title">{copy.metaTitle}</h2></div><p>{copy.metaText}</p></header>
+          <div class="frontier-registry-grid">
+            {hub.evidence.map((item) => {
+              const itemSource = getFrontierSource(hub, item.sourceId);
+              return <article><div><span>{item.mark}</span><small>{item.status === "verified" ? (lang === "ru" ? "Проверено" : "Verified") : (lang === "ru" ? "Заявлено" : "Announced")}</small></div><h3>{item.title[lang]}</h3><dl><div><dt>{copy.fact}</dt><dd>{item.claim[lang]}</dd></div><div><dt>{copy.boundary}</dt><dd>{item.boundary[lang]}</dd></div></dl>{itemSource && <a href={itemSource.url} target="_blank" rel="noopener noreferrer">{copy.sourceLabel} ↗</a>}</article>;
+            })}
+          </div>
+          <div class="frontier-source-ledger">{hub.sources.map((item) => <a href={item.url} target="_blank" rel="noopener noreferrer"><span>{item.publishedAt ?? (lang === "ru" ? "Без даты" : "Undated")}</span><strong>{item.title[lang]}</strong><small>{item.label[lang]}</small><b>↗</b></a>)}</div>
+        </section>
+      )}
+
+      {hubId === "civ7" && sectionSlug === "tools" && <CivilizationTools lang={lang} />}
+
+      {hubId === "fable" && sectionSlug === "economy" && (
+        <div class="frontier-section-body">
+          <section class="frontier-registry" aria-labelledby="fable-economy-title">
+            <header class="frontier-section-head"><div><span class="section-kicker">{copy.fableEconomyKicker}</span><h2 id="fable-economy-title">{copy.fableEconomyTitle}</h2></div><p>{copy.fableEconomyText}</p></header>
+            <div class="frontier-registry-grid">
+              {hub.evidence.filter((item) => item.status !== "unknown").map((item) => {
+                const itemSource = getFrontierSource(hub, item.sourceId);
+                return <article><div><span>{item.mark}</span><small>{item.status === "verified" ? (lang === "ru" ? "Проверено" : "Verified") : (lang === "ru" ? "Заявлено" : "Announced")}</small></div><h3>{item.title[lang]}</h3><dl><div><dt>{copy.fact}</dt><dd>{item.claim[lang]}</dd></div><div><dt>{copy.boundary}</dt><dd>{item.boundary[lang]}</dd></div></dl>{itemSource && <a href={itemSource.url} target="_blank" rel="noopener noreferrer">{copy.sourceLabel} ↗</a>}</article>;
+              })}
+            </div>
+          </section>
+          <section class="frontier-unknowns" aria-labelledby="fable-unknowns-title"><header><span class="section-kicker">{copy.unknownKicker}</span><h2 id="fable-unknowns-title">{copy.unknownTitle}</h2></header><ol>{hub.openQuestions.map((question, index) => <li><span>{String(index + 1).padStart(2, "0")}</span><p>{question[lang]}</p></li>)}</ol></section>
+        </div>
+      )}
+
+      {hubId === "fable" && sectionSlug === "launch-watch" && (
+        <div class="frontier-section-body">
+          <section class="frontier-launch-protocol" aria-labelledby="fable-launch-title"><header class="frontier-section-head"><div><span class="section-kicker">{copy.launchKicker}</span><h2 id="fable-launch-title">{copy.launchTitle}</h2></div><p>{copy.launchText}</p></header><ol>{hub.stages.map((stage) => <li><span>{stage.mark}</span><div><small>{stage.decision[lang]}</small><h3>{stage.title[lang]}</h3><p>{stage.text[lang]}</p></div></li>)}</ol></section>
+          <section class="frontier-publish-gates" aria-labelledby="fable-gates-title"><header><span class="section-kicker">{copy.gateKicker}</span><h2 id="fable-gates-title">{copy.gateTitle}</h2></header><div>{publicationGates.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div><a class="button" href={lang === "ru" ? "/connect/" : "/en/connect/"}>{copy.connect} →</a></section>
+        </div>
+      )}
+
+      {hubId === "fable" && sectionSlug === "sources" && (
+        <div class="frontier-section-body">
+          <section class="frontier-registry" aria-labelledby="fable-sources-title"><header class="frontier-section-head"><div><span class="section-kicker">{copy.sourcesKicker}</span><h2 id="fable-sources-title">{copy.sourcesTitle}</h2></div><p>{copy.sourcesText}</p></header><div class="frontier-source-ledger frontier-source-ledger-large">{hub.sources.map((item) => <a href={item.url} target="_blank" rel="noopener noreferrer"><span>{copy.sourcePublished} {item.publishedAt ?? (lang === "ru" ? "без даты" : "undated")}</span><strong>{item.title[lang]}</strong><small>{item.label[lang]} · {copy.sourceChecked} {item.checkedAt}</small><b>↗</b></a>)}</div></section>
+          <section class="frontier-claim-table" aria-labelledby="fable-claims-title"><h2 id="fable-claims-title">{copy.openQuestions}</h2><div>{hub.evidence.map((item) => <article><span data-status={item.status}>{item.status === "verified" ? (lang === "ru" ? "Проверено" : "Verified") : item.status === "announced" ? (lang === "ru" ? "Заявлено" : "Announced") : (lang === "ru" ? "Неизвестно" : "Unknown")}</span><h3>{item.title[lang]}</h3><p>{item.claim[lang]}</p><small>{item.boundary[lang]}</small></article>)}</div></section>
+        </div>
+      )}
+
+      <section class="frontier-methodology" aria-labelledby={`${hubId}-${sectionSlug}-method-title`}>
+        <div><span class="section-kicker">{copy.methodology}</span><h2 id={`${hubId}-${sectionSlug}-method-title`}>{copy.methodologyTitle}</h2><p>{copy.methodologyText}</p></div>
+        <aside><span>{hub.version[lang]}</span><strong>{copy.checked} {hub.checkedAt}</strong><a href={source.url} target="_blank" rel="noopener noreferrer">{copy.openSource} ↗</a></aside>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

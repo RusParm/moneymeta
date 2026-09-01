@@ -1,6 +1,6 @@
 # Current status
 
-Updated: 2026-08-31
+Updated: 2026-09-01
 
 ## Baseline
 
@@ -226,3 +226,15 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Collapsed freshness, three selected analyses, the GTA VI dossier and the evidence boundary into compact lower sections so the first useful action no longer waits behind product explanation.
 - Added keyboard tab behavior, explicit hidden-state CSS, responsive horizontal game selection and single-column mobile controls.
 - Local gate: 103 automated tests pass, 567 pages build and Astro reports zero diagnostics. Branch preview and responsive browser review remain required before production promotion.
+
+## Active release candidate: v1.16 Civilization, Fable and local trust
+
+- Added Civilization VII as a sixth live economy in complete RU/EN parity with a compact portal and focused economy, current-version and tools routes.
+- Added three tested, editable Civilization models: building payback window, settlement development choice and Economic Victory GDP gap. Values come from the player's current game and scenarios persist locally with shareable URLs.
+- Added Fable as a bounded pre-release dossier with confirmed economic signals, six explicit unknowns, a first-72-hours protocol and a dated Xbox Wire evidence registry.
+- Kept Fable out of live numeric models until the Autumn 2026 release build can be measured repeatedly.
+- Added a working browser-only Money Meta scenario JSON importer. File reading requires explicit selection, persistence requires a separate action and the component contains no network request path.
+- Published the safety contract for future local connectors: read-only, loopback-only, explicit pairing, path allowlists, local audit logs and no memory inspection, injection, credential collection or writes to game files.
+- Expanded homepage discovery and global navigation to seven game worlds, six live economies and two pre-release dossiers including GTA VI.
+- Added two original Money Meta economy-world assets for Civilization VII and Fable. They contain no publisher artwork, logos or identifiable characters.
+- One hundred sixteen automated tests pass. Five hundred eighty-five static pages build with zero Astro diagnostics. HTTPS preview browser QA remains required before production promotion.

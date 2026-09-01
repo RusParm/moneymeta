@@ -21,8 +21,11 @@ GTA Online is the proving ground for the methodology and product. It also create
 - World of Warcraft Retail: player-driven markets, crafting margins and inventory liquidity.
 - Total War: Warhammer III: campaign capital, reserve and conquest choices.
 - Crusader Kings III: domain investment, war liquidity and succession resilience.
+- Civilization VII: settlement development, production timing and Economic Victory gap planning after Test of Time.
 
-GTA VI is a separate pre-release watch surface. It tracks only official facts, explicit unknowns and future measurement plans; it is not counted as a sixth live economy and must not promise an unconfirmed GTA VI Online product.
+GTA VI and Fable are separate pre-release watch surfaces. They track only official facts, explicit unknowns and future measurement plans. Fable remains outside live numeric models until its Autumn 2026 release build and economic behavior can be verified.
+
+The platform therefore contains six live economies and two bounded pre-release dossiers. Expansion does not remove the sequential depth requirement for any existing hub.
 
 WoW Classic is a future separate product surface, not a data toggle inside the Retail model.
 
@@ -33,6 +36,10 @@ WoW Classic is a future separate product surface, not a data toggle inside the R
 3. Money Meta returns a primary action and transparent alternatives.
 4. The result can be saved or shared.
 5. Weekly data changes give the player a reason to return.
+
+## Local data boundary
+
+The browser may read only a file explicitly selected by the player. Scenario persistence stays on the device unless the player deliberately exports a shareable URL or file. A future local companion must be open, read-only, loopback-only and restricted to an explicit path allowlist. Money Meta does not inspect process memory, inject into game clients, scan folders in the background or request game credentials.
 
 ## Business model
 

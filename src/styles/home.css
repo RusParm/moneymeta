@@ -138,7 +138,7 @@
 
 .mm-home-game-tabs {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   background: #0d0e13;
 }
 
@@ -286,6 +286,15 @@
   background: rgba(3, 4, 7, .46);
   color: #aaa7b0;
   font: 600 10px/1 "JetBrains Mono", monospace;
+}
+
+.mm-home-stage-meta > .mm-home-stage-mode {
+  border-color: rgba(var(--home-accent-rgb), .28);
+  color: var(--home-accent);
+}
+
+.mm-home-stage-meta > .mm-home-stage-mode.is-watch {
+  border-style: dashed;
 }
 
 .mm-home-stage-kicker {
@@ -821,6 +830,14 @@
   color: #f58bbd;
   font-size: 12px;
   font-weight: 700;
+}
+
+.mm-home-watch-links {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
 }
 
 .mm-home-how {

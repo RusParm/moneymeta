@@ -177,3 +177,15 @@ Any client-side catalog that uses the HTML `hidden` attribute must ship an expli
 The homepage is a game launcher and working surface, not a diagram of the platform. A visitor first chooses a familiar game, sees one recognizable decision and gets a direct route into an editable model. Product architecture and methodology remain available below the useful action instead of competing with it in the first viewport.
 
 The default Dota 2 surface includes a real two-item timing calculation powered by the same tested comparison function as the full tool. It may show timing, missing gold and the consequence of changed inputs, but it must not turn close prices into a universal item winner. All five live economies keep equal launcher access and their own visual accent, question and input language.
+
+## 2026-09-01: Civilization VII is a live economy after Test of Time
+
+Civilization VII enters as the sixth live economy because Update 1.4.1 and the Test of Time foundation are released and documented by 2K. The first wedge is not a civilization tier list. It is the decision between production cost, time to benefit, settlement specialization and the GDP gap to Economic Victory. All numeric values remain editable inputs from the player's current game.
+
+## 2026-09-01: Fable is an evidence dossier until release
+
+Fable enters as a pre-release watch surface. Official Xbox material confirms jobs, property, settlement-specific reputation, price effects and a persistent population, but does not publish the formulas required for a reliable calculator. Money Meta records the evidence, boundary and launch test now, then waits for repeatable observations from the Autumn 2026 release build.
+
+## 2026-09-01: local connection begins with explicit file selection
+
+Local data access starts with browser-only import of the Money Meta scenario JSON format. Reading a file does not automatically persist it; the player chooses whether to keep a local copy. A future companion is permitted only when browser access is insufficient and must use loopback, read-only access, explicit pairing, path allowlists and a local audit log. Process memory, injection, background scanning, credentials and writes to game files remain prohibited.

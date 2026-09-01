@@ -135,7 +135,10 @@ button, select { cursor: pointer; }
 .economy-wow[aria-current="page"] span, .economy-wow:hover span { background: var(--blue); }
 .economy-total-war[aria-current="page"] span, .economy-total-war:hover span { background: #e2ad55; }
 .economy-ck3[aria-current="page"] span, .economy-ck3:hover span { background: #8fbda7; }
+.economy-civ7[aria-current="page"] span, .economy-civ7:hover span { background: #efbd64; }
+.economy-fable[aria-current="page"] span, .economy-fable:hover span { background: #9bc96f; }
 .economy-insights[aria-current="page"] span, .economy-insights:hover span { background: var(--violet); }
+.economy-connect[aria-current="page"] span, .economy-connect:hover span { background: #52e1c1; }
 
 .eyebrow { margin: 0 0 14px; color: var(--teal); font: 700 11px/1.3 "JetBrains Mono", monospace; letter-spacing: 0.17em; text-transform: uppercase; }
 h1, h2, h3 { font-family: "Roboto Condensed", sans-serif; line-height: 1.02; font-variation-settings: "wdth" 82; }

@@ -1,0 +1,252 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import civilizationWorld from "../assets/game-worlds/civilization-economy-world.webp";
+import fableWorld from "../assets/game-worlds/fable-economy-world.webp";
+import {
+  frontierHubs,
+  getFrontierPath,
+  getFrontierSource,
+  type FrontierHubId,
+  type FrontierLocale
+} from "../data/frontier-hubs";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/frontier-hub.css";
+import BrandHeader from "./BrandHeader.astro";
+import FreshnessIndicator from "./FreshnessIndicator.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props {
+  hub: FrontierHubId;
+  lang: FrontierLocale;
+}
+
+const { hub: hubId, lang } = Astro.props;
+const hub = frontierHubs[hubId];
+const image: ImageMetadata = hubId === "civ7" ? civilizationWorld : fableWorld;
+const root = getFrontierPath(hubId, lang);
+const alternate = getFrontierPath(hubId, lang === "ru" ? "en" : "ru");
+const verifiedEvidence = hub.evidence.filter((item) => item.status !== "unknown").slice(0, 3);
+
+const copy = lang === "ru" ? {
+  back: "← Все игровые миры",
+  live: "Живая модель",
+  watch: "До релиза",
+  current: "Источник проверен",
+  stale: "Источник требует повторной проверки",
+  checked: "проверено",
+  primary: hub.status === "live" ? "Открыть модели" : "Открыть план запуска",
+  secondary: "Понять экономику",
+  routes: "Три направления",
+  routeKicker: "ВЫБЕРИ ВОПРОС",
+  routeTitle: "Не читай весь хаб. Открой нужное решение.",
+  routeText: hub.status === "live"
+    ? "Механика текущей версии задаёт границы. Значения своей партии вводишь ты."
+    : "Каждая страница отделяет подтверждённое от того, что можно будет измерить только после релиза.",
+  outcome: "Что получишь",
+  methodKicker: "КАК РАБОТАЕТ ХАБ",
+  methodTitle: hub.status === "live" ? "От состояния партии к следующему ходу" : "От заявления разработчиков к проверяемой модели",
+  evidenceKicker: "ДОКАЗАТЕЛЬСТВА",
+  evidenceTitle: "Факт заканчивается там, где заканчивается источник.",
+  boundary: "Граница вывода",
+  source: "Первоисточник",
+  allEvidence: hub.status === "live" ? "Открыть текущую версию" : "Открыть весь реестр",
+  localKicker: "ЛОКАЛЬНЫЕ ДАННЫЕ",
+  localTitle: "Твоя партия не должна становиться нашей базой данных.",
+  localText: hub.status === "live"
+    ? "Сценарии сохраняются на устройстве. Будущий импорт сохранений появится только после проверки формата и с явным выбором файла."
+    : "До релиза нет безопасного формата подключения. Money Meta не будет сканировать папки, память игры или данные аккаунта.",
+  localLink: "Как будет устроено подключение",
+  independent: "Независимый аналитический продукт. Не связан с издателем игры."
+} : {
+  back: "← All game worlds",
+  live: "Live model",
+  watch: "Pre-release",
+  current: "Source is within review window",
+  stale: "Source needs another review",
+  checked: "checked",
+  primary: hub.status === "live" ? "Open the models" : "Open the launch plan",
+  secondary: "Understand the economy",
+  routes: "Three destinations",
+  routeKicker: "CHOOSE THE QUESTION",
+  routeTitle: "Do not read the whole hub. Open the decision you need.",
+  routeText: hub.status === "live"
+    ? "Current mechanics define the boundary. You provide values from your game."
+    : "Every page separates what is confirmed from what can only be measured after release.",
+  outcome: "What you get",
+  methodKicker: "HOW THE HUB WORKS",
+  methodTitle: hub.status === "live" ? "From game state to the next move" : "From developer statement to a testable model",
+  evidenceKicker: "EVIDENCE",
+  evidenceTitle: "A fact ends where its source ends.",
+  boundary: "Claim boundary",
+  source: "Primary source",
+  allEvidence: hub.status === "live" ? "Open current version" : "Open the full registry",
+  localKicker: "LOCAL DATA",
+  localTitle: "Your game should not become our database.",
+  localText: hub.status === "live"
+    ? "Scenarios stay on the device. Save import will appear only after format review and explicit file selection."
+    : "There is no safe connector format before release. Money Meta will not scan folders, game memory or account data.",
+  localLink: "How local connection will work",
+  independent: "Independent analytics product. Not affiliated with the game publisher."
+};
+
+const primarySection = hub.status === "live" ? "tools" : "launch-watch";
+const evidenceSection = hub.status === "live" ? "meta" : "sources";
+---
+
+<BaseLayout
+  title={hub.title[lang]}
+  description={hub.description[lang]}
+  lang={lang}
+  canonicalPath={root}
+  alternatePath={alternate}
+  schema={{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: hub.title[lang],
+    description: hub.description[lang],
+    inLanguage: lang,
+    about: { "@type": "VideoGame", name: hub.name, publisher: hub.publisher },
+    hasPart: hub.sections.map((section) => ({
+      "@type": "WebPage",
+      name: section.title[lang],
+      url: new URL(getFrontierPath(hubId, lang, section.slug), Astro.site).toString()
+    }))
+  }}
+>
+  <main class={`page frontier-hub frontier-${hubId}`} data-frontier-hub={hubId} data-status={hub.status}>
+    <div class="shell">
+      <BrandHeader
+        lang={lang}
+        ruPath={getFrontierPath(hubId, "ru")}
+        enPath={getFrontierPath(hubId, "en")}
+        backPath={lang === "ru" ? "/" : "/en/"}
+        backLabel={copy.back}
+      />
+
+      <section class="frontier-hero" aria-labelledby={`${hubId}-title`}>
+        <Image
+          class="frontier-hero-art"
+          src={image}
+          alt={lang === "ru" ? `Оригинальный экономический мир Money Meta для ${hub.shortName}` : `Original Money Meta economy world for ${hub.shortName}`}
+          widths={[640, 960, 1280, 1672]}
+          sizes="(max-width: 1220px) calc(100vw - 40px), 1220px"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+        <div class="frontier-hero-shade" aria-hidden="true"></div>
+        <div class="frontier-hero-copy">
+          <div class="frontier-status-row">
+            <span class:list={["frontier-mode", { "is-live": hub.status === "live", "is-watch": hub.status === "watch" }]}>
+              <i aria-hidden="true"></i>{hub.status === "live" ? copy.live : copy.watch}
+            </span>
+            <FreshnessIndicator
+              lang={lang}
+              policy={{ checkedAt: hub.checkedAt, staleAfterDays: hub.staleAfterDays }}
+              current={copy.current}
+              stale={copy.stale}
+              dateLabel={copy.checked}
+            />
+          </div>
+          <p class="eyebrow">{hub.eyebrow[lang]}</p>
+          <h1 id={`${hubId}-title`}>{hub.heading[lang]}</h1>
+          <p class="lede">{hub.lede[lang]}</p>
+          <div class="hero-actions">
+            <a class="button primary button-large" href={getFrontierPath(hubId, lang, primarySection)}>{copy.primary} →</a>
+            <a class="button ghost button-large" href={getFrontierPath(hubId, lang, "economy")}>{copy.secondary}</a>
+          </div>
+        </div>
+        <aside class="frontier-promise">
+          <span>{hub.shortName} / MONEY META</span>
+          <p>{hub.promise[lang]}</p>
+          <div class="frontier-proof-grid">
+            {hub.proof.map((item) => <div><strong>{item.value}</strong><small>{item.label[lang]}</small></div>)}
+          </div>
+        </aside>
+      </section>
+
+      <nav class="frontier-rail" aria-label={copy.routes}>
+        {hub.sections.map((item) => (
+          <a href={getFrontierPath(hubId, lang, item.slug)}>
+            <span class="frontier-section-mark">{item.mark}</span>
+            <span>{item.code}</span>
+            <strong>{item.label[lang]}</strong>
+          </a>
+        ))}
+      </nav>
+
+      <section class="frontier-routes" aria-labelledby={`${hubId}-routes-title`}>
+        <header class="frontier-section-head">
+          <div>
+            <span class="section-kicker">{copy.routeKicker}</span>
+            <h2 id={`${hubId}-routes-title`}>{copy.routeTitle}</h2>
+          </div>
+          <p>{copy.routeText}</p>
+        </header>
+        <div class="frontier-route-grid">
+          {hub.sections.map((item) => (
+            <a href={getFrontierPath(hubId, lang, item.slug)}>
+              <div class="frontier-route-top"><span>{item.code}</span><b>{item.mark}</b></div>
+              <h3>{item.title[lang]}</h3>
+              <p>{item.question[lang]}</p>
+              <dl><dt>{copy.outcome}</dt><dd>{item.outcome[lang]}</dd></dl>
+              <i aria-hidden="true">↗</i>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="frontier-method" aria-labelledby={`${hubId}-method-title`}>
+        <header>
+          <span class="section-kicker">{copy.methodKicker}</span>
+          <h2 id={`${hubId}-method-title`}>{copy.methodTitle}</h2>
+        </header>
+        <ol>
+          {hub.stages.map((stage) => (
+            <li>
+              <span>{stage.mark}</span>
+              <div><small>{stage.decision[lang]}</small><h3>{stage.title[lang]}</h3><p>{stage.text[lang]}</p></div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="frontier-evidence" aria-labelledby={`${hubId}-evidence-title`}>
+        <header class="frontier-section-head">
+          <div>
+            <span class="section-kicker">{copy.evidenceKicker}</span>
+            <h2 id={`${hubId}-evidence-title`}>{copy.evidenceTitle}</h2>
+          </div>
+          <a href={getFrontierPath(hubId, lang, evidenceSection)}>{copy.allEvidence} →</a>
+        </header>
+        <div class="frontier-evidence-list">
+          {verifiedEvidence.map((item) => {
+            const source = getFrontierSource(hub, item.sourceId);
+            return (
+              <article>
+                <div><span>{item.mark}</span><small>{item.status === "verified" ? (lang === "ru" ? "Проверено" : "Verified") : (lang === "ru" ? "Заявлено" : "Announced")}</small></div>
+                <h3>{item.title[lang]}</h3>
+                <p>{item.claim[lang]}</p>
+                <details><summary>{copy.boundary}</summary><p>{item.boundary[lang]}</p></details>
+                {source && <a href={source.url} target="_blank" rel="noopener noreferrer">{copy.source} ↗</a>}
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <aside class="frontier-local">
+        <div>
+          <span class="section-kicker">{copy.localKicker}</span>
+          <h2>{copy.localTitle}</h2>
+          <p>{copy.localText}</p>
+        </div>
+        <a class="button" href={lang === "ru" ? "/connect/" : "/en/connect/"}>{copy.localLink} →</a>
+      </aside>
+
+      <p class="frontier-independent">{copy.independent}</p>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>

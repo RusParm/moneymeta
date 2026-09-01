@@ -6,13 +6,13 @@ const { lang } = Astro.props;
 <footer class="footer">
   <div class="footer-status">
     <span class="console-signal">Money Meta · {lang === "ru" ? "Работает" : "Live"}</span>
-    <span>{lang === "ru" ? "5 живых экономик · досье GTA VI · 15 моделей · RU/EN" : "5 live economies · GTA VI dossier · 15 models · RU/EN"}</span>
+    <span>{lang === "ru" ? "6 живых экономик · 2 предрелизных досье · 18 моделей · RU/EN" : "6 live economies · 2 pre-release dossiers · 18 models · RU/EN"}</span>
   </div>
   <div class="footer-grid">
     <p>
       {lang === "ru"
-        ? "Money Meta является независимым аналитическим проектом. Он не связан с Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment, Creative Assembly, SEGA, Paradox Interactive или другими издателями. Расчёты являются оценками игровых механик, а не официальными данными."
-        : "Money Meta is an independent analytics project. It is not affiliated with Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment, Creative Assembly, SEGA, Paradox Interactive or other publishers. Calculations are estimates of game mechanics, not official publisher data."}
+        ? "Money Meta является независимым аналитическим проектом. Он не связан с Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment, Creative Assembly, SEGA, Paradox Interactive, Firaxis Games, 2K, Playground Games, Xbox Game Studios или другими издателями. Расчёты являются оценками игровых механик, а не официальными данными."
+        : "Money Meta is an independent analytics project. It is not affiliated with Rockstar Games, Take-Two Interactive, Valve, Blizzard Entertainment, Creative Assembly, SEGA, Paradox Interactive, Firaxis Games, 2K, Playground Games, Xbox Game Studios or other publishers. Calculations are estimates of game mechanics, not official publisher data."}
     </p>
     <nav class="footer-nav" aria-label={lang === "ru" ? "Экономики" : "Economies"}>
       <a href={lang === "ru" ? "/gta-online/" : "/en/gta-online/"}>GTA Online</a>
@@ -21,7 +21,10 @@ const { lang } = Astro.props;
       <a href={lang === "ru" ? "/wow/" : "/en/wow/"}>WoW Retail</a>
       <a href={lang === "ru" ? "/total-war/" : "/en/total-war/"}>Total War</a>
       <a href={lang === "ru" ? "/crusader-kings-3/" : "/en/crusader-kings-3/"}>Crusader Kings III</a>
+      <a href={lang === "ru" ? "/civilization-7/" : "/en/civilization-7/"}>Civilization VII</a>
+      <a href={lang === "ru" ? "/fable/" : "/en/fable/"}>Fable</a>
       <a href={lang === "ru" ? "/insights/" : "/en/insights/"}>{lang === "ru" ? "Разборы" : "Field Notes"}</a>
+      <a href={lang === "ru" ? "/connect/" : "/en/connect/"}>{lang === "ru" ? "Локальное подключение" : "Local connection"}</a>
     </nav>
   </div>
   <div class="footer-signature mono">{lang === "ru" ? "Пойми экономику. Сделай более разумный ход." : "Understand the economy. Make the smarter move."}</div>

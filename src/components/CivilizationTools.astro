@@ -1,0 +1,501 @@
+---
+import {
+  calculateBuildingWindow,
+  calculateEconomicVictoryGap,
+  calculateSettlementChoice
+} from "../lib/civilization-economy";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+
+const defaults = {
+  building: { cost: 600, buildTurns: 5, benefitPerTurn: 55, horizonTurns: 25, confidencePercent: 80 },
+  settlement: { conversionCost: 500, conversionTurns: 2, currentValuePerTurn: 80, developedValuePerTurn: 135, horizonTurns: 24, confidencePercent: 75 },
+  victory: { currentGdp: 430, targetGdp: 800, resourceGdp: 90, convoyGdp: 170, buildingGdp: 80, confidencePercent: 80 }
+};
+
+const initialBuilding = calculateBuildingWindow(defaults.building);
+const initialSettlement = calculateSettlementChoice(defaults.settlement);
+const initialVictory = calculateEconomicVictoryGap(defaults.victory);
+
+const copy = lang === "ru" ? {
+  kicker: "ТРИ МОДЕЛИ · ВВОДНЫЕ ИЗ ТВОЕЙ ПАРТИИ",
+  title: "Посчитай ход до того, как потратишь производство.",
+  text: "В Civilization VII нет одной цены хода. Поэтому модели используют полезность в эквиваленте производства: ты сам оцениваешь, сколько для текущей цели стоят золото, наука, культура или счастье.",
+  verified: "Подтверждённая механика",
+  verifiedText: "Победы, Triumphs и категории валового продукта привязаны к официальной версии 1.4.1.",
+  assumption: "Твоя оценка",
+  assumptionText: "Стоимость, прирост, срок и уверенность остаются редактируемыми вводными.",
+  buildingTab: "Постройка",
+  settlementTab: "Поселение",
+  victoryTab: "Победа",
+  buildingKicker: "МОДЕЛЬ 01 · ОКНО ОКУПАЕМОСТИ",
+  buildingTitle: "Успеет ли постройка вернуть вложение?",
+  buildingText: "Переведи ожидаемую пользу за ход в производственный эквивалент. Это твоя оценка ценности, а не скрытая формула игры.",
+  buildingCost: "Стоимость, производство",
+  buildTurns: "Строительство, ходов",
+  benefit: "Полезность за ход, эквивалент производства",
+  horizon: "Контрольный срок, ходов",
+  confidence: "Сохраняемая доля пользы, %",
+  settlementKicker: "МОДЕЛЬ 02 · РАЗВИТИЕ ПОСЕЛЕНИЯ",
+  settlementTitle: "Стоит ли менять текущую специализацию?",
+  settlementText: "Сравни текущую пользу за ход с ожидаемой после развития. Модель считает только прирост и не присваивает городу универсальную ценность.",
+  conversionCost: "Цена развития, эквивалент производства",
+  conversionTurns: "Задержка перехода, ходов",
+  currentValue: "Текущая полезность за ход",
+  developedValue: "Полезность после развития за ход",
+  settlementHorizon: "Контрольный срок, ходов",
+  settlementConfidence: "Сохраняемая доля прироста, %",
+  victoryKicker: "МОДЕЛЬ 03 · РАЗРЫВ ДО ЭКОНОМИЧЕСКОЙ ПОБЕДЫ",
+  victoryTitle: "Закрывает ли план недостающий валовой продукт?",
+  victoryText: "Введи показатели из интерфейса партии. Модель складывает запланированные источники и не превращает их в вымышленный доход за ход.",
+  currentGdp: "Текущий валовой продукт",
+  targetGdp: "Требуемый валовой продукт",
+  resourceGdp: "План от размещённых ресурсов",
+  convoyGdp: "План от Treasure Convoys",
+  buildingGdp: "План от золотых построек",
+  victoryConfidence: "Доля плана с подтверждённым доступом, %",
+  result: "Результат сценария",
+  payback: "Окупаемость",
+  paybackTurn: "ход",
+  noPayback: "не рассчитывается",
+  activeTurns: "Ходов с пользой",
+  expectedReturn: "Польза к сроку",
+  netValue: "Чистая ценность",
+  incremental: "Прирост за ход",
+  expectedGain: "Прирост к сроку",
+  currentGap: "Разрыв сейчас",
+  projected: "После плана",
+  remaining: "Останется",
+  coverage: "Закрыто цели",
+  buildingPositive: "Постройка успевает вернуть вложение",
+  buildingCaution: "Постройка создаёт пользу, но не окупается к сроку",
+  buildingNegative: "В этом окне окупаемость не возникает",
+  settlementPositive: "Развитие возвращает цену перехода к сроку",
+  settlementCaution: "Прирост есть, но срок слишком короткий",
+  settlementNegative: "Развитие не увеличивает ценность в этом сценарии",
+  victoryPositive: "План закрывает заявленный разрыв",
+  victoryCaution: "План сокращает разрыв, но не закрывает его",
+  victoryNegative: "В плане нет подтверждённого прироста",
+  nextBuilding: "Перед ходом сравни результат с лучшей отложенной альтернативой.",
+  nextSettlement: "Проверь, не теряется ли местная специализация, которую модель не оценивает автоматически.",
+  nextVictory: "Добавляй только те источники, доступ к которым уже подтверждён в этой партии.",
+  saved: "Сценарий хранится на этом устройстве",
+  shared: "Ссылка скопирована",
+  shareError: "Не удалось скопировать. Адрес уже обновлён.",
+  share: "Скопировать сценарий",
+  reset: "Сбросить вводные",
+  source: "Официальная граница модели",
+  sourceText: "Civilization VII связывает экономическую победу с валовым продуктом от ресурсов, Treasure Convoys и золотых построек. Числа в модели вводит игрок."
+} : {
+  kicker: "THREE MODELS · INPUTS FROM YOUR GAME",
+  title: "Calculate the move before spending production.",
+  text: "Civilization VII has no universal value for one turn. The models therefore use production-equivalent utility: you decide what Gold, Science, Culture or Happiness is worth for the current objective.",
+  verified: "Verified mechanic",
+  verifiedText: "Victories, Triumphs and GDP categories stay tied to official Update 1.4.1 material.",
+  assumption: "Your assessment",
+  assumptionText: "Cost, benefit, horizon and confidence remain editable inputs.",
+  buildingTab: "Building",
+  settlementTab: "Settlement",
+  victoryTab: "Victory",
+  buildingKicker: "MODEL 01 · PAYBACK WINDOW",
+  buildingTitle: "Can the building return its cost?",
+  buildingText: "Translate expected per-turn benefit into a production equivalent. This is your value assessment, not a hidden game formula.",
+  buildingCost: "Cost, production",
+  buildTurns: "Build time, turns",
+  benefit: "Benefit per turn, production equivalent",
+  horizon: "Checkpoint, turns",
+  confidence: "Retained share of benefit, %",
+  settlementKicker: "MODEL 02 · SETTLEMENT DEVELOPMENT",
+  settlementTitle: "Should the current specialization change?",
+  settlementText: "Compare current per-turn value with expected value after development. The model prices only the increment and assigns no universal value to a city.",
+  conversionCost: "Development cost, production equivalent",
+  conversionTurns: "Transition delay, turns",
+  currentValue: "Current value per turn",
+  developedValue: "Developed value per turn",
+  settlementHorizon: "Checkpoint, turns",
+  settlementConfidence: "Retained share of increment, %",
+  victoryKicker: "MODEL 03 · ECONOMIC VICTORY GAP",
+  victoryTitle: "Does the plan close the missing GDP?",
+  victoryText: "Enter values from the game interface. The model adds planned sources without turning them into an invented per-turn rate.",
+  currentGdp: "Current GDP",
+  targetGdp: "Required GDP",
+  resourceGdp: "Plan from slotted Resources",
+  convoyGdp: "Plan from Treasure Convoys",
+  buildingGdp: "Plan from Gold Buildings",
+  victoryConfidence: "Share of plan with confirmed access, %",
+  result: "Scenario result",
+  payback: "Payback",
+  paybackTurn: "turn",
+  noPayback: "not available",
+  activeTurns: "Value-producing turns",
+  expectedReturn: "Value by checkpoint",
+  netValue: "Net value",
+  incremental: "Increment per turn",
+  expectedGain: "Gain by checkpoint",
+  currentGap: "Current gap",
+  projected: "After the plan",
+  remaining: "Remaining",
+  coverage: "Target covered",
+  buildingPositive: "The building returns its cost by the checkpoint",
+  buildingCaution: "The building creates value but misses payback",
+  buildingNegative: "This window does not produce payback",
+  settlementPositive: "Development returns the transition cost in time",
+  settlementCaution: "The increment is positive but the window is too short",
+  settlementNegative: "Development adds no value in this scenario",
+  victoryPositive: "The plan closes the stated gap",
+  victoryCaution: "The plan reduces the gap but does not close it",
+  victoryNegative: "The plan contains no confirmed increase",
+  nextBuilding: "Before committing, compare this result with the best delayed alternative.",
+  nextSettlement: "Check whether the current specialization provides value the model does not price automatically.",
+  nextVictory: "Include only sources you have already confirmed are accessible in this game.",
+  saved: "Scenario stays on this device",
+  shared: "Link copied",
+  shareError: "Copy failed. The browser address is already updated.",
+  share: "Copy scenario",
+  reset: "Reset inputs",
+  source: "Official model boundary",
+  sourceText: "Civilization VII connects Economic Victory to GDP from Resources, Treasure Convoys and Gold Buildings. The player supplies every number in the model."
+};
+---
+
+<section class="civ-tools" data-civ-tools data-lang={lang} aria-labelledby="civ-tools-title">
+  <header class="civ-tools-intro">
+    <div>
+      <span class="section-kicker">{copy.kicker}</span>
+      <h2 id="civ-tools-title">{copy.title}</h2>
+      <p>{copy.text}</p>
+    </div>
+    <dl>
+      <div><dt>{copy.verified}</dt><dd>{copy.verifiedText}</dd></div>
+      <div><dt>{copy.assumption}</dt><dd>{copy.assumptionText}</dd></div>
+    </dl>
+  </header>
+
+  <div class="civ-tool-tabs" role="tablist" aria-label={lang === "ru" ? "Модели Civilization VII" : "Civilization VII models"}>
+    <button type="button" role="tab" id="civ-tab-building" aria-controls="building-payback" aria-selected="true" data-civ-tool-tab data-model="building"><span>01</span>{copy.buildingTab}</button>
+    <button type="button" role="tab" id="civ-tab-settlement" aria-controls="settlement-choice" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="settlement"><span>02</span>{copy.settlementTab}</button>
+    <button type="button" role="tab" id="civ-tab-victory" aria-controls="victory-gap" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="victory"><span>03</span>{copy.victoryTab}</button>
+  </div>
+
+  <article id="building-payback" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-building" data-civ-tool-panel data-model="building">
+    <div class="civ-model-copy"><span>{copy.buildingKicker}</span><h3>{copy.buildingTitle}</h3><p>{copy.buildingText}</p></div>
+    <form class="civ-model-form" data-model-form="building">
+      <label><span>{copy.buildingCost}</span><input name="buildingCost" type="number" min="0" max="100000" step="10" value={defaults.building.cost} inputmode="decimal" /></label>
+      <label><span>{copy.buildTurns}</span><input name="buildingTurns" type="number" min="0" max="200" step="1" value={defaults.building.buildTurns} inputmode="decimal" /></label>
+      <label><span>{copy.benefit}</span><input name="buildingBenefit" type="number" min="0" max="100000" step="1" value={defaults.building.benefitPerTurn} inputmode="decimal" /></label>
+      <label><span>{copy.horizon}</span><input name="buildingHorizon" type="number" min="0" max="500" step="1" value={defaults.building.horizonTurns} inputmode="decimal" /></label>
+      <label class="civ-range"><span>{copy.confidence}</span><div><input name="buildingConfidence" type="range" min="0" max="100" step="5" value={defaults.building.confidencePercent} /><output>{defaults.building.confidencePercent}%</output></div></label>
+    </form>
+    <aside class="civ-model-result" data-model-result="building" data-state="positive">
+      <span>{copy.result}</span>
+      <h4 data-result-title>{copy.buildingPositive}</h4>
+      <dl>
+        <div><dt>{copy.payback}</dt><dd data-result-payback>{number.format(initialBuilding.paybackTurn ?? 0)} {copy.paybackTurn}</dd></div>
+        <div><dt>{copy.activeTurns}</dt><dd data-result-active>{number.format(initialBuilding.activeTurns)}</dd></div>
+        <div><dt>{copy.expectedReturn}</dt><dd data-result-return>{number.format(initialBuilding.expectedReturn)}</dd></div>
+        <div><dt>{copy.netValue}</dt><dd data-result-net>{number.format(initialBuilding.netValue)}</dd></div>
+      </dl>
+      <p>{copy.nextBuilding}</p>
+      <div class="civ-model-actions"><button type="button" data-share-model="building">{copy.share}</button><button type="button" data-reset-model="building">{copy.reset}</button></div>
+      <small data-model-status>{copy.saved}</small>
+    </aside>
+  </article>
+
+  <article id="settlement-choice" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-settlement" data-civ-tool-panel data-model="settlement" hidden>
+    <div class="civ-model-copy"><span>{copy.settlementKicker}</span><h3>{copy.settlementTitle}</h3><p>{copy.settlementText}</p></div>
+    <form class="civ-model-form" data-model-form="settlement">
+      <label><span>{copy.conversionCost}</span><input name="settlementCost" type="number" min="0" max="100000" step="10" value={defaults.settlement.conversionCost} inputmode="decimal" /></label>
+      <label><span>{copy.conversionTurns}</span><input name="settlementTurns" type="number" min="0" max="200" step="1" value={defaults.settlement.conversionTurns} inputmode="decimal" /></label>
+      <label><span>{copy.currentValue}</span><input name="settlementCurrent" type="number" min="0" max="100000" step="1" value={defaults.settlement.currentValuePerTurn} inputmode="decimal" /></label>
+      <label><span>{copy.developedValue}</span><input name="settlementDeveloped" type="number" min="0" max="100000" step="1" value={defaults.settlement.developedValuePerTurn} inputmode="decimal" /></label>
+      <label><span>{copy.settlementHorizon}</span><input name="settlementHorizon" type="number" min="0" max="500" step="1" value={defaults.settlement.horizonTurns} inputmode="decimal" /></label>
+      <label class="civ-range"><span>{copy.settlementConfidence}</span><div><input name="settlementConfidence" type="range" min="0" max="100" step="5" value={defaults.settlement.confidencePercent} /><output>{defaults.settlement.confidencePercent}%</output></div></label>
+    </form>
+    <aside class="civ-model-result" data-model-result="settlement" data-state="positive">
+      <span>{copy.result}</span>
+      <h4 data-result-title>{copy.settlementPositive}</h4>
+      <dl>
+        <div><dt>{copy.payback}</dt><dd data-result-payback>{number.format(initialSettlement.paybackTurn ?? 0)} {copy.paybackTurn}</dd></div>
+        <div><dt>{copy.incremental}</dt><dd data-result-increment>{number.format(initialSettlement.adjustedIncrementPerTurn)}</dd></div>
+        <div><dt>{copy.expectedGain}</dt><dd data-result-gain>{number.format(initialSettlement.expectedGain)}</dd></div>
+        <div><dt>{copy.netValue}</dt><dd data-result-net>{number.format(initialSettlement.netValue)}</dd></div>
+      </dl>
+      <p>{copy.nextSettlement}</p>
+      <div class="civ-model-actions"><button type="button" data-share-model="settlement">{copy.share}</button><button type="button" data-reset-model="settlement">{copy.reset}</button></div>
+      <small data-model-status>{copy.saved}</small>
+    </aside>
+  </article>
+
+  <article id="victory-gap" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-victory" data-civ-tool-panel data-model="victory" hidden>
+    <div class="civ-model-copy"><span>{copy.victoryKicker}</span><h3>{copy.victoryTitle}</h3><p>{copy.victoryText}</p></div>
+    <form class="civ-model-form" data-model-form="victory">
+      <label><span>{copy.currentGdp}</span><input name="victoryCurrent" type="number" min="0" max="1000000" step="1" value={defaults.victory.currentGdp} inputmode="decimal" /></label>
+      <label><span>{copy.targetGdp}</span><input name="victoryTarget" type="number" min="0" max="1000000" step="1" value={defaults.victory.targetGdp} inputmode="decimal" /></label>
+      <label><span>{copy.resourceGdp}</span><input name="victoryResources" type="number" min="0" max="1000000" step="1" value={defaults.victory.resourceGdp} inputmode="decimal" /></label>
+      <label><span>{copy.convoyGdp}</span><input name="victoryConvoys" type="number" min="0" max="1000000" step="1" value={defaults.victory.convoyGdp} inputmode="decimal" /></label>
+      <label><span>{copy.buildingGdp}</span><input name="victoryBuildings" type="number" min="0" max="1000000" step="1" value={defaults.victory.buildingGdp} inputmode="decimal" /></label>
+      <label class="civ-range"><span>{copy.victoryConfidence}</span><div><input name="victoryConfidence" type="range" min="0" max="100" step="5" value={defaults.victory.confidencePercent} /><output>{defaults.victory.confidencePercent}%</output></div></label>
+    </form>
+    <aside class="civ-model-result" data-model-result="victory" data-state="caution">
+      <span>{copy.result}</span>
+      <h4 data-result-title>{copy.victoryCaution}</h4>
+      <dl>
+        <div><dt>{copy.currentGap}</dt><dd data-result-gap>{number.format(initialVictory.currentGap)}</dd></div>
+        <div><dt>{copy.projected}</dt><dd data-result-projected>{number.format(initialVictory.projectedGdp)}</dd></div>
+        <div><dt>{copy.remaining}</dt><dd data-result-remaining>{number.format(initialVictory.remainingGap)}</dd></div>
+        <div><dt>{copy.coverage}</dt><dd data-result-coverage>{number.format(initialVictory.targetCoveragePercent)}%</dd></div>
+      </dl>
+      <p>{copy.nextVictory}</p>
+      <div class="civ-model-actions"><button type="button" data-share-model="victory">{copy.share}</button><button type="button" data-reset-model="victory">{copy.reset}</button></div>
+      <small data-model-status>{copy.saved}</small>
+    </aside>
+  </article>
+
+  <aside class="civ-tools-source"><span>{copy.source}</span><p>{copy.sourceText}</p><a href="https://civilization.2k.com/civ-vii/game-guide/gameplay/victories/" target="_blank" rel="noopener noreferrer">Civilization VII · {lang === "ru" ? "Победы" : "Victories"} ↗</a></aside>
+</section>
+
+<script>
+  import {
+    calculateBuildingWindow,
+    calculateEconomicVictoryGap,
+    calculateSettlementChoice
+  } from "../lib/civilization-economy";
+
+  const tool = document.querySelector<HTMLElement>("[data-civ-tools]");
+  if (tool) {
+    const lang = tool.dataset.lang === "en" ? "en" : "ru";
+    const locale = lang === "ru" ? "ru-RU" : "en-US";
+    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+    const tabs = Array.from(tool.querySelectorAll<HTMLButtonElement>("[data-civ-tool-tab]"));
+    const panels = Array.from(tool.querySelectorAll<HTMLElement>("[data-civ-tool-panel]"));
+    const forms = Array.from(tool.querySelectorAll<HTMLFormElement>("[data-model-form]"));
+    const storageKey = "money-meta:civ7-tools:v1";
+    const defaults = new Map<string, Record<string, string>>();
+
+    forms.forEach((form) => {
+      defaults.set(form.dataset.modelForm ?? "", Object.fromEntries(Array.from(new FormData(form).entries()).map(([key, value]) => [key, String(value)])));
+    });
+
+    const labels = lang === "ru" ? {
+      turn: "ход",
+      noPayback: "не рассчитывается",
+      buildingPositive: "Постройка успевает вернуть вложение",
+      buildingCaution: "Постройка создаёт пользу, но не окупается к сроку",
+      buildingNegative: "В этом окне окупаемость не возникает",
+      settlementPositive: "Развитие возвращает цену перехода к сроку",
+      settlementCaution: "Прирост есть, но срок слишком короткий",
+      settlementNegative: "Развитие не увеличивает ценность в этом сценарии",
+      victoryPositive: "План закрывает заявленный разрыв",
+      victoryCaution: "План сокращает разрыв, но не закрывает его",
+      victoryNegative: "В плане нет подтверждённого прироста",
+      saved: "Сценарий хранится на этом устройстве",
+      shared: "Ссылка скопирована",
+      shareError: "Не удалось скопировать. Адрес уже обновлён."
+    } : {
+      turn: "turn",
+      noPayback: "not available",
+      buildingPositive: "The building returns its cost by the checkpoint",
+      buildingCaution: "The building creates value but misses payback",
+      buildingNegative: "This window does not produce payback",
+      settlementPositive: "Development returns the transition cost in time",
+      settlementCaution: "The increment is positive but the window is too short",
+      settlementNegative: "Development adds no value in this scenario",
+      victoryPositive: "The plan closes the stated gap",
+      victoryCaution: "The plan reduces the gap but does not close it",
+      victoryNegative: "The plan contains no confirmed increase",
+      saved: "Scenario stays on this device",
+      shared: "Link copied",
+      shareError: "Copy failed. The browser address is already updated."
+    };
+
+    const field = (form: HTMLFormElement, name: string) => Number(new FormData(form).get(name) ?? 0);
+    const setText = (root: HTMLElement, selector: string, value: string) => {
+      const node = root.querySelector<HTMLElement>(selector);
+      if (node) node.textContent = value;
+    };
+    const setState = (result: HTMLElement, state: "positive" | "caution" | "negative", title: string) => {
+      result.dataset.state = state;
+      setText(result, "[data-result-title]", title);
+    };
+    const syncRange = (form: HTMLFormElement) => {
+      form.querySelectorAll<HTMLInputElement>('input[type="range"]').forEach((input) => {
+        const output = input.parentElement?.querySelector<HTMLOutputElement>("output");
+        if (output) output.value = `${input.value}%`;
+      });
+    };
+
+    const render = (model: string) => {
+      const form = forms.find((item) => item.dataset.modelForm === model);
+      const result = tool.querySelector<HTMLElement>(`[data-model-result="${model}"]`);
+      if (!form || !result) return;
+      syncRange(form);
+
+      if (model === "building") {
+        const horizon = field(form, "buildingHorizon");
+        const value = calculateBuildingWindow({
+          cost: field(form, "buildingCost"),
+          buildTurns: field(form, "buildingTurns"),
+          benefitPerTurn: field(form, "buildingBenefit"),
+          horizonTurns: horizon,
+          confidencePercent: field(form, "buildingConfidence")
+        });
+        const state = value.clearsHorizon ? "positive" : value.paybackTurn === null || value.activeTurns === 0 ? "negative" : "caution";
+        setState(result, state, state === "positive" ? labels.buildingPositive : state === "caution" ? labels.buildingCaution : labels.buildingNegative);
+        setText(result, "[data-result-payback]", value.paybackTurn === null ? labels.noPayback : `${format.format(value.paybackTurn)} ${labels.turn}`);
+        setText(result, "[data-result-active]", format.format(value.activeTurns));
+        setText(result, "[data-result-return]", format.format(value.expectedReturn));
+        setText(result, "[data-result-net]", format.format(value.netValue));
+      }
+
+      if (model === "settlement") {
+        const value = calculateSettlementChoice({
+          conversionCost: field(form, "settlementCost"),
+          conversionTurns: field(form, "settlementTurns"),
+          currentValuePerTurn: field(form, "settlementCurrent"),
+          developedValuePerTurn: field(form, "settlementDeveloped"),
+          horizonTurns: field(form, "settlementHorizon"),
+          confidencePercent: field(form, "settlementConfidence")
+        });
+        const state = value.clearsHorizon ? "positive" : value.paybackTurn === null ? "negative" : "caution";
+        setState(result, state, state === "positive" ? labels.settlementPositive : state === "caution" ? labels.settlementCaution : labels.settlementNegative);
+        setText(result, "[data-result-payback]", value.paybackTurn === null ? labels.noPayback : `${format.format(value.paybackTurn)} ${labels.turn}`);
+        setText(result, "[data-result-increment]", format.format(value.adjustedIncrementPerTurn));
+        setText(result, "[data-result-gain]", format.format(value.expectedGain));
+        setText(result, "[data-result-net]", format.format(value.netValue));
+      }
+
+      if (model === "victory") {
+        const value = calculateEconomicVictoryGap({
+          currentGdp: field(form, "victoryCurrent"),
+          targetGdp: field(form, "victoryTarget"),
+          resourceGdp: field(form, "victoryResources"),
+          convoyGdp: field(form, "victoryConvoys"),
+          buildingGdp: field(form, "victoryBuildings"),
+          confidencePercent: field(form, "victoryConfidence")
+        });
+        const state = value.closesGap ? "positive" : value.adjustedAddedGdp > 0 ? "caution" : "negative";
+        setState(result, state, state === "positive" ? labels.victoryPositive : state === "caution" ? labels.victoryCaution : labels.victoryNegative);
+        setText(result, "[data-result-gap]", format.format(value.currentGap));
+        setText(result, "[data-result-projected]", format.format(value.projectedGdp));
+        setText(result, "[data-result-remaining]", format.format(value.remainingGap));
+        setText(result, "[data-result-coverage]", `${format.format(value.targetCoveragePercent)}%`);
+      }
+    };
+
+    const save = () => {
+      const state = Object.fromEntries(forms.map((form) => [form.dataset.modelForm ?? "", Object.fromEntries(Array.from(new FormData(form).entries()).map(([key, value]) => [key, String(value)]))]));
+      try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch { /* local persistence can be blocked */ }
+    };
+
+    const select = (model: string, focus = false) => {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.model === model;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+        if (active && focus) tab.focus();
+      });
+      panels.forEach((panel) => { panel.hidden = panel.dataset.model !== model; });
+      const url = new URL(window.location.href);
+      url.searchParams.set("model", model);
+      history.replaceState({}, "", url);
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => select(tab.dataset.model ?? "building"));
+      tab.addEventListener("keydown", (event) => {
+        let next = index;
+        if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % tabs.length;
+        else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === "Home") next = 0;
+        else if (event.key === "End") next = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        select(tabs[next]?.dataset.model ?? "building", true);
+      });
+    });
+
+    let restoredFromUrl = false;
+    const params = new URLSearchParams(window.location.search);
+    const requestedModel = params.get("model");
+    const hashModel: Record<string, string> = {
+      "#building-payback": "building",
+      "#settlement-choice": "settlement",
+      "#victory-gap": "victory"
+    };
+    const initialModel = requestedModel ?? hashModel[window.location.hash];
+    if (initialModel && panels.some((panel) => panel.dataset.model === initialModel)) select(initialModel);
+
+    forms.forEach((form) => {
+      Array.from(form.elements).forEach((control) => {
+        if (!(control instanceof HTMLInputElement) || !control.name) return;
+        const shared = params.get(control.name);
+        if (shared !== null) {
+          control.value = shared;
+          restoredFromUrl = true;
+        }
+      });
+    });
+
+    if (!restoredFromUrl) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) ?? "{}") as Record<string, Record<string, string>>;
+        forms.forEach((form) => {
+          const values = saved[form.dataset.modelForm ?? ""];
+          if (!values) return;
+          Array.from(form.elements).forEach((control) => {
+            if (control instanceof HTMLInputElement && control.name && values[control.name] !== undefined) control.value = values[control.name]!;
+          });
+        });
+      } catch { /* ignore invalid local state */ }
+    }
+
+    forms.forEach((form) => {
+      const model = form.dataset.modelForm ?? "";
+      form.addEventListener("submit", (event) => event.preventDefault());
+      form.addEventListener("input", () => { render(model); save(); });
+      render(model);
+    });
+
+    tool.querySelectorAll<HTMLButtonElement>("[data-share-model]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const model = button.dataset.shareModel ?? "building";
+        const form = forms.find((item) => item.dataset.modelForm === model);
+        if (!form) return;
+        const url = new URL(window.location.href);
+        url.search = "";
+        url.searchParams.set("model", model);
+        new FormData(form).forEach((value, key) => url.searchParams.set(key, String(value)));
+        history.replaceState({}, "", url);
+        const status = button.closest<HTMLElement>("[data-model-result]")?.querySelector<HTMLElement>("[data-model-status]");
+        try {
+          await navigator.clipboard.writeText(url.toString());
+          if (status) status.textContent = labels.shared;
+        } catch {
+          if (status) status.textContent = labels.shareError;
+        }
+      });
+    });
+
+    tool.querySelectorAll<HTMLButtonElement>("[data-reset-model]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const model = button.dataset.resetModel ?? "building";
+        const form = forms.find((item) => item.dataset.modelForm === model);
+        const values = defaults.get(model);
+        if (!form || !values) return;
+        Array.from(form.elements).forEach((control) => {
+          if (control instanceof HTMLInputElement && control.name && values[control.name] !== undefined) control.value = values[control.name]!;
+        });
+        render(model);
+        save();
+        const url = new URL(window.location.href);
+        url.search = "";
+        url.searchParams.set("model", model);
+        history.replaceState({}, "", url);
+        const status = button.closest<HTMLElement>("[data-model-result]")?.querySelector<HTMLElement>("[data-model-status]");
+        if (status) status.textContent = labels.saved;
+      });
+    });
+  }
+</script>
