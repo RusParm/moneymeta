@@ -11,7 +11,8 @@ Updated: 2026-09-02
 - Closing an outcome makes the entire record immutable. The forecast cannot be rewritten after the fact.
 - Local parsing rejects malformed records, keeps the newest record for a duplicated week and limits history to eight weeks.
 - Journal values never enter the share URL or a network request. The player can clear all local history explicitly.
-- Local release gates pass with 140 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links. HTTPS preview interaction QA remains in progress.
+- Release gates pass with 140 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links.
+- HTTPS preview QA passes the empty state, save, reload, close, immutable-result and RU/EN history flows with zero site console errors or horizontal overflow. Journal values remain absent from shared URLs.
 
 ## Base release candidate: v1.17 GTA weekly decision loop
 
