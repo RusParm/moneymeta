@@ -1,8 +1,19 @@
 # Current status
 
-Updated: 2026-09-01
+Updated: 2026-09-02
 
-## Active release candidate: v1.17 GTA weekly decision loop
+## Active release candidate: v1.18 GTA weekly journal
+
+- Added a complete RU/EN close-the-loop layer to the GTA weekly planner.
+- A player can save only a complete stay, test or switch decision before the session. Missing, expired, no-fit and asset-ineligible states cannot enter history.
+- The saved record keeps the official week boundary, selected route, player inputs and calculated projection as one auditable snapshot.
+- After play, the player adds total GTA$ earned and actual minutes. The interface compares actual, planned and normal rates on a GTA$/h basis.
+- Closing an outcome makes the entire record immutable. The forecast cannot be rewritten after the fact.
+- Local parsing rejects malformed records, keeps the newest record for a duplicated week and limits history to eight weeks.
+- Journal values never enter the share URL or a network request. The player can clear all local history explicitly.
+- Local release gates pass with 140 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links. HTTPS preview interaction QA remains in progress.
+
+## Base release candidate: v1.17 GTA weekly decision loop
 
 - Replaced the expired Brand Wars pulse with Rockstar's August 27 through September 2 Random Transform Races snapshot.
 - Added a complete RU/EN weekly planner for 3X Random Transform Races, 2X Drift Races and 2X Auto Shop Robbery Contracts.

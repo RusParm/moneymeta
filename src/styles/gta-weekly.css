@@ -71,7 +71,9 @@
 .gta-weekly-return small { color: var(--muted-dim); font: 600 9px "JetBrains Mono", monospace; }
 .gta-weekly-return strong { font: 700 13px "Roboto Condensed", sans-serif; }
 .gta-weekly-return button,
-.gta-weekly-share {
+.gta-weekly-share,
+.gta-weekly-save,
+.gta-weekly-outcome-form button {
   padding: 9px 12px;
   border: 1px solid rgba(57, 227, 198, .34);
   border-radius: 8px;
@@ -81,6 +83,9 @@
   font: 700 9px "JetBrains Mono", monospace;
   text-transform: uppercase;
 }
+
+.gta-weekly-save:disabled,
+.gta-weekly-outcome-form button:disabled { cursor: not-allowed; opacity: .45; }
 
 .gta-weekly-route-head {
   display: flex;
@@ -175,8 +180,100 @@
 .gta-weekly-metrics dt { color: var(--muted-dim); font: 600 8px "JetBrains Mono", monospace; text-transform: uppercase; }
 .gta-weekly-metrics dd { margin: 7px 0 0; color: #fff; font: 700 12px/1.35 "Roboto Condensed", sans-serif; overflow-wrap: anywhere; }
 .gta-weekly-proof { margin: 17px 0 0; color: var(--muted-dim); font-size: 9px; line-height: 1.55; }
-.gta-weekly-share { width: 100%; margin-top: auto; padding: 12px; }
+.gta-weekly-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: auto; padding-top: 22px; }
+.gta-weekly-share,
+.gta-weekly-save { width: 100%; padding: 12px; }
+.gta-weekly-save { border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.035); }
 .gta-weekly-result > small { margin-top: 9px; color: var(--muted-dim); font: 600 8px "JetBrains Mono", monospace; text-align: center; }
+
+.gta-weekly-journal {
+  margin-top: 12px;
+  padding: 24px;
+  border: 1px solid rgba(57, 227, 198, .19);
+  border-radius: 17px;
+  background:
+    linear-gradient(125deg, rgba(57, 227, 198, .055), transparent 35%),
+    rgba(8, 9, 13, .92);
+}
+
+.gta-weekly-journal [hidden] { display: none; }
+.gta-weekly-journal-head { display: grid; grid-template-columns: minmax(0, .85fr) minmax(300px, 1.15fr); gap: 28px; align-items: end; }
+.gta-weekly-journal-head span,
+.gta-weekly-saved-plan > span,
+.gta-weekly-outcome-form > span,
+.gta-weekly-actual > span {
+  color: var(--weekly-good);
+  font: 700 9px "JetBrains Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.gta-weekly-journal-head h3 { margin-top: 7px; font-size: 31px; line-height: 1.05; }
+.gta-weekly-journal-head > p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+.gta-weekly-journal-stage { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 22px; }
+.gta-weekly-saved-plan,
+.gta-weekly-outcome-form,
+.gta-weekly-actual {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(5, 6, 9, .72);
+}
+.gta-weekly-saved-plan[data-state="saved"] { border-color: rgba(255, 200, 87, .32); }
+.gta-weekly-saved-plan[data-state="closed"] { border-color: rgba(57, 227, 198, .45); }
+.gta-weekly-saved-plan h4,
+.gta-weekly-outcome-form h4,
+.gta-weekly-actual h4 { margin-top: 8px; font-size: 24px; line-height: 1.08; }
+.gta-weekly-saved-plan > p,
+.gta-weekly-outcome-form > p,
+.gta-weekly-actual > p { margin: 9px 0 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+.gta-weekly-saved-plan dl,
+.gta-weekly-actual dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin: 18px 0 0; background: var(--line-soft); }
+.gta-weekly-saved-plan dl div,
+.gta-weekly-actual dl div { min-width: 0; padding: 11px; background: #08090d; }
+.gta-weekly-saved-plan dt,
+.gta-weekly-actual dt,
+.gta-weekly-history-card dt { color: var(--muted-dim); font: 600 8px "JetBrains Mono", monospace; text-transform: uppercase; }
+.gta-weekly-saved-plan dd,
+.gta-weekly-actual dd,
+.gta-weekly-history-card dd { margin: 6px 0 0; font: 700 11px/1.35 "Roboto Condensed", sans-serif; overflow-wrap: anywhere; }
+.gta-weekly-outcome-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.gta-weekly-outcome-form > span,
+.gta-weekly-outcome-form > h4,
+.gta-weekly-outcome-form > p,
+.gta-weekly-outcome-form > button { grid-column: 1 / -1; }
+.gta-weekly-outcome-form label { display: grid; min-width: 0; gap: 7px; }
+.gta-weekly-outcome-form label > span { color: #d7d2dc; font: 700 11px/1.35 "Roboto Condensed", sans-serif; }
+.gta-weekly-outcome-form input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 9px;
+  background: #07090d;
+  color: #fff;
+  font: 700 12px "JetBrains Mono", monospace;
+}
+.gta-weekly-outcome-form input:focus-visible { outline: 2px solid rgba(57, 227, 198, .55); outline-offset: 2px; }
+.gta-weekly-outcome-form button { width: 100%; margin-top: 3px; padding: 11px; }
+.gta-weekly-actual { border-color: rgba(57, 227, 198, .35); background: linear-gradient(145deg, rgba(57, 227, 198, .075), rgba(5, 6, 9, .82) 55%); }
+
+.gta-weekly-history-head { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin-top: 23px; }
+.gta-weekly-history-head h4 { font-size: 17px; }
+.gta-weekly-history-head > div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 12px; align-items: center; }
+.gta-weekly-history-head small { color: var(--muted-dim); font: 600 8px "JetBrains Mono", monospace; text-align: right; }
+.gta-weekly-history-head button { padding: 5px 7px; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; font: 700 8px "JetBrains Mono", monospace; text-transform: uppercase; }
+.gta-weekly-history-head button:hover { border-color: rgba(255,113,136,.35); color: #fff; }
+.gta-weekly-history { display: flex; gap: 9px; margin-top: 10px; overflow-x: auto; padding: 0 0 8px; overscroll-behavior-inline: contain; scroll-snap-type: inline proximity; scrollbar-width: thin; }
+.gta-weekly-history-empty { width: 100%; margin: 0; padding: 17px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted-dim); font-size: 10px; }
+.gta-weekly-history-card { flex: 0 0 min(320px, 82vw); min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 11px; background: #08090d; scroll-snap-align: start; }
+.gta-weekly-history-card[data-state="closed"] { border-color: rgba(57, 227, 198, .31); }
+.gta-weekly-history-card-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.gta-weekly-history-card-top span { color: var(--muted-dim); font: 600 8px "JetBrains Mono", monospace; text-transform: uppercase; }
+.gta-weekly-history-card-top b { color: var(--weekly-good); font: 700 8px "JetBrains Mono", monospace; text-transform: uppercase; text-align: right; }
+.gta-weekly-history-card h5 { margin-top: 11px; font-size: 19px; }
+.gta-weekly-history-card > p { margin: 6px 0 0; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.gta-weekly-history-card dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 15px 0 0; }
 
 .gta-weekly-archive { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 18px; align-items: center; margin-top: 12px; padding: 18px 20px; border: 1px solid rgba(255,200,87,.2); border-radius: 12px; background: rgba(255,200,87,.035); }
 .gta-weekly-archive > span { color: var(--weekly-warn); }
@@ -189,7 +286,9 @@
   .gta-weekly-workbench { grid-template-columns: 1fr; }
   .gta-weekly-routes { grid-template-columns: 1fr; }
   .gta-weekly-routes button { min-height: 0; }
-  .gta-weekly-share { margin-top: 24px; }
+  .gta-weekly-actions { margin-top: 24px; }
+  .gta-weekly-journal-head,
+  .gta-weekly-journal-stage { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 620px) {
@@ -207,5 +306,20 @@
   .gta-weekly-bars > div { grid-template-columns: 1fr auto; }
   .gta-weekly-bars i { grid-column: 1 / -1; grid-row: 2; }
   .gta-weekly-metrics { grid-template-columns: 1fr; }
+  .gta-weekly-actions { grid-template-columns: 1fr; }
+  .gta-weekly-journal { padding: 19px; }
+  .gta-weekly-journal-head { gap: 12px; }
+  .gta-weekly-journal-head h3 { font-size: 27px; }
+  .gta-weekly-outcome-form { grid-template-columns: 1fr; }
+  .gta-weekly-outcome-form > span,
+  .gta-weekly-outcome-form > h4,
+  .gta-weekly-outcome-form > p,
+  .gta-weekly-outcome-form > button { grid-column: 1; }
+  .gta-weekly-outcome-form input { font-size: 16px; }
+  .gta-weekly-saved-plan dl,
+  .gta-weekly-actual dl { grid-template-columns: 1fr; }
+  .gta-weekly-history-head { align-items: start; flex-direction: column; }
+  .gta-weekly-history-head > div { justify-content: flex-start; }
+  .gta-weekly-history-head small { text-align: left; }
   .gta-weekly-archive { grid-template-columns: 1fr; }
 }

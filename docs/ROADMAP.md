@@ -180,6 +180,16 @@
 - Keep the expired August 28 through 30 6X weekend visible only as archive context.
 - Require formula tests, UI-contract tests, RU/EN parity, static build, link audit and responsive HTTPS preview QA before production promotion.
 
+## P2.6: v1.18 GTA weekly journal
+
+- Let the player save a complete weekly forecast before starting the session while keeping incomplete, expired and ineligible states out of the journal.
+- Close the loop with only two actual inputs: total GTA$ earned and total minutes played.
+- Normalize the plan, actual result and normal route to GTA$/h so sessions of different lengths remain comparable.
+- Lock the complete forecast and actual result after close to prevent hindsight edits.
+- Keep a maximum of eight weekly records on the device, preserve them when the official snapshot ID changes and provide an explicit local clear action.
+- Store no journal values in the share URL and start no upload, account or background data channel.
+- Require model tests, corrupt-storage guards, RU/EN parity, static build and HTTPS preview interaction QA before production promotion.
+
 ## Later
 
 - Authentication and cross-device profiles.

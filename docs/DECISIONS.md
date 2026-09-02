@@ -201,3 +201,11 @@ Rockstar supplies the multiplier, fixed challenge reward, access condition and v
 ## 2026-09-01: short bonuses cannot justify an unmodeled property purchase
 
 Auto Shop Robbery Contracts enter the weekly comparison only when the player already owns an Auto Shop. The weekly model does not include acquisition price, setup time or long-horizon use, so it cannot claim that purchasing the property for a short 2X window is rational. The expired 6X weekend remains archive context and never enters a live result.
+
+## 2026-09-02: a weekly forecast is locked before the outcome
+
+The GTA journal saves the route, player assumptions and calculated projection before actual play. The player may update an open plan, but adding the final cash and time closes the record. A closed record is immutable so the original forecast cannot be adjusted after the result is known.
+
+## 2026-09-02: weekly history stays bounded and local
+
+The first history layer requires no account or analytics identity. It stores at most eight valid weekly records in the browser, never adds actual play values to a share URL and provides a clear action for the entire journal. Plan and actual are compared as GTA$/h because the real session may not match the planned duration. One recorded session remains one observation, not a published benchmark.

@@ -37,7 +37,7 @@ WoW Classic is a future separate product surface, not a data toggle inside the R
 4. The result can be saved or shared.
 5. Weekly data changes give the player a reason to return.
 
-The GTA weekly loop is the first explicit implementation of step five. A new Rockstar snapshot changes a local snapshot identifier, the interface marks the week as unseen on that device and the player can rerun the decision with current observations. No account, notification permission or server-side profile is required.
+The GTA weekly loop is the first explicit implementation of step five. A new Rockstar snapshot changes a local snapshot identifier, the interface marks the week as unseen on that device and the player can rerun the decision with current observations. The player may lock the forecast before a session, add actual cash and time afterward and compare normalized GTA$/h without rewriting a closed result. The device keeps a bounded eight-week journal. No account, notification permission or server-side profile is required.
 
 ## Local data boundary
 
