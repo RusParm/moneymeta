@@ -193,7 +193,7 @@
 ## P2.7: v1.19 Dota match economy audit
 
 - Turn a public Dota 2 Match ID into a hero-specific economy replay without Steam login, client access or file access.
-- Start a read-only OpenDota GET request only after the player presses the audit button. Never request remote replay parsing from this surface.
+- Start a read-only OpenDota GET request only after the player presses the audit button. Keep it as the primary path; a separately chosen no-store relay may retrieve and reduce the same public response when the direct route fails. Never request remote replay parsing from this surface.
 - Discard account identifiers, player names, chat and every unused response field before analysis or rendering.
 - Show accumulated-gold checkpoints and completed major-item timings for parsed matches, with an honest final-snapshot fallback when timeline data is absent.
 - Compare item timing only with the selected role in the current patch family and only when the professional sample contains at least 200 purchases.

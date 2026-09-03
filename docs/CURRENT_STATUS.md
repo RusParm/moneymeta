@@ -2,6 +2,14 @@
 
 Updated: 2026-09-03
 
+## Active release candidate: v1.19.2 resilient Dota match retrieval
+
+- Replaced the fragile 18-second direct-request cutoff with a 30-second boundary and a distinct explanation that points to a separately chosen fallback.
+- Added an explicit same-origin Money Meta relay for slow or blocked OpenDota paths. The relay receives one public Match ID in a POST body, makes one read-only provider GET and returns only the existing sanitized match shape.
+- Relay responses are `no-store`; the function has no database, sends no cookies, never requests replay parsing and logs only anonymous duration, status and payload-shape diagnostics.
+- Direct and relayed requests retain separate RU/EN loading, timeout and failure states. A shared audit URL still never starts either request automatically.
+- Local gates pass with 157 tests, zero Astro diagnostics and 587 generated pages. Vercel function deployment and live direct/relay browser QA remain before handoff.
+
 ## Active release candidate: v1.19.1 Dota match audit reliability
 
 - Final inventory now comes from the public match response even when replay timelines are absent: six active slots, three backpack slots and two neutral slots are retained separately from timed purchases.

@@ -34,14 +34,16 @@ const copy = lang === "ru" ? {
   load: "Разобрать матч",
   demo: "Запустить публичное демо",
   demoNote: `Профматч ${dotaMatchAuditConfig.demoMatchId}, проверен ${dotaMatchAuditConfig.demoCheckedAt}`,
+  relay: "Загрузить через запасной канал",
+  relayNote: "Только публичный Match ID. Ответ очищается до отправки в браузер и не записывается в базу.",
   boundaryTitle: "Перед запросом",
-  boundaryText: "Только после нажатия Money Meta отправит указанный ID напрямую в OpenDota. Провайдер получит обычные данные веб-запроса, включая IP и адрес страницы. Мы не просим Steam-вход, не читаем клиент или файлы и не отправляем запрос на парсинг реплея.",
+  boundaryText: "Основной запрос идёт из этой вкладки прямо в OpenDota. Если этот путь зависает, отдельная кнопка отправит только публичный Match ID через функцию Money Meta и вернёт уже очищенный ответ. Ни один режим не просит Steam-вход, не читает клиент или файлы и не запускает обработку реплея.",
   sent: "Уйдёт",
-  sentValue: "Match ID · GET-запрос",
+  sentValue: "Match ID · прямой GET или выбранный запасной канал",
   notSent: "Не уйдёт",
   notSentValue: "Steam-вход · файлы · локальные сценарии",
   retention: "Хранение",
-  retentionValue: "Матч не сохраняется после перезагрузки",
+  retentionValue: "Без базы · ответ только в текущей вкладке",
   steps: ["01 · МАТЧ", "02 · ГЕРОЙ", "03 · РАЗБОР"],
   selectTitle: "Кого разбираем?",
   selectText: "Money Meta намеренно не показывает имена и идентификаторы аккаунтов. Выбери героя и сторону.",
@@ -135,20 +137,23 @@ const copy = lang === "ru" ? {
   methodKicker: "Границы разбора",
   methodTitle: "Наблюдение, не приговор",
   methods: [
-    ["01", "Только явный запрос", "Страница ничего не загружает по Match ID до нажатия кнопки. Запрос идёт напрямую в OpenDota с отключённой отправкой cookies."],
-    ["02", "Минимум данных", "После ответа остаются только игровые числа, номер героя и позиция игрока. Имена, идентификаторы аккаунтов, чат и остальные поля отбрасываются."],
+    ["01", "Только явный запрос", "Страница ничего не загружает по Match ID до нажатия кнопки. Основной GET идёт прямо в OpenDota; запасной канал запускается только своей отдельной кнопкой."],
+    ["02", "Минимум данных", "Прямой ответ очищается в текущей вкладке. Запасной канал очищает его на сервере до отправки в браузер. Имена, идентификаторы аккаунтов, чат и остальные поля отбрасываются."],
     ["03", "Сравнимая версия", `Профессиональные тайминги показываются только для семейства ${dotaItemsSnapshot.patch.family} и при выборке не меньше ${dotaItemsSnapshot.methodology.minimumSample} покупок.`],
     ["04", "Один матч", "Драфт, карта и командная задача не восстанавливаются из финансовой хронологии. Итог должен изменить один вопрос следующего реплея, а не объявить игрока хорошим или плохим."]
   ],
   sources: "Источники и проверка",
-  sourceText: `Контракт API и CORS проверены ${dotaMatchAuditConfig.checkedAt}. Hero ID и полный справочник финального инвентаря берутся из OpenDota constants, предметы и профтайминги из снимка Money Meta по патчу ${dotaItemsSnapshot.patch.label}.`,
+  sourceText: `Контракт API, прямой запрос и запасной канал проверены ${dotaMatchAuditConfig.checkedAt}. Hero ID и полный справочник финального инвентаря берутся из OpenDota constants, предметы и профтайминги из снимка Money Meta по патчу ${dotaItemsSnapshot.patch.label}.`,
   source: "Открыть источник",
   loading: "Запрашиваем публичный матч напрямую у OpenDota...",
+  relayLoading: "Запрашиваем матч через запасной канал и очищаем ответ...",
   invalid: "Не удалось распознать Match ID. Вставь только число или обычную ссылку на страницу матча.",
   notFound: "OpenDota не нашёл этот публичный матч. Проверь ID и видимость истории матчей.",
   rateLimited: "Лимит OpenDota для этого подключения исчерпан. Подожди немного и повтори запрос.",
-  timeout: "OpenDota не ответил вовремя. Ничего не сохранено, можно повторить запрос.",
-  failed: "Матч сейчас не загрузился. Проверь соединение или открой его напрямую в OpenDota.",
+  timeout: "Прямой OpenDota не успел ответить за 30 секунд. Ничего не сохранено. Попробуй запасной канал в блоке выше.",
+  relayTimeout: "OpenDota не ответил и через запасной канал. Это временный сбой провайдера: подожди минуту и повтори запрос.",
+  failed: "Прямой запрос не прошёл. Попробуй запасной канал в блоке выше или открой матч в OpenDota.",
+  relayFailed: "Запасной канал тоже не получил матч. Проверь ID или повтори запрос позже.",
   malformed: "Провайдер вернул неполный или неожиданный ответ. Money Meta остановил разбор вместо догадки.",
   mismatch: "ID в ответе не совпал с запросом. Разбор остановлен.",
   choose: "Выбери героя, чтобы открыть разбор.",
@@ -166,14 +171,16 @@ const copy = lang === "ru" ? {
   load: "Audit match",
   demo: "Run the public demo",
   demoNote: `Pro match ${dotaMatchAuditConfig.demoMatchId}, checked ${dotaMatchAuditConfig.demoCheckedAt}`,
+  relay: "Load through the fallback relay",
+  relayNote: "Public Match ID only. The response is reduced before it reaches the browser and is not written to a database.",
   boundaryTitle: "Before the request",
-  boundaryText: "Only after the button is pressed, Money Meta sends the entered ID directly to OpenDota. The provider receives ordinary web request data, including IP and page origin. We do not request Steam sign-in, read the game client or files, or submit a replay parse request.",
+  boundaryText: "The primary request goes directly from this tab to OpenDota. If that path hangs, a separate button sends only the public Match ID through a Money Meta function and returns an already reduced response. Neither mode requests Steam sign-in, reads the client or files, or submits a replay parse request.",
   sent: "Sent",
-  sentValue: "Match ID · GET request",
+  sentValue: "Match ID · direct GET or chosen fallback relay",
   notSent: "Not sent",
   notSentValue: "Steam sign-in · files · local scenarios",
   retention: "Retention",
-  retentionValue: "The match is gone after reload",
+  retentionValue: "No database · response stays in this tab",
   steps: ["01 · MATCH", "02 · HERO", "03 · AUDIT"],
   selectTitle: "Whose economy are we auditing?",
   selectText: "Money Meta deliberately hides player names and account IDs. Choose a hero and side.",
@@ -267,20 +274,23 @@ const copy = lang === "ru" ? {
   methodKicker: "Audit boundaries",
   methodTitle: "An observation, not a verdict",
   methods: [
-    ["01", "Explicit request only", "The page loads nothing from a Match ID before the button is pressed. The request goes directly to OpenDota with cookies disabled."],
-    ["02", "Minimum data", "After the response, only game numbers, hero ID and player slot remain. Names, account IDs, chat and all unused fields are discarded."],
+    ["01", "Explicit request only", "The page loads nothing from a Match ID before a button is pressed. The primary GET goes directly to OpenDota; the fallback relay runs only from its separate button."],
+    ["02", "Minimum data", "The direct response is reduced in the current tab. The fallback response is reduced on the server before it reaches the browser. Names, account IDs, chat and all unused fields are discarded."],
     ["03", "Comparable version", `Pro timings appear only for Patch family ${dotaItemsSnapshot.patch.family} and samples of at least ${dotaItemsSnapshot.methodology.minimumSample} purchases.`],
     ["04", "One match", "Draft, map state and team objective cannot be reconstructed from a financial timeline. The result should change one replay question, not label a player good or bad."]
   ],
   sources: "Sources and verification",
-  sourceText: `API contract and CORS checked ${dotaMatchAuditConfig.checkedAt}. Hero IDs and the complete final-inventory reference come from OpenDota constants; items and pro timings come from Money Meta's Patch ${dotaItemsSnapshot.patch.label} snapshot.`,
+  sourceText: `API contract, direct request and fallback relay checked ${dotaMatchAuditConfig.checkedAt}. Hero IDs and the complete final-inventory reference come from OpenDota constants; items and pro timings come from Money Meta's Patch ${dotaItemsSnapshot.patch.label} snapshot.`,
   source: "Open source",
   loading: "Requesting the public match directly from OpenDota...",
+  relayLoading: "Requesting the match through the fallback relay and reducing the response...",
   invalid: "The Match ID was not recognized. Paste only the number or a normal match page link.",
   notFound: "OpenDota could not find this public match. Check the ID and match-history visibility.",
   rateLimited: "The OpenDota limit for this connection has been reached. Wait briefly and try again.",
-  timeout: "OpenDota did not respond in time. Nothing was saved, so you can retry safely.",
-  failed: "The match could not be loaded. Check the connection or open it directly in OpenDota.",
+  timeout: "The direct OpenDota request did not finish within 30 seconds. Nothing was saved. Try the fallback relay above.",
+  relayTimeout: "OpenDota did not answer the fallback relay either. This is a temporary provider failure; wait a minute and retry.",
+  failed: "The direct request failed. Try the fallback relay above or open the match in OpenDota.",
+  relayFailed: "The fallback relay did not receive the match either. Check the ID or retry later.",
   malformed: "The provider returned an incomplete or unexpected response. Money Meta stopped instead of guessing.",
   mismatch: "The response Match ID did not match the request. The audit stopped.",
   choose: "Choose a hero to open the audit.",
@@ -318,7 +328,7 @@ const payload = JSON.stringify({
           <a class="button primary button-large" href="#match-audit-console">{copy.load} →</a>
         </div>
         <div class="match-audit-terminal" aria-label={lang === "ru" ? "Граница запроса матча" : "Match request boundary"}>
-          <div><span>MM / MATCH AUDIT</span><b>GET</b></div>
+          <div><span>MM / MATCH AUDIT</span><b>GET / RELAY</b></div>
           <ol>
             <li><span>INPUT</span><strong>public_match_id</strong></li>
             <li><span>AUTH</span><strong>none</strong></li>
@@ -358,6 +368,11 @@ const payload = JSON.stringify({
               <div><dt>{copy.notSent}</dt><dd>{copy.notSentValue}</dd></div>
               <div><dt>{copy.retention}</dt><dd>{copy.retentionValue}</dd></div>
             </dl>
+            <button class="match-audit-relay" type="button" data-match-relay>
+              <span>RELAY</span>
+              <strong>{copy.relay}</strong>
+              <small>{copy.relayNote}</small>
+            </button>
           </aside>
         </div>
 
@@ -442,7 +457,7 @@ const payload = JSON.stringify({
       </section>
 
       <section class="section match-audit-method" aria-labelledby="match-method-title">
-        <div class="section-head"><div><span class="section-kicker">{copy.methodKicker}</span><h2 id="match-method-title">{copy.methodTitle}</h2></div><span class="count">GET · NO AUTH · NO STORE</span></div>
+        <div class="section-head"><div><span class="section-kicker">{copy.methodKicker}</span><h2 id="match-method-title">{copy.methodTitle}</h2></div><span class="count">GET · OPTIONAL RELAY · NO STORE</span></div>
         <div class="match-audit-method-grid">{copy.methods.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
         <aside class="match-audit-sources"><div><span>{copy.sources}</span><p>{copy.sourceText}</p></div><nav><a href={dotaMatchAuditConfig.docsUrl} target="_blank" rel="noopener noreferrer">OpenDota API · {copy.source} ↗</a><a href={dotaHeroSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Hero constants · {copy.source} ↗</a><a href={dotaMatchItemSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Item constants · {copy.source} ↗</a><a href={itemPatchSource} target="_blank" rel="noopener noreferrer">Valve · Patch {dotaItemsSnapshot.patch.label} ↗</a></nav></aside>
       </section>
@@ -484,6 +499,8 @@ const payload = JSON.stringify({
     const form = root.querySelector<HTMLFormElement>("[data-match-form]")!;
     const input = root.querySelector<HTMLInputElement>("[data-match-input]")!;
     const submit = root.querySelector<HTMLButtonElement>("[data-match-submit]")!;
+    const relay = root.querySelector<HTMLButtonElement>("[data-match-relay]")!;
+    const demo = root.querySelector<HTMLButtonElement>("[data-match-demo]")!;
     const status = root.querySelector<HTMLElement>("[data-match-status]")!;
     const selection = root.querySelector<HTMLElement>("[data-match-selection]")!;
     const result = root.querySelector<HTMLElement>("[data-audit-result]")!;
@@ -843,8 +860,7 @@ const payload = JSON.stringify({
       }
     };
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+    const loadMatch = async (mode: "direct" | "relay") => {
       const matchId = parseDotaMatchId(input.value);
       if (!matchId) {
         setStatus(copy.invalid!);
@@ -852,23 +868,39 @@ const payload = JSON.stringify({
         return;
       }
       submit.disabled = true;
+      relay.disabled = true;
+      demo.disabled = true;
       selection.hidden = true;
       result.hidden = true;
       currentMatch = null;
       currentSlot = null;
       setStep(1);
-      setStatus(copy.loading!, "loading");
+      setStatus(mode === "relay" ? copy.relayLoading! : copy.loading!, "loading");
       const controller = new AbortController();
-      const timer = window.setTimeout(() => controller.abort(), 18_000);
+      const timeoutMs = mode === "relay" ? data.config.relayTimeoutMs : data.config.directTimeoutMs;
+      const timer = window.setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const response = await fetch(`${data.config.endpoint}/${matchId}`, {
-          method: "GET",
-          credentials: "omit",
-          headers: { Accept: "application/json" },
-          signal: controller.signal
-        });
+        const response = mode === "relay"
+          ? await fetch(data.config.relayEndpoint, {
+              method: "POST",
+              credentials: "same-origin",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-Money-Meta-Relay": "dota-match-v1"
+              },
+              body: JSON.stringify({ matchId }),
+              signal: controller.signal
+            })
+          : await fetch(`${data.config.endpoint}/${matchId}`, {
+              method: "GET",
+              credentials: "omit",
+              headers: { Accept: "application/json" },
+              signal: controller.signal
+            });
         if (response.status === 404) throw new Error("not-found");
         if (response.status === 429) throw new Error("rate-limit");
+        if (mode === "relay" && response.status === 504) throw new Error("relay-timeout");
         if (!response.ok) throw new Error("request-failed");
         const match = sanitizeDotaMatchResponse(await response.json());
         if (!match) throw new Error("malformed");
@@ -878,14 +910,35 @@ const payload = JSON.stringify({
       } catch (error) {
         const reason = error instanceof Error ? error.message : "request-failed";
         const aborted = controller.signal.aborted || (error instanceof DOMException && error.name === "AbortError");
-        setStatus(reason === "not-found" ? copy.notFound! : reason === "rate-limit" ? copy.rateLimited! : reason === "malformed" ? copy.malformed! : reason === "mismatch" ? copy.mismatch! : aborted ? copy.timeout! : copy.failed!);
+        const message = reason === "not-found"
+          ? copy.notFound!
+          : reason === "rate-limit"
+            ? copy.rateLimited!
+            : reason === "malformed"
+              ? copy.malformed!
+              : reason === "mismatch"
+                ? copy.mismatch!
+                : reason === "relay-timeout" || (mode === "relay" && aborted)
+                  ? copy.relayTimeout!
+                  : mode === "direct" && aborted
+                    ? copy.timeout!
+                    : mode === "relay" ? copy.relayFailed! : copy.failed!;
+        setStatus(message);
       } finally {
         window.clearTimeout(timer);
         submit.disabled = false;
+        relay.disabled = false;
+        demo.disabled = false;
       }
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void loadMatch("direct");
     });
 
-    root.querySelector<HTMLButtonElement>("[data-match-demo]")!.addEventListener("click", () => {
+    relay.addEventListener("click", () => void loadMatch("relay"));
+    demo.addEventListener("click", () => {
       input.value = String(data.config.demoMatchId);
       form.requestSubmit();
     });

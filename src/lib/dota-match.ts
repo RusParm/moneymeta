@@ -189,6 +189,57 @@ export function sanitizeDotaMatchResponse(value: unknown): DotaMatch | null {
   };
 }
 
+/**
+ * Convert an already-sanitized match back to the small provider-shaped payload
+ * accepted by the browser sanitizer. The relay uses this boundary so account
+ * IDs, player names, chat and unrelated replay data never reach the browser.
+ */
+export function createDotaMatchPublicPayload(match: DotaMatch): Record<string, unknown> {
+  return {
+    match_id: match.matchId,
+    duration: match.durationSeconds,
+    start_time: match.startTime,
+    radiant_win: match.radiantWin,
+    version: match.parseVersion,
+    patch: match.patchId,
+    players: match.players.map((player) => {
+      const inventory = Object.fromEntries(player.finalInventory.map((entry) => {
+        const key = entry.area === "main"
+          ? `item_${entry.slot}`
+          : entry.area === "backpack"
+            ? `backpack_${entry.slot}`
+            : entry.slot === 0 ? "item_neutral" : "item_neutral2";
+        return [key, entry.itemId];
+      }));
+      return {
+        hero_id: player.heroId,
+        player_slot: player.playerSlot,
+        isRadiant: player.isRadiant,
+        win: player.won === null ? null : player.won ? 1 : 0,
+        kills: player.kills,
+        deaths: player.deaths,
+        assists: player.assists,
+        last_hits: player.lastHits,
+        denies: player.denies,
+        gold_per_min: player.goldPerMinute,
+        xp_per_min: player.xpPerMinute,
+        net_worth: player.netWorth,
+        total_gold: player.totalGold,
+        gold_spent: player.goldSpent,
+        buyback_count: player.buybackCount,
+        position_est: player.positionEstimate,
+        lane_role: player.laneRole,
+        is_roaming: player.isRoaming,
+        times: player.times,
+        gold_t: player.goldTimeline,
+        lh_t: player.lastHitTimeline,
+        purchase_log: player.purchases,
+        ...inventory
+      };
+    })
+  };
+}
+
 export function inferredDotaMatchRole(player: DotaMatchPlayer): DotaMatchRole | null {
   if (player.positionEstimate === null) return null;
   return player.positionEstimate <= 3 ? "core" : "support";

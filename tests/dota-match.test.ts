@@ -5,6 +5,7 @@ import { dotaMatchItems } from "../src/data/dota-match-items";
 import { sitemapPaths } from "../src/pages/sitemap.xml";
 import {
   buildDotaMatchAudit,
+  createDotaMatchPublicPayload,
   createDotaMatchCheckpoints,
   inferredDotaMatchRole,
   parseDotaMatchId,
@@ -141,6 +142,16 @@ describe("Dota match privacy boundary", () => {
     expect(buildDotaMatchAudit(match!, 0, [item()], "core", dotaMatchAuditConfig.currentPatchId)?.timelineAvailable).toBe(false);
   });
 
+  it("round-trips the relay payload without returning unused provider fields", () => {
+    const match = sanitizeDotaMatchResponse(rawMatch())!;
+    const payload = createDotaMatchPublicPayload(match);
+    expect(sanitizeDotaMatchResponse(payload)).toEqual(match);
+    const serialized = JSON.stringify(payload);
+    expect(serialized).not.toContain("account_id");
+    expect(serialized).not.toContain("personaname");
+    expect(serialized).not.toContain("chat");
+  });
+
   it("keeps valid final slots without inventing unknown item metadata", () => {
     const match = sanitizeDotaMatchResponse(rawMatch({
       players: [
@@ -213,14 +224,21 @@ describe("Dota match reference data", () => {
 });
 
 describe("Dota match request UI contract", () => {
-  it("starts a read-only provider request only from an explicit submit action", () => {
+  it("keeps direct GET and fallback relay behind separate explicit actions", () => {
+    const loader = auditSource.indexOf('const loadMatch = async');
     const submitHandler = auditSource.indexOf('form.addEventListener("submit"');
-    const fetchCall = auditSource.indexOf("await fetch(");
-    expect(submitHandler).toBeGreaterThan(0);
-    expect(fetchCall).toBeGreaterThan(submitHandler);
+    const relayHandler = auditSource.indexOf('relay.addEventListener("click"');
+    expect(loader).toBeGreaterThan(0);
+    expect(submitHandler).toBeGreaterThan(loader);
+    expect(relayHandler).toBeGreaterThan(submitHandler);
+    expect(auditSource).toContain('void loadMatch("direct")');
+    expect(auditSource).toContain('void loadMatch("relay")');
     expect(auditSource).toContain('method: "GET"');
     expect(auditSource).toContain('credentials: "omit"');
-    expect(auditSource).not.toContain('method: "POST"');
+    expect(auditSource).toContain('method: "POST"');
+    expect(auditSource).toContain('credentials: "same-origin"');
+    expect(auditSource).toContain('"X-Money-Meta-Relay": "dota-match-v1"');
+    expect(auditSource).toContain("data-match-relay");
     expect(auditSource).not.toContain("/request/");
     expect(auditSource).not.toContain("localStorage");
     expect(auditSource).not.toContain("account_id");

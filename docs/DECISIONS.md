@@ -223,3 +223,7 @@ Final GPM and net worth describe the result but do not locate a mistake. Parsed 
 The public OpenDota match response may contain final active, backpack and neutral slots even when replay-derived purchase logs and gold timelines are absent. Money Meta retains and displays those final slots without attaching purchase minutes. Missing purchase history must be labeled as a missing timed log, not as missing items. Valid unknown item IDs remain visible as unresolved IDs until the maintained constants reference catches up.
 
 Chart markers use numbers and a separate responsive legend. External hero and item media always keeps a deliberate text fallback, so a CDN failure cannot erase the identity of the card or force labels to overlap.
+
+## 2026-09-03: a provider fallback stays explicit and data-minimal
+
+The primary Dota match request remains a direct browser GET to OpenDota. Because uncached provider responses can exceed the client timeout or fail on a regional network path, the player may deliberately choose a separate Money Meta relay. The relay accepts only a same-origin POST containing one validated public Match ID, makes one read-only OpenDota GET, discards account identifiers, names, chat and every unused field before returning the response, and sets `no-store`. It has no database, sends no cookies, never requests replay parsing and does not put the Match ID in the relay URL or application logs. Shared audit URLs still never auto-fetch.
