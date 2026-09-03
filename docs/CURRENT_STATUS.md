@@ -9,7 +9,8 @@ Updated: 2026-09-03
 - Position display now retains OpenDota's position estimate, lane role and roaming flag. Broad core or support inference still uses only the explicit position estimate, never final GPM or net worth.
 - Missing replay parsing is described precisely as missing minute-by-minute gold or a timed purchase log. It is no longer described as missing items when a final loadout exists.
 - Item names moved out of the SVG chart into a numbered responsive legend, eliminating collisions between nearby purchases. Hero and item media now has a deliberate readable fallback when the external image cannot load.
-- Local gates pass with 153 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links. HTTPS preview QA remains before release handoff.
+- Local gates pass with 153 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links.
+- HTTPS preview QA passes the RU and EN public-demo flows: ten-player selection, eight populated final-inventory cards for the selected hero, five timed purchases, five numbered chart markers and the matching five-card legend. The checked result has no application console errors, page-level horizontal overflow, broken visible images or content escaping its result cards.
 
 ## Base release candidate: v1.19 Dota match economy audit
 
