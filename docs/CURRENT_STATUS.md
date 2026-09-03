@@ -11,7 +11,8 @@ Updated: 2026-09-03
 - Professional timing context is restricted to patch family 7.41, the player-selected role and samples of at least 200 first purchases. Role correction changes only that comparison, not match facts.
 - Share URLs contain only the public Match ID, player slot and selected role. Match data is not written to local storage.
 - The current Dota snapshot was retrieved on 2026-09-02 from 742 raw matches, with 434 role-eligible matches, 4,074 classified player rows, 93.9% role coverage and 188 observed items.
-- The audit has dedicated entry points in the Dota portal, tools surface, item navigation and sitemap. Local gates pass with 150 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links. HTTPS browser QA remains before release handoff.
+- The audit has dedicated entry points in the Dota portal, tools surface, item navigation and sitemap. Local gates pass with 150 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links.
+- HTTPS preview QA passes the empty shared-URL state, explicit demo request, ten-player selection, parsed Necrophos audit, role override, RU/EN rendering and tools-page entry. The verified result contains four checkpoints, five major purchases and five chart markers, with zero site console errors or horizontal overflow.
 
 ## Active release candidate: v1.18 GTA weekly journal
 
