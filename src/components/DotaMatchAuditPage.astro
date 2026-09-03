@@ -1,6 +1,7 @@
 ---
 import { dotaHeroes, dotaHeroSnapshot } from "../data/dota-heroes";
 import { dotaMatchAuditConfig, getDotaMatchAuditPath } from "../data/dota-match";
+import { dotaMatchItems, dotaMatchItemSnapshot } from "../data/dota-match-items";
 import {
   dotaItems,
   dotaItemsSnapshot,
@@ -51,6 +52,11 @@ const copy = lang === "ru" ? {
   unknownResult: "Итог неизвестен",
   position: "позиция",
   positionUnknown: "позиция не определена",
+  safeLane: "лёгкая линия",
+  midLane: "центр",
+  offLane: "сложная линия",
+  jungle: "лес",
+  roaming: "роуминг",
   fullTimeline: "Хронология разобрана",
   finalOnly: "Только финальный срез",
   patchCurrent: `Текущий патч ${dotaItemsSnapshot.patch.label}`,
@@ -70,8 +76,8 @@ const copy = lang === "ru" ? {
   copyFailed: "Не удалось скопировать автоматически. Разреши доступ к буферу обмена и повтори.",
   openProvider: "Открыть матч в OpenDota",
   signal: "ПЕРВАЯ ПРОВЕРКА",
-  finalSignalTitle: "Финальный срез готов. Хронология пока недоступна.",
-  finalSignalText: "OpenDota вернул итоговые показатели, но не поминутные данные реплея. Используй GPM, стоимость героя, смерти и выкупы как итог матча. Не угадывай момент провала по одной финальной цифре.",
+  finalSignalTitle: "Финальный экран матча загружен. Таймингов пока нет.",
+  finalSignalText: "Money Meta показывает итоговый инвентарь и счёт, которые OpenDota вернул без обработки реплея. Журнала покупок и поминутного золота в этом ответе нет, поэтому мы не придумываем момент провала.",
   lateItem: "позже профмедианы",
   earlyItem: "раньше профмедианы",
   itemSignalText: "Это самое заметное отклонение среди крупных покупок с выборкой не меньше 200 наблюдений в текущем патче. Медиана даёт вопрос для реплея, а не универсальную норму.",
@@ -88,20 +94,30 @@ const copy = lang === "ru" ? {
   deaths: "Смерти",
   buybacks: "выкупов",
   unavailable: "нет данных",
+  inventoryKicker: "FINAL LOADOUT",
+  inventory: "Финальный инвентарь",
+  inventoryText: "Что осталось у героя на финальном экране: основные слоты, рюкзак и нейтральные предметы. Это факт матча, но не доказательство минуты покупки.",
+  mainInventory: "Основные слоты",
+  backpackInventory: "Рюкзак",
+  neutralInventory: "Нейтральные слоты",
+  slot: "слот",
+  emptySlot: "Пусто",
+  unknownItem: "Предмет",
+  noInventory: "OpenDota не вернул финальные слоты этого игрока.",
   chartKicker: "ТРАЕКТОРИЯ",
   chartTitle: "Накопленное золото по минутам",
   chartText: "Линия показывает полученное золото, а не свободное золото в кошельке. Метки показывают крупные завершённые покупки, найденные в журнале покупок.",
   chartAria: "График накопленного золота игрока по минутам матча",
   noTimelineTitle: "Нет поминутной хронологии",
-  noTimelineText: "Money Meta не строит выдуманную линию между стартом и финалом. Открой матч у провайдера и повтори разбор, если реплей будет обработан.",
+  noTimelineText: "Финальные показатели и предметы уже показаны выше. Money Meta не строит выдуманную линию между стартом и финалом. Для причины открой реплей или повтори разбор, если OpenDota обработает его.",
   checkpoints: "Контрольные точки",
   checkpointsText: "Каждая карточка показывает накопленное золото и темп только внутри предыдущего отрезка.",
   throughMinute: "к минуте",
   intervalGpm: "GPM на отрезке",
   intervalCs: "добиваний на отрезке",
   totalGold: "всего золота",
-  purchases: "Крупные покупки",
-  purchasesText: "Компоненты и мелкие расходники скрыты. Для текущего патча доступно сравнение с первыми покупками профессиональной выборки.",
+  purchases: "Покупки по времени",
+  purchasesText: "Этот блок строится только из журнала покупок реплея. Компоненты и мелкие расходники скрыты, а крупные предметы текущего патча сравниваются с профессиональной выборкой.",
   boughtAt: "куплен на",
   minuteShort: "мин",
   cost: "цена",
@@ -109,7 +125,8 @@ const copy = lang === "ru" ? {
   sample: "покупок",
   noBenchmark: "Надёжного сравнения для этой роли и версии нет",
   inspectItem: "Открыть предмет",
-  noPurchases: "OpenDota не вернул крупные завершённые покупки из текущего каталога.",
+  noPurchaseLog: "Точного журнала покупок в ответе OpenDota нет. Финальные предметы выше реальные, но Money Meta не угадывает минуту их покупки.",
+  noMajorPurchases: "Журнал покупок есть, но в нём нет крупных завершённых предметов, которые можно надёжно сопоставить с текущим каталогом.",
   nextKicker: "ОДНО ПРАВИЛО",
   nextTitle: "Что перенести в следующий матч",
   copyRule: "Скопировать правило",
@@ -124,7 +141,7 @@ const copy = lang === "ru" ? {
     ["04", "Один матч", "Драфт, карта и командная задача не восстанавливаются из финансовой хронологии. Итог должен изменить один вопрос следующего реплея, а не объявить игрока хорошим или плохим."]
   ],
   sources: "Источники и проверка",
-  sourceText: `Контракт API и CORS проверены ${dotaMatchAuditConfig.checkedAt}. Hero ID берутся из OpenDota constants, предметы и профтайминги из снимка Money Meta по патчу ${dotaItemsSnapshot.patch.label}.`,
+  sourceText: `Контракт API и CORS проверены ${dotaMatchAuditConfig.checkedAt}. Hero ID и полный справочник финального инвентаря берутся из OpenDota constants, предметы и профтайминги из снимка Money Meta по патчу ${dotaItemsSnapshot.patch.label}.`,
   source: "Открыть источник",
   loading: "Запрашиваем публичный матч напрямую у OpenDota...",
   invalid: "Не удалось распознать Match ID. Вставь только число или обычную ссылку на страницу матча.",
@@ -167,6 +184,11 @@ const copy = lang === "ru" ? {
   unknownResult: "Result unknown",
   position: "position",
   positionUnknown: "position unavailable",
+  safeLane: "safe lane",
+  midLane: "mid lane",
+  offLane: "off lane",
+  jungle: "jungle",
+  roaming: "roaming",
   fullTimeline: "Parsed timeline",
   finalOnly: "Final stats only",
   patchCurrent: `Current Patch ${dotaItemsSnapshot.patch.label}`,
@@ -186,8 +208,8 @@ const copy = lang === "ru" ? {
   copyFailed: "Automatic copy failed. Allow clipboard access and try again.",
   openProvider: "Open match in OpenDota",
   signal: "CHECK FIRST",
-  finalSignalTitle: "The final snapshot is ready. The timeline is not.",
-  finalSignalText: "OpenDota returned final numbers but no minute-by-minute replay data. Use GPM, net worth, deaths and buybacks as the match outcome. Do not guess the failure point from one final number.",
+  finalSignalTitle: "The final match screen is loaded. Timings are not.",
+  finalSignalText: "Money Meta shows the final inventory and scoreboard OpenDota returned without replay parsing. This response has no purchase log or minute-by-minute gold, so we do not invent a failure point.",
   lateItem: "later than the pro median",
   earlyItem: "earlier than the pro median",
   itemSignalText: "This is the largest visible deviation among major items with at least 200 observations on the current patch. The median creates a replay question, not a universal standard.",
@@ -204,20 +226,30 @@ const copy = lang === "ru" ? {
   deaths: "Deaths",
   buybacks: "buybacks",
   unavailable: "unavailable",
+  inventoryKicker: "FINAL LOADOUT",
+  inventory: "Final inventory",
+  inventoryText: "What the hero held on the final screen: active slots, backpack and neutral items. This is a match fact, but it does not prove the purchase minute.",
+  mainInventory: "Active slots",
+  backpackInventory: "Backpack",
+  neutralInventory: "Neutral slots",
+  slot: "slot",
+  emptySlot: "Empty",
+  unknownItem: "Item",
+  noInventory: "OpenDota did not return this player's final slots.",
   chartKicker: "TRAJECTORY",
   chartTitle: "Cumulative gold by match minute",
   chartText: "The line shows gold earned, not liquid gold in the wallet. Markers show major completed purchases found in the purchase log.",
   chartAria: "Chart of the player's cumulative gold by match minute",
   noTimelineTitle: "No minute-by-minute timeline",
-  noTimelineText: "Money Meta will not draw an invented line between start and finish. Open the match at the provider and repeat the audit if the replay is parsed.",
+  noTimelineText: "Final stats and items are already shown above. Money Meta will not draw an invented line between start and finish. Open the replay for causes, or repeat the audit if OpenDota parses it.",
   checkpoints: "Checkpoints",
   checkpointsText: "Each card shows cumulative gold and pace only within the preceding segment.",
   throughMinute: "through minute",
   intervalGpm: "segment GPM",
   intervalCs: "last hits in segment",
   totalGold: "total gold",
-  purchases: "Major purchases",
-  purchasesText: "Components and small consumables are hidden. Current-patch matches can be compared with first purchases in the professional cohort.",
+  purchases: "Timed purchases",
+  purchasesText: "This block comes only from the replay purchase log. Components and small consumables are hidden, while major current-patch items can be compared with the professional cohort.",
   boughtAt: "bought at",
   minuteShort: "min",
   cost: "cost",
@@ -225,7 +257,8 @@ const copy = lang === "ru" ? {
   sample: "purchases",
   noBenchmark: "No reliable comparison for this role and version",
   inspectItem: "Open item",
-  noPurchases: "OpenDota returned no major completed purchases from the current catalog.",
+  noPurchaseLog: "The OpenDota response has no timed purchase log. The final items above are real, but Money Meta will not guess when they were bought.",
+  noMajorPurchases: "A purchase log exists, but it has no major completed item that can be matched reliably to the current catalog.",
   nextKicker: "ONE RULE",
   nextTitle: "What to carry into the next match",
   copyRule: "Copy rule",
@@ -240,7 +273,7 @@ const copy = lang === "ru" ? {
     ["04", "One match", "Draft, map state and team objective cannot be reconstructed from a financial timeline. The result should change one replay question, not label a player good or bad."]
   ],
   sources: "Sources and verification",
-  sourceText: `API contract and CORS checked ${dotaMatchAuditConfig.checkedAt}. Hero IDs come from OpenDota constants; items and pro timings come from Money Meta's Patch ${dotaItemsSnapshot.patch.label} snapshot.`,
+  sourceText: `API contract and CORS checked ${dotaMatchAuditConfig.checkedAt}. Hero IDs and the complete final-inventory reference come from OpenDota constants; items and pro timings come from Money Meta's Patch ${dotaItemsSnapshot.patch.label} snapshot.`,
   source: "Open source",
   loading: "Requesting the public match directly from OpenDota...",
   invalid: "The Match ID was not recognized. Paste only the number or a normal match page link.",
@@ -259,7 +292,14 @@ const payload = JSON.stringify({
   config: dotaMatchAuditConfig,
   patch: { id: dotaMatchAuditConfig.currentPatchId, label: dotaItemsSnapshot.patch.label, minimumSample: dotaItemsSnapshot.methodology.minimumSample },
   heroes: dotaHeroes,
-  items: dotaItems.map((item) => ({ ...item, attributes: [], abilities: [], components: [] })),
+  matchItems: dotaMatchItems,
+  items: dotaItems.map((item) => ({
+    ...item,
+    image: dotaMatchItems.find((reference) => reference.id === item.id)?.image ?? item.image,
+    attributes: [],
+    abilities: [],
+    components: []
+  })),
   itemPaths: Object.fromEntries(dotaItems.map((item) => [item.key, getDotaItemPath(item, lang)])),
   plannerPath: getDotaItemPlannerPath(lang)
 }).replace(/</gu, "\\u003c");
@@ -343,7 +383,7 @@ const payload = JSON.stringify({
         <section class="match-audit-result" data-audit-result hidden aria-labelledby="match-audit-result-title">
           <header class="match-audit-result-head">
             <div class="match-audit-player-title">
-              <span class="match-audit-selected-portrait"><b data-selected-fallback>?</b><img data-selected-image src="" alt="" width="160" height="90" /></span>
+              <span class="match-audit-selected-portrait is-fallback"><b data-selected-fallback>?</b><img data-selected-image src="" alt="" width="160" height="90" /></span>
               <div><span>{copy.auditKicker}</span><h2 id="match-audit-result-title" data-selected-name>{copy.auditTitle}</h2><p data-selected-position></p></div>
             </div>
             <div class="match-audit-result-actions">
@@ -365,9 +405,16 @@ const payload = JSON.stringify({
             <div data-audit-stats></div>
           </section>
 
+          <section class="match-audit-inventory" aria-labelledby="match-inventory-title">
+            <header><div><span class="section-kicker">{copy.inventoryKicker}</span><h3 id="match-inventory-title">{copy.inventory}</h3><p>{copy.inventoryText}</p></div></header>
+            <div data-audit-inventory></div>
+            <p class="match-audit-empty" data-no-inventory hidden>{copy.noInventory}</p>
+          </section>
+
           <section class="match-audit-trajectory" data-trajectory aria-labelledby="match-chart-title">
             <header><div><span>{copy.chartKicker}</span><h3 id="match-chart-title">{copy.chartTitle}</h3><p>{copy.chartText}</p></div><strong data-chart-total></strong></header>
             <div class="match-audit-chart-wrap"><svg data-audit-chart viewBox="0 0 900 320" role="img" aria-label={copy.chartAria}></svg></div>
+            <div class="match-audit-chart-legend" data-chart-legend hidden></div>
           </section>
 
           <aside class="match-audit-no-timeline" data-no-timeline hidden>
@@ -382,7 +429,7 @@ const payload = JSON.stringify({
           <section class="match-audit-purchases" aria-labelledby="match-purchases-title">
             <header><div><span class="section-kicker">PURCHASE LOG</span><h3 id="match-purchases-title">{copy.purchases}</h3><p>{copy.purchasesText}</p></div></header>
             <div data-audit-purchases></div>
-            <p class="match-audit-empty" data-no-purchases hidden>{copy.noPurchases}</p>
+            <p class="match-audit-empty" data-no-purchases hidden></p>
           </section>
 
           <section class="match-audit-next" aria-labelledby="match-next-title">
@@ -397,7 +444,7 @@ const payload = JSON.stringify({
       <section class="section match-audit-method" aria-labelledby="match-method-title">
         <div class="section-head"><div><span class="section-kicker">{copy.methodKicker}</span><h2 id="match-method-title">{copy.methodTitle}</h2></div><span class="count">GET · NO AUTH · NO STORE</span></div>
         <div class="match-audit-method-grid">{copy.methods.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
-        <aside class="match-audit-sources"><div><span>{copy.sources}</span><p>{copy.sourceText}</p></div><nav><a href={dotaMatchAuditConfig.docsUrl} target="_blank" rel="noopener noreferrer">OpenDota API · {copy.source} ↗</a><a href={dotaHeroSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Hero constants · {copy.source} ↗</a><a href={itemPatchSource} target="_blank" rel="noopener noreferrer">Valve · Patch {dotaItemsSnapshot.patch.label} ↗</a></nav></aside>
+        <aside class="match-audit-sources"><div><span>{copy.sources}</span><p>{copy.sourceText}</p></div><nav><a href={dotaMatchAuditConfig.docsUrl} target="_blank" rel="noopener noreferrer">OpenDota API · {copy.source} ↗</a><a href={dotaHeroSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Hero constants · {copy.source} ↗</a><a href={dotaMatchItemSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Item constants · {copy.source} ↗</a><a href={itemPatchSource} target="_blank" rel="noopener noreferrer">Valve · Patch {dotaItemsSnapshot.patch.label} ↗</a></nav></aside>
       </section>
 
       <SiteFooter lang={lang} />
@@ -411,12 +458,14 @@ const payload = JSON.stringify({
     buildDotaMatchAudit,
     inferredDotaMatchRole,
     parseDotaMatchId,
+    resolveDotaMatchInventory,
     sanitizeDotaMatchResponse,
     type DotaMatch,
     type DotaMatchAudit,
     type DotaMatchPlayer,
     type DotaMatchRole
   } from "../lib/dota-match";
+  import type { DotaMatchItemReference } from "../data/dota-match-items";
   import type { DotaItemRecord } from "../lib/dota-items";
 
   const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
@@ -426,6 +475,7 @@ const payload = JSON.stringify({
     const copy: Record<string, string> = data.copy;
     const lang: "ru" | "en" = data.lang;
     const items: DotaItemRecord[] = data.items;
+    const matchItems: DotaMatchItemReference[] = data.matchItems;
     const heroes = new Map<number, { id: number; key: string; name: string; image: string }>(data.heroes.map((hero: { id: number; key: string; name: string; image: string }) => [hero.id, hero]));
     const itemPaths: Record<string, string> = data.itemPaths;
     const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
@@ -457,11 +507,37 @@ const payload = JSON.stringify({
     const value = (inputValue: number | null, suffix = "") => inputValue === null ? copy.unavailable! : `${integer.format(inputValue)}${suffix}`;
     const heroFor = (heroId: number) => heroes.get(heroId) ?? { id: heroId, key: "unknown", name: `Hero #${heroId}`, image: "" };
     const outcome = (player: DotaMatchPlayer) => player.won === null ? copy.unknownResult! : player.won ? copy.victory! : copy.defeat!;
+    const positionLabel = (player: DotaMatchPlayer) => {
+      if (player.positionEstimate) return `${copy.position} ${player.positionEstimate}`;
+      if (player.isRoaming) return copy.roaming!;
+      const lanes: Record<number, string> = { 1: copy.safeLane!, 2: copy.midLane!, 3: copy.offLane!, 4: copy.jungle! };
+      return player.laneRole ? lanes[player.laneRole] ?? copy.positionUnknown! : copy.positionUnknown!;
+    };
     const make = <K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
       if (text !== undefined) node.textContent = text;
       return node;
+    };
+    const initials = (label: string) => label.split(/\s+/u).filter(Boolean).slice(0, 2).map((word) => word[0]).join("").toUpperCase() || "?";
+    const media = (className: string, label: string, imageUrl: string) => {
+      const frame = make("span", `${className} is-fallback`);
+      frame.setAttribute("aria-hidden", "true");
+      frame.append(make("b", "", initials(label)));
+      if (imageUrl) {
+        const image = document.createElement("img");
+        image.alt = "";
+        image.width = 128;
+        image.height = 72;
+        image.loading = "lazy";
+        image.decoding = "async";
+        image.referrerPolicy = "no-referrer";
+        image.addEventListener("load", () => frame.classList.remove("is-fallback"), { once: true });
+        image.addEventListener("error", () => { frame.classList.add("is-fallback"); image.remove(); }, { once: true });
+        image.src = imageUrl;
+        frame.append(image);
+      }
+      return frame;
     };
 
     const renderPlayer = (player: DotaMatchPlayer) => {
@@ -470,21 +546,9 @@ const payload = JSON.stringify({
       button.type = "button";
       button.dataset.playerSlot = String(player.playerSlot);
       button.setAttribute("aria-pressed", "false");
-      const portrait = make("span", "match-audit-player-portrait");
-      portrait.append(make("b", "", hero.name.slice(0, 2).toUpperCase()));
-      if (hero.image) {
-        const image = document.createElement("img");
-        image.src = hero.image;
-        image.alt = "";
-        image.width = 128;
-        image.height = 72;
-        image.loading = "lazy";
-        image.referrerPolicy = "no-referrer";
-        image.addEventListener("error", () => image.remove());
-        portrait.append(image);
-      }
+      const portrait = media("match-audit-player-portrait", hero.name, hero.image);
       const body = make("span", "match-audit-player-body");
-      body.append(make("small", "", player.positionEstimate ? `${copy.position} ${player.positionEstimate}` : copy.positionUnknown));
+      body.append(make("small", "", positionLabel(player)));
       body.append(make("strong", "", hero.name));
       body.append(make("span", "", `${value(player.kills)} / ${value(player.deaths)} / ${value(player.assists)} · ${value(player.goldPerMinute)} GPM`));
       const resultLabel = make("span", player.won ? "match-audit-outcome is-win" : "match-audit-outcome", outcome(player));
@@ -534,6 +598,53 @@ const payload = JSON.stringify({
       }));
     };
 
+    const renderInventory = (audit: DotaMatchAudit) => {
+      const container = root.querySelector<HTMLElement>("[data-audit-inventory]")!;
+      const empty = root.querySelector<HTMLElement>("[data-no-inventory]")!;
+      const inventory = resolveDotaMatchInventory(audit.player, matchItems);
+      empty.hidden = inventory.length > 0;
+      if (!inventory.length) {
+        container.replaceChildren();
+        return;
+      }
+      const bySlot = new Map(inventory.map((entry) => [`${entry.area}:${entry.slot}`, entry]));
+      const areas = [
+        { key: "main", count: 6, label: copy.mainInventory! },
+        { key: "backpack", count: 3, label: copy.backpackInventory! },
+        { key: "neutral", count: 2, label: copy.neutralInventory! }
+      ] as const;
+      const groups = areas.flatMap((area) => {
+        const hasItem = inventory.some((entry) => entry.area === area.key);
+        if (!hasItem) return [];
+        const group = make("section", `match-inventory-group is-${area.key}`);
+        group.append(make("h4", "", area.label));
+        const slots = make("div", "match-inventory-slots");
+        for (let slot = 0; slot < area.count; slot += 1) {
+          const entry = bySlot.get(`${area.key}:${slot}`);
+          const card = make("article", entry ? "match-inventory-item" : "match-inventory-item is-empty");
+          if (!entry) {
+            card.append(make("span", "match-inventory-empty-icon", String(slot + 1)));
+            const emptyBody = make("div", "match-inventory-copy");
+            emptyBody.append(make("small", "", `${copy.slot} ${slot + 1}`), make("strong", "", copy.emptySlot));
+            card.append(emptyBody);
+          } else {
+            const label = entry.item?.name ?? `${copy.unknownItem} #${entry.itemId}`;
+            const content = entry.item && itemPaths[entry.item.key] ? make("a", "match-inventory-content") : make("div", "match-inventory-content");
+            if (content instanceof HTMLAnchorElement && entry.item) content.href = itemPaths[entry.item.key]!;
+            content.append(media("match-inventory-image", label, entry.item?.image ?? ""));
+            const body = make("span", "match-inventory-copy");
+            body.append(make("small", "", `${copy.slot} ${slot + 1}`), make("strong", "", label));
+            content.append(body);
+            card.append(content);
+          }
+          slots.append(card);
+        }
+        group.append(slots);
+        return [group];
+      });
+      container.replaceChildren(...groups);
+    };
+
     const renderSignal = (audit: DotaMatchAudit) => {
       const title = root.querySelector<HTMLElement>("[data-signal-title]")!;
       const text = root.querySelector<HTMLElement>("[data-signal-text]")!;
@@ -581,6 +692,9 @@ const payload = JSON.stringify({
       trajectory.hidden = !audit.timelineAvailable;
       checkpoints.hidden = !audit.timelineAvailable;
       fallback.hidden = audit.timelineAvailable;
+      const legend = root.querySelector<HTMLElement>("[data-chart-legend]")!;
+      legend.hidden = true;
+      legend.replaceChildren();
       if (!audit.timelineAvailable || audit.series.length < 2) return;
       const svg = root.querySelector<SVGSVGElement>("[data-audit-chart]")!;
       svg.replaceChildren();
@@ -606,13 +720,26 @@ const payload = JSON.stringify({
         const purchaseMinute = Math.min(maximumMinute, Math.max(0, purchase.minute));
         const point = audit.series.reduce((nearest, candidate) => Math.abs(candidate.minute - purchase.minute) < Math.abs(nearest.minute - purchase.minute) ? candidate : nearest);
         const group = svgNode("g", { class: "chart-purchase" });
+        const title = svgNode("title", {});
+        title.textContent = `${index + 1}. ${purchase.name}, ${number.format(purchase.minute)} ${copy.minuteShort}`;
+        group.append(title);
         group.append(svgNode("line", { x1: String(x(purchaseMinute)), x2: String(x(purchaseMinute)), y1: String(y(point.totalGold)), y2: String(bottom) }));
-        group.append(svgNode("circle", { cx: String(x(purchaseMinute)), cy: String(y(point.totalGold)), r: "6" }));
-        const label = svgNode("text", { x: String(x(purchaseMinute)), y: String(Math.max(16, y(point.totalGold) - 13 - (index % 2) * 15)), "text-anchor": index === 0 ? "start" : index === chartPurchases.length - 1 ? "end" : "middle" });
-        label.textContent = purchase.name;
-        group.append(label);
+        group.append(svgNode("circle", { cx: String(x(purchaseMinute)), cy: String(y(point.totalGold)), r: "11" }));
+        const marker = svgNode("text", { x: String(x(purchaseMinute)), y: String(y(point.totalGold) + 3.5), class: "chart-marker-label", "text-anchor": "middle", "aria-hidden": "true" });
+        marker.textContent = String(index + 1);
+        group.append(marker);
         svg.append(group);
       });
+      const legendItems = chartPurchases.map((purchase, index) => {
+        const card = make("article");
+        card.append(make("span", "match-chart-index", String(index + 1)), media("match-chart-item-image", purchase.name, purchase.image));
+        const body = make("div");
+        body.append(make("strong", "", purchase.name), make("small", "", `${number.format(purchase.minute)} ${copy.minuteShort}`));
+        card.append(body);
+        return card;
+      });
+      legend.replaceChildren(...legendItems);
+      legend.hidden = legendItems.length === 0;
       root.querySelector<HTMLElement>("[data-chart-total]")!.textContent = `${integer.format(maximumGold)} ${copy.goldUnit}`;
     };
 
@@ -640,19 +767,11 @@ const payload = JSON.stringify({
       const container = root.querySelector<HTMLElement>("[data-audit-purchases]")!;
       const empty = root.querySelector<HTMLElement>("[data-no-purchases]")!;
       empty.hidden = audit.majorPurchases.length > 0;
+      empty.textContent = audit.player.purchases.length ? copy.noMajorPurchases! : copy.noPurchaseLog!;
       const cards = audit.majorPurchases.map((purchase) => {
         const card = make("article");
         const top = make("div");
-        const portrait = make("span", "match-purchase-image");
-        const image = document.createElement("img");
-        image.src = purchase.image;
-        image.alt = "";
-        image.width = 88;
-        image.height = 64;
-        image.loading = "lazy";
-        image.referrerPolicy = "no-referrer";
-        image.addEventListener("error", () => image.remove());
-        portrait.append(make("b", "", purchase.name.slice(0, 2).toUpperCase()), image);
+        const portrait = media("match-purchase-image", purchase.name, purchase.image);
         const heading = make("div");
         heading.append(make("span", "", `${copy.boughtAt} ${number.format(purchase.minute)} ${copy.minuteShort}`), make("strong", "", purchase.name), make("small", "", `${copy.cost}: ${integer.format(purchase.cost)} ${copy.goldUnit}`));
         top.append(portrait, heading);
@@ -681,14 +800,17 @@ const payload = JSON.stringify({
       if (!audit) return;
       const hero = heroFor(audit.player.heroId);
       root.querySelector<HTMLElement>("[data-selected-name]")!.textContent = hero.name;
-      root.querySelector<HTMLElement>("[data-selected-position]")!.textContent = `${outcome(audit.player)} · ${audit.player.positionEstimate ? `${copy.position} ${audit.player.positionEstimate}` : copy.positionUnknown} · ${currentMatch.matchId}`;
-      root.querySelector<HTMLElement>("[data-selected-fallback]")!.textContent = hero.name.slice(0, 2).toUpperCase();
+      root.querySelector<HTMLElement>("[data-selected-position]")!.textContent = `${outcome(audit.player)} · ${positionLabel(audit.player)} · ${currentMatch.matchId}`;
+      root.querySelector<HTMLElement>("[data-selected-fallback]")!.textContent = initials(hero.name);
       const selectedImage = root.querySelector<HTMLImageElement>("[data-selected-image]")!;
+      const selectedFrame = selectedImage.parentElement!;
+      selectedFrame.classList.add("is-fallback");
       selectedImage.src = hero.image;
       selectedImage.alt = hero.name;
       selectedImage.hidden = !hero.image;
       renderSignal(audit);
       renderStats(audit);
+      renderInventory(audit);
       renderChart(audit);
       renderCheckpoints(audit);
       renderPurchases(audit);
@@ -782,6 +904,11 @@ const payload = JSON.stringify({
       const copied = await copyText(currentRule);
       root.querySelector<HTMLElement>("[data-rule-status]")!.textContent = copied ? copy.ruleCopied! : copy.copyFailed!;
     });
-    root.querySelector<HTMLImageElement>("[data-selected-image]")!.addEventListener("error", (event) => { (event.currentTarget as HTMLImageElement).hidden = true; });
+    root.querySelector<HTMLImageElement>("[data-selected-image]")!.addEventListener("load", (event) => { (event.currentTarget as HTMLImageElement).parentElement?.classList.remove("is-fallback"); });
+    root.querySelector<HTMLImageElement>("[data-selected-image]")!.addEventListener("error", (event) => {
+      const image = event.currentTarget as HTMLImageElement;
+      image.hidden = true;
+      image.parentElement?.classList.add("is-fallback");
+    });
   }
 </script>

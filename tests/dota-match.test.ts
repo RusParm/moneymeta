@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { dotaHeroes } from "../src/data/dota-heroes";
 import { dotaMatchAuditConfig, getDotaMatchAuditPath } from "../src/data/dota-match";
+import { dotaMatchItems } from "../src/data/dota-match-items";
 import { sitemapPaths } from "../src/pages/sitemap.xml";
 import {
   buildDotaMatchAudit,
   createDotaMatchCheckpoints,
   inferredDotaMatchRole,
   parseDotaMatchId,
+  resolveDotaMatchInventory,
   sanitizeDotaMatchResponse,
   type DotaMatchPlayer
 } from "../src/lib/dota-match";
@@ -35,6 +37,19 @@ const rawPlayer = (overrides: Record<string, unknown> = {}) => ({
   gold_spent: 16_000,
   buyback_count: 1,
   position_est: 1,
+  lane_role: 1,
+  is_roaming: false,
+  item_0: 137,
+  item_1: 48,
+  item_2: 0,
+  item_3: 0,
+  item_4: 0,
+  item_5: 0,
+  backpack_0: 52,
+  backpack_1: 0,
+  backpack_2: 0,
+  item_neutral: 1599,
+  item_neutral2: 0,
   times: [0, 600, 1200, 1800, 1980],
   gold_t: [0, 4_000, 9_000, 13_000, 14_000],
   lh_t: [0, 67, 228, 341, 359],
@@ -95,6 +110,13 @@ describe("Dota match privacy boundary", () => {
       { time: 810, key: "radiance" },
       { time: 978, key: "travel_boots" }
     ]);
+    expect(match?.players[0]?.finalInventory).toEqual([
+      { area: "main", slot: 0, itemId: 137 },
+      { area: "main", slot: 1, itemId: 48 },
+      { area: "backpack", slot: 0, itemId: 52 },
+      { area: "neutral", slot: 0, itemId: 1599 }
+    ]);
+    expect(match?.players[0]).toMatchObject({ laneRole: 1, isRoaming: false });
     const serialized = JSON.stringify(match);
     expect(serialized).not.toContain("account_id");
     expect(serialized).not.toContain("personaname");
@@ -117,6 +139,19 @@ describe("Dota match privacy boundary", () => {
     }));
     expect(match?.players[0]?.goldTimeline).toEqual([]);
     expect(buildDotaMatchAudit(match!, 0, [item()], "core", dotaMatchAuditConfig.currentPatchId)?.timelineAvailable).toBe(false);
+  });
+
+  it("keeps valid final slots without inventing unknown item metadata", () => {
+    const match = sanitizeDotaMatchResponse(rawMatch({
+      players: [
+        rawPlayer({ item_0: 99_999, item_1: -1, backpack_0: 100_001, item_neutral: "bad" }),
+        rawPlayer({ hero_id: 82, player_slot: 128, isRadiant: false })
+      ]
+    }))!;
+    expect(match.players[0]?.finalInventory).toEqual([{ area: "main", slot: 0, itemId: 99_999 }]);
+    expect(resolveDotaMatchInventory(match.players[0]!, dotaMatchItems)).toEqual([
+      { area: "main", slot: 0, itemId: 99_999, item: null }
+    ]);
   });
 });
 
@@ -168,6 +203,13 @@ describe("Dota match reference data", () => {
     expect(sitemapPaths).toContain("/dota-2/matches/audit/");
     expect(sitemapPaths).toContain("/en/dota-2/matches/audit/");
   });
+
+  it("bundles a collision-free full item ID map for final inventory", () => {
+    expect(dotaMatchItems.length).toBeGreaterThanOrEqual(400);
+    expect(new Set(dotaMatchItems.map((item) => item.id)).size).toBe(dotaMatchItems.length);
+    expect(dotaMatchItems.find((item) => item.id === 137)?.key).toBe("radiance");
+    expect(dotaMatchItems.find((item) => item.id === 1599)?.key).toBe("mana_draught");
+  });
 });
 
 describe("Dota match request UI contract", () => {
@@ -183,5 +225,13 @@ describe("Dota match request UI contract", () => {
     expect(auditSource).not.toContain("localStorage");
     expect(auditSource).not.toContain("account_id");
     expect(auditSource).not.toContain("personaname");
+  });
+
+  it("renders final inventory separately and uses collision-free numbered chart markers", () => {
+    expect(auditSource).toContain("data-audit-inventory");
+    expect(auditSource).toContain("resolveDotaMatchInventory");
+    expect(auditSource).toContain("chart-marker-label");
+    expect(auditSource).not.toContain("label.textContent = purchase.name");
+    expect(auditSource).toContain("copy.noPurchaseLog");
   });
 });

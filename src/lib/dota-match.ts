@@ -1,10 +1,23 @@
 import type { DotaItemRecord, DotaItemRole, DotaItemTiming } from "./dota-items";
+import type { DotaMatchItemReference } from "../data/dota-match-items";
 
 export type DotaMatchRole = DotaItemRole;
 
 export interface DotaMatchPurchase {
   time: number;
   key: string;
+}
+
+export type DotaMatchInventoryArea = "main" | "backpack" | "neutral";
+
+export interface DotaMatchInventorySlot {
+  area: DotaMatchInventoryArea;
+  slot: number;
+  itemId: number;
+}
+
+export interface DotaMatchInventoryItem extends DotaMatchInventorySlot {
+  item: DotaMatchItemReference | null;
 }
 
 export interface DotaMatchPlayer {
@@ -24,10 +37,13 @@ export interface DotaMatchPlayer {
   goldSpent: number | null;
   buybackCount: number | null;
   positionEstimate: number | null;
+  laneRole: number | null;
+  isRoaming: boolean | null;
   times: number[];
   goldTimeline: number[];
   lastHitTimeline: number[];
   purchases: DotaMatchPurchase[];
+  finalInventory: DotaMatchInventorySlot[];
 }
 
 export interface DotaMatch {
@@ -85,6 +101,11 @@ const numberArray = (value: unknown, minimum: number, maximum: number) => {
   return numbers.some((number) => number === null) ? [] : numbers as number[];
 };
 
+const inventorySlot = (player: Record<string, unknown>, key: string, area: DotaMatchInventoryArea, slot: number): DotaMatchInventorySlot[] => {
+  const itemId = finiteInteger(player[key], 1, 100_000);
+  return itemId === null ? [] : [{ area, slot, itemId }];
+};
+
 /** Accept a raw match ID or a normal OpenDota, Dotabuff or Stratz match URL. */
 export function parseDotaMatchId(value: string): number | null {
   const input = value.trim();
@@ -122,6 +143,12 @@ export function sanitizeDotaMatchResponse(value: unknown): DotaMatch | null {
       : [];
     const isRadiant = typeof player.isRadiant === "boolean" ? player.isRadiant : playerSlot < 128;
     const win = finiteInteger(player.win, 0, 1);
+    const finalInventory = [
+      ...Array.from({ length: 6 }, (_, slot) => inventorySlot(player, `item_${slot}`, "main", slot)).flat(),
+      ...Array.from({ length: 3 }, (_, slot) => inventorySlot(player, `backpack_${slot}`, "backpack", slot)).flat(),
+      ...inventorySlot(player, "item_neutral", "neutral", 0),
+      ...inventorySlot(player, "item_neutral2", "neutral", 1)
+    ];
 
     return [{
       heroId,
@@ -140,10 +167,13 @@ export function sanitizeDotaMatchResponse(value: unknown): DotaMatch | null {
       goldSpent: finiteInteger(player.gold_spent, 0, 10_000_000),
       buybackCount: finiteInteger(player.buyback_count, 0, 100),
       positionEstimate: finiteInteger(player.position_est, 1, 5),
+      laneRole: finiteInteger(player.lane_role, 1, 4),
+      isRoaming: typeof player.is_roaming === "boolean" ? player.is_roaming : null,
       times: numberArray(player.times, 0, 21_600),
       goldTimeline: numberArray(player.gold_t, 0, 10_000_000),
       lastHitTimeline: numberArray(player.lh_t, 0, 100_000),
-      purchases
+      purchases,
+      finalInventory
     }];
   }).sort((left, right) => left.playerSlot - right.playerSlot);
 
@@ -162,6 +192,14 @@ export function sanitizeDotaMatchResponse(value: unknown): DotaMatch | null {
 export function inferredDotaMatchRole(player: DotaMatchPlayer): DotaMatchRole | null {
   if (player.positionEstimate === null) return null;
   return player.positionEstimate <= 3 ? "core" : "support";
+}
+
+export function resolveDotaMatchInventory(
+  player: DotaMatchPlayer,
+  references: readonly DotaMatchItemReference[]
+): DotaMatchInventoryItem[] {
+  const byId = new Map(references.map((item) => [item.id, item]));
+  return player.finalInventory.map((slot) => ({ ...slot, item: byId.get(slot.itemId) ?? null }));
 }
 
 export function hasDotaMatchTimeline(player: DotaMatchPlayer) {

@@ -9,6 +9,7 @@ import { createDotaItemQueries } from "./queries.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
 const outputPath = resolve(root, config.outputPath);
+const matchItemOutputPath = resolve(root, config.matchItemOutputPath);
 
 const { cohortSql, timingSql } = createDotaItemQueries(config);
 
@@ -64,6 +65,50 @@ function makeTiming(row) {
     p75: asNumber(row.p75),
     purchaseRatePct: asNumber(row.purchase_rate_pct)
   };
+}
+
+function createMatchItemReference(constants, checkedAt) {
+  const items = Object.entries(constants)
+    .filter(([key, item]) => item
+      && /^[a-z0-9_]+$/.test(key)
+      && !key.startsWith("recipe_")
+      && Number.isInteger(item.id)
+      && item.id > 0
+      && safeText(item.dname)
+      && safeText(item.img).startsWith("/apps/dota2/images/"))
+    .map(([key, item]) => ({
+      id: item.id,
+      key,
+      name: safeText(item.dname),
+      image: `https://cdn.cloudflare.steamstatic.com${safeText(item.img)}`,
+      cost: Number.isFinite(asNumber(item.cost)) ? asNumber(item.cost) : 0,
+      tier: Number.isInteger(item.tier) ? item.tier : null
+    }))
+    .sort((left, right) => left.id - right.id);
+  if (items.length < 400 || new Set(items.map((item) => item.id)).size !== items.length) {
+    throw new Error("OpenDota item constants did not produce a complete collision-free final-inventory reference");
+  }
+  const rows = items.map((item) => `  ${JSON.stringify(item)},`).join("\n");
+  return `export interface DotaMatchItemReference {
+  id: number;
+  key: string;
+  name: string;
+  image: string;
+  cost: number;
+  tier: number | null;
+}
+
+export const dotaMatchItemSnapshot = {
+  provider: "odota/dotaconstants",
+  sourceUrl: "https://github.com/odota/dotaconstants/blob/master/build/items.json",
+  checkedAt: "${checkedAt}"
+} as const;
+
+/** Full non-recipe item ID map used only to resolve final match inventory. */
+export const dotaMatchItems = [
+${rows}
+] satisfies readonly DotaMatchItemReference[];
+`;
 }
 
 async function previousSnapshot() {
@@ -123,7 +168,9 @@ async function main() {
         name: safeText(item.dname),
         cost: asNumber(item.cost),
         quality: safeText(item.qual) || "standard",
-        image: `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/${key}.png`,
+        image: safeText(item.img).startsWith("/apps/dota2/images/")
+          ? `https://cdn.cloudflare.steamstatic.com${safeText(item.img)}`
+          : `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/${key}.png`,
         created: item.created === true,
         components: Array.isArray(item.components) ? item.components.filter((component) => safeText(component) && !component.startsWith("recipe_")) : [],
         attributes: cleanAttributes(item.attrib),
@@ -183,10 +230,14 @@ async function main() {
     ? previous.dataUpdatedAt ?? previous.fetchedAt
     : fetchedAt;
   const snapshot = { ...stable, fetchedAt, dataUpdatedAt, dataHash };
+  const matchItemReference = createMatchItemReference(constants, fetchedAt.slice(0, 10));
 
   assertDotaItemsSnapshot(snapshot);
   await mkdir(dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
+  await Promise.all([
+    writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8"),
+    writeFile(matchItemOutputPath, matchItemReference, "utf8")
+  ]);
   console.log(`Dota item snapshot: ${items.length} items, ${snapshot.cohort.matches} matches, ${snapshot.cohort.roleCoveragePct}% role coverage.`);
 }
 

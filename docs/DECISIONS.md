@@ -217,3 +217,9 @@ The Dota match audit sends a read-only GET request directly to OpenDota only aft
 ## 2026-09-03: one match is a replay question, not a performance grade
 
 Final GPM and net worth describe the result but do not locate a mistake. Parsed accumulated-gold checkpoints and completed-item timings may identify a replay window, while an unparsed match receives only a final snapshot. Professional timing appears only for the same current patch family, selected role and a sample of at least 200 purchases. It is context for one question, never a universal build order or a substitute for draft, map and objective state.
+
+## 2026-09-03: final inventory and timed purchases are separate evidence
+
+The public OpenDota match response may contain final active, backpack and neutral slots even when replay-derived purchase logs and gold timelines are absent. Money Meta retains and displays those final slots without attaching purchase minutes. Missing purchase history must be labeled as a missing timed log, not as missing items. Valid unknown item IDs remain visible as unresolved IDs until the maintained constants reference catches up.
+
+Chart markers use numbers and a separate responsive legend. External hero and item media always keeps a deliberate text fallback, so a CDN failure cannot erase the identity of the card or force labels to overlap.

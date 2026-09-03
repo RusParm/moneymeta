@@ -2,7 +2,16 @@
 
 Updated: 2026-09-03
 
-## Active release candidate: v1.19 Dota match economy audit
+## Active release candidate: v1.19.1 Dota match audit reliability
+
+- Final inventory now comes from the public match response even when replay timelines are absent: six active slots, three backpack slots and two neutral slots are retained separately from timed purchases.
+- A complete 409-item non-recipe ID reference from `odota/dotaconstants` resolves current, neutral and uncommon inventory items. Unknown valid IDs remain visible instead of being silently dropped.
+- Position display now retains OpenDota's position estimate, lane role and roaming flag. Broad core or support inference still uses only the explicit position estimate, never final GPM or net worth.
+- Missing replay parsing is described precisely as missing minute-by-minute gold or a timed purchase log. It is no longer described as missing items when a final loadout exists.
+- Item names moved out of the SVG chart into a numbered responsive legend, eliminating collisions between nearby purchases. Hero and item media now has a deliberate readable fallback when the external image cannot load.
+- Local gates pass with 153 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links. HTTPS preview QA remains before release handoff.
+
+## Base release candidate: v1.19 Dota match economy audit
 
 - Added a complete RU/EN audit that turns an explicitly submitted public Match ID into a hero-specific economy replay without Steam login, local files or game-client access.
 - The page performs only a direct read-only OpenDota GET after a button press. It never auto-fetches a shared URL and never requests remote replay parsing.
