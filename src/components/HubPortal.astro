@@ -7,6 +7,7 @@ import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
 import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
 import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
 import { dotaItemsSnapshot, getDotaItemComparePath, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
+import { getDotaMatchAuditPath } from "../data/dota-match";
 import { getHubJourneyPath, hubJourneys } from "../data/hub-journeys";
 import { getHubFreshnessPolicy, getHubPath, hubPortals, type HubLocale, type HubPortalId } from "../data/hub-portals";
 import { insights, type InsightGame } from "../data/insights";
@@ -73,8 +74,9 @@ const copy = lang === "ru" ? {
   guidesText: "Два материала для входа. Полная библиотека живёт на отдельной странице.",
   read: "Читать разбор",
   allGuides: "Открыть всю библиотеку",
-  dotaLayer: "Предметный слой Dota 2",
-  dotaLayerText: "Найди предмет или заранее проверь порядок сборки, не открывая полный каталог внутри хаба.",
+  dotaLayer: "Реальный матч и предметы",
+  dotaLayerText: "Начни со своего Match ID или заранее проверь предмет и порядок сборки.",
+  audit: "Разбор матча",
   atlas: "Атлас предметов",
   compare: "Сравнить предметы",
   planner: "План сборки",
@@ -103,8 +105,9 @@ const copy = lang === "ru" ? {
   guidesText: "Two deliberate entry points. The full research library lives on its own page.",
   read: "Read analysis",
   allGuides: "Open the full library",
-  dotaLayer: "Dota 2 item layer",
-  dotaLayerText: "Find an item or test a build order without placing the full catalog inside the hub.",
+  dotaLayer: "Real match and items",
+  dotaLayerText: "Start with your Match ID or inspect an item and build order before the next game.",
+  audit: "Match audit",
   atlas: "Item atlas",
   compare: "Compare items",
   planner: "Build planner",
@@ -232,6 +235,7 @@ const copy = lang === "ru" ? {
                   <p>{copy.dotaLayerText}</p>
                 </div>
                 <nav>
+                  <a href={getDotaMatchAuditPath(lang)}><span>ID</span><strong>{copy.audit}</strong><b>→</b></a>
                   <a href={getDotaItemsPath(lang)}><span>{dotaItemsSnapshot.items.length}</span><strong>{copy.atlas}</strong><b>→</b></a>
                   <a href={getDotaItemComparePath(lang)}><span>A/B</span><strong>{copy.compare}</strong><b>→</b></a>
                   <a href={getDotaItemPlannerPath(lang)}><span>2-5</span><strong>{copy.planner}</strong><b>→</b></a>

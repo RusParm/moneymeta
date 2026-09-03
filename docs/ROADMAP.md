@@ -190,6 +190,17 @@
 - Store no journal values in the share URL and start no upload, account or background data channel.
 - Require model tests, corrupt-storage guards, RU/EN parity, static build and HTTPS preview interaction QA before production promotion.
 
+## P2.7: v1.19 Dota match economy audit
+
+- Turn a public Dota 2 Match ID into a hero-specific economy replay without Steam login, client access or file access.
+- Start a read-only OpenDota GET request only after the player presses the audit button. Never request remote replay parsing from this surface.
+- Discard account identifiers, player names, chat and every unused response field before analysis or rendering.
+- Show accumulated-gold checkpoints and completed major-item timings for parsed matches, with an honest final-snapshot fallback when timeline data is absent.
+- Compare item timing only with the selected role in the current patch family and only when the professional sample contains at least 200 purchases.
+- Keep role correction explicit. Treat one match and every professional median as replay context, not a player grade or universal build order.
+- Put only the public Match ID, player slot and selected role in a share URL. Never auto-fetch from that URL or retain a match after reload.
+- Require model and privacy-contract tests, RU/EN parity, static build, internal-link audit and HTTPS preview interaction QA before production promotion.
+
 ## Later
 
 - Authentication and cross-device profiles.
@@ -198,7 +209,7 @@
 - Public data API.
 - Live WoW Token and regional price data through Blizzard's supported APIs.
 - WoW profession portfolio, recipe comparison and saved market profiles.
-- Expanded Dota 2 match-economy tools: reliable/unreliable gold, death cost and item timing comparisons.
+- Deeper Dota 2 match economy: reliable and unreliable gold, death cost, objective conversion and multi-match patterns after the single-match audit earns usage.
 - Total War scenario presets by faction and campaign phase after usage data identifies the highest-value cases.
 - Crusader Kings III Silk & Silver model update only after the Q4 2026 mechanics are released and verified.
 - Age of Empires after search demand, repeat-use potential and a reliable data workflow are validated.

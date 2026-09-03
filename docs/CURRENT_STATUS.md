@@ -1,6 +1,17 @@
 # Current status
 
-Updated: 2026-09-02
+Updated: 2026-09-03
+
+## Active release candidate: v1.19 Dota match economy audit
+
+- Added a complete RU/EN audit that turns an explicitly submitted public Match ID into a hero-specific economy replay without Steam login, local files or game-client access.
+- The page performs only a direct read-only OpenDota GET after a button press. It never auto-fetches a shared URL and never requests remote replay parsing.
+- The response is reduced before analysis to hero, slot and economy fields. Account identifiers, player names, chat and every unused field are discarded.
+- Parsed matches show accumulated-gold checkpoints, interval pace and completed major-item timings. Unparsed matches remain an honest final snapshot instead of receiving an invented curve.
+- Professional timing context is restricted to patch family 7.41, the player-selected role and samples of at least 200 first purchases. Role correction changes only that comparison, not match facts.
+- Share URLs contain only the public Match ID, player slot and selected role. Match data is not written to local storage.
+- The current Dota snapshot was retrieved on 2026-09-02 from 742 raw matches, with 434 role-eligible matches, 4,074 classified player rows, 93.9% role coverage and 188 observed items.
+- The audit has dedicated entry points in the Dota portal, tools surface, item navigation and sitemap. Local gates pass with 150 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links. HTTPS browser QA remains before release handoff.
 
 ## Active release candidate: v1.18 GTA weekly journal
 

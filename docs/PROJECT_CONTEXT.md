@@ -39,9 +39,11 @@ WoW Classic is a future separate product surface, not a data toggle inside the R
 
 The GTA weekly loop is the first explicit implementation of step five. A new Rockstar snapshot changes a local snapshot identifier, the interface marks the week as unseen on that device and the player can rerun the decision with current observations. The player may lock the forecast before a session, add actual cash and time afterward and compare normalized GTA$/h without rewriting a closed result. The device keeps a bounded eight-week journal. No account, notification permission or server-side profile is required.
 
+The Dota match audit is the first explicit provider-backed replay loop. A player supplies one public Match ID and starts a read-only request deliberately, then selects a hero without exposing account identifiers, player names or chat. Parsed matches produce economy checkpoints and completed-item timings; unparsed matches stay at an honest final snapshot. A shared result carries only the public Match ID, player slot and chosen role, and never starts a request automatically.
+
 ## Local data boundary
 
-The browser may read only a file explicitly selected by the player. Scenario persistence stays on the device unless the player deliberately exports a shareable URL or file. A future local companion must be open, read-only, loopback-only and restricted to an explicit path allowlist. Money Meta does not inspect process memory, inject into game clients, scan folders in the background or request game credentials.
+The browser may read only a file explicitly selected by the player. A remote provider request requires a separate, visible player action and sends only the minimum public identifier required for that task. Scenario persistence stays on the device unless the player deliberately exports a shareable URL or file. A future local companion must be open, read-only, loopback-only and restricted to an explicit path allowlist. Money Meta does not inspect process memory, inject into game clients, scan folders in the background or request game credentials.
 
 ## Business model
 

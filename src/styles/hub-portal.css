@@ -278,7 +278,7 @@
 
 .portal-dota-shortcuts { display: grid; grid-template-columns: minmax(0,.85fr) minmax(270px,1.15fr); gap: 17px; align-items: center; background: radial-gradient(circle at 90% 0, rgba(231,185,91,.08), transparent 42%), rgba(8,9,14,.94); }
 .portal-dota-shortcuts p { margin-top: 9px; }
-.portal-dota-shortcuts nav { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; }
+.portal-dota-shortcuts nav { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
 .portal-dota-shortcuts nav a { display: grid; min-width: 0; min-height: 92px; grid-template-columns: minmax(0,1fr) auto; align-content: space-between; gap: 5px; padding: 13px; border: 1px solid rgba(231,185,91,.17); border-radius: 11px; color: inherit; }
 .portal-dota-shortcuts nav span { color: var(--portal-accent); font: 800 19px "Roboto Condensed", sans-serif; }
 .portal-dota-shortcuts nav strong { grid-column: 1/-1; min-width: 0; font-size: 14px; overflow-wrap: anywhere; }

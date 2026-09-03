@@ -16,6 +16,7 @@ import BrandHeader from "./BrandHeader.astro";
 import DotaCalculators from "./DotaCalculators.astro";
 import DotaDecisionDeck from "./DotaDecisionDeck.astro";
 import DotaEconomyMap from "./DotaEconomyMap.astro";
+import DotaMatchAuditGateway from "./DotaMatchAuditGateway.astro";
 import DotaPlayerPaths from "./DotaPlayerPaths.astro";
 import DotaPulse from "./DotaPulse.astro";
 import DotaRoleLenses from "./DotaRoleLenses.astro";
@@ -174,7 +175,7 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
         {hubId === "dota" && sectionSlug === "player-paths" && <><DotaPlayerPaths lang={lang} /><DotaRoleLenses lang={lang} /></>}
         {hubId === "dota" && sectionSlug === "meta" && <DotaPulse lang={lang} />}
         {hubId === "dota" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
-        {hubId === "dota" && sectionSlug === "tools" && <><DotaDecisionDeck lang={lang} /><DotaCalculators lang={lang} /></>}
+        {hubId === "dota" && sectionSlug === "tools" && <><DotaMatchAuditGateway lang={lang} /><DotaDecisionDeck lang={lang} /><DotaCalculators lang={lang} /></>}
 
         {hubId === "wow" && sectionSlug === "economy" && <><WowMarketLedger lang={lang} /><WowEconomyMap lang={lang} /></>}
         {hubId === "wow" && sectionSlug === "player-paths" && <WowPlayerPaths lang={lang} />}

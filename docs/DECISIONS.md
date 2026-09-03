@@ -209,3 +209,11 @@ The GTA journal saves the route, player assumptions and calculated projection be
 ## 2026-09-02: weekly history stays bounded and local
 
 The first history layer requires no account or analytics identity. It stores at most eight valid weekly records in the browser, never adds actual play values to a share URL and provides a clear action for the entire journal. Plan and actual are compared as GTA$/h because the real session may not match the planned duration. One recorded session remains one observation, not a published benchmark.
+
+## 2026-09-03: a public match ID is an explicit remote boundary
+
+The Dota match audit sends a read-only GET request directly to OpenDota only after the player presses the audit button. It does not request Steam authentication, read a game client or file, send cookies, request remote replay parsing or auto-fetch from a shared URL. The response is reduced immediately to hero, slot and economy fields; account identifiers, player names, chat and all unused fields are discarded. Match data remains in the current tab and is not persisted.
+
+## 2026-09-03: one match is a replay question, not a performance grade
+
+Final GPM and net worth describe the result but do not locate a mistake. Parsed accumulated-gold checkpoints and completed-item timings may identify a replay window, while an unparsed match receives only a final snapshot. Professional timing appears only for the same current patch family, selected role and a sample of at least 200 purchases. It is context for one question, never a universal build order or a substitute for draft, map and objective state.

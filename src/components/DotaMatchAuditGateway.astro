@@ -1,0 +1,46 @@
+---
+import { dotaMatchAuditConfig, getDotaMatchAuditPath } from "../data/dota-match";
+import type { DotaItemsLocale } from "../data/dota-items";
+import "../styles/dota-match-audit.css";
+
+interface Props { lang: DotaItemsLocale; }
+const { lang } = Astro.props;
+const copy = lang === "ru" ? {
+  kicker: "Новый разбор · публичный Match ID",
+  title: "Не считай GPM в вакууме. Найди минуту, где изменился темп.",
+  text: "Вставь ID, выбери своего героя и получи контрольные точки, крупные покупки, выкупы и один вопрос для реплея. Без Steam-входа, файлов и автоматического запроса к провайдеру.",
+  action: "Разобрать мой матч",
+  request: "Запрос",
+  requestValue: "только по клику",
+  identity: "Личность",
+  identityValue: "имена скрыты",
+  result: "Результат",
+  resultValue: "одно правило"
+} : {
+  kicker: "New audit · public Match ID",
+  title: "Stop reading GPM in isolation. Find the minute when pace changed.",
+  text: "Paste an ID, choose your hero and get checkpoints, major purchases, buybacks and one replay question. No Steam sign-in, files or automatic provider request.",
+  action: "Audit my match",
+  request: "Request",
+  requestValue: "click only",
+  identity: "Identity",
+  identityValue: "names hidden",
+  result: "Output",
+  resultValue: "one rule"
+};
+---
+
+<section class="section hub-section dota-match-audit-gateway" aria-labelledby="dota-match-audit-gateway-title">
+  <div>
+    <span>{copy.kicker}</span>
+    <h2 id="dota-match-audit-gateway-title">{copy.title}</h2>
+    <p>{copy.text}</p>
+    <a class="button primary button-large" href={getDotaMatchAuditPath(lang)}>{copy.action} →</a>
+  </div>
+  <aside>
+    <span>OpenDota · GET /matches/:id · {dotaMatchAuditConfig.checkedAt}</span>
+    <div><small>{copy.request}</small><strong>{copy.requestValue}</strong></div>
+    <div><small>{copy.identity}</small><strong>{copy.identityValue}</strong></div>
+    <div><small>{copy.result}</small><strong>{copy.resultValue}</strong></div>
+  </aside>
+</section>

@@ -5,6 +5,7 @@ import { HUB_SECTION_SLUGS, getHubPath, hubPortalList } from "../data/hub-portal
 import { frontierHubList, getFrontierPath } from "../data/frontier-hubs";
 import { insights } from "../data/insights";
 import { dotaItems, getDotaItemComparePath, getDotaItemPath, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
+import { getDotaMatchAuditPath } from "../data/dota-match";
 
 const corePaths = [
   "/",
@@ -37,7 +38,7 @@ const corePaths = [
 
 export const sitemapPaths = [...new Set([
   ...corePaths,
-  ...(["ru", "en"] as const).flatMap((lang) => [getDotaItemsPath(lang), getDotaItemComparePath(lang), getDotaItemPlannerPath(lang)]),
+  ...(["ru", "en"] as const).flatMap((lang) => [getDotaMatchAuditPath(lang), getDotaItemsPath(lang), getDotaItemComparePath(lang), getDotaItemPlannerPath(lang)]),
   ...dotaItems.flatMap((item) => [getDotaItemPath(item, "ru"), getDotaItemPath(item, "en")]),
   ...hubPortalList.flatMap((hub) => HUB_SECTION_SLUGS.flatMap((section) => [
     getHubPath(hub.id, "ru", section),
