@@ -2,6 +2,16 @@
 
 Updated: 2026-09-04
 
+## Active release candidate: v1.22 Dota economic autopsy
+
+- Replaced Match Audit's single slow-GPM or item-median prompt with a deterministic phase diagnosis that asks where the comparative economy actually moved.
+- Added an exact same-position opponent comparison when OpenDota supplies one unambiguous position match. GPM and final net worth never choose the opponent.
+- Added 0-to-10, 10-to-20, 20-to-30 and final phase analysis across player gold, opponent gold, direct-position gap, full-team gap and the player's share of team economy.
+- Split material windows into personal-comparison, team-pressure and mixed signals using visible thresholds: 750 position gold, 1,500 team gold or 1.5 percentage points of team share.
+- Added a confidence label from ten-player timeline coverage, final-only direct-opponent and team context, and a clearly bounded item-delay equivalent based on the selected player's pace inside the critical window.
+- Upgraded the gold chart to compare the selected hero with the direct opponent and added one exact replay window with a four-check inspection list.
+- Model and UI-contract tests cover direct-position pairing, personal versus team separation, threshold disclosure, final-only fallback and the new analysis surface. Full release gates and HTTPS preview QA remain before handoff.
+
 ## Active release candidate: v1.21 GTA Business Rivalries live cycle
 
 - Replaced the expired August 27 through September 2 GTA snapshot with Rockstar's official September 3 through 9 Executive week inside the month-long Business Rivalries Event.
