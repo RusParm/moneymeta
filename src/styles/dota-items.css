@@ -149,7 +149,7 @@
   top: 126px;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 1px;
   margin: 22px 0 18px;
   overflow: hidden;
@@ -1712,6 +1712,16 @@
 }
 
 @media (max-width: 1040px) {
+  .dota-items-nav {
+    top: 118px;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .dota-items-nav::-webkit-scrollbar { display: none; }
+  .dota-items-nav a { flex: 0 0 180px; }
+
   .dota-items-hero,
   .dota-item-detail-hero,
   .dota-planner-hero {

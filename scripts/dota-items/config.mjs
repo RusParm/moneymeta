@@ -15,7 +15,8 @@ export const dotaItemsConfig = Object.freeze({
   openDotaUrl: "https://www.opendota.com/",
   openDotaDocsUrl: "https://docs.opendota.com/",
   dotaConstantsUrl: "https://github.com/odota/dotaconstants",
-  outputPath: "src/data/snapshots/dota-items-7.41e.json"
+  outputPath: "src/data/snapshots/dota-items-7.41e.json",
+  matchItemOutputPath: "src/data/dota-match-items.ts"
 });
 
 export const dotaItemsUserAgent = "MoneyMeta/1.13 (https://themoneymeta.com)";

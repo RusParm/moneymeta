@@ -149,6 +149,8 @@ export const gtaBusinesses: GtaBusiness[] = [
 ];
 
 export interface WeeklyMetaSnapshot {
+  id: string;
+  startsAt: string;
   checkedAt: string;
   validThrough: string;
   status: VerificationStatus;
@@ -162,69 +164,102 @@ export interface WeeklyMetaSnapshot {
     summary: Record<Locale, string>;
     decision: Record<Locale, string>;
     signal: Record<Locale, string>;
+    multiplier: number;
+    fixedReward?: number;
+    requiredRunsForReward?: number;
+    requiredAsset?: "auto-shop";
+  }>;
+  closedWindows: Array<{
+    id: string;
+    startsAt: string;
+    endedAt: string;
+    title: Record<Locale, string>;
+    summary: Record<Locale, string>;
+    signal: Record<Locale, string>;
   }>;
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  checkedAt: "2026-08-19",
-  validThrough: "2026-08-26",
+  id: "2026-08-27-random-transform",
+  startsAt: "2026-08-27",
+  checkedAt: "2026-09-01",
+  validThrough: "2026-09-02",
   status: "verified",
-  sourceUrl: "https://www.rockstargames.com/newswire/article/9k2kok31k3a8k9/declare-your-allegiance-and-determine-who-owns-los-santos-in-the-brand",
-  sourceLabel: "Rockstar Newswire · Brand Wars",
+  sourceUrl: "https://www.rockstargames.com/newswire/article/o3921k3734ok35/take-in-triple-rewards-shifting-shape-in-new-random-transform-races",
+  sourceLabel: "Rockstar Newswire · Random Transform Races",
   items: {
     ru: [
-      "До 26 августа: бесплатно забери Declasse Hotring Sabre и отдели эту экономию от дохода бизнеса.",
-      "4X GTA$/RP действует в испытаниях и событиях свободного режима; 21-23 августа VIP Work приносит 5X GTA$/RP.",
-      "Временные множители не применяются автоматически к долгосрочным моделям производственных активов."
+      "До 2 сентября: Random Transform Races приносят 3X GTA$/RP.",
+      "Drift Races приносят 2X GTA$/RP и репутации LS Car Meet. За три завершённых заезда недельное испытание добавляет GTA$100,000.",
+      "Auto Shop Robbery Contracts приносят 2X GTA$/RP до 2 сентября. Покупка Auto Shop только ради короткого окна не считается автоматической рекомендацией."
     ],
     en: [
-      "Through August 26: claim the Declasse Hotring Sabre for free and keep that acquisition saving separate from business income.",
-      "Freemode Challenges and Events pay 4X GTA$/RP; VIP Work pays 5X GTA$/RP from August 21 through 23.",
-      "Temporary multipliers are not automatically applied to long-horizon production-asset models."
+      "Through September 2: Random Transform Races pay 3X GTA$/RP.",
+      "Drift Races pay 2X GTA$/RP and LS Car Meet Rep. Completing three races adds the GTA$100,000 Weekly Challenge reward.",
+      "Auto Shop Robbery Contracts pay 2X GTA$/RP through September 2. Buying an Auto Shop only for this short window is not an automatic recommendation."
     ]
   },
   opportunities: [
     {
-      id: "free-hotring-sabre",
+      id: "random-transform-races",
       status: "verified",
-      title: { ru: "Забери бесплатный автомобиль", en: "Claim the free vehicle" },
+      title: { ru: "Random Transform Races", en: "Random Transform Races" },
       summary: {
-        ru: "Declasse Hotring Sabre доступен бесплатно до 26 августа.",
-        en: "The Declasse Hotring Sabre is free through August 26."
+        ru: "Новые случайные трансформ-гонки приносят тройную выплату GTA$ и RP до 2 сентября.",
+        en: "The new random transform races pay triple GTA$ and RP through September 2."
       },
       decision: {
-        ru: "Забери актив, если он тебе нужен, но не записывай сэкономленную цену в регулярную прибыль.",
-        en: "Claim it if it fits your garage, but do not count the saved purchase price as recurring profit."
+        ru: "Открой маршрут без покупки актива и сравни фактическую выплату за один заезд со своим обычным GTA$/ч.",
+        en: "Enter without buying an asset and compare one observed race payout with your normal GTA$/h."
       },
-      signal: { ru: "Бесплатно", en: "Free" }
+      signal: { ru: "3X · до 2 сент.", en: "3X · through Sep 2" },
+      multiplier: 3
     },
     {
-      id: "freemode-boost",
+      id: "drift-races",
       status: "verified",
-      title: { ru: "Проверь свободный режим", en: "Test the Freemode boost" },
+      title: { ru: "Drift Races", en: "Drift Races" },
       summary: {
-        ru: "Испытания и события свободного режима приносят 4X GTA$/RP до 26 августа.",
-        en: "Freemode Challenges and Events pay 4X GTA$/RP through August 26."
+        ru: "Дрифт-гонки приносят двойную выплату и GTA$100,000 после трёх завершённых заездов.",
+        en: "Drift Races pay double, with GTA$100,000 added after three completed races."
       },
       decision: {
-        ru: "Сравни фактическую выплату и время двух-трёх событий со своим обычным маршрутом, прежде чем менять всю неделю.",
-        en: "Compare the realized payout and time from two or three events with your normal route before changing the whole week."
+        ru: "Сначала проверь, помещаются ли три заезда в сеанс. Разовая награда учитывается только после достижения порога.",
+        en: "First check whether three races fit the session. The one-time reward counts only after the threshold is reached."
       },
-      signal: { ru: "4X до 26 авг.", en: "4X through Aug 26" }
+      signal: { ru: "2X + GTA$100K", en: "2X + GTA$100K" },
+      multiplier: 2,
+      fixedReward: 100_000,
+      requiredRunsForReward: 3
     },
     {
-      id: "vip-work-weekend",
+      id: "auto-shop-robbery-contracts",
       status: "verified",
-      title: { ru: "Подготовь короткое окно VIP Work", en: "Prepare the VIP Work window" },
+      title: { ru: "Auto Shop Robbery Contracts", en: "Auto Shop Robbery Contracts" },
       summary: {
-        ru: "С 21 по 23 августа VIP Work приносит 5X GTA$/RP.",
-        en: "VIP Work pays 5X GTA$/RP from August 21 through 23."
+        ru: "Контракты ограблений Auto Shop приносят двойную выплату GTA$ и RP до 2 сентября.",
+        en: "Auto Shop Robbery Contracts pay double GTA$ and RP through September 2."
       },
       decision: {
-        ru: "Выдели один короткий сеанс, если у тебя уже есть доступ. Не покупай дорогую инфраструктуру только ради трёхдневного множителя.",
-        en: "Reserve one short session when access already exists. Do not buy expensive infrastructure only for a three-day multiplier."
+        ru: "Считай маршрут только при уже купленном Auto Shop. Короткий бонус сам по себе не доказывает окупаемость новой покупки.",
+        en: "Model the route only when you already own an Auto Shop. A short bonus does not prove that a new purchase pays back."
       },
-      signal: { ru: "5X · 21-23 авг.", en: "5X · Aug 21-23" }
+      signal: { ru: "2X · нужен Auto Shop", en: "2X · Auto Shop required" },
+      multiplier: 2,
+      requiredAsset: "auto-shop"
+    }
+  ],
+  closedWindows: [
+    {
+      id: "six-times-weekend",
+      startsAt: "2026-08-28",
+      endedAt: "2026-08-30",
+      title: { ru: "Спецокно 6X уже закрыто", en: "The 6X weekend window has closed" },
+      summary: {
+        ru: "С 28 по 30 августа отдельные Drift и Transform Races приносили 6X GTA$/RP. На 1 сентября это только архивный факт.",
+        en: "Select Drift and Transform Races paid 6X GTA$/RP from August 28 through 30. On September 1 this is archive context only."
+      },
+      signal: { ru: "Архив · 28-30 авг.", en: "Archive · Aug 28-30" }
     }
   ]
 };

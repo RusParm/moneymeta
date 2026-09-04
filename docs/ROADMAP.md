@@ -149,6 +149,58 @@
 - Fix Dota item atlas pagination so only twelve current-page cards are visible and the URL retains filter and page state.
 - Require local tests, static build and responsive HTTPS preview QA before any production decision.
 
+## P2.3: v1.15 gamer-first homepage
+
+- Turn the homepage into a five-game launcher with a recognizable player situation instead of a platform architecture pitch.
+- Use the owned cinematic world art as the primary interaction surface, with a distinct accent and direct decision routes for each economy.
+- Put one real Dota 2 calculation on the homepage using the same formula and boundaries as the full comparison tool.
+- Keep freshness, selected analysis, GTA VI watch and methodology available as compact depth after the first useful action.
+- Require keyboard interaction, RU/EN parity, mobile controls, local tests, static build and an HTTPS branch preview before production promotion.
+
+## P2.4: v1.16 Civilization, Fable and local trust foundation
+
+- Add Civilization VII as the sixth live economy after official Update 1.4.1 and Test of Time review.
+- Ship three editable models using values from the player's game: building payback window, settlement development choice and Economic Victory GDP gap.
+- Add Fable as a bounded pre-release dossier with confirmed economy signals, explicit unknowns, first-72-hours measurement protocol and no invented calculator.
+- Add original owned Money Meta world art for Civilization VII and Fable without publisher logos, characters or screenshots.
+- Publish a bilingual local-connection contract and working browser-only Money Meta scenario JSON import.
+- Keep future save connectors read-only, explicit, allowlisted and outside game process memory or anti-cheat surfaces.
+- Expand the gamer-first launcher to seven worlds while clearly labeling six live economies and one pre-release dossier.
+- Require formula tests, content provenance tests, local-boundary tests, static build, link audit and responsive HTTPS preview QA before production promotion.
+
+## P2.5: v1.17 GTA weekly decision loop
+
+- Replace the expired GTA Brand Wars surface with the official August 27 through September 2 Rockstar Newswire snapshot.
+- Turn 3X Random Transform Races, 2X Drift Races and 2X Auto Shop Robbery Contracts into a personal session decision instead of a bonus list.
+- Require the player's normal GTA$/h, one observed base payout and one observed run time before producing a recommendation.
+- Apply the GTA$100,000 Drift Weekly Challenge reward only when at least three complete runs fit the session.
+- Gate Auto Shop contracts behind an already owned asset and never infer that a short 2X window pays back a new property purchase.
+- Compare the weekly route with the full normal session after switching time, confidence and a player-selected lift threshold.
+- Save the scenario and weekly return marker locally, expose a shareable URL and start no network connection.
+- Keep the expired August 28 through 30 6X weekend visible only as archive context.
+- Require formula tests, UI-contract tests, RU/EN parity, static build, link audit and responsive HTTPS preview QA before production promotion.
+
+## P2.6: v1.18 GTA weekly journal
+
+- Let the player save a complete weekly forecast before starting the session while keeping incomplete, expired and ineligible states out of the journal.
+- Close the loop with only two actual inputs: total GTA$ earned and total minutes played.
+- Normalize the plan, actual result and normal route to GTA$/h so sessions of different lengths remain comparable.
+- Lock the complete forecast and actual result after close to prevent hindsight edits.
+- Keep a maximum of eight weekly records on the device, preserve them when the official snapshot ID changes and provide an explicit local clear action.
+- Store no journal values in the share URL and start no upload, account or background data channel.
+- Require model tests, corrupt-storage guards, RU/EN parity, static build and HTTPS preview interaction QA before production promotion.
+
+## P2.7: v1.19 Dota match economy audit
+
+- Turn a public Dota 2 Match ID into a hero-specific economy replay without Steam login, client access or file access.
+- Start a read-only OpenDota GET request only after the player presses the audit button. Keep it as the primary path; a separately chosen no-store relay may retrieve and reduce the same public response when the direct route fails. Never request remote replay parsing from this surface.
+- Discard account identifiers, player names, chat and every unused response field before analysis or rendering.
+- Show accumulated-gold checkpoints and completed major-item timings for parsed matches, with an honest final-snapshot fallback when timeline data is absent.
+- Compare item timing only with the selected role in the current patch family and only when the professional sample contains at least 200 purchases.
+- Keep role correction explicit. Treat one match and every professional median as replay context, not a player grade or universal build order.
+- Put only the public Match ID, player slot and selected role in a share URL. Never auto-fetch from that URL or retain a match after reload.
+- Require model and privacy-contract tests, RU/EN parity, static build, internal-link audit and HTTPS preview interaction QA before production promotion.
+
 ## Later
 
 - Authentication and cross-device profiles.
@@ -157,7 +209,7 @@
 - Public data API.
 - Live WoW Token and regional price data through Blizzard's supported APIs.
 - WoW profession portfolio, recipe comparison and saved market profiles.
-- Expanded Dota 2 match-economy tools: reliable/unreliable gold, death cost and item timing comparisons.
+- Deeper Dota 2 match economy: reliable and unreliable gold, death cost, objective conversion and multi-match patterns after the single-match audit earns usage.
 - Total War scenario presets by faction and campaign phase after usage data identifies the highest-value cases.
 - Crusader Kings III Silk & Silver model update only after the Q4 2026 mechanics are released and verified.
-- Civilization and Age of Empires after search demand, repeat-use potential and reliable data workflows are validated.
+- Age of Empires after search demand, repeat-use potential and a reliable data workflow are validated.

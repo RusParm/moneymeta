@@ -1,0 +1,967 @@
+---
+import { dotaHeroes, dotaHeroSnapshot } from "../data/dota-heroes";
+import { dotaMatchAuditConfig, getDotaMatchAuditPath } from "../data/dota-match";
+import { dotaMatchItems, dotaMatchItemSnapshot } from "../data/dota-match-items";
+import {
+  dotaItems,
+  dotaItemsSnapshot,
+  getDotaItemPath,
+  getDotaItemPlannerPath,
+  type DotaItemsLocale
+} from "../data/dota-items";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import DotaItemNav from "./DotaItemNav.astro";
+import DotaItemsStatus from "./DotaItemsStatus.astro";
+import SiteFooter from "./SiteFooter.astro";
+import "../styles/dota-match-audit.css";
+
+interface Props { lang: DotaItemsLocale; }
+const { lang } = Astro.props;
+const path = getDotaMatchAuditPath(lang);
+const alternate = getDotaMatchAuditPath(lang === "ru" ? "en" : "ru");
+const itemPatchSource = dotaItemsSnapshot.patch.sourceUrl;
+const copy = lang === "ru" ? {
+  title: "Разбор экономики матча Dota 2 по Match ID | Money Meta",
+  description: "Вставь публичный Match ID Dota 2, выбери героя и разбери темп золота, ключевые покупки, выкупы и отклонения от текущих профессиональных таймингов.",
+  back: "← К порталу Dota 2",
+  kicker: "Dota 2 · разбор реального матча",
+  heading: "Вставь Match ID. Найди экономическую развилку.",
+  lede: "Не ещё одна оценка KDA. Money Meta собирает темп золота, контрольные точки, крупные покупки и выкупы в один короткий разбор. Итогом становится один вопрос для реплея и одно правило на следующий матч.",
+  inputLabel: "Match ID или ссылка на матч",
+  inputPlaceholder: "Например, 8978544633",
+  inputHelp: "Подойдёт числовой ID или обычная ссылка OpenDota, Dotabuff либо Stratz.",
+  load: "Разобрать матч",
+  demo: "Запустить публичное демо",
+  demoNote: `Профматч ${dotaMatchAuditConfig.demoMatchId}, проверен ${dotaMatchAuditConfig.demoCheckedAt}`,
+  relay: "Загрузить через запасной канал",
+  relayNote: "Только публичный Match ID. Ответ очищается до отправки в браузер и не записывается в базу.",
+  boundaryTitle: "Перед запросом",
+  boundaryText: "Основной запрос идёт из этой вкладки прямо в OpenDota. Если этот путь зависает, отдельная кнопка отправит только публичный Match ID через функцию Money Meta и вернёт уже очищенный ответ. Ни один режим не просит Steam-вход, не читает клиент или файлы и не запускает обработку реплея.",
+  sent: "Уйдёт",
+  sentValue: "Match ID · прямой GET или выбранный запасной канал",
+  notSent: "Не уйдёт",
+  notSentValue: "Steam-вход · файлы · локальные сценарии",
+  retention: "Хранение",
+  retentionValue: "Без базы · ответ только в текущей вкладке",
+  steps: ["01 · МАТЧ", "02 · ГЕРОЙ", "03 · РАЗБОР"],
+  selectTitle: "Кого разбираем?",
+  selectText: "Money Meta намеренно не показывает имена и идентификаторы аккаунтов. Выбери героя и сторону.",
+  radiant: "Radiant",
+  dire: "Dire",
+  victory: "Победа",
+  defeat: "Поражение",
+  unknownResult: "Итог неизвестен",
+  position: "позиция",
+  positionUnknown: "позиция не определена",
+  safeLane: "лёгкая линия",
+  midLane: "центр",
+  offLane: "сложная линия",
+  jungle: "лес",
+  roaming: "роуминг",
+  fullTimeline: "Хронология разобрана",
+  finalOnly: "Только финальный срез",
+  patchCurrent: `Текущий патч ${dotaItemsSnapshot.patch.label}`,
+  patchArchive: "Другой патч · профсравнение отключено",
+  duration: "Длительность",
+  played: "Начало матча",
+  winner: "Победитель",
+  match: "Матч",
+  auditKicker: "Экономический отпечаток",
+  auditTitle: "Где золото перестало становиться силой?",
+  roleLabel: "Роль для профтаймингов",
+  core: "Кор",
+  support: "Поддержка",
+  roleNote: "OpenDota даёт оценку позиции только для разобранного матча. Проверь роль сам: она меняет только профессиональное сравнение, но не факты твоего матча.",
+  share: "Скопировать ссылку",
+  shared: "Ссылка скопирована. Она содержит только Match ID, слот героя и выбранную роль.",
+  copyFailed: "Не удалось скопировать автоматически. Разреши доступ к буферу обмена и повтори.",
+  openProvider: "Открыть матч в OpenDota",
+  signal: "ПЕРВАЯ ПРОВЕРКА",
+  finalSignalTitle: "Финальный экран матча загружен. Таймингов пока нет.",
+  finalSignalText: "Money Meta показывает итоговый инвентарь и счёт, которые OpenDota вернул без обработки реплея. Журнала покупок и поминутного золота в этом ответе нет, поэтому мы не придумываем момент провала.",
+  lateItem: "позже профмедианы",
+  earlyItem: "раньше профмедианы",
+  itemSignalText: "Это самое заметное отклонение среди крупных покупок с выборкой не меньше 200 наблюдений в текущем патче. Медиана даёт вопрос для реплея, а не универсальную норму.",
+  slowSignalTitle: "Самый медленный видимый отрезок закончился к",
+  slowSignalText: "Проверь карту, смерти и вынужденные действия внутри этого окна. Низкий темп сам по себе не доказывает ошибку: полезная драка или поддержка команды могли быть правильной конверсией.",
+  reviewSignalTitle: "Факты собраны. Теперь найди одно решение.",
+  reviewSignalText: "Сравни момент крупной покупки с ближайшей целью команды. Этот экран видит экономику, но не знает драфт, голосовую связь и состояние карты.",
+  overview: "Финальный срез",
+  gpm: "GPM",
+  netWorth: "Стоимость героя",
+  goldSpent: "Потрачено золота",
+  lastHits: "Добивания",
+  denies: "добито у своих",
+  deaths: "Смерти",
+  buybacks: "выкупов",
+  unavailable: "нет данных",
+  inventoryKicker: "FINAL LOADOUT",
+  inventory: "Финальный инвентарь",
+  inventoryText: "Что осталось у героя на финальном экране: основные слоты, рюкзак и нейтральные предметы. Это факт матча, но не доказательство минуты покупки.",
+  mainInventory: "Основные слоты",
+  backpackInventory: "Рюкзак",
+  neutralInventory: "Нейтральные слоты",
+  slot: "слот",
+  emptySlot: "Пусто",
+  unknownItem: "Предмет",
+  noInventory: "OpenDota не вернул финальные слоты этого игрока.",
+  chartKicker: "ТРАЕКТОРИЯ",
+  chartTitle: "Накопленное золото по минутам",
+  chartText: "Линия показывает полученное золото, а не свободное золото в кошельке. Метки показывают крупные завершённые покупки, найденные в журнале покупок.",
+  chartAria: "График накопленного золота игрока по минутам матча",
+  noTimelineTitle: "Нет поминутной хронологии",
+  noTimelineText: "Финальные показатели и предметы уже показаны выше. Money Meta не строит выдуманную линию между стартом и финалом. Для причины открой реплей или повтори разбор, если OpenDota обработает его.",
+  checkpoints: "Контрольные точки",
+  checkpointsText: "Каждая карточка показывает накопленное золото и темп только внутри предыдущего отрезка.",
+  throughMinute: "к минуте",
+  intervalGpm: "GPM на отрезке",
+  intervalCs: "добиваний на отрезке",
+  totalGold: "всего золота",
+  purchases: "Покупки по времени",
+  purchasesText: "Этот блок строится только из журнала покупок реплея. Компоненты и мелкие расходники скрыты, а крупные предметы текущего патча сравниваются с профессиональной выборкой.",
+  boughtAt: "куплен на",
+  minuteShort: "мин",
+  cost: "цена",
+  proMedian: "профмедиана",
+  sample: "покупок",
+  noBenchmark: "Надёжного сравнения для этой роли и версии нет",
+  inspectItem: "Открыть предмет",
+  noPurchaseLog: "Точного журнала покупок в ответе OpenDota нет. Финальные предметы выше реальные, но Money Meta не угадывает минуту их покупки.",
+  noMajorPurchases: "Журнал покупок есть, но в нём нет крупных завершённых предметов, которые можно надёжно сопоставить с текущим каталогом.",
+  nextKicker: "ОДНО ПРАВИЛО",
+  nextTitle: "Что перенести в следующий матч",
+  copyRule: "Скопировать правило",
+  ruleCopied: "Правило скопировано",
+  plan: "Переиграть порядок предметов",
+  methodKicker: "Границы разбора",
+  methodTitle: "Наблюдение, не приговор",
+  methods: [
+    ["01", "Только явный запрос", "Страница ничего не загружает по Match ID до нажатия кнопки. Основной GET идёт прямо в OpenDota; запасной канал запускается только своей отдельной кнопкой."],
+    ["02", "Минимум данных", "Прямой ответ очищается в текущей вкладке. Запасной канал очищает его на сервере до отправки в браузер. Имена, идентификаторы аккаунтов, чат и остальные поля отбрасываются."],
+    ["03", "Сравнимая версия", `Профессиональные тайминги показываются только для семейства ${dotaItemsSnapshot.patch.family} и при выборке не меньше ${dotaItemsSnapshot.methodology.minimumSample} покупок.`],
+    ["04", "Один матч", "Драфт, карта и командная задача не восстанавливаются из финансовой хронологии. Итог должен изменить один вопрос следующего реплея, а не объявить игрока хорошим или плохим."]
+  ],
+  sources: "Источники и проверка",
+  sourceText: `Контракт API, прямой запрос и запасной канал проверены ${dotaMatchAuditConfig.checkedAt}. Hero ID и полный справочник финального инвентаря берутся из OpenDota constants, предметы и профтайминги из снимка Money Meta по патчу ${dotaItemsSnapshot.patch.label}.`,
+  source: "Открыть источник",
+  loading: "Запрашиваем публичный матч напрямую у OpenDota...",
+  relayLoading: "Запрашиваем матч через запасной канал и очищаем ответ...",
+  invalid: "Не удалось распознать Match ID. Вставь только число или обычную ссылку на страницу матча.",
+  notFound: "OpenDota не нашёл этот публичный матч. Проверь ID и видимость истории матчей.",
+  rateLimited: "Лимит OpenDota для этого подключения исчерпан. Подожди немного и повтори запрос.",
+  timeout: "Прямой OpenDota не успел ответить за 30 секунд. Ничего не сохранено. Попробуй запасной канал в блоке выше.",
+  relayTimeout: "OpenDota не ответил и через запасной канал. Это временный сбой провайдера: подожди минуту и повтори запрос.",
+  failed: "Прямой запрос не прошёл. Попробуй запасной канал в блоке выше или открой матч в OpenDota.",
+  relayFailed: "Запасной канал тоже не получил матч. Проверь ID или повтори запрос позже.",
+  malformed: "Провайдер вернул неполный или неожиданный ответ. Money Meta остановил разбор вместо догадки.",
+  mismatch: "ID в ответе не совпал с запросом. Разбор остановлен.",
+  choose: "Выбери героя, чтобы открыть разбор.",
+  goldUnit: "золота"
+} : {
+  title: "Dota 2 match economy audit by Match ID | Money Meta",
+  description: "Paste a public Dota 2 Match ID, choose a hero and audit gold pace, key purchases, buybacks and current pro timing deviations.",
+  back: "← Dota 2 portal",
+  kicker: "Dota 2 · one real match",
+  heading: "Paste a Match ID. Find the economy fork.",
+  lede: "This is not another KDA grade. Money Meta connects gold pace, checkpoints, major purchases and buybacks in one short audit. The output is one replay question and one rule for the next match.",
+  inputLabel: "Match ID or match URL",
+  inputPlaceholder: "For example, 8978544633",
+  inputHelp: "Use the numeric ID or a normal OpenDota, Dotabuff or Stratz match link.",
+  load: "Audit match",
+  demo: "Run the public demo",
+  demoNote: `Pro match ${dotaMatchAuditConfig.demoMatchId}, checked ${dotaMatchAuditConfig.demoCheckedAt}`,
+  relay: "Load through the fallback relay",
+  relayNote: "Public Match ID only. The response is reduced before it reaches the browser and is not written to a database.",
+  boundaryTitle: "Before the request",
+  boundaryText: "The primary request goes directly from this tab to OpenDota. If that path hangs, a separate button sends only the public Match ID through a Money Meta function and returns an already reduced response. Neither mode requests Steam sign-in, reads the client or files, or submits a replay parse request.",
+  sent: "Sent",
+  sentValue: "Match ID · direct GET or chosen fallback relay",
+  notSent: "Not sent",
+  notSentValue: "Steam sign-in · files · local scenarios",
+  retention: "Retention",
+  retentionValue: "No database · response stays in this tab",
+  steps: ["01 · MATCH", "02 · HERO", "03 · AUDIT"],
+  selectTitle: "Whose economy are we auditing?",
+  selectText: "Money Meta deliberately hides player names and account IDs. Choose a hero and side.",
+  radiant: "Radiant",
+  dire: "Dire",
+  victory: "Victory",
+  defeat: "Defeat",
+  unknownResult: "Result unknown",
+  position: "position",
+  positionUnknown: "position unavailable",
+  safeLane: "safe lane",
+  midLane: "mid lane",
+  offLane: "off lane",
+  jungle: "jungle",
+  roaming: "roaming",
+  fullTimeline: "Parsed timeline",
+  finalOnly: "Final stats only",
+  patchCurrent: `Current Patch ${dotaItemsSnapshot.patch.label}`,
+  patchArchive: "Different patch · pro comparison off",
+  duration: "Duration",
+  played: "Match start",
+  winner: "Winner",
+  match: "Match",
+  auditKicker: "Economy fingerprint",
+  auditTitle: "Where did gold stop becoming power?",
+  roleLabel: "Role for pro timings",
+  core: "Core",
+  support: "Support",
+  roleNote: "OpenDota estimates position only for a parsed match. Verify the role yourself: it changes only the pro comparison, not the facts from your match.",
+  share: "Copy audit link",
+  shared: "Link copied. It contains only the Match ID, hero slot and selected role.",
+  copyFailed: "Automatic copy failed. Allow clipboard access and try again.",
+  openProvider: "Open match in OpenDota",
+  signal: "CHECK FIRST",
+  finalSignalTitle: "The final match screen is loaded. Timings are not.",
+  finalSignalText: "Money Meta shows the final inventory and scoreboard OpenDota returned without replay parsing. This response has no purchase log or minute-by-minute gold, so we do not invent a failure point.",
+  lateItem: "later than the pro median",
+  earlyItem: "earlier than the pro median",
+  itemSignalText: "This is the largest visible deviation among major items with at least 200 observations on the current patch. The median creates a replay question, not a universal standard.",
+  slowSignalTitle: "The slowest visible segment ended at",
+  slowSignalText: "Check the map, deaths and forced actions inside this window. Low pace alone does not prove a mistake: a useful fight or team support may have been the right conversion.",
+  reviewSignalTitle: "The facts are assembled. Find one decision.",
+  reviewSignalText: "Compare a major purchase with the team's nearest objective. This screen sees economy, but it does not know the draft, voice comms or map state.",
+  overview: "Final snapshot",
+  gpm: "GPM",
+  netWorth: "Net worth",
+  goldSpent: "Gold spent",
+  lastHits: "Last hits",
+  denies: "denies",
+  deaths: "Deaths",
+  buybacks: "buybacks",
+  unavailable: "unavailable",
+  inventoryKicker: "FINAL LOADOUT",
+  inventory: "Final inventory",
+  inventoryText: "What the hero held on the final screen: active slots, backpack and neutral items. This is a match fact, but it does not prove the purchase minute.",
+  mainInventory: "Active slots",
+  backpackInventory: "Backpack",
+  neutralInventory: "Neutral slots",
+  slot: "slot",
+  emptySlot: "Empty",
+  unknownItem: "Item",
+  noInventory: "OpenDota did not return this player's final slots.",
+  chartKicker: "TRAJECTORY",
+  chartTitle: "Cumulative gold by match minute",
+  chartText: "The line shows gold earned, not liquid gold in the wallet. Markers show major completed purchases found in the purchase log.",
+  chartAria: "Chart of the player's cumulative gold by match minute",
+  noTimelineTitle: "No minute-by-minute timeline",
+  noTimelineText: "Final stats and items are already shown above. Money Meta will not draw an invented line between start and finish. Open the replay for causes, or repeat the audit if OpenDota parses it.",
+  checkpoints: "Checkpoints",
+  checkpointsText: "Each card shows cumulative gold and pace only within the preceding segment.",
+  throughMinute: "through minute",
+  intervalGpm: "segment GPM",
+  intervalCs: "last hits in segment",
+  totalGold: "total gold",
+  purchases: "Timed purchases",
+  purchasesText: "This block comes only from the replay purchase log. Components and small consumables are hidden, while major current-patch items can be compared with the professional cohort.",
+  boughtAt: "bought at",
+  minuteShort: "min",
+  cost: "cost",
+  proMedian: "pro median",
+  sample: "purchases",
+  noBenchmark: "No reliable comparison for this role and version",
+  inspectItem: "Open item",
+  noPurchaseLog: "The OpenDota response has no timed purchase log. The final items above are real, but Money Meta will not guess when they were bought.",
+  noMajorPurchases: "A purchase log exists, but it has no major completed item that can be matched reliably to the current catalog.",
+  nextKicker: "ONE RULE",
+  nextTitle: "What to carry into the next match",
+  copyRule: "Copy rule",
+  ruleCopied: "Rule copied",
+  plan: "Replay the item order",
+  methodKicker: "Audit boundaries",
+  methodTitle: "An observation, not a verdict",
+  methods: [
+    ["01", "Explicit request only", "The page loads nothing from a Match ID before a button is pressed. The primary GET goes directly to OpenDota; the fallback relay runs only from its separate button."],
+    ["02", "Minimum data", "The direct response is reduced in the current tab. The fallback response is reduced on the server before it reaches the browser. Names, account IDs, chat and all unused fields are discarded."],
+    ["03", "Comparable version", `Pro timings appear only for Patch family ${dotaItemsSnapshot.patch.family} and samples of at least ${dotaItemsSnapshot.methodology.minimumSample} purchases.`],
+    ["04", "One match", "Draft, map state and team objective cannot be reconstructed from a financial timeline. The result should change one replay question, not label a player good or bad."]
+  ],
+  sources: "Sources and verification",
+  sourceText: `API contract, direct request and fallback relay checked ${dotaMatchAuditConfig.checkedAt}. Hero IDs and the complete final-inventory reference come from OpenDota constants; items and pro timings come from Money Meta's Patch ${dotaItemsSnapshot.patch.label} snapshot.`,
+  source: "Open source",
+  loading: "Requesting the public match directly from OpenDota...",
+  relayLoading: "Requesting the match through the fallback relay and reducing the response...",
+  invalid: "The Match ID was not recognized. Paste only the number or a normal match page link.",
+  notFound: "OpenDota could not find this public match. Check the ID and match-history visibility.",
+  rateLimited: "The OpenDota limit for this connection has been reached. Wait briefly and try again.",
+  timeout: "The direct OpenDota request did not finish within 30 seconds. Nothing was saved. Try the fallback relay above.",
+  relayTimeout: "OpenDota did not answer the fallback relay either. This is a temporary provider failure; wait a minute and retry.",
+  failed: "The direct request failed. Try the fallback relay above or open the match in OpenDota.",
+  relayFailed: "The fallback relay did not receive the match either. Check the ID or retry later.",
+  malformed: "The provider returned an incomplete or unexpected response. Money Meta stopped instead of guessing.",
+  mismatch: "The response Match ID did not match the request. The audit stopped.",
+  choose: "Choose a hero to open the audit.",
+  goldUnit: "gold"
+};
+const payload = JSON.stringify({
+  lang,
+  copy,
+  config: dotaMatchAuditConfig,
+  patch: { id: dotaMatchAuditConfig.currentPatchId, label: dotaItemsSnapshot.patch.label, minimumSample: dotaItemsSnapshot.methodology.minimumSample },
+  heroes: dotaHeroes,
+  matchItems: dotaMatchItems,
+  items: dotaItems.map((item) => ({
+    ...item,
+    image: dotaMatchItems.find((reference) => reference.id === item.id)?.image ?? item.image,
+    attributes: [],
+    abilities: [],
+    components: []
+  })),
+  itemPaths: Object.fromEntries(dotaItems.map((item) => [item.key, getDotaItemPath(item, lang)])),
+  plannerPath: getDotaItemPlannerPath(lang)
+}).replace(/</gu, "\\u003c");
+---
+
+<BaseLayout title={copy.title} description={copy.description} lang={lang} canonicalPath={path} alternatePath={alternate}>
+  <main class="page dota-items-page dota-match-audit" data-dota-match-audit>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath={getDotaMatchAuditPath("ru")} enPath={getDotaMatchAuditPath("en")} backPath={lang === "ru" ? "/dota-2/" : "/en/dota-2/"} backLabel={copy.back} />
+
+      <header class="match-audit-hero">
+        <div class="match-audit-hero-copy">
+          <p class="eyebrow">{copy.kicker}</p>
+          <h1>{copy.heading}</h1>
+          <p>{copy.lede}</p>
+          <a class="button primary button-large" href="#match-audit-console">{copy.load} →</a>
+        </div>
+        <div class="match-audit-terminal" aria-label={lang === "ru" ? "Граница запроса матча" : "Match request boundary"}>
+          <div><span>MM / MATCH AUDIT</span><b>GET / RELAY</b></div>
+          <ol>
+            <li><span>INPUT</span><strong>public_match_id</strong></li>
+            <li><span>AUTH</span><strong>none</strong></li>
+            <li><span>FILES</span><strong>none</strong></li>
+            <li><span>STORE</span><strong>tab_only</strong></li>
+          </ol>
+          <p>OpenDota API · checked {dotaMatchAuditConfig.checkedAt}</p>
+        </div>
+      </header>
+
+      <DotaItemNav lang={lang} active="audit" />
+      <DotaItemsStatus lang={lang} compact />
+
+      <section id="match-audit-console" class="match-audit-console" aria-labelledby="match-audit-input-title">
+        <nav class="match-audit-steps" aria-label={lang === "ru" ? "Шаги разбора" : "Audit steps"}>
+          {copy.steps.map((step, index) => <span class:list={{ "is-active": index === 0 }} data-audit-step={index + 1}>{step}</span>)}
+        </nav>
+
+        <div class="match-audit-input-stage">
+          <form class="match-audit-form" data-match-form>
+            <div>
+              <label id="match-audit-input-title" for="match-audit-id">{copy.inputLabel}</label>
+              <div class="match-audit-field-row">
+                <input id="match-audit-id" name="match" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder={copy.inputPlaceholder} data-match-input />
+                <button class="button primary" type="submit" data-match-submit>{copy.load} →</button>
+              </div>
+              <p>{copy.inputHelp}</p>
+            </div>
+            <button class="match-audit-demo" type="button" data-match-demo><span>DEMO</span><strong>{copy.demo}</strong><small>{copy.demoNote}</small></button>
+          </form>
+
+          <aside class="match-audit-boundary">
+            <span>{copy.boundaryTitle}</span>
+            <p>{copy.boundaryText}</p>
+            <dl>
+              <div><dt>{copy.sent}</dt><dd>{copy.sentValue}</dd></div>
+              <div><dt>{copy.notSent}</dt><dd>{copy.notSentValue}</dd></div>
+              <div><dt>{copy.retention}</dt><dd>{copy.retentionValue}</dd></div>
+            </dl>
+            <button class="match-audit-relay" type="button" data-match-relay>
+              <span>RELAY</span>
+              <strong>{copy.relay}</strong>
+              <small>{copy.relayNote}</small>
+            </button>
+          </aside>
+        </div>
+
+        <div class="match-audit-status" data-match-status role="status" aria-live="polite" hidden></div>
+
+        <section class="match-audit-selection" data-match-selection hidden aria-labelledby="match-player-title">
+          <header>
+            <div><span data-match-badge></span><h2 id="match-player-title">{copy.selectTitle}</h2><p>{copy.selectText}</p></div>
+            <dl>
+              <div><dt>{copy.match}</dt><dd data-match-id></dd></div>
+              <div><dt>{copy.duration}</dt><dd data-match-duration></dd></div>
+              <div><dt>{copy.played}</dt><dd data-match-date></dd></div>
+              <div><dt>{copy.winner}</dt><dd data-match-winner></dd></div>
+            </dl>
+          </header>
+          <div class="match-team-grid">
+            <section aria-labelledby="radiant-team-title"><h3 id="radiant-team-title"><span>R</span>{copy.radiant}</h3><div data-team="radiant"></div></section>
+            <section aria-labelledby="dire-team-title"><h3 id="dire-team-title"><span>D</span>{copy.dire}</h3><div data-team="dire"></div></section>
+          </div>
+          <p class="match-audit-choose" data-match-choose>{copy.choose}</p>
+        </section>
+
+        <section class="match-audit-result" data-audit-result hidden aria-labelledby="match-audit-result-title">
+          <header class="match-audit-result-head">
+            <div class="match-audit-player-title">
+              <span class="match-audit-selected-portrait is-fallback"><b data-selected-fallback>?</b><img data-selected-image src="" alt="" width="160" height="90" /></span>
+              <div><span>{copy.auditKicker}</span><h2 id="match-audit-result-title" data-selected-name>{copy.auditTitle}</h2><p data-selected-position></p></div>
+            </div>
+            <div class="match-audit-result-actions">
+              <label for="match-audit-role"><span>{copy.roleLabel}</span><select id="match-audit-role" data-match-role><option value="core">{copy.core}</option><option value="support">{copy.support}</option></select></label>
+              <div><button type="button" class="mini-action" data-match-share>{copy.share}</button><a class="mini-action" href="#" target="_blank" rel="noopener noreferrer" data-provider-link>{copy.openProvider} ↗</a></div>
+              <small>{copy.roleNote}</small>
+              <p data-share-status role="status" aria-live="polite"></p>
+            </div>
+          </header>
+
+          <article class="match-audit-signal" data-audit-signal>
+            <span>{copy.signal}</span>
+            <strong data-signal-title></strong>
+            <p data-signal-text></p>
+          </article>
+
+          <section class="match-audit-overview" aria-labelledby="match-overview-title">
+            <h3 id="match-overview-title">{copy.overview}</h3>
+            <div data-audit-stats></div>
+          </section>
+
+          <section class="match-audit-inventory" aria-labelledby="match-inventory-title">
+            <header><div><span class="section-kicker">{copy.inventoryKicker}</span><h3 id="match-inventory-title">{copy.inventory}</h3><p>{copy.inventoryText}</p></div></header>
+            <div data-audit-inventory></div>
+            <p class="match-audit-empty" data-no-inventory hidden>{copy.noInventory}</p>
+          </section>
+
+          <section class="match-audit-trajectory" data-trajectory aria-labelledby="match-chart-title">
+            <header><div><span>{copy.chartKicker}</span><h3 id="match-chart-title">{copy.chartTitle}</h3><p>{copy.chartText}</p></div><strong data-chart-total></strong></header>
+            <div class="match-audit-chart-wrap"><svg data-audit-chart viewBox="0 0 900 320" role="img" aria-label={copy.chartAria}></svg></div>
+            <div class="match-audit-chart-legend" data-chart-legend hidden></div>
+          </section>
+
+          <aside class="match-audit-no-timeline" data-no-timeline hidden>
+            <span>FINAL ONLY</span><div><h3>{copy.noTimelineTitle}</h3><p>{copy.noTimelineText}</p></div>
+          </aside>
+
+          <section class="match-audit-checkpoints" data-checkpoint-section aria-labelledby="match-checkpoints-title">
+            <header><div><span class="section-kicker">0:00 → GG</span><h3 id="match-checkpoints-title">{copy.checkpoints}</h3><p>{copy.checkpointsText}</p></div></header>
+            <div data-audit-checkpoints></div>
+          </section>
+
+          <section class="match-audit-purchases" aria-labelledby="match-purchases-title">
+            <header><div><span class="section-kicker">PURCHASE LOG</span><h3 id="match-purchases-title">{copy.purchases}</h3><p>{copy.purchasesText}</p></div></header>
+            <div data-audit-purchases></div>
+            <p class="match-audit-empty" data-no-purchases hidden></p>
+          </section>
+
+          <section class="match-audit-next" aria-labelledby="match-next-title">
+            <div><span>{copy.nextKicker}</span><h3 id="match-next-title">{copy.nextTitle}</h3></div>
+            <blockquote data-next-rule></blockquote>
+            <div><button type="button" class="button primary" data-copy-rule>{copy.copyRule}</button><a class="button ghost" data-plan-link href={getDotaItemPlannerPath(lang)}>{copy.plan} →</a></div>
+            <p data-rule-status role="status" aria-live="polite"></p>
+          </section>
+        </section>
+      </section>
+
+      <section class="section match-audit-method" aria-labelledby="match-method-title">
+        <div class="section-head"><div><span class="section-kicker">{copy.methodKicker}</span><h2 id="match-method-title">{copy.methodTitle}</h2></div><span class="count">GET · OPTIONAL RELAY · NO STORE</span></div>
+        <div class="match-audit-method-grid">{copy.methods.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
+        <aside class="match-audit-sources"><div><span>{copy.sources}</span><p>{copy.sourceText}</p></div><nav><a href={dotaMatchAuditConfig.docsUrl} target="_blank" rel="noopener noreferrer">OpenDota API · {copy.source} ↗</a><a href={dotaHeroSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Hero constants · {copy.source} ↗</a><a href={dotaMatchItemSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Item constants · {copy.source} ↗</a><a href={itemPatchSource} target="_blank" rel="noopener noreferrer">Valve · Patch {dotaItemsSnapshot.patch.label} ↗</a></nav></aside>
+      </section>
+
+      <SiteFooter lang={lang} />
+    </div>
+    <script is:inline type="application/json" data-match-audit-data set:html={payload} />
+  </main>
+</BaseLayout>
+
+<script>
+  import {
+    buildDotaMatchAudit,
+    inferredDotaMatchRole,
+    parseDotaMatchId,
+    resolveDotaMatchInventory,
+    sanitizeDotaMatchResponse,
+    type DotaMatch,
+    type DotaMatchAudit,
+    type DotaMatchPlayer,
+    type DotaMatchRole
+  } from "../lib/dota-match";
+  import type { DotaMatchItemReference } from "../data/dota-match-items";
+  import type { DotaItemRecord } from "../lib/dota-items";
+
+  const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
+  if (root) {
+    const auditRoot = root;
+    const data = JSON.parse(root.querySelector("[data-match-audit-data]")?.textContent ?? "{}");
+    const copy: Record<string, string> = data.copy;
+    const lang: "ru" | "en" = data.lang;
+    const items: DotaItemRecord[] = data.items;
+    const matchItems: DotaMatchItemReference[] = data.matchItems;
+    const heroes = new Map<number, { id: number; key: string; name: string; image: string }>(data.heroes.map((hero: { id: number; key: string; name: string; image: string }) => [hero.id, hero]));
+    const itemPaths: Record<string, string> = data.itemPaths;
+    const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+    const integer = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
+    const date = new Intl.DateTimeFormat(lang === "ru" ? "ru-RU" : "en-US", { dateStyle: "medium", timeStyle: "short" });
+    const form = root.querySelector<HTMLFormElement>("[data-match-form]")!;
+    const input = root.querySelector<HTMLInputElement>("[data-match-input]")!;
+    const submit = root.querySelector<HTMLButtonElement>("[data-match-submit]")!;
+    const relay = root.querySelector<HTMLButtonElement>("[data-match-relay]")!;
+    const demo = root.querySelector<HTMLButtonElement>("[data-match-demo]")!;
+    const status = root.querySelector<HTMLElement>("[data-match-status]")!;
+    const selection = root.querySelector<HTMLElement>("[data-match-selection]")!;
+    const result = root.querySelector<HTMLElement>("[data-audit-result]")!;
+    const roleControl = root.querySelector<HTMLSelectElement>("[data-match-role]")!;
+    const params = new URL(window.location.href).searchParams;
+    const sharedMatch = params.get("match");
+    if (sharedMatch && parseDotaMatchId(sharedMatch)) input.value = sharedMatch;
+
+    let currentMatch: DotaMatch | null = null;
+    let currentSlot: number | null = null;
+    let currentRule = "";
+    const pendingSlot = Number(params.get("slot"));
+    const pendingRole = params.get("role") === "support" ? "support" : params.get("role") === "core" ? "core" : null;
+
+    const setStatus = (message: string, state: "loading" | "error" | "success" = "error") => {
+      status.hidden = !message;
+      status.textContent = message;
+      status.dataset.state = state;
+    };
+    const setStep = (step: number) => root.querySelectorAll<HTMLElement>("[data-audit-step]").forEach((node) => node.classList.toggle("is-active", Number(node.dataset.auditStep) <= step));
+    const value = (inputValue: number | null, suffix = "") => inputValue === null ? copy.unavailable! : `${integer.format(inputValue)}${suffix}`;
+    const heroFor = (heroId: number) => heroes.get(heroId) ?? { id: heroId, key: "unknown", name: `Hero #${heroId}`, image: "" };
+    const outcome = (player: DotaMatchPlayer) => player.won === null ? copy.unknownResult! : player.won ? copy.victory! : copy.defeat!;
+    const positionLabel = (player: DotaMatchPlayer) => {
+      if (player.positionEstimate) return `${copy.position} ${player.positionEstimate}`;
+      if (player.isRoaming) return copy.roaming!;
+      const lanes: Record<number, string> = { 1: copy.safeLane!, 2: copy.midLane!, 3: copy.offLane!, 4: copy.jungle! };
+      return player.laneRole ? lanes[player.laneRole] ?? copy.positionUnknown! : copy.positionUnknown!;
+    };
+    const make = <K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string) => {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    };
+    const initials = (label: string) => label.split(/\s+/u).filter(Boolean).slice(0, 2).map((word) => word[0]).join("").toUpperCase() || "?";
+    const media = (className: string, label: string, imageUrl: string) => {
+      const frame = make("span", `${className} is-fallback`);
+      frame.setAttribute("aria-hidden", "true");
+      frame.append(make("b", "", initials(label)));
+      if (imageUrl) {
+        const image = document.createElement("img");
+        image.alt = "";
+        image.width = 128;
+        image.height = 72;
+        image.loading = "lazy";
+        image.decoding = "async";
+        image.referrerPolicy = "no-referrer";
+        image.addEventListener("load", () => frame.classList.remove("is-fallback"), { once: true });
+        image.addEventListener("error", () => { frame.classList.add("is-fallback"); image.remove(); }, { once: true });
+        image.src = imageUrl;
+        frame.append(image);
+      }
+      return frame;
+    };
+
+    const renderPlayer = (player: DotaMatchPlayer) => {
+      const hero = heroFor(player.heroId);
+      const button = make("button", "match-audit-player");
+      button.type = "button";
+      button.dataset.playerSlot = String(player.playerSlot);
+      button.setAttribute("aria-pressed", "false");
+      const portrait = media("match-audit-player-portrait", hero.name, hero.image);
+      const body = make("span", "match-audit-player-body");
+      body.append(make("small", "", positionLabel(player)));
+      body.append(make("strong", "", hero.name));
+      body.append(make("span", "", `${value(player.kills)} / ${value(player.deaths)} / ${value(player.assists)} · ${value(player.goldPerMinute)} GPM`));
+      const resultLabel = make("span", player.won ? "match-audit-outcome is-win" : "match-audit-outcome", outcome(player));
+      button.append(portrait, body, resultLabel);
+      button.addEventListener("click", () => selectPlayer(player.playerSlot));
+      return button;
+    };
+
+    const renderMatch = (match: DotaMatch) => {
+      currentMatch = match;
+      currentSlot = null;
+      result.hidden = true;
+      selection.hidden = false;
+      setStep(2);
+      root.querySelector<HTMLElement>("[data-match-id]")!.textContent = String(match.matchId);
+      root.querySelector<HTMLElement>("[data-match-duration]")!.textContent = `${number.format(match.durationSeconds / 60)} ${copy.minuteShort}`;
+      root.querySelector<HTMLElement>("[data-match-date]")!.textContent = date.format(new Date(match.startTime * 1000));
+      root.querySelector<HTMLElement>("[data-match-winner]")!.textContent = match.radiantWin === null ? copy.unknownResult! : match.radiantWin ? copy.radiant! : copy.dire!;
+      root.querySelector<HTMLAnchorElement>("[data-provider-link]")!.href = `${data.config.publicMatchBase}/${match.matchId}`;
+      const hasAnyTimeline = match.players.some((player) => player.times.length > 1 && player.goldTimeline.length > 1 && player.lastHitTimeline.length > 1);
+      const badge = root.querySelector<HTMLElement>("[data-match-badge]")!;
+      badge.textContent = `${hasAnyTimeline ? copy.fullTimeline : copy.finalOnly} · ${match.patchId === data.patch.id ? copy.patchCurrent : copy.patchArchive}`;
+      badge.dataset.state = hasAnyTimeline ? "parsed" : "final";
+      const radiant = root.querySelector<HTMLElement>('[data-team="radiant"]')!;
+      const dire = root.querySelector<HTMLElement>('[data-team="dire"]')!;
+      radiant.replaceChildren(...match.players.filter((player) => player.isRadiant).map(renderPlayer));
+      dire.replaceChildren(...match.players.filter((player) => !player.isRadiant).map(renderPlayer));
+      root.querySelector<HTMLElement>("[data-match-choose]")!.hidden = false;
+      const sharedPlayer = match.players.find((player) => player.playerSlot === pendingSlot);
+      if (sharedPlayer) selectPlayer(sharedPlayer.playerSlot, pendingRole ?? undefined);
+    };
+
+    const renderStats = (audit: DotaMatchAudit) => {
+      const player = audit.player;
+      const rows = [
+        [outcome(player), `${value(player.kills)} / ${value(player.deaths)} / ${value(player.assists)}`],
+        [copy.gpm!, value(player.goldPerMinute)],
+        [copy.netWorth!, value(player.netWorth, ` ${copy.goldUnit}`)],
+        [copy.goldSpent!, value(player.goldSpent, ` ${copy.goldUnit}`)],
+        [copy.lastHits!, `${value(player.lastHits)} · ${value(player.denies)} ${copy.denies}`],
+        [copy.deaths!, `${value(player.deaths)} · ${value(player.buybackCount)} ${copy.buybacks}`]
+      ];
+      root.querySelector<HTMLElement>("[data-audit-stats]")!.replaceChildren(...rows.map(([label, stat]) => {
+        const card = make("div");
+        card.append(make("span", "", label), make("strong", "", stat));
+        return card;
+      }));
+    };
+
+    const renderInventory = (audit: DotaMatchAudit) => {
+      const container = root.querySelector<HTMLElement>("[data-audit-inventory]")!;
+      const empty = root.querySelector<HTMLElement>("[data-no-inventory]")!;
+      const inventory = resolveDotaMatchInventory(audit.player, matchItems);
+      empty.hidden = inventory.length > 0;
+      if (!inventory.length) {
+        container.replaceChildren();
+        return;
+      }
+      const bySlot = new Map(inventory.map((entry) => [`${entry.area}:${entry.slot}`, entry]));
+      const areas = [
+        { key: "main", count: 6, label: copy.mainInventory! },
+        { key: "backpack", count: 3, label: copy.backpackInventory! },
+        { key: "neutral", count: 2, label: copy.neutralInventory! }
+      ] as const;
+      const groups = areas.flatMap((area) => {
+        const hasItem = inventory.some((entry) => entry.area === area.key);
+        if (!hasItem) return [];
+        const group = make("section", `match-inventory-group is-${area.key}`);
+        group.append(make("h4", "", area.label));
+        const slots = make("div", "match-inventory-slots");
+        for (let slot = 0; slot < area.count; slot += 1) {
+          const entry = bySlot.get(`${area.key}:${slot}`);
+          const card = make("article", entry ? "match-inventory-item" : "match-inventory-item is-empty");
+          if (!entry) {
+            card.append(make("span", "match-inventory-empty-icon", String(slot + 1)));
+            const emptyBody = make("div", "match-inventory-copy");
+            emptyBody.append(make("small", "", `${copy.slot} ${slot + 1}`), make("strong", "", copy.emptySlot));
+            card.append(emptyBody);
+          } else {
+            const label = entry.item?.name ?? `${copy.unknownItem} #${entry.itemId}`;
+            const content = entry.item && itemPaths[entry.item.key] ? make("a", "match-inventory-content") : make("div", "match-inventory-content");
+            if (content instanceof HTMLAnchorElement && entry.item) content.href = itemPaths[entry.item.key]!;
+            content.append(media("match-inventory-image", label, entry.item?.image ?? ""));
+            const body = make("span", "match-inventory-copy");
+            body.append(make("small", "", `${copy.slot} ${slot + 1}`), make("strong", "", label));
+            content.append(body);
+            card.append(content);
+          }
+          slots.append(card);
+        }
+        group.append(slots);
+        return [group];
+      });
+      container.replaceChildren(...groups);
+    };
+
+    const renderSignal = (audit: DotaMatchAudit) => {
+      const title = root.querySelector<HTMLElement>("[data-signal-title]")!;
+      const text = root.querySelector<HTMLElement>("[data-signal-text]")!;
+      const itemDelta = audit.strongestItemDelta;
+      if (!audit.timelineAvailable) {
+        title.textContent = copy.finalSignalTitle!;
+        text.textContent = copy.finalSignalText!;
+        currentRule = lang === "ru"
+          ? "Не угадывать минуту провала по финальному GPM. Сначала получить разобранную хронологию или отметить один момент вручную в реплее."
+          : "Do not guess the failure minute from final GPM. Get a parsed timeline or mark one replay moment manually first.";
+      } else if (itemDelta && itemDelta.deltaMinutes !== null && Math.abs(itemDelta.deltaMinutes) >= 2.5) {
+        const direction = itemDelta.deltaMinutes > 0 ? copy.lateItem : copy.earlyItem;
+        title.textContent = `${itemDelta.name}: ${number.format(Math.abs(itemDelta.deltaMinutes))} ${copy.minuteShort} ${direction}`;
+        text.textContent = copy.itemSignalText!;
+        currentRule = lang === "ru"
+          ? `В следующем реплее проверить, какую задачу решала команда на ${number.format(itemDelta.minute)}-й минуте, когда появился ${itemDelta.name}. Сравнивать решение, а не только цифру.`
+          : `In the next replay, inspect the team objective at minute ${number.format(itemDelta.minute)}, when ${itemDelta.name} arrived. Compare the decision, not just the number.`;
+      } else if (audit.slowestWindow) {
+        title.textContent = `${copy.slowSignalTitle} ${number.format(audit.slowestWindow.minute)} ${copy.minuteShort}`;
+        text.textContent = `${integer.format(audit.slowestWindow.intervalGoldPerMinute)} GPM · ${integer.format(audit.slowestWindow.intervalLastHits)} ${copy.intervalCs}. ${copy.slowSignalText}`;
+        const previous = audit.checkpoints[audit.checkpoints.indexOf(audit.slowestWindow) - 1]?.minute ?? 0;
+        currentRule = lang === "ru"
+          ? `В следующем реплее разобрать только окно ${number.format(previous)}-${number.format(audit.slowestWindow.minute)}: какая смерть, драка или потерянная зона изменила темп золота?`
+          : `In the next replay, review only minutes ${number.format(previous)}-${number.format(audit.slowestWindow.minute)}: which death, fight or lost area changed gold pace?`;
+      } else {
+        title.textContent = copy.reviewSignalTitle!;
+        text.textContent = copy.reviewSignalText!;
+        currentRule = lang === "ru"
+          ? "Перед следующей крупной покупкой назвать цель команды на ближайшие пять минут и после матча проверить, помог ли предмет её забрать."
+          : "Before the next major purchase, name the team's five-minute objective and check after the match whether the item helped secure it.";
+      }
+      root.querySelector<HTMLElement>("[data-next-rule]")!.textContent = currentRule;
+    };
+
+    const svgNode = <K extends keyof SVGElementTagNameMap>(tag: K, attributes: Record<string, string>) => {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      Object.entries(attributes).forEach(([key, attribute]) => node.setAttribute(key, attribute));
+      return node;
+    };
+
+    const renderChart = (audit: DotaMatchAudit) => {
+      const trajectory = root.querySelector<HTMLElement>("[data-trajectory]")!;
+      const fallback = root.querySelector<HTMLElement>("[data-no-timeline]")!;
+      const checkpoints = root.querySelector<HTMLElement>("[data-checkpoint-section]")!;
+      trajectory.hidden = !audit.timelineAvailable;
+      checkpoints.hidden = !audit.timelineAvailable;
+      fallback.hidden = audit.timelineAvailable;
+      const legend = root.querySelector<HTMLElement>("[data-chart-legend]")!;
+      legend.hidden = true;
+      legend.replaceChildren();
+      if (!audit.timelineAvailable || audit.series.length < 2) return;
+      const svg = root.querySelector<SVGSVGElement>("[data-audit-chart]")!;
+      svg.replaceChildren();
+      const left = 54, right = 872, top = 28, bottom = 272;
+      const maximumMinute = Math.max(1, audit.series.at(-1)!.minute);
+      const maximumGold = Math.max(1, ...audit.series.map((point) => point.totalGold));
+      const x = (minute: number) => left + minute / maximumMinute * (right - left);
+      const y = (gold: number) => bottom - gold / maximumGold * (bottom - top);
+      [0, .5, 1].forEach((ratio) => {
+        const line = svgNode("line", { x1: String(left), x2: String(right), y1: String(bottom - ratio * (bottom - top)), y2: String(bottom - ratio * (bottom - top)), class: "chart-grid" });
+        svg.append(line);
+      });
+      const linePath = audit.series.map((point, index) => `${index ? "L" : "M"}${x(point.minute).toFixed(1)},${y(point.totalGold).toFixed(1)}`).join(" ");
+      const areaPath = `${linePath} L${x(maximumMinute).toFixed(1)},${bottom} L${left},${bottom} Z`;
+      svg.append(svgNode("path", { d: areaPath, class: "chart-area" }), svgNode("path", { d: linePath, class: "chart-line" }));
+      [0, maximumMinute / 2, maximumMinute].forEach((minuteValue) => {
+        const label = svgNode("text", { x: String(x(minuteValue)), y: "302", class: "chart-axis", "text-anchor": minuteValue === 0 ? "start" : minuteValue === maximumMinute ? "end" : "middle" });
+        label.textContent = `${number.format(minuteValue)}m`;
+        svg.append(label);
+      });
+      const chartPurchases = audit.majorPurchases.slice(0, 6);
+      chartPurchases.forEach((purchase, index) => {
+        const purchaseMinute = Math.min(maximumMinute, Math.max(0, purchase.minute));
+        const point = audit.series.reduce((nearest, candidate) => Math.abs(candidate.minute - purchase.minute) < Math.abs(nearest.minute - purchase.minute) ? candidate : nearest);
+        const group = svgNode("g", { class: "chart-purchase" });
+        const title = svgNode("title", {});
+        title.textContent = `${index + 1}. ${purchase.name}, ${number.format(purchase.minute)} ${copy.minuteShort}`;
+        group.append(title);
+        group.append(svgNode("line", { x1: String(x(purchaseMinute)), x2: String(x(purchaseMinute)), y1: String(y(point.totalGold)), y2: String(bottom) }));
+        group.append(svgNode("circle", { cx: String(x(purchaseMinute)), cy: String(y(point.totalGold)), r: "11" }));
+        const marker = svgNode("text", { x: String(x(purchaseMinute)), y: String(y(point.totalGold) + 3.5), class: "chart-marker-label", "text-anchor": "middle", "aria-hidden": "true" });
+        marker.textContent = String(index + 1);
+        group.append(marker);
+        svg.append(group);
+      });
+      const legendItems = chartPurchases.map((purchase, index) => {
+        const card = make("article");
+        card.append(make("span", "match-chart-index", String(index + 1)), media("match-chart-item-image", purchase.name, purchase.image));
+        const body = make("div");
+        body.append(make("strong", "", purchase.name), make("small", "", `${number.format(purchase.minute)} ${copy.minuteShort}`));
+        card.append(body);
+        return card;
+      });
+      legend.replaceChildren(...legendItems);
+      legend.hidden = legendItems.length === 0;
+      root.querySelector<HTMLElement>("[data-chart-total]")!.textContent = `${integer.format(maximumGold)} ${copy.goldUnit}`;
+    };
+
+    const renderCheckpoints = (audit: DotaMatchAudit) => {
+      let previous = 0;
+      const cards = audit.checkpoints.map((checkpoint) => {
+        const card = make("article");
+        card.append(make("span", "", `${number.format(previous)}-${number.format(checkpoint.minute)} ${copy.minuteShort}`));
+        card.append(make("strong", "", integer.format(checkpoint.totalGold)));
+        card.append(make("small", "", copy.totalGold));
+        const details = make("dl");
+        const gpm = make("div");
+        gpm.append(make("dt", "", copy.intervalGpm), make("dd", "", integer.format(checkpoint.intervalGoldPerMinute)));
+        const cs = make("div");
+        cs.append(make("dt", "", copy.intervalCs), make("dd", "", integer.format(checkpoint.intervalLastHits)));
+        details.append(gpm, cs);
+        card.append(details);
+        previous = checkpoint.minute;
+        return card;
+      });
+      root.querySelector<HTMLElement>("[data-audit-checkpoints]")!.replaceChildren(...cards);
+    };
+
+    const renderPurchases = (audit: DotaMatchAudit) => {
+      const container = root.querySelector<HTMLElement>("[data-audit-purchases]")!;
+      const empty = root.querySelector<HTMLElement>("[data-no-purchases]")!;
+      empty.hidden = audit.majorPurchases.length > 0;
+      empty.textContent = audit.player.purchases.length ? copy.noMajorPurchases! : copy.noPurchaseLog!;
+      const cards = audit.majorPurchases.map((purchase) => {
+        const card = make("article");
+        const top = make("div");
+        const portrait = media("match-purchase-image", purchase.name, purchase.image);
+        const heading = make("div");
+        heading.append(make("span", "", `${copy.boughtAt} ${number.format(purchase.minute)} ${copy.minuteShort}`), make("strong", "", purchase.name), make("small", "", `${copy.cost}: ${integer.format(purchase.cost)} ${copy.goldUnit}`));
+        top.append(portrait, heading);
+        card.append(top);
+        const benchmark = make("p", purchase.benchmark ? "has-benchmark" : "");
+        benchmark.textContent = purchase.benchmark
+          ? `${copy.proMedian}: ${number.format(purchase.benchmark.median)} ${copy.minuteShort} · ${purchase.deltaMinutes! > 0 ? "+" : ""}${number.format(purchase.deltaMinutes!)} ${copy.minuteShort} · n ${integer.format(purchase.benchmark.n)}`
+          : copy.noBenchmark!;
+        card.append(benchmark);
+        const link = make("a", "", `${copy.inspectItem} →`);
+        link.href = itemPaths[purchase.key] ?? "#";
+        card.append(link);
+        return card;
+      });
+      container.replaceChildren(...cards);
+      const planUrl = new URL(data.plannerPath, window.location.origin);
+      audit.majorPurchases.slice(0, 5).forEach((purchase, index) => planUrl.searchParams.set(`dota-item-plan.item${index + 1}`, purchase.key));
+      planUrl.searchParams.set("dota-item-plan.role", audit.role);
+      root.querySelector<HTMLAnchorElement>("[data-plan-link]")!.href = `${planUrl.pathname}${planUrl.search}`;
+    };
+
+    const renderAudit = () => {
+      if (!currentMatch || currentSlot === null) return;
+      const role = roleControl.value === "support" ? "support" : "core";
+      const audit = buildDotaMatchAudit(currentMatch, currentSlot, items, role, data.patch.id, data.patch.minimumSample);
+      if (!audit) return;
+      const hero = heroFor(audit.player.heroId);
+      root.querySelector<HTMLElement>("[data-selected-name]")!.textContent = hero.name;
+      root.querySelector<HTMLElement>("[data-selected-position]")!.textContent = `${outcome(audit.player)} · ${positionLabel(audit.player)} · ${currentMatch.matchId}`;
+      root.querySelector<HTMLElement>("[data-selected-fallback]")!.textContent = initials(hero.name);
+      const selectedImage = root.querySelector<HTMLImageElement>("[data-selected-image]")!;
+      const selectedFrame = selectedImage.parentElement!;
+      selectedFrame.classList.add("is-fallback");
+      selectedImage.src = hero.image;
+      selectedImage.alt = hero.name;
+      selectedImage.hidden = !hero.image;
+      renderSignal(audit);
+      renderStats(audit);
+      renderInventory(audit);
+      renderChart(audit);
+      renderCheckpoints(audit);
+      renderPurchases(audit);
+      result.hidden = false;
+      setStep(3);
+    };
+
+    function selectPlayer(slot: number, role?: DotaMatchRole) {
+      if (!currentMatch) return;
+      const player = currentMatch.players.find((candidate) => candidate.playerSlot === slot);
+      if (!player) return;
+      currentSlot = slot;
+      auditRoot.querySelectorAll<HTMLElement>("[data-player-slot]").forEach((node) => {
+        const selected = Number(node.dataset.playerSlot) === slot;
+        node.classList.toggle("is-selected", selected);
+        node.setAttribute("aria-pressed", String(selected));
+      });
+      auditRoot.querySelector<HTMLElement>("[data-match-choose]")!.hidden = true;
+      roleControl.value = role ?? inferredDotaMatchRole(player) ?? "core";
+      renderAudit();
+    }
+
+    const copyText = async (text: string) => {
+      try {
+        if (!navigator.clipboard?.writeText) return false;
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    const loadMatch = async (mode: "direct" | "relay") => {
+      const matchId = parseDotaMatchId(input.value);
+      if (!matchId) {
+        setStatus(copy.invalid!);
+        input.focus();
+        return;
+      }
+      submit.disabled = true;
+      relay.disabled = true;
+      demo.disabled = true;
+      selection.hidden = true;
+      result.hidden = true;
+      currentMatch = null;
+      currentSlot = null;
+      setStep(1);
+      setStatus(mode === "relay" ? copy.relayLoading! : copy.loading!, "loading");
+      const controller = new AbortController();
+      const timeoutMs = mode === "relay" ? data.config.relayTimeoutMs : data.config.directTimeoutMs;
+      const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = mode === "relay"
+          ? await fetch(data.config.relayEndpoint, {
+              method: "POST",
+              credentials: "same-origin",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-Money-Meta-Relay": "dota-match-v1"
+              },
+              body: JSON.stringify({ matchId }),
+              signal: controller.signal
+            })
+          : await fetch(`${data.config.endpoint}/${matchId}`, {
+              method: "GET",
+              credentials: "omit",
+              headers: { Accept: "application/json" },
+              signal: controller.signal
+            });
+        if (response.status === 404) throw new Error("not-found");
+        if (response.status === 429) throw new Error("rate-limit");
+        if (mode === "relay" && response.status === 504) throw new Error("relay-timeout");
+        if (!response.ok) throw new Error("request-failed");
+        const match = sanitizeDotaMatchResponse(await response.json());
+        if (!match) throw new Error("malformed");
+        if (match.matchId !== matchId) throw new Error("mismatch");
+        setStatus("", "success");
+        renderMatch(match);
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : "request-failed";
+        const aborted = controller.signal.aborted || (error instanceof DOMException && error.name === "AbortError");
+        const message = reason === "not-found"
+          ? copy.notFound!
+          : reason === "rate-limit"
+            ? copy.rateLimited!
+            : reason === "malformed"
+              ? copy.malformed!
+              : reason === "mismatch"
+                ? copy.mismatch!
+                : reason === "relay-timeout" || (mode === "relay" && aborted)
+                  ? copy.relayTimeout!
+                  : mode === "direct" && aborted
+                    ? copy.timeout!
+                    : mode === "relay" ? copy.relayFailed! : copy.failed!;
+        setStatus(message);
+      } finally {
+        window.clearTimeout(timer);
+        submit.disabled = false;
+        relay.disabled = false;
+        demo.disabled = false;
+      }
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void loadMatch("direct");
+    });
+
+    relay.addEventListener("click", () => void loadMatch("relay"));
+    demo.addEventListener("click", () => {
+      input.value = String(data.config.demoMatchId);
+      form.requestSubmit();
+    });
+    roleControl.addEventListener("change", renderAudit);
+    root.querySelector<HTMLButtonElement>("[data-match-share]")!.addEventListener("click", async () => {
+      if (!currentMatch || currentSlot === null) return;
+      const share = new URL(window.location.origin + window.location.pathname);
+      share.searchParams.set("match", String(currentMatch.matchId));
+      share.searchParams.set("slot", String(currentSlot));
+      share.searchParams.set("role", roleControl.value);
+      const copied = await copyText(share.toString());
+      root.querySelector<HTMLElement>("[data-share-status]")!.textContent = copied ? copy.shared! : copy.copyFailed!;
+    });
+    root.querySelector<HTMLButtonElement>("[data-copy-rule]")!.addEventListener("click", async () => {
+      if (!currentRule) return;
+      const copied = await copyText(currentRule);
+      root.querySelector<HTMLElement>("[data-rule-status]")!.textContent = copied ? copy.ruleCopied! : copy.copyFailed!;
+    });
+    root.querySelector<HTMLImageElement>("[data-selected-image]")!.addEventListener("load", (event) => { (event.currentTarget as HTMLImageElement).parentElement?.classList.remove("is-fallback"); });
+    root.querySelector<HTMLImageElement>("[data-selected-image]")!.addEventListener("error", (event) => {
+      const image = event.currentTarget as HTMLImageElement;
+      image.hidden = true;
+      image.parentElement?.classList.add("is-fallback");
+    });
+  }
+</script>

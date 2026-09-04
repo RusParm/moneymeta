@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/dota-match.ts": {
+      "maxDuration": 60
+    }
+  },
   "redirects": [
     {
       "source": "/gta-online/calculators/business-roi.html",

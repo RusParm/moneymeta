@@ -1,6 +1,60 @@
 # Current status
 
-Updated: 2026-08-31
+Updated: 2026-09-03
+
+## Active release candidate: v1.19.2 resilient Dota match retrieval
+
+- Replaced the fragile 18-second direct-request cutoff with a 30-second boundary and a distinct explanation that points to a separately chosen fallback.
+- Added an explicit same-origin Money Meta relay for slow or blocked OpenDota paths. The relay receives one public Match ID in a POST body, makes one read-only provider GET and returns only the existing sanitized match shape.
+- Relay responses are `no-store`; the function has no database, sends no cookies, never requests replay parsing and logs only anonymous duration, status and payload-shape diagnostics.
+- Direct and relayed requests retain separate RU/EN loading, timeout and failure states. A shared audit URL still never starts either request automatically.
+- Local gates pass with 157 tests, zero Astro diagnostics and 587 generated pages. Vercel function deployment and live direct/relay browser QA remain before handoff.
+
+## Active release candidate: v1.19.1 Dota match audit reliability
+
+- Final inventory now comes from the public match response even when replay timelines are absent: six active slots, three backpack slots and two neutral slots are retained separately from timed purchases.
+- A complete 409-item non-recipe ID reference from `odota/dotaconstants` resolves current, neutral and uncommon inventory items. Unknown valid IDs remain visible instead of being silently dropped.
+- Position display now retains OpenDota's position estimate, lane role and roaming flag. Broad core or support inference still uses only the explicit position estimate, never final GPM or net worth.
+- Missing replay parsing is described precisely as missing minute-by-minute gold or a timed purchase log. It is no longer described as missing items when a final loadout exists.
+- Item names moved out of the SVG chart into a numbered responsive legend, eliminating collisions between nearby purchases. Hero and item media now has a deliberate readable fallback when the external image cannot load.
+- Local gates pass with 153 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links.
+- HTTPS preview QA passes the RU and EN public-demo flows: ten-player selection, eight populated final-inventory cards for the selected hero, five timed purchases, five numbered chart markers and the matching five-card legend. The checked result has no application console errors, page-level horizontal overflow, broken visible images or content escaping its result cards.
+
+## Base release candidate: v1.19 Dota match economy audit
+
+- Added a complete RU/EN audit that turns an explicitly submitted public Match ID into a hero-specific economy replay without Steam login, local files or game-client access.
+- The page performs only a direct read-only OpenDota GET after a button press. It never auto-fetches a shared URL and never requests remote replay parsing.
+- The response is reduced before analysis to hero, slot and economy fields. Account identifiers, player names, chat and every unused field are discarded.
+- Parsed matches show accumulated-gold checkpoints, interval pace and completed major-item timings. Unparsed matches remain an honest final snapshot instead of receiving an invented curve.
+- Professional timing context is restricted to patch family 7.41, the player-selected role and samples of at least 200 first purchases. Role correction changes only that comparison, not match facts.
+- Share URLs contain only the public Match ID, player slot and selected role. Match data is not written to local storage.
+- The current Dota snapshot was retrieved on 2026-09-02 from 742 raw matches, with 434 role-eligible matches, 4,074 classified player rows, 93.9% role coverage and 188 observed items.
+- The audit has dedicated entry points in the Dota portal, tools surface, item navigation and sitemap. Local gates pass with 150 tests, zero Astro diagnostics, 587 generated pages and zero missing targets across 25,352 internal navigation links.
+- HTTPS preview QA passes the empty shared-URL state, explicit demo request, ten-player selection, parsed Necrophos audit, role override, RU/EN rendering and tools-page entry. The verified result contains four checkpoints, five major purchases and five chart markers, with zero site console errors or horizontal overflow.
+
+## Active release candidate: v1.18 GTA weekly journal
+
+- Added a complete RU/EN close-the-loop layer to the GTA weekly planner.
+- A player can save only a complete stay, test or switch decision before the session. Missing, expired, no-fit and asset-ineligible states cannot enter history.
+- The saved record keeps the official week boundary, selected route, player inputs and calculated projection as one auditable snapshot.
+- After play, the player adds total GTA$ earned and actual minutes. The interface compares actual, planned and normal rates on a GTA$/h basis.
+- Closing an outcome makes the entire record immutable. The forecast cannot be rewritten after the fact.
+- Local parsing rejects malformed records, keeps the newest record for a duplicated week and limits history to eight weeks.
+- Journal values never enter the share URL or a network request. The player can clear all local history explicitly.
+- Release gates pass with 140 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links.
+- HTTPS preview QA passes the empty state, save, reload, close, immutable-result and RU/EN history flows with zero site console errors or horizontal overflow. Journal values remain absent from shared URLs.
+
+## Base release candidate: v1.17 GTA weekly decision loop
+
+- Replaced the expired Brand Wars pulse with Rockstar's August 27 through September 2 Random Transform Races snapshot.
+- Added a complete RU/EN weekly planner for 3X Random Transform Races, 2X Drift Races and 2X Auto Shop Robbery Contracts.
+- The planner waits for the player's normal GTA$/h, observed base payout and observed run time instead of publishing an invented average.
+- Session comparison includes route-switching time, repeatability, a player-defined lift threshold and the full normal-route opportunity cost.
+- The GTA$100,000 Drift reward activates only after three complete runs; Auto Shop contracts remain ineligible without an already owned property.
+- Scenario inputs, share URL and a new-week marker remain local to the browser with no account or network data channel.
+- The expired August 28 through 30 6X window is labeled archive and excluded from every result.
+- GTA homepage entry and the focused meta route now lead directly to the weekly decision surface; long-term business rankings remain a separate layer below it.
+- Release gates currently pass with 131 tests, zero Astro diagnostics, 585 generated pages and zero missing targets across 26,391 internal links.
 
 ## Baseline
 
@@ -216,3 +270,25 @@ Every release is built and tested locally, deployed to a branch preview, checked
 - Added retrieval, role-cohort, independent-budget, zero-income, weak-sample and freshness boundary tests. All 102 tests pass and 567 pages build with zero Astro diagnostics.
 - Desktop preview checks confirm the homepage entry, live recalculation, zero-income handling, sample suppression, copied URL restoration, invalid-input handling, English rendering and transfer into the cumulative planner. At the same 1363px viewport, homepage height fell from 7229px to 2128px and game selection moved from 3154px to 683px. No production promotion is authorized.
 - Responsive CSS review added shrinking grid tracks, wrapping item names, 16px comparison inputs and 44px scenario buttons. Comparison fields stack below 380px. The owner reviewed the branch preview and reported no blocking visual issue; a fresh preview check is still required after the role-cohort update. No production promotion is authorized.
+
+## Active release candidate: v1.15 gamer-first homepage
+
+- Replaced the compact card-grid homepage with a cinematic five-game launcher. Each game opens one recognizable player situation, names the inputs that matter and offers two direct action routes plus the full hub.
+- Defaulted the launcher to Dota 2 and added a real homepage timing check for Blink Dagger and Force Staff. Gold now, gold per minute and current minute update both completion times and the contextual verdict through the shared tested item-comparison function.
+- Kept the conclusion deliberately conditional: a close timing does not produce a universal item winner, and zero farming rate does not produce an invented completion minute.
+- Promoted the existing owned game-world art from small thumbnails to the main decision surface. Each game changes the launcher accent without changing the shared interaction contract.
+- Collapsed freshness, three selected analyses, the GTA VI dossier and the evidence boundary into compact lower sections so the first useful action no longer waits behind product explanation.
+- Added keyboard tab behavior, explicit hidden-state CSS, responsive horizontal game selection and single-column mobile controls.
+- Local gate: 103 automated tests pass, 567 pages build and Astro reports zero diagnostics. Branch preview and responsive browser review remain required before production promotion.
+
+## Active release candidate: v1.16 Civilization, Fable and local trust
+
+- Added Civilization VII as a sixth live economy in complete RU/EN parity with a compact portal and focused economy, current-version and tools routes.
+- Added three tested, editable Civilization models: building payback window, settlement development choice and Economic Victory GDP gap. Values come from the player's current game and scenarios persist locally with shareable URLs.
+- Added Fable as a bounded pre-release dossier with confirmed economic signals, six explicit unknowns, a first-72-hours protocol and a dated Xbox Wire evidence registry.
+- Kept Fable out of live numeric models until the Autumn 2026 release build can be measured repeatedly.
+- Added a working browser-only Money Meta scenario JSON importer. File reading requires explicit selection, persistence requires a separate action and the component contains no network request path.
+- Published the safety contract for future local connectors: read-only, loopback-only, explicit pairing, path allowlists, local audit logs and no memory inspection, injection, credential collection or writes to game files.
+- Expanded homepage discovery and global navigation to seven game worlds, six live economies and two pre-release dossiers including GTA VI.
+- Added two original Money Meta economy-world assets for Civilization VII and Fable. They contain no publisher artwork, logos or identifiable characters.
+- One hundred sixteen automated tests pass. Five hundred eighty-five static pages build with zero Astro diagnostics. HTTPS preview browser QA remains required before production promotion.

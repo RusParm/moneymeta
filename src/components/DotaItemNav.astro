@@ -1,18 +1,20 @@
 ---
 import { getDotaItemComparePath, getDotaItemPlannerPath, getDotaItemsPath, type DotaItemsLocale } from "../data/dota-items";
+import { getDotaMatchAuditPath } from "../data/dota-match";
 
-interface Props { lang: DotaItemsLocale; active: "atlas" | "planner" | "item" | "compare"; }
+interface Props { lang: DotaItemsLocale; active: "atlas" | "planner" | "item" | "compare" | "audit"; }
 const { lang, active } = Astro.props;
 const copy = lang === "ru"
-  ? { portal: "Портал Dota 2", atlas: "Атлас предметов", compare: "Сравнить предметы", planner: "План сборки", tools: "Все инструменты" }
-  : { portal: "Dota 2 portal", atlas: "Item atlas", compare: "Compare items", planner: "Build planner", tools: "All tools" };
+  ? { portal: "Портал Dota 2", audit: "Разбор матча", atlas: "Атлас предметов", compare: "Сравнить предметы", planner: "План сборки", tools: "Все инструменты" }
+  : { portal: "Dota 2 portal", audit: "Match audit", atlas: "Item atlas", compare: "Compare items", planner: "Build planner", tools: "All tools" };
 const root = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
 ---
 
-<nav class="dota-items-nav" aria-label={lang === "ru" ? "Навигация по предметам Dota 2" : "Dota 2 item navigation"}>
+<nav class="dota-items-nav" aria-label={lang === "ru" ? "Навигация по экономике Dota 2" : "Dota 2 economy navigation"}>
   <a href={root}><span>00</span><strong>{copy.portal}</strong></a>
-  <a href={getDotaItemsPath(lang)} aria-current={active === "atlas" || active === "item" ? "page" : undefined}><span>01</span><strong>{copy.atlas}</strong></a>
-  <a href={getDotaItemComparePath(lang)} aria-current={active === "compare" ? "page" : undefined}><span>02</span><strong>{copy.compare}</strong></a>
-  <a href={getDotaItemPlannerPath(lang)} aria-current={active === "planner" ? "page" : undefined}><span>03</span><strong>{copy.planner}</strong></a>
-  <a href={`${root}tools/`}><span>04</span><strong>{copy.tools}</strong></a>
+  <a href={getDotaMatchAuditPath(lang)} aria-current={active === "audit" ? "page" : undefined}><span>01</span><strong>{copy.audit}</strong></a>
+  <a href={getDotaItemsPath(lang)} aria-current={active === "atlas" || active === "item" ? "page" : undefined}><span>02</span><strong>{copy.atlas}</strong></a>
+  <a href={getDotaItemComparePath(lang)} aria-current={active === "compare" ? "page" : undefined}><span>03</span><strong>{copy.compare}</strong></a>
+  <a href={getDotaItemPlannerPath(lang)} aria-current={active === "planner" ? "page" : undefined}><span>04</span><strong>{copy.planner}</strong></a>
+  <a href={`${root}tools/`}><span>05</span><strong>{copy.tools}</strong></a>
 </nav>

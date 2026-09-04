@@ -171,3 +171,59 @@ The raw OpenDota league cohort and the role-eligible timing cohort are separate 
 ## 2026-08-20: hidden pagination state must win the CSS cascade
 
 Any client-side catalog that uses the HTML `hidden` attribute must ship an explicit author-level `[hidden]` display rule. Component display declarations such as `display: grid` must never make an inactive page visible. The Dota item atlas shows twelve cards per page, preserves search and page state in the URL and covers the visibility contract with an automated regression test.
+
+## 2026-09-01: homepage starts with a player situation
+
+The homepage is a game launcher and working surface, not a diagram of the platform. A visitor first chooses a familiar game, sees one recognizable decision and gets a direct route into an editable model. Product architecture and methodology remain available below the useful action instead of competing with it in the first viewport.
+
+The default Dota 2 surface includes a real two-item timing calculation powered by the same tested comparison function as the full tool. It may show timing, missing gold and the consequence of changed inputs, but it must not turn close prices into a universal item winner. All five live economies keep equal launcher access and their own visual accent, question and input language.
+
+## 2026-09-01: Civilization VII is a live economy after Test of Time
+
+Civilization VII enters as the sixth live economy because Update 1.4.1 and the Test of Time foundation are released and documented by 2K. The first wedge is not a civilization tier list. It is the decision between production cost, time to benefit, settlement specialization and the GDP gap to Economic Victory. All numeric values remain editable inputs from the player's current game.
+
+## 2026-09-01: Fable is an evidence dossier until release
+
+Fable enters as a pre-release watch surface. Official Xbox material confirms jobs, property, settlement-specific reputation, price effects and a persistent population, but does not publish the formulas required for a reliable calculator. Money Meta records the evidence, boundary and launch test now, then waits for repeatable observations from the Autumn 2026 release build.
+
+## 2026-09-01: local connection begins with explicit file selection
+
+Local data access starts with browser-only import of the Money Meta scenario JSON format. Reading a file does not automatically persist it; the player chooses whether to keep a local copy. A future companion is permitted only when browser access is insufficient and must use loopback, read-only access, explicit pairing, path allowlists and a local audit log. Process memory, injection, background scanning, credentials and writes to game files remain prohibited.
+
+## 2026-09-01: GTA weekly meta must end in a player decision
+
+A current bonus list is useful evidence but not enough reason to return. The GTA meta page must compare the player's normal GTA$/h with one observed run under the current official multiplier, then answer whether to stay, test once or switch the remaining session. Missing player measurements produce no numeric recommendation.
+
+## 2026-09-01: official weekly facts and player observations are separate layers
+
+Rockstar supplies the multiplier, fixed challenge reward, access condition and validity window. The player supplies base payout, run time, normal earnings, available hours, switching cost, repeatability and the lift required to justify disruption. The model values GTA$ only; RP, LS Car Meet reputation and enjoyment remain visible but unpriced.
+
+## 2026-09-01: short bonuses cannot justify an unmodeled property purchase
+
+Auto Shop Robbery Contracts enter the weekly comparison only when the player already owns an Auto Shop. The weekly model does not include acquisition price, setup time or long-horizon use, so it cannot claim that purchasing the property for a short 2X window is rational. The expired 6X weekend remains archive context and never enters a live result.
+
+## 2026-09-02: a weekly forecast is locked before the outcome
+
+The GTA journal saves the route, player assumptions and calculated projection before actual play. The player may update an open plan, but adding the final cash and time closes the record. A closed record is immutable so the original forecast cannot be adjusted after the result is known.
+
+## 2026-09-02: weekly history stays bounded and local
+
+The first history layer requires no account or analytics identity. It stores at most eight valid weekly records in the browser, never adds actual play values to a share URL and provides a clear action for the entire journal. Plan and actual are compared as GTA$/h because the real session may not match the planned duration. One recorded session remains one observation, not a published benchmark.
+
+## 2026-09-03: a public match ID is an explicit remote boundary
+
+The Dota match audit sends a read-only GET request directly to OpenDota only after the player presses the audit button. It does not request Steam authentication, read a game client or file, send cookies, request remote replay parsing or auto-fetch from a shared URL. The response is reduced immediately to hero, slot and economy fields; account identifiers, player names, chat and all unused fields are discarded. Match data remains in the current tab and is not persisted.
+
+## 2026-09-03: one match is a replay question, not a performance grade
+
+Final GPM and net worth describe the result but do not locate a mistake. Parsed accumulated-gold checkpoints and completed-item timings may identify a replay window, while an unparsed match receives only a final snapshot. Professional timing appears only for the same current patch family, selected role and a sample of at least 200 purchases. It is context for one question, never a universal build order or a substitute for draft, map and objective state.
+
+## 2026-09-03: final inventory and timed purchases are separate evidence
+
+The public OpenDota match response may contain final active, backpack and neutral slots even when replay-derived purchase logs and gold timelines are absent. Money Meta retains and displays those final slots without attaching purchase minutes. Missing purchase history must be labeled as a missing timed log, not as missing items. Valid unknown item IDs remain visible as unresolved IDs until the maintained constants reference catches up.
+
+Chart markers use numbers and a separate responsive legend. External hero and item media always keeps a deliberate text fallback, so a CDN failure cannot erase the identity of the card or force labels to overlap.
+
+## 2026-09-03: a provider fallback stays explicit and data-minimal
+
+The primary Dota match request remains a direct browser GET to OpenDota. Because uncached provider responses can exceed the client timeout or fail on a regional network path, the player may deliberately choose a separate Money Meta relay. The relay accepts only a same-origin POST containing one validated public Match ID, makes one read-only OpenDota GET, discards account identifiers, names, chat and every unused field before returning the response, and sets `no-store`. It has no database, sends no cookies, never requests replay parsing and does not put the Match ID in the relay URL or application logs. Shared audit URLs still never auto-fetch.

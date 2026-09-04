@@ -2,8 +2,10 @@ import type { APIRoute } from "astro";
 import { getGoalPlannerPath } from "../data/goal-planners";
 import { getHubJourneyPath, hubJourneyList } from "../data/hub-journeys";
 import { HUB_SECTION_SLUGS, getHubPath, hubPortalList } from "../data/hub-portals";
+import { frontierHubList, getFrontierPath } from "../data/frontier-hubs";
 import { insights } from "../data/insights";
 import { dotaItems, getDotaItemComparePath, getDotaItemPath, getDotaItemPlannerPath, getDotaItemsPath } from "../data/dota-items";
+import { getDotaMatchAuditPath } from "../data/dota-match";
 
 const corePaths = [
   "/",
@@ -28,19 +30,29 @@ const corePaths = [
   "/en/gta-6/from-gta-online/",
   "/gta-6/launch-watch/",
   "/en/gta-6/launch-watch/",
+  "/connect/",
+  "/en/connect/",
   "/insights/",
   "/en/insights/"
 ];
 
 export const sitemapPaths = [...new Set([
   ...corePaths,
-  ...(["ru", "en"] as const).flatMap((lang) => [getDotaItemsPath(lang), getDotaItemComparePath(lang), getDotaItemPlannerPath(lang)]),
+  ...(["ru", "en"] as const).flatMap((lang) => [getDotaMatchAuditPath(lang), getDotaItemsPath(lang), getDotaItemComparePath(lang), getDotaItemPlannerPath(lang)]),
   ...dotaItems.flatMap((item) => [getDotaItemPath(item, "ru"), getDotaItemPath(item, "en")]),
   ...hubPortalList.flatMap((hub) => HUB_SECTION_SLUGS.flatMap((section) => [
     getHubPath(hub.id, "ru", section),
     getHubPath(hub.id, "en", section)
   ])),
   ...hubPortalList.flatMap((hub) => [getGoalPlannerPath(hub.id, "ru"), getGoalPlannerPath(hub.id, "en")]),
+  ...frontierHubList.flatMap((hub) => [
+    getFrontierPath(hub.id, "ru"),
+    getFrontierPath(hub.id, "en"),
+    ...hub.sections.flatMap((section) => [
+      getFrontierPath(hub.id, "ru", section.slug),
+      getFrontierPath(hub.id, "en", section.slug)
+    ])
+  ]),
   ...hubJourneyList.flatMap((journey) => [getHubJourneyPath(journey, "ru"), getHubJourneyPath(journey, "en")]),
   ...insights.flatMap((insight) => [`/insights/${insight.slug}/`, `/en/insights/${insight.slug}/`])
 ])];

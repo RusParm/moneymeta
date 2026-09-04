@@ -9,6 +9,7 @@ import { goalPlanners } from "../src/data/goal-planners";
 import { hubGateways } from "../src/data/hub-gateways";
 import { hubJourneys } from "../src/data/hub-journeys";
 import { crusaderKingsHub, totalWarHub } from "../src/data/strategy-hubs";
+import { civilizationHub, fableHub } from "../src/data/frontier-hubs";
 import { wowPatchContext } from "../src/data/wow-economy";
 import { wowEconomyNodes, wowMarketRoutes, wowMarks, wowPlayerPaths, wowPulse, wowScenarios } from "../src/data/wow-hub";
 const sourceFiles = import.meta.glob("../src/**/*.{astro,ts}", {
@@ -57,6 +58,8 @@ describe("editorial style", () => {
       wowScenarios,
       totalWarHub,
       crusaderKingsHub,
+      civilizationHub,
+      fableHub,
       insights,
       goalPlanners,
       hubGateways,
@@ -96,6 +99,20 @@ describe("editorial style", () => {
     });
 
     expect(offenders).toEqual([]);
+  });
+
+  it("keeps the homepage centered on a playable decision", () => {
+    const home = sourceFiles["../src/components/HomePage.astro"] ?? "";
+    const gameIds = home.match(/id: "(?:gta|dota|wow|total-war|ck3|civ7|fable)"/gu) ?? [];
+
+    expect(gameIds).toHaveLength(7);
+    expect(home).toContain("data-home-launcher");
+    expect(home).toContain('role="tablist"');
+    expect(home).toContain("data-home-demo");
+    expect(home).toContain("compareDotaItems");
+    expect(home).toContain('name="availableGold"');
+    expect(home).toContain('name="goldPerMinute"');
+    expect(home).toContain('name="currentMinute"');
   });
 
   it("keeps decorative path media out of the reading layer", () => {

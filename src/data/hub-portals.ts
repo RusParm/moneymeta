@@ -89,7 +89,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     lede: t("Money Meta связывает твой банк, время на игру и цель с конкретным следующим ходом. Не листай одну бесконечную страницу: выбери задачу и открой нужный слой.", "Money Meta connects your bank, play time and objective to one concrete next move. Pick the decision and open the relevant layer instead of scrolling one endless page."),
     valueTitle: t("Не список выплат, а система принятия решений", "Not a payout list. A decision system."),
     valueText: t("Мы отделяем валовую продажу от чистого потока, производственное время от ручной нагрузки и временный бонус от постоянной экономики.", "We separate headline sale value from net flow, production time from active friction and a temporary bonus from the permanent economy."),
-    version: t("Brand Wars · до 26 августа", "Brand Wars · through August 26"),
+    version: t("Random Transform Races · до 2 сентября", "Random Transform Races · through September 2"),
     checkedAt: weeklyMeta.checkedAt,
     sourceLabel: t("Rockstar Newswire", "Rockstar Newswire"),
     sourceUrl: weeklyMeta.sourceUrl,
@@ -102,14 +102,14 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     sections: [
       section("economy", "01", "$", t("Экономика", "Economy"), t("Куда на самом деле уходит GTA$", "Where GTA$ actually moves"), t("Весь цикл от свободного капитала и сырья до чистой продажи и повторного вложения.", "The full loop from deployable capital and supplies to net sale proceeds and reinvestment."), t("Увидишь узкое место денежного цикла", "Find the bottleneck in the cash loop"), t("Какой этап съедает мой капитал или время?", "Which stage consumes my capital or time?")),
       section("player-paths", "02", "П", t("Маршруты", "Player paths"), t("План для твоего банка и режима игры", "A plan for your bank and play pattern"), t("Отдельные системы для возвращения после перерыва, коротких сессий и развитого портфеля.", "Separate operating systems for returners, short sessions and developed portfolios."), t("Получишь порядок следующих трёх действий", "Get the next three actions in order"), t("Что делать первым именно в моём положении?", "What should I do first in my position?")),
-      section("meta", "03", "W", t("Мета", "Meta"), t("Что меняет текущая неделя", "What the current week changes"), t("Brand Wars, временные множители и условные рейтинги без превращения события в вечный совет.", "Brand Wars, temporary multipliers and conditional rankings without turning an event into permanent advice."), t("Отделишь короткое окно от постоянной стратегии", "Separate a short window from permanent strategy"), t("Стоит ли менять план из-за бонуса этой недели?", "Should this week's bonus change the plan?")),
+      section("meta", "03", "W", t("Мета", "Meta"), t("Стоит ли менять маршрут на этой неделе", "Should your route change this week"), t("Свежие множители Rockstar, твой реальный замер и персональный порог выгоды в одном коротком решении.", "Current Rockstar multipliers, your realized sample and a personal lift threshold in one focused decision."), t("Получишь решение для оставшихся часов недели", "Get a decision for the hours left this week"), t("Обгонит ли бонус мой обычный GTA$/ч?", "Will the bonus beat my normal GTA$/h?")),
       section("guides", "04", "Г", t("Гайды", "Guides"), t("Аудиты, сравнения и готовые протоколы", "Audits, comparisons and field protocols"), t("Полные разборы с вводными, границами применимости, первоисточниками и переходом в модель.", "Complete analyses with inputs, boundaries, primary sources and a direct route into the model."), t("Прочитаешь решение, а не пересказ механик", "Read a decision, not a mechanics recap"), t("Как провести конкретное решение от вопроса до проверки?", "How do I take a decision from question to verification?")),
       section("tools", "05", "Σ", t("Инструменты", "Tools"), t("Считать до покупки, а не после", "Calculate before buying, not after"), t("Окупаемость бизнеса, срок до цели и распределение портфеля с редактируемыми вводными.", "Business payback, time to goal and portfolio allocation with editable inputs."), t("Проверишь решение на своих цифрах", "Test the decision with your own numbers"), t("Ускоряет ли эта покупка мою реальную цель?", "Does this purchase accelerate my actual goal?"))
     ],
     media: [{
       src: "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/9k2kok31k3a8k9/46944605c1257bcb4dca1dbc4ffe515cd55cddda.jpg",
-      alt: t("Официальный кадр события Brand Wars в GTA Online", "Official GTA Online Brand Wars event artwork"),
-      caption: t("Текущий редакционный контекст: Brand Wars. Бонусы проверяются отдельно от постоянной модели бизнеса.", "Current editorial context: Brand Wars. Bonuses stay separate from the permanent business model."),
+      alt: t("Архивный официальный кадр события GTA Online", "Archived official GTA Online event artwork"),
+      caption: t("Архивный кадр Rockstar. Текущая недельная модель использует свежий Newswire и отдельно показывает срок каждого бонуса.", "Archived Rockstar artwork. The current weekly model uses the latest Newswire and shows every bonus window separately."),
       sourceLabel: "Rockstar Games",
       sourceUrl: weeklyMeta.sourceUrl,
       position: "50% 45%"

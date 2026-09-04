@@ -16,13 +16,16 @@ GTA Online is the proving ground for the methodology and product. It also create
 
 ## Active verticals
 
-- GTA Online: long-horizon production economy and asset allocation.
+- GTA Online: long-horizon production economy, asset allocation and a current-week route decision based on the player's realized payouts.
 - Dota 2: match economy, timing and liquidity reserves.
 - World of Warcraft Retail: player-driven markets, crafting margins and inventory liquidity.
 - Total War: Warhammer III: campaign capital, reserve and conquest choices.
 - Crusader Kings III: domain investment, war liquidity and succession resilience.
+- Civilization VII: settlement development, production timing and Economic Victory gap planning after Test of Time.
 
-GTA VI is a separate pre-release watch surface. It tracks only official facts, explicit unknowns and future measurement plans; it is not counted as a sixth live economy and must not promise an unconfirmed GTA VI Online product.
+GTA VI and Fable are separate pre-release watch surfaces. They track only official facts, explicit unknowns and future measurement plans. Fable remains outside live numeric models until its Autumn 2026 release build and economic behavior can be verified.
+
+The platform therefore contains six live economies and two bounded pre-release dossiers. Expansion does not remove the sequential depth requirement for any existing hub.
 
 WoW Classic is a future separate product surface, not a data toggle inside the Retail model.
 
@@ -33,6 +36,14 @@ WoW Classic is a future separate product surface, not a data toggle inside the R
 3. Money Meta returns a primary action and transparent alternatives.
 4. The result can be saved or shared.
 5. Weekly data changes give the player a reason to return.
+
+The GTA weekly loop is the first explicit implementation of step five. A new Rockstar snapshot changes a local snapshot identifier, the interface marks the week as unseen on that device and the player can rerun the decision with current observations. The player may lock the forecast before a session, add actual cash and time afterward and compare normalized GTA$/h without rewriting a closed result. The device keeps a bounded eight-week journal. No account, notification permission or server-side profile is required.
+
+The Dota match audit is the first explicit provider-backed replay loop. A player supplies one public Match ID and starts a read-only request deliberately, then selects a hero without exposing account identifiers, player names or chat. The primary request goes directly to OpenDota. A separately chosen fallback relay may retrieve and reduce the same public response when the direct route is slow or blocked; it has no database and returns `no-store`. Parsed matches produce economy checkpoints and completed-item timings; unparsed matches stay at an honest final snapshot. A shared result carries only the public Match ID, player slot and chosen role, and never starts a request automatically.
+
+## Local data boundary
+
+The browser may read only a file explicitly selected by the player. A remote provider request requires a separate, visible player action and sends only the minimum public identifier required for that task. Scenario persistence stays on the device unless the player deliberately exports a shareable URL or file. A future local companion must be open, read-only, loopback-only and restricted to an explicit path allowlist. Money Meta does not inspect process memory, inject into game clients, scan folders in the background or request game credentials.
 
 ## Business model
 

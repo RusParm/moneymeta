@@ -1,0 +1,415 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/connect.css";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const path = lang === "ru" ? "/connect/" : "/en/connect/";
+const alternate = lang === "ru" ? "/en/connect/" : "/connect/";
+
+const copy = lang === "ru" ? {
+  title: "Безопасное локальное подключение игр | Money Meta",
+  description: "Как Money Meta читает выбранные пользователем файлы локально, разделяет официальные, наблюдаемые и личные данные и не сканирует устройство.",
+  back: "← На главную",
+  kicker: "MONEY META LOCAL · ПРИНЦИПЫ ДО КОДА",
+  heading: "Подключай данные игры, не отдавая их сайту.",
+  lede: "Файл выбираешь ты. Браузер читает его на устройстве. Сохранение локальной копии требует отдельного действия. Ни папки, ни память игры, ни аккаунт Money Meta не сканирует.",
+  demo: "Проверить локальный импорт",
+  contract: "Прочитать правила безопасности",
+  noAccount: "Без аккаунта",
+  noUpload: "Без отправки файла",
+  explicit: "Только явный выбор",
+  layersKicker: "ТРИ СЛОЯ ДАННЫХ",
+  layersTitle: "Один вывод, три разных уровня доверия.",
+  layersText: "Сильный аналитический ресурс не смешивает правила игры, статистику сообщества и личное состояние игрока в одну непроверяемую цифру.",
+  official: "Подтверждённые правила",
+  officialText: "Патч, механика и категория показателя из первоисточника издателя.",
+  observed: "Наблюдаемые данные",
+  observedText: "Матчи, рынки и повторные замеры с выборкой, датой и границей качества.",
+  local: "Твоя партия",
+  localText: "Банк, сохранение, сценарий и цель. По умолчанию остаются только на устройстве.",
+  decision: "Решение",
+  decisionText: "Формула показывает цену выбора и всегда оставляет вводные редактируемыми.",
+  labKicker: "РАБОЧИЙ ПРОТОТИП",
+  labTitle: "Импортируй сценарий JSON прямо в браузере.",
+  labText: "Это уже действующий локальный контур для сценариев Money Meta. Он не умеет читать сохранения игр и не притворяется готовым коннектором.",
+  empty: "Файл ещё не выбран",
+  emptyText: "Поддерживается только сценарий Money Meta JSON размером до 64 КБ.",
+  choose: "Выбрать JSON",
+  template: "Скачать шаблон",
+  keep: "Сохранить на устройстве",
+  clear: "Удалить локальную копию",
+  sample: "Что находится в файле",
+  sampleText: "Формат хранит название игры, дату сценария и список простых показателей. Он не содержит токены, пароль или путь к файлам игры.",
+  file: "Файл",
+  game: "Игра",
+  entries: "Показателей",
+  storage: "Состояние",
+  inMemory: "Прочитан только в текущей вкладке",
+  stored: "Локальная копия сохранена",
+  restored: "Локальная копия восстановлена с устройства",
+  deleted: "Локальная копия удалена",
+  invalid: "Файл не прошёл проверку формата",
+  tooLarge: "Файл больше 64 КБ",
+  readError: "Браузер не смог прочитать файл",
+  saveError: "Локальное хранилище недоступно",
+  rulesKicker: "НЕОБСУЖДАЕМЫЕ ПРАВИЛА",
+  rulesTitle: "Будущий коннектор не выйдет даже в тест без этих гарантий.",
+  connectorsKicker: "СТАТУС ПОДКЛЮЧЕНИЙ",
+  connectorsTitle: "Готовность показываем честно.",
+  connector: "Источник",
+  status: "Статус",
+  access: "Доступ",
+  now: "Доступно",
+  planned: "Запланировано",
+  research: "Исследование",
+  blocked: "После релиза",
+  futureKicker: "ЛОКАЛЬНЫЙ ПОМОЩНИК",
+  futureTitle: "Если браузера станет мало, граница безопасности не исчезнет.",
+  futureText: "Локальный помощник понадобится только для поддерживаемых файлов, которые браузер не может открыть удобно. Он будет отдельным открытым приложением, а не скрытым фоновым процессом.",
+  independent: "Money Meta не связан с издателями игр и не запрашивает игровые учётные данные."
+} : {
+  title: "Safe local game connection | Money Meta",
+  description: "How Money Meta reads user-selected files locally, separates official, observed and personal data and avoids device scanning.",
+  back: "← Back home",
+  kicker: "MONEY META LOCAL · PRINCIPLES BEFORE CODE",
+  heading: "Connect game data without giving it to the site.",
+  lede: "You choose the file. The browser reads it on the device. Keeping a local copy requires a separate action. Money Meta does not scan folders, game memory or accounts.",
+  demo: "Try local import",
+  contract: "Read the safety contract",
+  noAccount: "No account",
+  noUpload: "No file upload",
+  explicit: "Explicit selection only",
+  layersKicker: "THREE DATA LAYERS",
+  layersTitle: "One conclusion, three different trust levels.",
+  layersText: "A tier-one resource does not mix game rules, community statistics and personal state into one untraceable number.",
+  official: "Verified rules",
+  officialText: "Patch, mechanic and metric category from a publisher's primary source.",
+  observed: "Observed data",
+  observedText: "Matches, markets and repeated measurements with a sample, date and quality boundary.",
+  local: "Your game",
+  localText: "Bank, save, scenario and objective. They stay on the device by default.",
+  decision: "Decision",
+  decisionText: "The formula shows the trade-off and keeps every input editable.",
+  labKicker: "WORKING PROTOTYPE",
+  labTitle: "Import a scenario JSON directly in the browser.",
+  labText: "This is a working local path for Money Meta scenarios. It cannot read game saves and does not pretend to be a finished connector.",
+  empty: "No file selected",
+  emptyText: "Only a Money Meta JSON scenario up to 64 KB is supported.",
+  choose: "Choose JSON",
+  template: "Download template",
+  keep: "Keep on this device",
+  clear: "Delete local copy",
+  sample: "What the file contains",
+  sampleText: "The format stores a game name, scenario date and a list of simple metrics. It contains no tokens, passwords or game file paths.",
+  file: "File",
+  game: "Game",
+  entries: "Metrics",
+  storage: "State",
+  inMemory: "Read only in this tab",
+  stored: "Local copy saved",
+  restored: "Local copy restored from this device",
+  deleted: "Local copy deleted",
+  invalid: "The file failed format validation",
+  tooLarge: "The file is larger than 64 KB",
+  readError: "The browser could not read the file",
+  saveError: "Local storage is unavailable",
+  rulesKicker: "NON-NEGOTIABLE RULES",
+  rulesTitle: "A future connector will not enter testing without these guarantees.",
+  connectorsKicker: "CONNECTOR STATUS",
+  connectorsTitle: "Readiness stays explicit.",
+  connector: "Source",
+  status: "Status",
+  access: "Access",
+  now: "Available",
+  planned: "Planned",
+  research: "Research",
+  blocked: "After launch",
+  futureKicker: "LOCAL COMPANION",
+  futureTitle: "If the browser becomes insufficient, the safety boundary remains.",
+  futureText: "A local companion will be needed only for supported files that are inconvenient for a browser to open. It will be a separate open application, not a hidden background process.",
+  independent: "Money Meta is not affiliated with game publishers and does not request game credentials."
+};
+
+const layers = [
+  { code: "01", title: copy.official, text: copy.officialText, status: lang === "ru" ? "Источник + версия" : "Source + version" },
+  { code: "02", title: copy.observed, text: copy.observedText, status: lang === "ru" ? "Выборка + свежесть" : "Sample + freshness" },
+  { code: "03", title: copy.local, text: copy.localText, status: lang === "ru" ? "Устройство игрока" : "Player device" }
+];
+
+const rules = lang === "ru" ? [
+  ["01", "Только явный выбор", "Никакого обхода папок и фонового поиска. Пользователь сам выбирает каждый файл или разрешённую папку."],
+  ["02", "Только чтение", "Money Meta не изменяет сохранения, настройки и файлы игры."],
+  ["03", "Никакой памяти и внедрения", "Нет чтения памяти процесса, перехвата, модификации клиента и действий рядом с античитом."],
+  ["04", "Минимальные разрешения", "Каждый коннектор публикует список данных, путей и причин доступа до подключения."],
+  ["05", "Удаление в один клик", "Локальный профиль, журнал и разрешение можно удалить без обращения в поддержку."],
+  ["06", "Проверяемый журнал", "Локальный помощник показывает, какой файл и когда был прочитан. Скрытых сетевых отправок нет."]
+] : [
+  ["01", "Explicit selection only", "No folder crawling or background discovery. The user chooses every file or allowed directory."],
+  ["02", "Read only", "Money Meta does not modify saves, settings or game files."],
+  ["03", "No memory or injection", "No process memory access, hooks, client modification or anti-cheat-adjacent behavior."],
+  ["04", "Minimum permissions", "Every connector publishes its data, path and purpose manifest before pairing."],
+  ["05", "One-click deletion", "A local profile, audit log and permission can be removed without contacting support."],
+  ["06", "Inspectable log", "The local companion shows which file was read and when. There are no hidden network sends."]
+];
+
+const connectors = lang === "ru" ? [
+  ["Сценарий Money Meta JSON", copy.now, "Выбранный файл · только браузер"],
+  ["Dota 2 · OpenDota", copy.now, "Публичная статистика провайдера · без файлов игрока"],
+  ["WoW Retail · Blizzard API", copy.planned, "Только поддерживаемый интерфейс Blizzard"],
+  ["Civilization VII · сохранение", copy.research, "Ручные вводные сейчас · формат ещё не одобрен"],
+  ["Fable · локальные данные", copy.blocked, "Нет коннектора до проверки релизной версии"]
+] : [
+  ["Money Meta scenario JSON", copy.now, "Selected file · browser only"],
+  ["Dota 2 · OpenDota", copy.now, "Provider public statistics · no player files"],
+  ["WoW Retail · Blizzard API", copy.planned, "Supported Blizzard interface only"],
+  ["Civilization VII · save", copy.research, "Manual inputs now · format not approved"],
+  ["Fable · local data", copy.blocked, "No connector before launch build review"]
+];
+
+const companion = lang === "ru" ? [
+  ["127.0.0.1", "Работает только через локальный адрес и не открывает внешний порт."],
+  ["PAIR", "Одноразовый код связывает вкладку и помощник. Подключение можно отозвать."],
+  ["ALLOW", "Белый список путей задаётся явно. Доступ за его пределами запрещён."],
+  ["LOG", "Каждое чтение попадает в локальный журнал с временем и причиной."]
+] : [
+  ["127.0.0.1", "Runs on loopback only and exposes no external port."],
+  ["PAIR", "A one-time code pairs the tab and companion. Pairing can be revoked."],
+  ["ALLOW", "An explicit path allowlist blocks access outside approved locations."],
+  ["LOG", "Every read enters a local log with time and reason."]
+];
+---
+
+<BaseLayout title={copy.title} description={copy.description} lang={lang} canonicalPath={path} alternatePath={alternate}>
+  <main class="page connect-page" data-connect-page data-lang={lang}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/connect/" enPath="/en/connect/" backPath={lang === "ru" ? "/" : "/en/"} backLabel={copy.back} />
+
+      <section class="connect-hero" aria-labelledby="connect-title">
+        <div class="connect-hero-copy">
+          <span class="section-kicker">{copy.kicker}</span>
+          <h1 id="connect-title">{copy.heading}</h1>
+          <p>{copy.lede}</p>
+          <div class="hero-actions"><a class="button primary" href="#local-lab">{copy.demo} ↓</a><a class="button ghost" href="#safety-contract">{copy.contract}</a></div>
+        </div>
+        <div class="connect-boundary" aria-label={lang === "ru" ? "Граница устройства" : "Device boundary"}>
+          <div class="connect-device">
+            <span>{lang === "ru" ? "ТВОЁ УСТРОЙСТВО" : "YOUR DEVICE"}</span>
+            <div><b>JSON</b><strong>{lang === "ru" ? "Выбранный файл" : "Selected file"}</strong></div>
+            <i aria-hidden="true">→</i>
+            <div><b>MM</b><strong>{lang === "ru" ? "Локальная модель" : "Local model"}</strong></div>
+          </div>
+          <div class="connect-network"><span aria-hidden="true">×</span><strong>{lang === "ru" ? "Файл не отправляется" : "File is not uploaded"}</strong></div>
+        </div>
+        <div class="connect-hero-proof"><span>{copy.noAccount}</span><span>{copy.noUpload}</span><span>{copy.explicit}</span></div>
+      </section>
+
+      <section class="connect-layers" aria-labelledby="layers-title">
+        <header><span class="section-kicker">{copy.layersKicker}</span><h2 id="layers-title">{copy.layersTitle}</h2><p>{copy.layersText}</p></header>
+        <div class="connect-layer-flow">
+          {layers.map((layer) => <article><span>{layer.code}</span><small>{layer.status}</small><h3>{layer.title}</h3><p>{layer.text}</p></article>)}
+          <aside><span>Σ</span><small>{copy.decision}</small><h3>{copy.decision}</h3><p>{copy.decisionText}</p></aside>
+        </div>
+      </section>
+
+      <section id="local-lab" class="connect-lab" aria-labelledby="local-lab-title">
+        <header class="connect-section-head"><div><span class="section-kicker">{copy.labKicker}</span><h2 id="local-lab-title">{copy.labTitle}</h2></div><p>{copy.labText}</p></header>
+        <div class="connect-lab-grid">
+          <div class="connect-dropzone" data-local-dropzone>
+            <input id="local-json-file" type="file" accept=".json,application/json" data-local-file />
+            <div class="connect-file-icon" aria-hidden="true"><span>{"{ }"}</span><i></i></div>
+            <h3 data-local-title>{copy.empty}</h3>
+            <p data-local-message>{copy.emptyText}</p>
+            <dl data-local-summary hidden>
+              <div><dt>{copy.file}</dt><dd data-local-name>scenario.json</dd></div>
+              <div><dt>{copy.game}</dt><dd data-local-game>civilization-7</dd></div>
+              <div><dt>{copy.entries}</dt><dd data-local-entries>0</dd></div>
+              <div><dt>{copy.storage}</dt><dd data-local-storage>{copy.inMemory}</dd></div>
+            </dl>
+            <div class="connect-lab-actions">
+              <label class="button primary" for="local-json-file">{copy.choose}</label>
+              <button class="button" type="button" data-download-template>{copy.template}</button>
+              <button class="button" type="button" data-save-local disabled>{copy.keep}</button>
+              <button class="connect-clear" type="button" data-clear-local>{copy.clear}</button>
+            </div>
+          </div>
+          <aside class="connect-format">
+            <span>{copy.sample}</span>
+            <h3>money-meta-scenario / v1</h3>
+            <p>{copy.sampleText}</p>
+            <pre><code>{`{
+  "format": "money-meta-scenario",
+  "version": 1,
+  "game": "civilization-7",
+  "savedAt": "2026-09-01T00:00:00Z",
+  "entries": [
+    { "metric": "currentGdp", "value": 430 }
+  ]
+}`}</code></pre>
+          </aside>
+        </div>
+      </section>
+
+      <section id="safety-contract" class="connect-rules" aria-labelledby="rules-title">
+        <header><span class="section-kicker">{copy.rulesKicker}</span><h2 id="rules-title">{copy.rulesTitle}</h2></header>
+        <ol>{rules.map(([code, title, text]) => <li><span>{code}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}</ol>
+      </section>
+
+      <section class="connect-status" aria-labelledby="connectors-title">
+        <header><span class="section-kicker">{copy.connectorsKicker}</span><h2 id="connectors-title">{copy.connectorsTitle}</h2></header>
+        <div role="table" aria-label={copy.connectorsTitle}>
+          <div role="row" class="connect-status-head"><span role="columnheader">{copy.connector}</span><span role="columnheader">{copy.status}</span><span role="columnheader">{copy.access}</span></div>
+          {connectors.map(([name, status, access]) => <div role="row"><strong role="cell">{name}</strong><span role="cell" data-connector-status={status}>{status}</span><p role="cell">{access}</p></div>)}
+        </div>
+      </section>
+
+      <section class="connect-companion" aria-labelledby="companion-title">
+        <div><span class="section-kicker">{copy.futureKicker}</span><h2 id="companion-title">{copy.futureTitle}</h2><p>{copy.futureText}</p></div>
+        <ul>{companion.map(([mark, text]) => <li><span>{mark}</span><p>{text}</p></li>)}</ul>
+      </section>
+
+      <p class="connect-independent">{copy.independent}</p>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  interface LocalEntry { metric: string; value: string | number | boolean; }
+  interface LocalScenario { format: "money-meta-scenario"; version: 1; game: string; savedAt: string; entries: LocalEntry[]; fileName?: string; }
+
+  const page = document.querySelector<HTMLElement>("[data-connect-page]");
+  if (page) {
+    const lang = page.dataset.lang === "en" ? "en" : "ru";
+    const input = page.querySelector<HTMLInputElement>("[data-local-file]");
+    const dropzone = page.querySelector<HTMLElement>("[data-local-dropzone]");
+    const title = page.querySelector<HTMLElement>("[data-local-title]");
+    const message = page.querySelector<HTMLElement>("[data-local-message]");
+    const summary = page.querySelector<HTMLElement>("[data-local-summary]");
+    const name = page.querySelector<HTMLElement>("[data-local-name]");
+    const game = page.querySelector<HTMLElement>("[data-local-game]");
+    const entries = page.querySelector<HTMLElement>("[data-local-entries]");
+    const storage = page.querySelector<HTMLElement>("[data-local-storage]");
+    const save = page.querySelector<HTMLButtonElement>("[data-save-local]");
+    const clear = page.querySelector<HTMLButtonElement>("[data-clear-local]");
+    const download = page.querySelector<HTMLButtonElement>("[data-download-template]");
+    const storageKey = "money-meta:local-scenario:v1";
+    let current: LocalScenario | null = null;
+
+    const labels = lang === "ru" ? {
+      ready: "Сценарий проверен локально",
+      readyText: "Содержимое прочитано браузером. Оно не сохранено и не отправлено.",
+      inMemory: "Прочитан только в текущей вкладке",
+      stored: "Локальная копия сохранена",
+      restored: "Локальная копия восстановлена с устройства",
+      deleted: "Локальная копия удалена",
+      empty: "Файл ещё не выбран",
+      emptyText: "Поддерживается только сценарий Money Meta JSON размером до 64 КБ.",
+      invalid: "Файл не прошёл проверку формата",
+      tooLarge: "Файл больше 64 КБ",
+      readError: "Браузер не смог прочитать файл",
+      saveError: "Локальное хранилище недоступно"
+    } : {
+      ready: "Scenario validated locally",
+      readyText: "The browser read the content. It has not been stored or uploaded.",
+      inMemory: "Read only in this tab",
+      stored: "Local copy saved",
+      restored: "Local copy restored from this device",
+      deleted: "Local copy deleted",
+      empty: "No file selected",
+      emptyText: "Only a Money Meta JSON scenario up to 64 KB is supported.",
+      invalid: "The file failed format validation",
+      tooLarge: "The file is larger than 64 KB",
+      readError: "The browser could not read the file",
+      saveError: "Local storage is unavailable"
+    };
+
+    const isScenario = (value: unknown): value is LocalScenario => {
+      if (!value || typeof value !== "object") return false;
+      const item = value as Partial<LocalScenario>;
+      if (item.format !== "money-meta-scenario" || item.version !== 1 || typeof item.game !== "string" || item.game.length < 1 || item.game.length > 80) return false;
+      if (typeof item.savedAt !== "string" || Number.isNaN(Date.parse(item.savedAt))) return false;
+      if (!Array.isArray(item.entries) || item.entries.length > 100) return false;
+      return item.entries.every((entry) => entry && typeof entry === "object" && typeof entry.metric === "string" && entry.metric.length > 0 && entry.metric.length <= 80 && ["string", "number", "boolean"].includes(typeof entry.value));
+    };
+
+    const show = (scenario: LocalScenario, state: "memory" | "stored" | "restored") => {
+      current = scenario;
+      dropzone?.setAttribute("data-state", "ready");
+      if (title) title.textContent = labels.ready;
+      if (message) message.textContent = state === "restored" ? labels.restored : labels.readyText;
+      if (summary) summary.hidden = false;
+      if (name) name.textContent = scenario.fileName ?? "scenario.json";
+      if (game) game.textContent = scenario.game;
+      if (entries) entries.textContent = String(scenario.entries.length);
+      if (storage) storage.textContent = state === "memory" ? labels.inMemory : state === "stored" ? labels.stored : labels.restored;
+      if (save) save.disabled = state !== "memory";
+    };
+
+    const showError = (text: string) => {
+      current = null;
+      dropzone?.setAttribute("data-state", "error");
+      if (title) title.textContent = labels.invalid;
+      if (message) message.textContent = text;
+      if (summary) summary.hidden = true;
+      if (save) save.disabled = true;
+    };
+
+    input?.addEventListener("change", async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      if (file.size > 64 * 1024) return showError(labels.tooLarge);
+      try {
+        const parsed: unknown = JSON.parse(await file.text());
+        if (!isScenario(parsed)) return showError(labels.invalid);
+        show({ ...parsed, fileName: file.name }, "memory");
+      } catch {
+        showError(labels.readError);
+      }
+    });
+
+    save?.addEventListener("click", () => {
+      if (!current) return;
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(current));
+        show(current, "stored");
+      } catch {
+        if (message) message.textContent = labels.saveError;
+      }
+    });
+
+    clear?.addEventListener("click", () => {
+      try { localStorage.removeItem(storageKey); } catch { /* storage may be blocked */ }
+      current = null;
+      if (input) input.value = "";
+      dropzone?.setAttribute("data-state", "empty");
+      if (title) title.textContent = labels.empty;
+      if (message) message.textContent = labels.deleted;
+      if (summary) summary.hidden = true;
+      if (save) save.disabled = true;
+    });
+
+    download?.addEventListener("click", () => {
+      const template: LocalScenario = {
+        format: "money-meta-scenario",
+        version: 1,
+        game: "civilization-7",
+        savedAt: new Date().toISOString(),
+        entries: [{ metric: "currentGdp", value: 430 }]
+      };
+      const url = URL.createObjectURL(new Blob([JSON.stringify(template, null, 2)], { type: "application/json" }));
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "money-meta-scenario.json";
+      anchor.click();
+      URL.revokeObjectURL(url);
+    });
+
+    try {
+      const stored: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+      if (isScenario(stored)) show(stored, "restored");
+    } catch { /* ignore invalid local data */ }
+  }
+</script>

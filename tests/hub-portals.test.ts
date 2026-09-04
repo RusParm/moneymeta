@@ -52,7 +52,7 @@ describe("v1.9 hub portals", () => {
     expect(hubPortals.dota.version.ru).toContain("7.41e");
     expect(hubPortals["total-war"].version.ru).toContain("8.1");
     expect(hubPortals.ck3.version.ru).toContain("1.19");
-    expect(hubPortals.gta.version.ru).toContain("Brand Wars");
+    expect(hubPortals.gta.version.ru).toContain("Random Transform Races");
     expect(hubPortals.wow.version.ru).toContain("Ula’tek");
   });
 
