@@ -108,6 +108,7 @@
 }
 
 .mm-home-launcher {
+  scroll-margin-top: 24px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, .12);
   border-radius: 22px;
@@ -138,18 +139,21 @@
 
 .mm-home-game-tabs {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(148px, 1fr));
+  overflow-x: auto;
   background: #0d0e13;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--home-accent-rgb), .34) transparent;
 }
 
 .mm-home-game-tabs button {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
   min-height: 76px;
-  padding: 10px 16px;
+  padding: 10px 28px 10px 12px;
   border: 0;
   border-right: 1px solid rgba(255, 255, 255, .07);
   border-bottom: 2px solid transparent;
@@ -166,13 +170,12 @@
 .mm-home-game-tabs button::after {
   content: "";
   position: absolute;
-  right: 16px;
-  top: 50%;
+  right: 11px;
+  top: 11px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #4e4c55;
-  transform: translateY(-50%);
   transition: background .18s ease, box-shadow .18s ease;
 }
 
@@ -193,9 +196,9 @@
 }
 
 .mm-home-game-tabs img {
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
   border-radius: 7px;
   object-fit: cover;
   filter: saturate(.72) brightness(.82);
@@ -208,11 +211,14 @@
 }
 
 .mm-home-game-tabs button > span {
+  display: -webkit-box;
+  min-width: 0;
   overflow: hidden;
   font: 700 13px/1.25 "Roboto Condensed", sans-serif;
   letter-spacing: .01em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .mm-home-stage {
@@ -328,6 +334,53 @@
   border-left: 2px solid var(--home-accent);
   color: #aaa7af;
   font: 600 11px/1.4 "JetBrains Mono", monospace;
+}
+
+.mm-home-match-loader {
+  display: grid;
+  width: min(100%, 620px);
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.mm-home-match-loader > label {
+  color: var(--home-accent);
+  font: 700 10px/1.2 "JetBrains Mono", monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.mm-home-match-loader > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.mm-home-match-loader input[type="text"] {
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(var(--home-accent-rgb), .36);
+  border-radius: 9px;
+  outline: 0;
+  background: rgba(8, 9, 13, .88);
+  color: #fff;
+  font: 700 14px/1 "JetBrains Mono", monospace;
+}
+
+.mm-home-match-loader input[type="text"]:focus {
+  border-color: var(--home-accent);
+  box-shadow: 0 0 0 4px rgba(var(--home-accent-rgb), .1);
+}
+
+.mm-home-match-loader .button {
+  min-height: 46px;
+  white-space: nowrap;
+}
+
+.mm-home-match-loader > small {
+  color: #85828d;
+  font-size: 10px;
 }
 
 .mm-home-stage-actions {
@@ -1080,6 +1133,15 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     width: 100%;
+  }
+
+  .mm-home-match-loader > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mm-home-match-loader .button {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .mm-home-stage-actions .button {

@@ -108,11 +108,13 @@ describe("editorial style", () => {
     expect(gameIds).toHaveLength(7);
     expect(home).toContain("data-home-launcher");
     expect(home).toContain('role="tablist"');
-    expect(home).toContain("data-home-demo");
-    expect(home).toContain("compareDotaItems");
-    expect(home).toContain('name="availableGold"');
-    expect(home).toContain('name="goldPerMinute"');
-    expect(home).toContain('name="currentMinute"');
+    expect(home).toContain('id="game-picker"');
+    expect(home).toContain('const activeGameId: HubPortalId = "gta"');
+    expect(home).toContain('class="mm-home-match-loader"');
+    expect(home).toContain('name="autoload"');
+    expect(home).not.toContain("data-home-demo");
+    expect(home).not.toContain("Попробовать на Dota 2");
+    expect(home).not.toContain("Try it with Dota 2");
   });
 
   it("keeps decorative path media out of the reading layer", () => {

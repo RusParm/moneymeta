@@ -224,21 +224,18 @@ describe("Dota match reference data", () => {
 });
 
 describe("Dota match request UI contract", () => {
-  it("keeps direct GET and fallback relay behind separate explicit actions", () => {
+  it("loads through one explicit privacy-preserving relay action", () => {
     const loader = auditSource.indexOf('const loadMatch = async');
     const submitHandler = auditSource.indexOf('form.addEventListener("submit"');
-    const relayHandler = auditSource.indexOf('relay.addEventListener("click"');
     expect(loader).toBeGreaterThan(0);
     expect(submitHandler).toBeGreaterThan(loader);
-    expect(relayHandler).toBeGreaterThan(submitHandler);
-    expect(auditSource).toContain('void loadMatch("direct")');
-    expect(auditSource).toContain('void loadMatch("relay")');
-    expect(auditSource).toContain('method: "GET"');
-    expect(auditSource).toContain('credentials: "omit"');
+    expect(auditSource).toContain('void loadMatch()');
+    expect(auditSource).toContain('params.get("autoload") === "1"');
     expect(auditSource).toContain('method: "POST"');
     expect(auditSource).toContain('credentials: "same-origin"');
     expect(auditSource).toContain('"X-Money-Meta-Relay": "dota-match-v1"');
-    expect(auditSource).toContain("data-match-relay");
+    expect(auditSource).not.toContain("data-match-relay");
+    expect(auditSource).not.toContain('method: "GET"');
     expect(auditSource).not.toContain("/request/");
     expect(auditSource).not.toContain("localStorage");
     expect(auditSource).not.toContain("account_id");

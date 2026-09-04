@@ -10,15 +10,12 @@ import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
 import wowWorld from "../assets/game-worlds/wow-economy-world.webp";
 import {
   DOTA_SNAPSHOT_MAX_AGE_HOURS,
-  dotaItemsByKey,
   dotaItemsSnapshot,
-  getDotaItemComparePath,
   getDotaItemsPath
 } from "../data/dota-items";
 import { getHubFreshnessPolicy, getHubPath, hubPortals, type HubPortalId } from "../data/hub-portals";
 import { civilizationHub, fableHub, getFrontierPath, type FrontierHubId } from "../data/frontier-hubs";
 import { insightGameLabels, insights } from "../data/insights";
-import { compareDotaItems } from "../lib/dota-items";
 import type { FreshnessPolicy } from "../lib/freshness";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
@@ -51,16 +48,14 @@ interface HomeGame {
 const { lang } = Astro.props;
 const prefix = lang === "ru" ? "" : "/en";
 const homePath = `${prefix}/`;
-const format = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US");
-
 const copy = lang === "ru" ? {
   title: "Money Meta | следующий ход в экономике игры",
   description: "Выбери ситуацию в одной из шести живых игровых экономик или открой предрелизное досье Fable. Подставь свои цифры и проверь следующий ход.",
   kicker: "ЭКОНОМИКА ИГР БЕЗ ОБЩИХ СОВЕТОВ",
   heading: "Что тебе выгоднее сделать в игре прямо сейчас?",
   lede: "Выбери игру и свой вопрос. Подставь банк, доход или свободное время и получи конкретный следующий ход, а не ещё один общий гайд.",
-  jumpToDemo: "Попробовать на Dota 2",
-  noAccount: "Без регистрации. Вводные можно менять.",
+  jumpToDemo: "Выбрать свою игру",
+  noAccount: "Семь игровых миров. Начни со своего.",
   chooseGame: "Выбери игру",
   chooseHint: "Шесть живых экономик и одно предрелизное досье",
   situation: "Твоя ситуация",
@@ -76,27 +71,10 @@ const copy = lang === "ru" ? {
   watchRecheck: "Предрелизные сведения нужно перепроверить",
   liveModel: "Живая модель",
   watchModel: "До релиза",
-  demoKicker: "Рабочий пример · Dota 2",
-  demoTitle: "Успеешь купить предмет к следующей драке?",
-  demoText: "Проверь не цену в магазине, а минуту готовности. Модель считает, что всё следующее золото идёт в эту покупку.",
-  demoGold: "Золото сейчас",
-  demoGpm: "Золото в минуту",
-  demoMinute: "Текущая минута",
-  demoInputGold: "золота",
-  demoInputGpm: "золота/мин",
-  demoInputMinute: "минута",
-  demoFirstMove: "Первый вход",
-  demoSave: "Смещение и спасение",
-  demoCost: "Цена",
-  demoReady: "Будет готов",
-  demoEnough: "золота хватает",
-  demoMissing: "не хватает",
-  demoNow: "можно купить",
-  demoNoIncome: "нет темпа фарма",
-  demoFull: "Открыть полное сравнение",
-  demoPatch: "Данные предметов",
-  proofTitle: "Почему вывод не врёт",
-  proofText: "Тайминг отвечает только на вопрос «когда». Победителя между предметами определяет задача в ближайшей драке.",
+  matchInput: "Публичный Match ID",
+  matchPlaceholder: "Например, 8978544633",
+  matchLoad: "Загрузить матч",
+  matchHelp: "Без Steam-входа. Только ID публичного матча.",
   updates: "Что сейчас можно проверить",
   updatesText: "Рядом с каждым выводом видна версия игры и дата проверки.",
   statusKicker: "АКТУАЛЬНОСТЬ",
@@ -116,8 +94,8 @@ const copy = lang === "ru" ? {
   kicker: "GAME ECONOMIES WITHOUT GENERIC ADVICE",
   heading: "What is the best move in your game right now?",
   lede: "Choose your game and your question. Add your bank, income or available time and get a concrete next move instead of another generic guide.",
-  jumpToDemo: "Try it with Dota 2",
-  noAccount: "No account needed. Change every input.",
+  jumpToDemo: "Choose your game",
+  noAccount: "Seven game worlds. Start with yours.",
   chooseGame: "Choose your game",
   chooseHint: "Six live economies and one pre-release dossier",
   situation: "Your situation",
@@ -133,27 +111,10 @@ const copy = lang === "ru" ? {
   watchRecheck: "Pre-release information needs another review",
   liveModel: "Live model",
   watchModel: "Pre-release",
-  demoKicker: "Working example · Dota 2",
-  demoTitle: "Can you finish the item before the next fight?",
-  demoText: "Check the completion minute, not just the shop price. The model assumes all new gold goes into this purchase.",
-  demoGold: "Gold now",
-  demoGpm: "Gold per minute",
-  demoMinute: "Current minute",
-  demoInputGold: "gold",
-  demoInputGpm: "gold/min",
-  demoInputMinute: "minute",
-  demoFirstMove: "First move",
-  demoSave: "Reposition and save",
-  demoCost: "Cost",
-  demoReady: "Ready at",
-  demoEnough: "enough gold",
-  demoMissing: "missing",
-  demoNow: "available now",
-  demoNoIncome: "no farming rate",
-  demoFull: "Open the full comparison",
-  demoPatch: "Item data",
-  proofTitle: "Why the result stays honest",
-  proofText: "Timing only answers “when”. The job in the next fight decides which item is actually better.",
+  matchInput: "Public Match ID",
+  matchPlaceholder: "For example, 8978544633",
+  matchLoad: "Load match",
+  matchHelp: "No Steam sign-in. Public match ID only.",
   updates: "What you can check now",
   updatesText: "Every conclusion shows the game version and its review date.",
   statusKicker: "STATUS",
@@ -340,43 +301,13 @@ const games: HomeGame[] = [
   }
 ];
 
-const activeGameId: HubPortalId = "dota";
+const activeGameId: HubPortalId = "gta";
 const activeGame = games.find((game) => game.id === activeGameId)!;
 const snapshotPolicy = {
   checkedAt: dotaItemsSnapshot.fetchedAt,
   maxAgeHours: DOTA_SNAPSHOT_MAX_AGE_HOURS
 };
 const featuredInsights = insights.filter((insight) => insight.featuredInHub).slice(0, 3);
-const demoItems = ["blink", "force_staff"].map((key) => dotaItemsByKey.get(key)!);
-const demoInput = {
-  itemKeys: demoItems.map((item) => item.key),
-  availableGold: 1000,
-  goldPerMinute: 400,
-  currentMinute: 12,
-  role: "core" as const
-};
-const initialComparison = compareDotaItems(demoItems, demoInput);
-const demoItemsJson = JSON.stringify(demoItems.map((item) => ({
-  ...item,
-  components: [],
-  attributes: [],
-  abilities: []
-})));
-
-const formatClock = (minute: number | null) => {
-  if (minute === null) return copy.demoNoIncome;
-  let whole = Math.floor(minute);
-  let seconds = Math.round((minute - whole) * 60);
-  if (seconds === 60) {
-    whole += 1;
-    seconds = 0;
-  }
-  return `${whole}:${String(seconds).padStart(2, "0")}`;
-};
-
-const initialConclusion = lang === "ru"
-  ? "По таймингу почти ничья. Решает задача: Blink Dagger даёт первый вход, Force Staff даёт управляемое смещение и спасение."
-  : "The timing is almost even. The job decides it: Blink Dagger creates the first move, while Force Staff provides controlled repositioning and a save.";
 ---
 
 <BaseLayout
@@ -406,12 +337,12 @@ const initialConclusion = lang === "ru"
           <h1 id="home-title">{copy.heading}</h1>
           <p>{copy.lede}</p>
           <div class="mm-home-pitch-actions">
-            <a class="button primary" href="#dota-check">{copy.jumpToDemo} <span aria-hidden="true">↓</span></a>
+            <a class="button primary" href="#game-picker">{copy.jumpToDemo} <span aria-hidden="true">↓</span></a>
             <small>{copy.noAccount}</small>
           </div>
         </div>
 
-        <div class="mm-home-launcher" data-home-launcher>
+        <div id="game-picker" class="mm-home-launcher" data-home-launcher>
           <div class="mm-home-launcher-head">
             <h2>{copy.chooseGame}</h2>
             <span>{copy.chooseHint}</span>
@@ -470,7 +401,7 @@ const initialConclusion = lang === "ru"
                     alt=""
                     widths={[720, 1080, 1500]}
                     sizes="(max-width: 760px) 100vw, 1100px"
-                    loading={isDota ? "eager" : "lazy"}
+                    loading={game.id === activeGameId ? "eager" : "lazy"}
                     decoding="async"
                   />
                   <div class="mm-home-stage-shade"></div>
@@ -483,7 +414,17 @@ const initialConclusion = lang === "ru"
                     <span class="mm-home-stage-kicker">{copy.situation}</span>
                     <h3>{game.question}</h3>
                     <p>{game.text}</p>
-                    <div class="mm-home-stage-input-note">{game.inputNote}</div>
+                    {isDota ? (
+                      <form class="mm-home-match-loader" action={`${game.root}matches/audit/`} method="get">
+                        <label for={`home-match-${lang}`}>{copy.matchInput}</label>
+                        <div>
+                          <input id={`home-match-${lang}`} name="match" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder={copy.matchPlaceholder} />
+                          <input name="autoload" type="hidden" value="1" />
+                          <button class="button primary" type="submit">{copy.matchLoad} <span aria-hidden="true">→</span></button>
+                        </div>
+                        <small>{copy.matchHelp}</small>
+                      </form>
+                    ) : <div class="mm-home-stage-input-note">{game.inputNote}</div>}
                     <div class="mm-home-stage-actions">
                       {game.actions.map((action, index) => (
                         <a class:list={["button", { primary: index === 0 }]} href={`${game.root}${action.path}`}>
@@ -503,119 +444,6 @@ const initialConclusion = lang === "ru"
                 </article>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="dota-check"
-        class="mm-home-demo"
-        aria-labelledby="demo-title"
-        data-home-demo
-        data-lang={lang}
-        data-demo-items={demoItemsJson}
-      >
-        <div class="mm-home-demo-head">
-          <div>
-            <span class="section-kicker">{copy.demoKicker}</span>
-            <h2 id="demo-title">{copy.demoTitle}</h2>
-            <p>{copy.demoText}</p>
-          </div>
-          <div class="mm-home-demo-source">
-            <span>{copy.demoPatch}</span>
-            <strong>{dotaItemsSnapshot.patch.label}</strong>
-          </div>
-        </div>
-
-        <div class="mm-home-demo-workbench">
-          <form class="mm-home-demo-inputs" data-demo-form>
-            <label>
-              <span>{copy.demoGold}</span>
-              <div>
-                <input
-                  name="availableGold"
-                  type="number"
-                  min="0"
-                  max="100000"
-                  step="50"
-                  value={demoInput.availableGold}
-                  inputmode="numeric"
-                />
-                <small>{copy.demoInputGold}</small>
-              </div>
-            </label>
-            <label>
-              <span>{copy.demoGpm}</span>
-              <div>
-                <input
-                  name="goldPerMinute"
-                  type="number"
-                  min="0"
-                  max="2500"
-                  step="25"
-                  value={demoInput.goldPerMinute}
-                  inputmode="numeric"
-                />
-                <small>{copy.demoInputGpm}</small>
-              </div>
-            </label>
-            <label>
-              <span>{copy.demoMinute}</span>
-              <div>
-                <input
-                  name="currentMinute"
-                  type="number"
-                  min="0"
-                  max="180"
-                  step="1"
-                  value={demoInput.currentMinute}
-                  inputmode="numeric"
-                />
-                <small>{copy.demoInputMinute}</small>
-              </div>
-            </label>
-          </form>
-
-          <div class="mm-home-demo-results">
-            {initialComparison.map((option, index) => (
-              <article
-                class:list={["mm-home-demo-result", { "is-ready": option.goldNeeded === 0 }]}
-                data-demo-result
-                data-item-key={option.item.key}
-              >
-                <div class="mm-home-demo-item">
-                  <img src={option.item.image} alt="" width="80" height="60" loading="lazy" />
-                  <div>
-                    <span>{index === 0 ? copy.demoFirstMove : copy.demoSave}</span>
-                    <h3>{option.item.name}</h3>
-                  </div>
-                </div>
-                <dl>
-                  <div>
-                    <dt>{copy.demoCost}</dt>
-                    <dd>{format.format(option.item.cost)}</dd>
-                  </div>
-                  <div>
-                    <dt>{copy.demoReady}</dt>
-                    <dd data-demo-ready>{option.minutesToAfford === 0 ? copy.demoNow : formatClock(option.projectedMinute)}</dd>
-                  </div>
-                </dl>
-                <p data-demo-gap>
-                  {option.goldNeeded === 0
-                    ? copy.demoEnough
-                    : `${copy.demoMissing} ${format.format(option.goldNeeded)} ${copy.demoInputGold}`}
-                </p>
-              </article>
-            ))}
-          </div>
-
-          <div class="mm-home-demo-verdict">
-            <span aria-hidden="true">Σ</span>
-            <div>
-              <strong>{copy.proofTitle}</strong>
-              <p data-demo-verdict aria-live="polite">{initialConclusion}</p>
-            </div>
-            <a href={getDotaItemComparePath(lang)}>{copy.demoFull} <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </section>
@@ -691,8 +519,6 @@ const initialConclusion = lang === "ru"
 </BaseLayout>
 
 <script>
-  import { compareDotaItems, type DotaItemRecord } from "../lib/dota-items";
-
   const launcher = document.querySelector<HTMLElement>("[data-home-launcher]");
   const home = launcher?.closest<HTMLElement>(".mm-home");
   const tabs = Array.from(launcher?.querySelectorAll<HTMLButtonElement>("[data-home-game-tab]") ?? []);
@@ -728,89 +554,4 @@ const initialConclusion = lang === "ru"
       selectGame(tabs[next]!, true);
     });
   });
-
-  const demo = document.querySelector<HTMLElement>("[data-home-demo]");
-  const form = demo?.querySelector<HTMLFormElement>("[data-demo-form]");
-
-  if (demo && form) {
-    const lang = demo.dataset.lang === "en" ? "en" : "ru";
-    const locale = lang === "ru" ? "ru-RU" : "en-US";
-    const number = new Intl.NumberFormat(locale);
-    const items = JSON.parse(demo.dataset.demoItems ?? "[]") as DotaItemRecord[];
-    const resultCards = Array.from(demo.querySelectorAll<HTMLElement>("[data-demo-result]"));
-    const verdict = demo.querySelector<HTMLElement>("[data-demo-verdict]");
-
-    const value = (name: string) => Number(new FormData(form).get(name) ?? 0);
-    const clock = (minute: number | null) => {
-      if (minute === null) return lang === "ru" ? "нет темпа фарма" : "no farming rate";
-      let whole = Math.floor(minute);
-      let seconds = Math.round((minute - whole) * 60);
-      if (seconds === 60) {
-        whole += 1;
-        seconds = 0;
-      }
-      return `${whole}:${String(seconds).padStart(2, "0")}`;
-    };
-    const duration = (minutes: number) => {
-      const seconds = Math.max(1, Math.round(minutes * 60));
-      if (seconds < 60) return lang === "ru" ? `${seconds} сек.` : `${seconds} sec`;
-      const rounded = Math.round(minutes * 10) / 10;
-      return lang === "ru" ? `${rounded} мин.` : `${rounded} min`;
-    };
-
-    const update = () => {
-      const options = compareDotaItems(items, {
-        itemKeys: ["blink", "force_staff"],
-        availableGold: value("availableGold"),
-        goldPerMinute: value("goldPerMinute"),
-        currentMinute: value("currentMinute"),
-        role: "core"
-      });
-
-      resultCards.forEach((card) => {
-        const option = options.find((candidate) => candidate.item.key === card.dataset.itemKey);
-        if (!option) return;
-        const ready = card.querySelector<HTMLElement>("[data-demo-ready]");
-        const gap = card.querySelector<HTMLElement>("[data-demo-gap]");
-        card.classList.toggle("is-ready", option.goldNeeded === 0);
-        if (ready) {
-          ready.textContent = option.minutesToAfford === 0
-            ? (lang === "ru" ? "можно купить" : "available now")
-            : clock(option.projectedMinute);
-        }
-        if (gap) {
-          gap.textContent = option.goldNeeded === 0
-            ? (lang === "ru" ? "золота хватает" : "enough gold")
-            : lang === "ru"
-              ? `не хватает ${number.format(option.goldNeeded)} золота`
-              : `${number.format(option.goldNeeded)} gold missing`;
-        }
-      });
-
-      if (!verdict || options.length < 2) return;
-      const [blink, force] = options;
-      if (blink!.projectedMinute === null || force!.projectedMinute === null) {
-        verdict.textContent = lang === "ru"
-          ? "Без темпа фарма нельзя назвать минуту покупки. Добавь ожидаемое золото в минуту."
-          : "A completion minute needs a farming rate. Add the gold you expect to earn each minute.";
-      } else if (blink!.goldNeeded === 0 && force!.goldNeeded === 0) {
-        verdict.textContent = lang === "ru"
-          ? "На оба предмета уже хватает. Решает задача: первый вход или управляемое смещение и спасение."
-          : "You can afford both. The job decides it: first move or controlled repositioning and a save.";
-      } else if (force!.goldNeeded === 0 && blink!.goldNeeded > 0) {
-        verdict.textContent = lang === "ru"
-          ? `Force Staff доступен сейчас. До Blink Dagger ещё ${duration(blink!.minutesToAfford ?? 0)} Если драка уже начинается, эта разница реальна.`
-          : `Force Staff is available now. Blink Dagger needs another ${duration(blink!.minutesToAfford ?? 0)} If the fight is starting, that gap is real.`;
-      } else {
-        const difference = Math.abs((blink!.projectedMinute ?? 0) - (force!.projectedMinute ?? 0));
-        verdict.textContent = lang === "ru"
-          ? `По таймингу почти ничья: разница ${duration(difference)} Решает не цена, а первый вход против управляемого смещения и спасения.`
-          : `The timing is almost even: a ${duration(difference)} gap. The decision is not price, but first move versus controlled repositioning and a save.`;
-      }
-    };
-
-    form.addEventListener("submit", (event) => event.preventDefault());
-    form.addEventListener("input", update);
-    update();
-  }
 </script>

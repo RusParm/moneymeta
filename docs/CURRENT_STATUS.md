@@ -1,6 +1,16 @@
 # Current status
 
-Updated: 2026-09-03
+Updated: 2026-09-04
+
+## Active release candidate: v1.20 game-first entry and visible match loading
+
+- The homepage now begins with a neutral game choice instead of routing every visitor into Dota 2. GTA is the initial example, while all seven game worlds retain equal, immediate tab access.
+- Removed the full-width Dota item demo from the homepage. Dota-specific tools appear only after the visitor selects Dota.
+- Added an inline public Match ID loader to the Dota homepage panel. An explicit submit opens Match Audit and starts the already approved request automatically.
+- Match Audit now uses one primary `Load and audit match` action through the sanitized same-origin relay. The separate direct and fallback controls no longer make the reliable route look hidden.
+- Restored the shared Dota navigation and status styling on Match Audit by loading its missing stylesheet.
+- Game tabs reserve space for status indicators and allow two-line labels. Loaded item media hides fallback initials, uses contained item art and cannot occupy the text column.
+- Local gates pass with 157 tests, zero Astro diagnostics and 587 generated pages. Preview browser QA remains before handoff.
 
 ## Active release candidate: v1.19.2 resilient Dota match retrieval
 
