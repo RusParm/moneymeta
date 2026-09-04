@@ -5,14 +5,17 @@ import { isExpired } from "../lib/freshness";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const stale = isExpired(weeklyMeta.validThrough);
+const dateLocale = lang === "ru" ? "ru-RU" : "en-US";
+const snapshotDate = (value: string) => new Date(`${value}T12:00:00Z`);
+const windowDate = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", timeZone: "UTC" }).format(snapshotDate(weeklyMeta.validThrough));
 
 const copy = lang === "ru" ? {
   kicker: "Еженедельные события GTA · официальный источник",
   title: "Три бонуса. Один вопрос: нужен ли тебе другой маршрут?",
   text: "Сначала фиксируем только подтверждённые множители и условия доступа. Следом калькулятор сравнит их с твоим обычным заработком и временем до конца недели.",
   verified: "Проверено · официальный источник",
-  current: "Активно до конца 2 сентября",
-  stale: "Архив · окно закончилось 2 сентября",
+  current: `Активно до конца ${windowDate}`,
+  stale: `Архив · окно закончилось ${windowDate}`,
   action: "Решение сейчас",
   source: "Открыть первоисточник",
   guardTitle: "Проверка актуальности включена",
@@ -24,8 +27,8 @@ const copy = lang === "ru" ? {
   title: "Three bonuses. One question: should your route change?",
   text: "First we lock only confirmed multipliers and access conditions. The planner below then compares them with your normal earnings and remaining time.",
   verified: "Verified · official",
-  current: "Live through September 2",
-  stale: "Archive · window ended September 2",
+  current: `Live through ${windowDate}`,
+  stale: `Archive · window ended ${windowDate}`,
   action: "Decision now",
   source: "Open primary source",
   guardTitle: "Freshness guard is on",

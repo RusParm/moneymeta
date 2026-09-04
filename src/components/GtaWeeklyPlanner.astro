@@ -1,16 +1,20 @@
 ---
-import { weeklyMeta } from "../data/gta-businesses";
+import { weeklyMeta, type WeeklyAccessRequirement } from "../data/gta-businesses";
 import "../styles/gta-weekly.css";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
+const dateLocale = lang === "ru" ? "ru-RU" : "en-US";
+const snapshotDate = (value: string) => new Date(`${value}T12:00:00Z`);
+const windowDate = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", timeZone: "UTC" }).format(snapshotDate(weeklyMeta.validThrough));
+const checkedDate = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(snapshotDate(weeklyMeta.checkedAt));
 const copy = lang === "ru" ? {
   kicker: "ТВОЙ ПЛАН НА ЭТУ НЕДЕЛЮ",
   title: "Стоит ли менять обычный денежный маршрут?",
   text: "Добавь свой реальный темп и один замер активности. Модель сравнит весь доступный сеанс, учтёт переключение, шанс повторить результат и твой минимальный порог выгоды.",
   snapshot: "Официальный срез",
-  live: "Активно до 2 сентября",
-  checked: "Проверено 1 сентября 2026",
+  live: `Активно до ${windowDate}`,
+  checked: `Проверено ${checkedDate}`,
   newWeek: "Новая неделя",
   seenWeek: "Проверено на этом устройстве",
   markSeen: "Отметить проверенной",
@@ -18,21 +22,25 @@ const copy = lang === "ru" ? {
   routeKicker: "01 / Выбери активность",
   routeTitle: "Три маршрута с разной ценой входа",
   openAccess: "Без покупки актива",
-  autoShop: "Нужен уже купленный Auto Shop",
+  accessLabels: {
+    "auto-shop": "Нужен уже купленный Auto Shop",
+    "special-vehicle-work": "Нужны Office + доступ к Special Vehicle Work",
+    "special-cargo-warehouse": "Нужны Office + склад Special Cargo"
+  } satisfies Record<WeeklyAccessRequirement, string>,
   inputKicker: "02 / Добавь свой замер",
   inputTitle: "Твоя сессия, не чужая таблица",
   hours: "Сколько часов ты ещё сыграешь до конца недели",
   routine: "Твой обычный чистый доход, GTA$/ч",
   routineHelp: "Возьми темп из своей привычной сессии.",
   payout: "Базовая выплата за один заход, GTA$",
-  payoutHelp: "Введи выплату до множителя. Если видишь итог, раздели его на 3 или 2.",
+  payoutHelp: "Введи выплату до множителя. Если видишь итог, раздели его на число с карточки маршрута.",
   minutes: "Минут на один полный заход",
   minutesHelp: "Считай от запуска до готовности начать следующий.",
   switch: "Минут уйдёт на переключение",
   confidence: "Насколько результат повторяем",
   lift: "Минимальная выгода для смены маршрута",
-  owns: "У меня уже есть Auto Shop",
-  ownershipNote: "Покупка Auto Shop не включается в этот короткий расчёт.",
+  owns: "У меня уже выполнены условия доступа",
+  ownershipNote: "Покупка офиса, склада или другой инфраструктуры не включается в короткий недельный расчёт.",
   resultKicker: "03 / Решение",
   resultTitle: "Нужны твои реальные числа",
   resultText: "Введи обычный GTA$/ч, базовую выплату и длительность одного захода. До этого сайт не будет придумывать вывод.",
@@ -75,8 +83,8 @@ const copy = lang === "ru" ? {
   title: "Should you leave your normal money route?",
   text: "Add your realized rate and one activity sample. The model compares the full session, switching time, repeatability and your minimum lift threshold.",
   snapshot: "Official snapshot",
-  live: "Live through September 2",
-  checked: "Checked September 1, 2026",
+  live: `Live through ${windowDate}`,
+  checked: `Checked ${checkedDate}`,
   newWeek: "New week",
   seenWeek: "Checked on this device",
   markSeen: "Mark as checked",
@@ -84,21 +92,25 @@ const copy = lang === "ru" ? {
   routeKicker: "01 / Choose an activity",
   routeTitle: "Three routes with different access costs",
   openAccess: "No asset purchase required",
-  autoShop: "Requires an Auto Shop you already own",
+  accessLabels: {
+    "auto-shop": "Requires an Auto Shop you already own",
+    "special-vehicle-work": "Requires an Office + Special Vehicle Work access",
+    "special-cargo-warehouse": "Requires an Office + Special Cargo Warehouse"
+  } satisfies Record<WeeklyAccessRequirement, string>,
   inputKicker: "02 / Add your sample",
   inputTitle: "Your session, not somebody else's table",
   hours: "Hours you will still play before the week ends",
   routine: "Your normal net income, GTA$/h",
   routineHelp: "Use the rate from your usual session.",
   payout: "Base payout for one run, GTA$",
-  payoutHelp: "Enter payout before the multiplier. If you only see the final payout, divide it by 3 or 2.",
+  payoutHelp: "Enter payout before the multiplier. If you only see the final payout, divide it by the number on the route card.",
   minutes: "Minutes for one complete run",
   minutesHelp: "Count from launch until you can start the next run.",
   switch: "Minutes spent switching routes",
   confidence: "How repeatable is the result",
   lift: "Minimum lift required to switch",
-  owns: "I already own an Auto Shop",
-  ownershipNote: "Buying an Auto Shop is outside this short-window model.",
+  owns: "I already meet this route's access conditions",
+  ownershipNote: "Buying an office, warehouse or other infrastructure is outside this short weekly calculation.",
   resultKicker: "03 / Decision",
   resultTitle: "Your realized measurements are still missing",
   resultText: "Enter normal GTA$/h, base payout and run time. Until then the site will not invent a conclusion.",
@@ -186,7 +198,7 @@ const archive = weeklyMeta.closedWindows[0]!;
         <span class="gta-weekly-route-index">0{index + 1}</span>
         <span class="gta-weekly-route-copy"><strong>{route.title[lang]}</strong><small>{route.summary[lang]}</small></span>
         <span class="gta-weekly-route-signal">{route.signal[lang]}</span>
-        <span class="gta-weekly-route-access">{route.requiredAsset ? copy.autoShop : copy.openAccess}</span>
+        <span class="gta-weekly-route-access">{route.requiredAsset ? copy.accessLabels[route.requiredAsset] : copy.openAccess}</span>
       </button>
     ))}
   </div>
@@ -356,7 +368,7 @@ const archive = weeklyMeta.closedWindows[0]!;
         expiredTitle: "Недельное окно закончилось",
         expiredText: "Расчёт отключён, потому что официальный срок уже прошёл. Срез остаётся архивом до следующего обновления.",
         ineligibleTitle: "Оставь этот маршрут на потом",
-        ineligibleText: "Для контрактов нужен уже купленный Auto Shop. Не покупай его вслепую ради короткого 2X окна.",
+        ineligibleText: "У этого маршрута есть условия доступа. Короткое бонусное окно само по себе не доказывает окупаемость новой инфраструктуры.",
         noFitTitle: "В сеанс не помещается полный заход",
         noFitText: "Увеличь доступное время или выбери более короткий реальный замер.",
         stayTitle: "Оставайся на обычном маршруте",
@@ -404,7 +416,7 @@ const archive = weeklyMeta.closedWindows[0]!;
         expiredTitle: "The weekly window has ended",
         expiredText: "Calculation is disabled because the official window has passed. This snapshot remains archived until the next update.",
         ineligibleTitle: "Leave this route for later",
-        ineligibleText: "Contracts require an Auto Shop you already own. Do not buy one blind for a short 2X window.",
+        ineligibleText: "This route has access requirements. A short bonus window does not prove that new infrastructure will pay back.",
         noFitTitle: "A complete run does not fit",
         noFitText: "Increase available time or use a shorter observed run.",
         stayTitle: "Stay on your normal route",
@@ -678,9 +690,11 @@ const archive = weeklyMeta.closedWindows[0]!;
         renderJournal();
       };
 
-      const selectRoute = (id: string, focus = false) => {
+      const selectRoute = (id: string, focus = false, preserveAccess = false) => {
         if (!weeklyMeta.opportunities.some((item) => item.id === id)) return;
+        const changedRoute = id !== activeRouteId;
         activeRouteId = id;
+        if (changedRoute && !preserveAccess) byName("owns").checked = false;
         routeButtons.forEach((button) => {
           const selected = button.dataset.weeklyRoute === id;
           button.setAttribute("aria-checked", String(selected));
@@ -724,7 +738,7 @@ const archive = weeklyMeta.closedWindows[0]!;
         if (control.type === "checkbox") control.checked = restoredValue === "1";
         else if (restoredValue === "" || Number.isFinite(Number(restoredValue))) control.value = restoredValue;
       });
-      selectRoute(restored.route ?? activeRouteId);
+      selectRoute(restored.route ?? activeRouteId, false, true);
 
       const returnRoot = root.querySelector<HTMLElement>("[data-weekly-return]");
       const returnLabel = root.querySelector<HTMLElement>("[data-weekly-return-label]");

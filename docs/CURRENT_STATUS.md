@@ -2,6 +2,15 @@
 
 Updated: 2026-09-04
 
+## Active release candidate: v1.21 GTA Business Rivalries live cycle
+
+- Replaced the expired August 27 through September 2 GTA snapshot with Rockstar's official September 3 through 9 Executive week inside the month-long Business Rivalries Event.
+- The live planner now compares 4X Special Vehicle Work, 3X Community Mission Series and 2X Export Mixed Goods without inventing a payout or run time.
+- Access gates distinguish an unlocked Special Vehicle Work route from an Executive Office plus Special Cargo Warehouse. Switching routes clears the previous route's access confirmation.
+- The GTA pulse separately exposes the GTA$1,000,000 Special Cargo Weekly Challenge, doubled warehouse staff sourcing, free Arcadius Business Center Office and the later Penaud La Coureuse claim window.
+- Dates in the GTA pulse and planner are formatted from the central snapshot instead of being copied into component text. The GTA portal now uses the current official Business Rivalries artwork and source.
+- Local gates pass with 157 tests, zero Astro diagnostics and 587 generated pages. Refreshed HTTPS preview QA remains before production handoff.
+
 ## Active release candidate: v1.20 game-first entry and visible match loading
 
 - The homepage now begins with a neutral game choice instead of routing every visitor into Dota 2. GTA is the initial example, while all seven game worlds retain equal, immediate tab access.
@@ -10,7 +19,7 @@ Updated: 2026-09-04
 - Match Audit now uses one primary `Load and audit match` action through the sanitized same-origin relay. The separate direct and fallback controls no longer make the reliable route look hidden.
 - Restored the shared Dota navigation and status styling on Match Audit by loading its missing stylesheet.
 - Game tabs reserve space for status indicators and allow two-line labels. Loaded item media hides fallback initials, uses contained item art and cannot occupy the text column.
-- Local gates pass with 157 tests, zero Astro diagnostics and 587 generated pages. Preview browser QA remains before handoff.
+- Local gates pass with 157 tests, zero Astro diagnostics and 587 generated pages. HTTPS preview QA passes the neutral homepage, visible Match ID entry, automatic audit load, ten-player result, final inventory and timed purchase flow.
 
 ## Active release candidate: v1.19.2 resilient Dota match retrieval
 

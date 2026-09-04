@@ -1,6 +1,7 @@
 export type Locale = "ru" | "en";
 export type VerificationStatus = "verified" | "estimated" | "community-reported";
 export type DecisionPriority = "fast-payback" | "max-income" | "low-friction";
+export type WeeklyAccessRequirement = "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse";
 
 export interface DataProvenance {
   checkedAt: string;
@@ -167,7 +168,7 @@ export interface WeeklyMetaSnapshot {
     multiplier: number;
     fixedReward?: number;
     requiredRunsForReward?: number;
-    requiredAsset?: "auto-shop";
+    requiredAsset?: WeeklyAccessRequirement;
   }>;
   closedWindows: Array<{
     id: string;
@@ -180,86 +181,87 @@ export interface WeeklyMetaSnapshot {
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  id: "2026-08-27-random-transform",
-  startsAt: "2026-08-27",
-  checkedAt: "2026-09-01",
-  validThrough: "2026-09-02",
+  id: "2026-09-03-business-rivalries-executive",
+  startsAt: "2026-09-03",
+  checkedAt: "2026-09-04",
+  validThrough: "2026-09-09",
   status: "verified",
-  sourceUrl: "https://www.rockstargames.com/newswire/article/o3921k3734ok35/take-in-triple-rewards-shifting-shape-in-new-random-transform-races",
-  sourceLabel: "Rockstar Newswire · Random Transform Races",
+  sourceUrl: "https://www.rockstargames.com/newswire/article/ak43aoa18a19o2/compete-across-entrepreneurial-endeavors-in-the-gta-online-business-ri",
+  sourceLabel: "Rockstar Newswire · Business Rivalries",
   items: {
     ru: [
-      "До 2 сентября: Random Transform Races приносят 3X GTA$/RP.",
-      "Drift Races приносят 2X GTA$/RP и репутации LS Car Meet. За три завершённых заезда недельное испытание добавляет GTA$100,000.",
-      "Auto Shop Robbery Contracts приносят 2X GTA$/RP до 2 сентября. Покупка Auto Shop только ради короткого окна не считается автоматической рекомендацией."
+      "С 3 по 9 сентября: продай Special Cargo на GTA$1,000,000, чтобы получить ещё GTA$1,000,000 и Yeti x LS Customs Tracksuit.",
+      "Special Vehicle Work приносит 4X GTA$/RP, Community Mission Series приносит 3X, а Export Mixed Goods и Madrazo Hits приносят 2X.",
+      "Сотрудники складов добывают Special Cargo вдвое быстрее, а офис Arcadius Business Center можно забрать бесплатно до 9 сентября.",
+      "Одно выполненное Weekly Challenge с 3 по 23 сентября даёт право забрать Penaud La Coureuse и бесплатное HSW-улучшение с 24 по 30 сентября на поддерживаемых платформах."
     ],
     en: [
-      "Through September 2: Random Transform Races pay 3X GTA$/RP.",
-      "Drift Races pay 2X GTA$/RP and LS Car Meet Rep. Completing three races adds the GTA$100,000 Weekly Challenge reward.",
-      "Auto Shop Robbery Contracts pay 2X GTA$/RP through September 2. Buying an Auto Shop only for this short window is not an automatic recommendation."
+      "September 3 to 9: sell GTA$1,000,000 worth of Special Cargo to receive another GTA$1,000,000 and the Yeti x LS Customs Tracksuit.",
+      "Special Vehicle Work pays 4X GTA$/RP, the Community Mission Series pays 3X, and Export Mixed Goods and Madrazo Hits pay 2X.",
+      "Warehouse staff source Special Cargo at double speed, while the Arcadius Business Center Office is free to claim through September 9.",
+      "Completing one Weekly Challenge from September 3 to 23 qualifies you to claim a Penaud La Coureuse and complimentary HSW upgrade September 24 to 30 on supported platforms."
     ]
   },
   opportunities: [
     {
-      id: "random-transform-races",
+      id: "special-vehicle-work",
       status: "verified",
-      title: { ru: "Random Transform Races", en: "Random Transform Races" },
+      title: { ru: "Special Vehicle Work", en: "Special Vehicle Work" },
       summary: {
-        ru: "Новые случайные трансформ-гонки приносят тройную выплату GTA$ и RP до 2 сентября.",
-        en: "The new random transform races pay triple GTA$ and RP through September 2."
+        ru: "Задания со специальной техникой приносят 4X GTA$ и RP с 3 по 9 сентября.",
+        en: "Special Vehicle Work pays 4X GTA$ and RP from September 3 through 9."
       },
       decision: {
-        ru: "Открой маршрут без покупки актива и сравни фактическую выплату за один заезд со своим обычным GTA$/ч.",
-        en: "Enter without buying an asset and compare one observed race payout with your normal GTA$/h."
+        ru: "Считай маршрут только при уже открытом доступе: нужен Executive Office и четыре выполненных задания по доставке Vehicle Cargo. Стоимость инфраструктуры в короткий расчёт не входит.",
+        en: "Model this route only with access already unlocked: it requires an Executive Office and four completed Vehicle Cargo source missions. The short-window calculation excludes infrastructure cost."
       },
-      signal: { ru: "3X · до 2 сент.", en: "3X · through Sep 2" },
+      signal: { ru: "4X · до 9 сент.", en: "4X · through Sep 9" },
+      multiplier: 4,
+      requiredAsset: "special-vehicle-work"
+    },
+    {
+      id: "community-mission-series",
+      status: "verified",
+      title: { ru: "Community Mission Series", en: "Community Mission Series" },
+      summary: {
+        ru: "Избранные миссии сообщества приносят 3X GTA$ и RP; стартовая подборка действует с 3 по 9 сентября.",
+        en: "Featured Community Missions pay 3X GTA$ and RP, with the opening selection live September 3 to 9."
+      },
+      decision: {
+        ru: "Это открытый маршрут без покупки бизнеса. Проверь один полный заход и сравни его фактический темп со своей обычной сессией.",
+        en: "This route needs no business purchase. Measure one complete run and compare its realized rate with your normal session."
+      },
+      signal: { ru: "3X · без покупки", en: "3X · no purchase" },
       multiplier: 3
     },
     {
-      id: "drift-races",
+      id: "export-mixed-goods",
       status: "verified",
-      title: { ru: "Drift Races", en: "Drift Races" },
+      title: { ru: "Export Mixed Goods", en: "Export Mixed Goods" },
       summary: {
-        ru: "Дрифт-гонки приносят двойную выплату и GTA$100,000 после трёх завершённых заездов.",
-        en: "Drift Races pay double, with GTA$100,000 added after three completed races."
+        ru: "Экспорт смешанных товаров приносит двойную награду с 3 по 9 сентября.",
+        en: "Export Mixed Goods deliveries pay double rewards from September 3 through 9."
       },
       decision: {
-        ru: "Сначала проверь, помещаются ли три заезда в сеанс. Разовая награда учитывается только после достижения порога.",
-        en: "First check whether three races fit the session. The one-time reward counts only after the threshold is reached."
+        ru: "Используй маршрут только при уже купленных Executive Office и складе Special Cargo. Бесплатный офис снижает порог входа, но стоимость склада всё равно не входит в недельную модель.",
+        en: "Use this route only with an Executive Office and Special Cargo Warehouse already available. The free office lowers entry cost, but warehouse acquisition still sits outside the weekly model."
       },
-      signal: { ru: "2X + GTA$100K", en: "2X + GTA$100K" },
+      signal: { ru: "2X · офис и склад", en: "2X · office and warehouse" },
       multiplier: 2,
-      fixedReward: 100_000,
-      requiredRunsForReward: 3
-    },
-    {
-      id: "auto-shop-robbery-contracts",
-      status: "verified",
-      title: { ru: "Auto Shop Robbery Contracts", en: "Auto Shop Robbery Contracts" },
-      summary: {
-        ru: "Контракты ограблений Auto Shop приносят двойную выплату GTA$ и RP до 2 сентября.",
-        en: "Auto Shop Robbery Contracts pay double GTA$ and RP through September 2."
-      },
-      decision: {
-        ru: "Считай маршрут только при уже купленном Auto Shop. Короткий бонус сам по себе не доказывает окупаемость новой покупки.",
-        en: "Model the route only when you already own an Auto Shop. A short bonus does not prove that a new purchase pays back."
-      },
-      signal: { ru: "2X · нужен Auto Shop", en: "2X · Auto Shop required" },
-      multiplier: 2,
-      requiredAsset: "auto-shop"
+      requiredAsset: "special-cargo-warehouse"
     }
   ],
   closedWindows: [
     {
-      id: "six-times-weekend",
-      startsAt: "2026-08-28",
-      endedAt: "2026-08-30",
-      title: { ru: "Спецокно 6X уже закрыто", en: "The 6X weekend window has closed" },
+      id: "2026-08-27-random-transform",
+      startsAt: "2026-08-27",
+      endedAt: "2026-09-02",
+      title: { ru: "Неделя Random Transform Races закрыта", en: "The Random Transform Races week has closed" },
       summary: {
-        ru: "С 28 по 30 августа отдельные Drift и Transform Races приносили 6X GTA$/RP. На 1 сентября это только архивный факт.",
-        en: "Select Drift and Transform Races paid 6X GTA$/RP from August 28 through 30. On September 1 this is archive context only."
+        ru: "Окно с 3X Random Transform Races, 2X Drift Races и 2X Auto Shop Robbery Contracts закончилось 2 сентября и больше не участвует в расчёте.",
+        en: "The 3X Random Transform Races, 2X Drift Races and 2X Auto Shop Robbery Contracts window ended September 2 and no longer enters the calculation."
       },
-      signal: { ru: "Архив · 28-30 авг.", en: "Archive · Aug 28-30" }
+      signal: { ru: "Архив · 27 авг. - 2 сент.", en: "Archive · Aug 27 to Sep 2" }
     }
   ]
 };

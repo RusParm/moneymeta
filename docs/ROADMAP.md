@@ -209,6 +209,14 @@
 - Reserve independent media and text columns across game tabs, Dota navigation, hero rows, inventory and purchase cards.
 - Require real loaded-match QA in the HTTPS preview in addition to static no-overflow checks.
 
+## P2.9: v1.21 live GTA cycle discipline
+
+- Replace the expired GTA homepage and meta context with Rockstar's September 3–9 Executive week in the Business Rivalries Event.
+- Model only the repeatable 4X, 3X and 2X activities that accept a player-observed payout and duration.
+- Keep the GTA$1,000,000 Special Cargo challenge, free Arcadius office, doubled sourcing speed and later vehicle claim window visible as verified facts outside the repeated-run formula.
+- Represent route-specific access requirements without implying that a short bonus pays back a new Office, Warehouse or Vehicle Cargo setup.
+- Derive displayed weekly dates from the central snapshot and retain the previous week only as excluded archive context.
+
 ## Later
 
 - Authentication and cross-device profiles.
