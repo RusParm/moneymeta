@@ -1,5 +1,13 @@
 # Decision log
 
+## 2026-09-04: weekly challenges and repeatable routes stay separate
+
+A Rockstar weekly post may combine repeatable multipliers, one-time thresholds, free properties and later claim windows. The GTA session planner compares only activities that fit its observed payout-per-run model. One-time challenges and acquisition offers remain explicit verified facts until their threshold and capital logic are modeled directly; they must not be forced into a repeated-run formula or silently treated as free profit.
+
+## 2026-09-04: homepage routing follows the visitor's game
+
+The global homepage cannot assume that a visitor plays Dota 2 or any other specific game. Its primary action leads to an equal game selector, and game-specific interactive tools render only inside the selected game's context. Dota Match Audit uses one reliable, sanitized submission path; implementation fallbacks must not become user-facing navigation choices.
+
 ## 2026-08-11: product before media
 
 Money Meta will be built as a data-and-decision product. Articles must lead to a tool, saved result, email relationship or repeat visit.

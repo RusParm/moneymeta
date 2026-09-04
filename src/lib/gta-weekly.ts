@@ -14,7 +14,7 @@ export interface GtaWeeklyRouteFacts {
   multiplier: number;
   fixedReward?: number;
   requiredRunsForReward?: number;
-  requiredAsset?: "auto-shop";
+  requiredAsset?: "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse";
 }
 
 export interface GtaWeeklyPlanInput {

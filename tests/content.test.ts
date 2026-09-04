@@ -32,17 +32,16 @@ describe("GTA benchmark hub content", () => {
   it("ties the live pulse to a dated primary source", () => {
     expect(weeklyMeta.status).toBe("verified");
     expect(weeklyMeta.sourceUrl).toContain("rockstargames.com/newswire/article/");
-    expect(weeklyMeta.id).toBe("2026-08-27-random-transform");
-    expect(weeklyMeta.checkedAt).toBe("2026-09-01");
-    expect(weeklyMeta.validThrough).toBe("2026-09-02");
+    expect(weeklyMeta.id).toBe("2026-09-03-business-rivalries-executive");
+    expect(weeklyMeta.checkedAt).toBe("2026-09-04");
+    expect(weeklyMeta.validThrough).toBe("2026-09-09");
     expect(weeklyMeta.validThrough).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(weeklyMeta.opportunities).toHaveLength(3);
-    expect(weeklyMeta.opportunities.map((item) => item.multiplier)).toEqual([3, 2, 2]);
-    expect(weeklyMeta.opportunities.find((item) => item.id === "drift-races")).toMatchObject({
-      fixedReward: 100_000,
-      requiredRunsForReward: 3
-    });
-    expect(weeklyMeta.opportunities.find((item) => item.id === "auto-shop-robbery-contracts")?.requiredAsset).toBe("auto-shop");
+    expect(weeklyMeta.opportunities.map((item) => item.multiplier)).toEqual([4, 3, 2]);
+    expect(weeklyMeta.items.ru.join(" ")).toContain("GTA$1,000,000");
+    expect(weeklyMeta.opportunities.find((item) => item.id === "special-vehicle-work")?.requiredAsset).toBe("special-vehicle-work");
+    expect(weeklyMeta.opportunities.find((item) => item.id === "community-mission-series")?.requiredAsset).toBeUndefined();
+    expect(weeklyMeta.opportunities.find((item) => item.id === "export-mixed-goods")?.requiredAsset).toBe("special-cargo-warehouse");
     expect(weeklyMeta.closedWindows).toHaveLength(1);
   });
 });

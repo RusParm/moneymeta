@@ -89,7 +89,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     lede: t("Money Meta связывает твой банк, время на игру и цель с конкретным следующим ходом. Не листай одну бесконечную страницу: выбери задачу и открой нужный слой.", "Money Meta connects your bank, play time and objective to one concrete next move. Pick the decision and open the relevant layer instead of scrolling one endless page."),
     valueTitle: t("Не список выплат, а система принятия решений", "Not a payout list. A decision system."),
     valueText: t("Мы отделяем валовую продажу от чистого потока, производственное время от ручной нагрузки и временный бонус от постоянной экономики.", "We separate headline sale value from net flow, production time from active friction and a temporary bonus from the permanent economy."),
-    version: t("Random Transform Races · до 2 сентября", "Random Transform Races · through September 2"),
+    version: t("Business Rivalries · до 9 сентября", "Business Rivalries · through September 9"),
     checkedAt: weeklyMeta.checkedAt,
     sourceLabel: t("Rockstar Newswire", "Rockstar Newswire"),
     sourceUrl: weeklyMeta.sourceUrl,
@@ -107,9 +107,9 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
       section("tools", "05", "Σ", t("Инструменты", "Tools"), t("Считать до покупки, а не после", "Calculate before buying, not after"), t("Окупаемость бизнеса, срок до цели и распределение портфеля с редактируемыми вводными.", "Business payback, time to goal and portfolio allocation with editable inputs."), t("Проверишь решение на своих цифрах", "Test the decision with your own numbers"), t("Ускоряет ли эта покупка мою реальную цель?", "Does this purchase accelerate my actual goal?"))
     ],
     media: [{
-      src: "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/9k2kok31k3a8k9/46944605c1257bcb4dca1dbc4ffe515cd55cddda.jpg",
-      alt: t("Архивный официальный кадр события GTA Online", "Archived official GTA Online event artwork"),
-      caption: t("Архивный кадр Rockstar. Текущая недельная модель использует свежий Newswire и отдельно показывает срок каждого бонуса.", "Archived Rockstar artwork. The current weekly model uses the latest Newswire and shows every bonus window separately."),
+      src: "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/ak43aoa18a19o2/21bf2060f235313475f05e33bc1c48cee883f07c.jpg",
+      alt: t("Официальный постер GTA Online Business Rivalries с четырьмя владельцами бизнесов", "Official GTA Online Business Rivalries poster with four business owners"),
+      caption: t("Официальный постер Rockstar для Business Rivalries. Текущий недельный слой отделяет бонусы с 3 по 9 сентября от следующих этапов месячного события.", "Rockstar's official Business Rivalries poster. The live weekly layer separates the September 3 to 9 bonuses from the later stages of the month-long event."),
       sourceLabel: "Rockstar Games",
       sourceUrl: weeklyMeta.sourceUrl,
       position: "50% 45%"

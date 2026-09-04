@@ -193,13 +193,29 @@
 ## P2.7: v1.19 Dota match economy audit
 
 - Turn a public Dota 2 Match ID into a hero-specific economy replay without Steam login, client access or file access.
-- Start a read-only OpenDota GET request only after the player presses the audit button. Keep it as the primary path; a separately chosen no-store relay may retrieve and reduce the same public response when the direct route fails. Never request remote replay parsing from this surface.
+- Start a read-only OpenDota request only after the player presses the audit button. Route the public Match ID through a no-store sanitizer and never request remote replay parsing from this surface.
 - Discard account identifiers, player names, chat and every unused response field before analysis or rendering.
 - Show accumulated-gold checkpoints and completed major-item timings for parsed matches, with an honest final-snapshot fallback when timeline data is absent.
 - Compare item timing only with the selected role in the current patch family and only when the professional sample contains at least 200 purchases.
 - Keep role correction explicit. Treat one match and every professional median as replay context, not a player grade or universal build order.
 - Put only the public Match ID, player slot and selected role in a share URL. Never auto-fetch from that URL or retain a match after reload.
 - Require model and privacy-contract tests, RU/EN parity, static build, internal-link audit and HTTPS preview interaction QA before production promotion.
+
+## P2.8: v1.20 game-first entry
+
+- Remove the homepage assumption that every visitor plays Dota 2. Route the primary CTA to an equal seven-game selector and keep each specialist tool inside its game context.
+- Put a compact Match ID loader inside the selected Dota panel and carry an explicit submission into Match Audit without making the visitor hunt for a second button.
+- Use one reliable sanitized Match Audit request path instead of exposing transport recovery as a product choice.
+- Reserve independent media and text columns across game tabs, Dota navigation, hero rows, inventory and purchase cards.
+- Require real loaded-match QA in the HTTPS preview in addition to static no-overflow checks.
+
+## P2.9: v1.21 live GTA cycle discipline
+
+- Replace the expired GTA homepage and meta context with Rockstar's September 3–9 Executive week in the Business Rivalries Event.
+- Model only the repeatable 4X, 3X and 2X activities that accept a player-observed payout and duration.
+- Keep the GTA$1,000,000 Special Cargo challenge, free Arcadius office, doubled sourcing speed and later vehicle claim window visible as verified facts outside the repeated-run formula.
+- Represent route-specific access requirements without implying that a short bonus pays back a new Office, Warehouse or Vehicle Cargo setup.
+- Derive displayed weekly dates from the central snapshot and retain the previous week only as excluded archive context.
 
 ## Later
 
