@@ -24,11 +24,11 @@ const alternate = getDotaMatchAuditPath(lang === "ru" ? "en" : "ru");
 const itemPatchSource = dotaItemsSnapshot.patch.sourceUrl;
 const copy = lang === "ru" ? {
   title: "Разбор экономики матча Dota 2 по Match ID | Money Meta",
-  description: "Вставь публичный Match ID Dota 2, выбери героя и разбери темп золота, ключевые покупки, выкупы и отклонения от текущих профессиональных таймингов.",
+  description: "Вставь публичный Match ID Dota 2 и найди фазу, где изменился разрыв с прямым оппонентом: отдельно от командного провала и без оценки по KDA.",
   back: "← К порталу Dota 2",
   kicker: "Dota 2 · разбор реального матча",
   heading: "Вставь Match ID. Найди экономическую развилку.",
-  lede: "Не ещё одна оценка KDA. Money Meta собирает темп золота, контрольные точки, крупные покупки и выкупы в один короткий разбор. Итогом становится один вопрос для реплея и одно правило на следующий матч.",
+  lede: "Не ещё одна оценка KDA. Money Meta сравнит тебя с соперником той же позиции, отделит личный разрыв от командного провала и назовёт одно окно для реплея. Предметы и GPM останутся доказательствами, а не готовым приговором.",
   inputLabel: "Match ID или ссылка на матч",
   inputPlaceholder: "Например, 8978544633",
   inputHelp: "Подойдёт числовой ID или обычная ссылка OpenDota, Dotabuff либо Stratz.",
@@ -76,7 +76,7 @@ const copy = lang === "ru" ? {
   shared: "Ссылка скопирована. Она содержит только Match ID, слот героя и выбранную роль.",
   copyFailed: "Не удалось скопировать автоматически. Разреши доступ к буферу обмена и повтори.",
   openProvider: "Открыть матч в OpenDota",
-  signal: "ПЕРВАЯ ПРОВЕРКА",
+  signal: "ГЛАВНЫЙ ВЫВОД",
   finalSignalTitle: "Финальный экран матча загружен. Таймингов пока нет.",
   finalSignalText: "Money Meta показывает итоговый инвентарь и счёт, которые OpenDota вернул без обработки реплея. Журнала покупок и поминутного золота в этом ответе нет, поэтому мы не придумываем момент провала.",
   lateItem: "позже профмедианы",
@@ -86,6 +86,54 @@ const copy = lang === "ru" ? {
   slowSignalText: "Проверь карту, смерти и вынужденные действия внутри этого окна. Низкий темп сам по себе не доказывает ошибку: полезная драка или поддержка команды могли быть правильной конверсией.",
   reviewSignalTitle: "Факты собраны. Теперь найди одно решение.",
   reviewSignalText: "Сравни момент крупной покупки с ближайшей целью команды. Этот экран видит экономику, но не знает драфт, голосовую связь и состояние карты.",
+  autopsyKicker: "ECONOMIC AUTOPSY",
+  autopsyTitle: "Экономическое вскрытие",
+  autopsyText: "Сравнение отделяет твой темп от движения всей команды. Прямой оппонент появляется только при одинаковой оценке позиции от OpenDota.",
+  confidence: "Уверенность",
+  confidenceHigh: "высокая",
+  confidenceMedium: "средняя",
+  confidenceLow: "ограниченная",
+  timelineCoverage: "хронологий игроков",
+  directOpponent: "Прямой оппонент",
+  you: "Ты",
+  noDirectOpponent: "позиция соперника не определена",
+  laneVerdict: "Линия",
+  breakVerdict: "Критическое окно",
+  finishVerdict: "Финиш",
+  noBreak: "резкого провала не видно",
+  ahead: "впереди",
+  behind: "позади",
+  even: "почти поровну",
+  unavailableShort: "не рассчитано",
+  roleGap: "Разрыв по позиции",
+  teamGap: "Разрыв команд",
+  teamShare: "Доля золота команды",
+  rank: "Место по экономике",
+  ofTeam: "в команде",
+  ofMatch: "в матче",
+  phaseTitle: "Как менялся разрыв",
+  phaseText: "Здесь важна не финальная цифра, а изменение за отрезок. Отрицательный сдвиг означает, что соперник или его команда набрали больше золота за то же время.",
+  phase: "Окно",
+  yourPace: "Твой темп",
+  opponentPace: "Темп оппонента",
+  pattern: "Сигнал",
+  personalPattern: "личный разрыв",
+  teamPattern: "командное давление",
+  mixedPattern: "смешанный",
+  stablePattern: "без срыва",
+  finalOnlyPattern: "только финал",
+  priceKicker: "ЦЕНА ОКНА",
+  priceTitle: "Сколько стоило сравнительное отставание",
+  comparativeSwing: "Оппонент набрал сверху",
+  delayEquivalent: "Эквивалент задержки предмета",
+  priceNote: "Это не доказанный потерянный доход и не фактическая задержка покупки. Эквивалент делит изменение разрыва на твой темп золота внутри того же окна.",
+  itemEvidence: "Тайминг предмета",
+  replayKicker: "ОТКРОЙ РЕПЛЕЙ",
+  replayTitle: "Проверь одно окно, а не весь матч",
+  replayChecks: ["Первая смерть или долгий путь без фарма", "Пропущенные волны и доступные лагеря", "Вынужденная ротация без цели или размена", "Момент следующего крупного предмета"],
+  finalOnlyAutopsy: "Поминутной хронологии нет. Ниже показан только проверяемый финальный разрыв; момент и причина не вычисляются.",
+  noOpponentAutopsy: "OpenDota не дал одинаковую позицию двум соперникам. Командный контекст остаётся доступен, но Money Meta не назначает прямого оппонента по GPM или стоимости героя.",
+  thresholdNote: "Сигнал срабатывает при ухудшении разрыва по позиции минимум на 750 золота, командного разрыва на 1 500 или доли командной экономики на 1,5 п.п. Это прозрачный фильтр значимости, не оценка навыка.",
   overview: "Финальный срез",
   gpm: "GPM",
   netWorth: "Стоимость героя",
@@ -107,6 +155,7 @@ const copy = lang === "ru" ? {
   noInventory: "OpenDota не вернул финальные слоты этого игрока.",
   chartKicker: "ТРАЕКТОРИЯ",
   chartTitle: "Накопленное золото по минутам",
+  chartTitleCompared: "Твоё золото против прямого оппонента",
   chartText: "Линия показывает полученное золото, а не свободное золото в кошельке. Метки показывают крупные завершённые покупки, найденные в журнале покупок.",
   chartAria: "График накопленного золота игрока по минутам матча",
   noTimelineTitle: "Нет поминутной хронологии",
@@ -156,11 +205,11 @@ const copy = lang === "ru" ? {
   goldUnit: "золота"
 } : {
   title: "Dota 2 match economy audit by Match ID | Money Meta",
-  description: "Paste a public Dota 2 Match ID, choose a hero and audit gold pace, key purchases, buybacks and current pro timing deviations.",
+  description: "Paste a public Dota 2 Match ID and find the phase where the direct-position gap moved, separated from a team collapse and without a KDA grade.",
   back: "← Dota 2 portal",
   kicker: "Dota 2 · one real match",
   heading: "Paste a Match ID. Find the economy fork.",
-  lede: "This is not another KDA grade. Money Meta connects gold pace, checkpoints, major purchases and buybacks in one short audit. The output is one replay question and one rule for the next match.",
+  lede: "This is not another KDA grade. Money Meta compares you with the same-position opponent, separates a personal gap from a team collapse and names one replay window. Items and GPM remain evidence, not a ready-made verdict.",
   inputLabel: "Match ID or match URL",
   inputPlaceholder: "For example, 8978544633",
   inputHelp: "Use the numeric ID or a normal OpenDota, Dotabuff or Stratz match link.",
@@ -208,7 +257,7 @@ const copy = lang === "ru" ? {
   shared: "Link copied. It contains only the Match ID, hero slot and selected role.",
   copyFailed: "Automatic copy failed. Allow clipboard access and try again.",
   openProvider: "Open match in OpenDota",
-  signal: "CHECK FIRST",
+  signal: "MAIN FINDING",
   finalSignalTitle: "The final match screen is loaded. Timings are not.",
   finalSignalText: "Money Meta shows the final inventory and scoreboard OpenDota returned without replay parsing. This response has no purchase log or minute-by-minute gold, so we do not invent a failure point.",
   lateItem: "later than the pro median",
@@ -218,6 +267,54 @@ const copy = lang === "ru" ? {
   slowSignalText: "Check the map, deaths and forced actions inside this window. Low pace alone does not prove a mistake: a useful fight or team support may have been the right conversion.",
   reviewSignalTitle: "The facts are assembled. Find one decision.",
   reviewSignalText: "Compare a major purchase with the team's nearest objective. This screen sees economy, but it does not know the draft, voice comms or map state.",
+  autopsyKicker: "ECONOMIC AUTOPSY",
+  autopsyTitle: "Economic autopsy",
+  autopsyText: "This comparison separates your pace from the whole team's movement. A direct opponent appears only when OpenDota assigns both players the same position.",
+  confidence: "Confidence",
+  confidenceHigh: "high",
+  confidenceMedium: "medium",
+  confidenceLow: "limited",
+  timelineCoverage: "player timelines",
+  directOpponent: "Direct opponent",
+  you: "You",
+  noDirectOpponent: "opponent position unavailable",
+  laneVerdict: "Lane",
+  breakVerdict: "Critical window",
+  finishVerdict: "Finish",
+  noBreak: "no sharp collapse found",
+  ahead: "ahead",
+  behind: "behind",
+  even: "nearly even",
+  unavailableShort: "not calculated",
+  roleGap: "Position gap",
+  teamGap: "Team gap",
+  teamShare: "Share of team gold",
+  rank: "Economy rank",
+  ofTeam: "on team",
+  ofMatch: "in match",
+  phaseTitle: "How the gap moved",
+  phaseText: "The change inside a segment matters more than the final number. A negative swing means the opponent or enemy team earned more gold over the same period.",
+  phase: "Window",
+  yourPace: "Your pace",
+  opponentPace: "Opponent pace",
+  pattern: "Signal",
+  personalPattern: "personal gap",
+  teamPattern: "team pressure",
+  mixedPattern: "mixed",
+  stablePattern: "no break",
+  finalOnlyPattern: "final only",
+  priceKicker: "PRICE OF THE WINDOW",
+  priceTitle: "What the comparative deficit cost",
+  comparativeSwing: "Opponent earned extra",
+  delayEquivalent: "Item-delay equivalent",
+  priceNote: "This is not proven lost income or an actual purchase delay. The equivalent divides the gap movement by your gold pace inside the same window.",
+  itemEvidence: "Item timing",
+  replayKicker: "OPEN THE REPLAY",
+  replayTitle: "Inspect one window, not the whole match",
+  replayChecks: ["First death or long path without farm", "Missed waves and available camps", "Forced rotation without an objective or trade", "Timing of the next major item"],
+  finalOnlyAutopsy: "There is no minute-by-minute timeline. Only the verifiable final gap is shown below; its moment and cause are not calculated.",
+  noOpponentAutopsy: "OpenDota did not assign the same position to two opponents. Team context remains available, but Money Meta will not choose a direct opponent from GPM or net worth.",
+  thresholdNote: "A signal requires the position gap to worsen by at least 750 gold, the team gap by 1,500, or team-economy share by 1.5 percentage points. This is a transparent materiality filter, not a skill grade.",
   overview: "Final snapshot",
   gpm: "GPM",
   netWorth: "Net worth",
@@ -239,6 +336,7 @@ const copy = lang === "ru" ? {
   noInventory: "OpenDota did not return this player's final slots.",
   chartKicker: "TRAJECTORY",
   chartTitle: "Cumulative gold by match minute",
+  chartTitleCompared: "Your gold versus the direct opponent",
   chartText: "The line shows gold earned, not liquid gold in the wallet. Markers show major completed purchases found in the purchase log.",
   chartAria: "Chart of the player's cumulative gold by match minute",
   noTimelineTitle: "No minute-by-minute timeline",
@@ -401,6 +499,40 @@ const payload = JSON.stringify({
             <p data-signal-text></p>
           </article>
 
+          <section class="match-economic-autopsy" data-economic-autopsy aria-labelledby="economic-autopsy-title">
+            <header class="match-economic-autopsy-head">
+              <div><span class="section-kicker">{copy.autopsyKicker}</span><h3 id="economic-autopsy-title">{copy.autopsyTitle}</h3><p>{copy.autopsyText}</p></div>
+              <div class="match-economic-confidence"><span>{copy.confidence}</span><strong data-economic-confidence></strong><small data-economic-coverage></small></div>
+            </header>
+
+            <div class="match-economic-opponent" data-economic-opponent></div>
+            <div class="match-economic-verdicts" data-economic-verdicts></div>
+
+            <section class="match-economic-phases" data-economic-phases aria-labelledby="economic-phases-title">
+              <header><div><span class="section-kicker">0:00 → GG</span><h4 id="economic-phases-title">{copy.phaseTitle}</h4><p>{copy.phaseText}</p></div></header>
+              <div class="match-economic-table-wrap" data-economic-table></div>
+            </section>
+
+            <aside class="match-economic-final-only" data-economic-final-only hidden></aside>
+
+            <div class="match-economic-action-grid">
+              <article class="match-economic-price">
+                <span>{copy.priceKicker}</span>
+                <h4>{copy.priceTitle}</h4>
+                <dl data-economic-price></dl>
+                <p>{copy.priceNote}</p>
+              </article>
+              <article class="match-economic-replay">
+                <span>{copy.replayKicker}</span>
+                <h4>{copy.replayTitle}</h4>
+                <strong data-economic-replay-window></strong>
+                <ol data-economic-replay-checks></ol>
+              </article>
+            </div>
+
+            <p class="match-economic-threshold" data-economic-boundary></p>
+          </section>
+
           <section class="match-audit-overview" aria-labelledby="match-overview-title">
             <h3 id="match-overview-title">{copy.overview}</h3>
             <div data-audit-stats></div>
@@ -413,7 +545,7 @@ const payload = JSON.stringify({
           </section>
 
           <section class="match-audit-trajectory" data-trajectory aria-labelledby="match-chart-title">
-            <header><div><span>{copy.chartKicker}</span><h3 id="match-chart-title">{copy.chartTitle}</h3><p>{copy.chartText}</p></div><strong data-chart-total></strong></header>
+            <header><div><span>{copy.chartKicker}</span><h3 id="match-chart-title" data-chart-title>{copy.chartTitle}</h3><p data-chart-text>{copy.chartText}</p><div class="match-audit-chart-series" data-chart-series></div></div><strong data-chart-total></strong></header>
             <div class="match-audit-chart-wrap"><svg data-audit-chart viewBox="0 0 900 320" role="img" aria-label={copy.chartAria}></svg></div>
             <div class="match-audit-chart-legend" data-chart-legend hidden></div>
           </section>
@@ -461,6 +593,7 @@ const payload = JSON.stringify({
     parseDotaMatchId,
     resolveDotaMatchInventory,
     sanitizeDotaMatchResponse,
+    type DotaEconomicWindow,
     type DotaMatch,
     type DotaMatchAudit,
     type DotaMatchPlayer,
@@ -474,6 +607,7 @@ const payload = JSON.stringify({
     const auditRoot = root;
     const data = JSON.parse(root.querySelector("[data-match-audit-data]")?.textContent ?? "{}");
     const copy: Record<string, string> = data.copy;
+    const replayChecks: string[] = data.copy.replayChecks;
     const lang: "ru" | "en" = data.lang;
     const items: DotaItemRecord[] = data.items;
     const matchItems: DotaMatchItemReference[] = data.matchItems;
@@ -647,38 +781,207 @@ const payload = JSON.stringify({
       container.replaceChildren(...groups);
     };
 
+    const signedGold = (amount: number | null) => amount === null
+      ? copy.unavailableShort!
+      : `${amount > 0 ? "+" : ""}${integer.format(amount)} ${copy.goldUnit}`;
+    const windowLabel = (window: DotaEconomicWindow) => `${number.format(window.startMinute)}-${number.format(window.endMinute)} ${copy.minuteShort}`;
+    const gapState = (gap: number | null) => gap === null
+      ? copy.unavailableShort!
+      : gap > 500 ? copy.ahead! : gap < -500 ? copy.behind! : copy.even!;
+    const kindLabel = (kind: DotaEconomicWindow["kind"]) => ({
+      personal: copy.personalPattern!,
+      team: copy.teamPattern!,
+      mixed: copy.mixedPattern!,
+      stable: copy.stablePattern!
+    })[kind];
+
     const renderSignal = (audit: DotaMatchAudit) => {
       const title = root.querySelector<HTMLElement>("[data-signal-title]")!;
       const text = root.querySelector<HTMLElement>("[data-signal-text]")!;
+      const economy = audit.economy;
+      const critical = economy.criticalWindow;
+      const opponent = economy.counterpart ? heroFor(economy.counterpart.heroId) : null;
       const itemDelta = audit.strongestItemDelta;
-      if (!audit.timelineAvailable) {
-        title.textContent = copy.finalSignalTitle!;
+      if (critical) {
+        if (critical.roleGapChange !== null && opponent) {
+          title.textContent = lang === "ru"
+            ? `${windowLabel(critical)}: разрыв с ${opponent.name} изменился на ${signedGold(critical.roleGapChange)}`
+            : `${windowLabel(critical)}: the gap to ${opponent.name} moved by ${signedGold(critical.roleGapChange)}`;
+        } else {
+          title.textContent = lang === "ru"
+            ? `${windowLabel(critical)}: командный разрыв изменился на ${signedGold(critical.teamGapChange)}`
+            : `${windowLabel(critical)}: the team gap moved by ${signedGold(critical.teamGapChange)}`;
+        }
+        const explanations = lang === "ru" ? {
+          personal: `Командный сдвиг за это время: ${signedGold(critical.teamGapChange)}. Твоя доля экономики изменилась на ${critical.playerTeamShareChangePct === null ? copy.unavailableShort : `${number.format(critical.playerTeamShareChangePct)} п.п.`}. Это сравнительный личный сигнал, а не доказательство ошибки.`,
+          team: `Твоя позиция не отстала заметно сильнее, но командный разрыв ухудшился на ${signedGold(critical.teamGapChange)}. Ищи потерю пространства или цели всей командой.`,
+          mixed: `Одновременно ухудшились разрыв по позиции и экономика команды. В реплее нужно разделить личный простой и общее сжатие карты.`,
+          stable: `Порог резкого провала не пересечён. Проверяй не объём фарма, а то, во что он был превращён.`
+        } : {
+          personal: `The team swing in the same period was ${signedGold(critical.teamGapChange)}. Your share of team economy moved by ${critical.playerTeamShareChangePct === null ? copy.unavailableShort : `${number.format(critical.playerTeamShareChangePct)} pp`}. This is a personal comparative signal, not proof of a mistake.`,
+          team: `Your position did not fall materially further behind, but the team gap worsened by ${signedGold(critical.teamGapChange)}. Look for a team-wide loss of space or an objective.`,
+          mixed: `The position gap and team economy deteriorated together. Separate personal downtime from the broader map contraction in the replay.`,
+          stable: `No sharp-break threshold was crossed. Inspect what the farm converted into, not only its volume.`
+        };
+        text.textContent = explanations[critical.kind];
+        currentRule = lang === "ru"
+          ? `Открыть реплей на ${windowLabel(critical)}. Найти первое решение, после которого разрыв с прямым оппонентом или командой перестал восстанавливаться.`
+          : `Open the replay at ${windowLabel(critical)}. Find the first decision after which the gap to the direct opponent or enemy team stopped recovering.`;
+      } else if (!economy.windows.length) {
+        const finalGap = economy.final.roleGap;
+        title.textContent = finalGap !== null && opponent
+          ? (lang === "ru"
+              ? `Финал: ${gapState(finalGap)} ${opponent.name} на ${integer.format(Math.abs(finalGap))} золота`
+              : `Finish: ${integer.format(Math.abs(finalGap))} gold ${gapState(finalGap)} ${opponent.name}`)
+          : copy.finalSignalTitle!;
         text.textContent = copy.finalSignalText!;
         currentRule = lang === "ru"
-          ? "Не угадывать минуту провала по финальному GPM. Сначала получить разобранную хронологию или отметить один момент вручную в реплее."
-          : "Do not guess the failure minute from final GPM. Get a parsed timeline or mark one replay moment manually first.";
+          ? "Не угадывать минуту провала по финальному GPM. В реплее вручную отметить первый момент, после которого экономика не восстановилась."
+          : "Do not guess the failure minute from final GPM. Manually mark the first replay moment after which the economy did not recover.";
       } else if (itemDelta && itemDelta.deltaMinutes !== null && Math.abs(itemDelta.deltaMinutes) >= 2.5) {
         const direction = itemDelta.deltaMinutes > 0 ? copy.lateItem : copy.earlyItem;
         title.textContent = `${itemDelta.name}: ${number.format(Math.abs(itemDelta.deltaMinutes))} ${copy.minuteShort} ${direction}`;
         text.textContent = copy.itemSignalText!;
         currentRule = lang === "ru"
-          ? `В следующем реплее проверить, какую задачу решала команда на ${number.format(itemDelta.minute)}-й минуте, когда появился ${itemDelta.name}. Сравнивать решение, а не только цифру.`
-          : `In the next replay, inspect the team objective at minute ${number.format(itemDelta.minute)}, when ${itemDelta.name} arrived. Compare the decision, not just the number.`;
-      } else if (audit.slowestWindow) {
-        title.textContent = `${copy.slowSignalTitle} ${number.format(audit.slowestWindow.minute)} ${copy.minuteShort}`;
-        text.textContent = `${integer.format(audit.slowestWindow.intervalGoldPerMinute)} GPM · ${integer.format(audit.slowestWindow.intervalLastHits)} ${copy.intervalCs}. ${copy.slowSignalText}`;
-        const previous = audit.checkpoints[audit.checkpoints.indexOf(audit.slowestWindow) - 1]?.minute ?? 0;
-        currentRule = lang === "ru"
-          ? `В следующем реплее разобрать только окно ${number.format(previous)}-${number.format(audit.slowestWindow.minute)}: какая смерть, драка или потерянная зона изменила темп золота?`
-          : `In the next replay, review only minutes ${number.format(previous)}-${number.format(audit.slowestWindow.minute)}: which death, fight or lost area changed gold pace?`;
+          ? `На ${number.format(itemDelta.minute)}-й минуте проверить, какую ближайшую цель должен был открыть ${itemDelta.name} и была ли она реализована.`
+          : `At minute ${number.format(itemDelta.minute)}, check which immediate objective ${itemDelta.name} was meant to unlock and whether it was converted.`;
       } else {
-        title.textContent = copy.reviewSignalTitle!;
+        title.textContent = lang === "ru" ? "Резкого экономического провала не видно" : "No sharp economic collapse is visible";
         text.textContent = copy.reviewSignalText!;
         currentRule = lang === "ru"
           ? "Перед следующей крупной покупкой назвать цель команды на ближайшие пять минут и после матча проверить, помог ли предмет её забрать."
           : "Before the next major purchase, name the team's five-minute objective and check after the match whether the item helped secure it.";
       }
       root.querySelector<HTMLElement>("[data-next-rule]")!.textContent = currentRule;
+    };
+
+    const renderEconomicAutopsy = (audit: DotaMatchAudit) => {
+      const economy = audit.economy;
+      const confidence = root.querySelector<HTMLElement>("[data-economic-confidence]")!;
+      confidence.textContent = economy.confidence === "high"
+        ? copy.confidenceHigh!
+        : economy.confidence === "medium" ? copy.confidenceMedium! : copy.confidenceLow!;
+      confidence.dataset.level = economy.confidence;
+      root.querySelector<HTMLElement>("[data-economic-coverage]")!.textContent = `${economy.timelinePlayerCount}/${currentMatch?.players.length ?? 0} ${copy.timelineCoverage}`;
+
+      const opponentRoot = root.querySelector<HTMLElement>("[data-economic-opponent]")!;
+      if (economy.counterpart) {
+        const opponent = heroFor(economy.counterpart.heroId);
+        const body = make("div");
+        body.append(make("span", "", copy.directOpponent), make("strong", "", opponent.name), make("small", "", positionLabel(economy.counterpart)));
+        opponentRoot.classList.remove("is-missing");
+        opponentRoot.replaceChildren(media("match-economic-opponent-image", opponent.name, opponent.image), body);
+      } else {
+        opponentRoot.classList.add("is-missing");
+        opponentRoot.replaceChildren(make("span", "", copy.directOpponent), make("strong", "", copy.noDirectOpponent));
+      }
+
+      const verdictCard = (code: string, title: string, main: string, detail: string, tone = "neutral") => {
+        const card = make("article", `is-${tone}`);
+        card.append(make("span", "", code));
+        card.append(make("h4", "", title));
+        card.append(make("strong", "", main));
+        card.append(make("p", "", detail));
+        return card;
+      };
+      const lane = economy.laneCheckpoint;
+      const critical = economy.criticalWindow;
+      const finalGap = economy.final.roleGap ?? economy.finalCheckpoint?.roleGap ?? null;
+      const rankText = economy.final.teamRank !== null && economy.final.matchRank !== null
+        ? `${economy.final.teamRank}/5 ${copy.ofTeam} · ${economy.final.matchRank}/10 ${copy.ofMatch}`
+        : copy.unavailableShort!;
+      const verdicts = [
+        verdictCard(
+          "01 / LANE",
+          lane ? `${copy.laneVerdict} · ${number.format(lane.minute)} ${copy.minuteShort}` : copy.laneVerdict!,
+          lane ? signedGold(lane.roleGap) : copy.unavailableShort!,
+          lane ? `${copy.roleGap}: ${gapState(lane.roleGap)}` : copy.finalOnlyPattern!,
+          lane?.roleGap !== null && lane?.roleGap !== undefined ? (lane.roleGap > 500 ? "positive" : lane.roleGap < -500 ? "negative" : "neutral") : "neutral"
+        ),
+        verdictCard(
+          "02 / BREAK",
+          copy.breakVerdict!,
+          critical ? windowLabel(critical) : copy.noBreak!,
+          critical ? `${kindLabel(critical.kind)} · ${copy.roleGap}: ${signedGold(critical.roleGapChange)}` : copy.stablePattern!,
+          critical?.kind ?? "stable"
+        ),
+        verdictCard(
+          "03 / FINISH",
+          copy.finishVerdict!,
+          signedGold(finalGap),
+          `${copy.netWorth} · ${copy.rank}: ${rankText}`,
+          finalGap === null ? "neutral" : finalGap > 500 ? "positive" : finalGap < -500 ? "negative" : "neutral"
+        )
+      ];
+      root.querySelector<HTMLElement>("[data-economic-verdicts]")!.replaceChildren(...verdicts);
+
+      const phaseRoot = root.querySelector<HTMLElement>("[data-economic-phases]")!;
+      const finalOnly = root.querySelector<HTMLElement>("[data-economic-final-only]")!;
+      phaseRoot.hidden = economy.windows.length === 0;
+      finalOnly.hidden = economy.windows.length > 0;
+      if (economy.windows.length) {
+        const table = make("table");
+        const head = make("thead");
+        const headRow = make("tr");
+        [copy.phase, copy.yourPace, copy.opponentPace, copy.roleGap, copy.teamGap, copy.pattern].forEach((label) => headRow.append(make("th", "", label)));
+        head.append(headRow);
+        const body = make("tbody");
+        economy.windows.forEach((window) => {
+          const row = make("tr", `is-${window.kind}`);
+          const pace = (gain: number | null, gpm: number | null) => gain === null || gpm === null
+            ? copy.unavailableShort!
+            : `+${integer.format(gain)} · ${integer.format(gpm)} GPM`;
+          const signal = make("span", `match-economic-kind is-${window.kind}`, kindLabel(window.kind));
+          [
+            windowLabel(window),
+            pace(window.playerGoldGain, window.playerGoldPerMinute),
+            pace(window.counterpartGoldGain, window.counterpartGoldPerMinute),
+            signedGold(window.roleGapChange),
+            signedGold(window.teamGapChange)
+          ].forEach((entry) => row.append(make("td", "", entry)));
+          const signalCell = make("td");
+          signalCell.append(signal);
+          row.append(signalCell);
+          body.append(row);
+        });
+        table.append(head, body);
+        root.querySelector<HTMLElement>("[data-economic-table]")!.replaceChildren(table);
+      } else {
+        const finalDetails = [
+          copy.finalOnlyAutopsy!,
+          `${copy.roleGap}: ${signedGold(economy.final.roleGap)}.`,
+          `${copy.teamGap}: ${signedGold(economy.final.teamGap)}.`,
+          `${copy.rank}: ${rankText}.`
+        ];
+        finalOnly.textContent = finalDetails.join(" ");
+        root.querySelector<HTMLElement>("[data-economic-table]")!.replaceChildren();
+      }
+
+      const priceRows: Array<[string, string]> = [];
+      if (economy.comparativeGoldSwing !== null && economy.comparativeGoldSwing > 0) {
+        priceRows.push([copy.comparativeSwing!, `${integer.format(economy.comparativeGoldSwing)} ${copy.goldUnit}`]);
+      }
+      if (economy.estimatedItemDelayMinutes !== null) {
+        priceRows.push([copy.delayEquivalent!, `≈ ${number.format(economy.estimatedItemDelayMinutes)} ${copy.minuteShort}`]);
+      }
+      if (audit.strongestItemDelta?.deltaMinutes !== null && audit.strongestItemDelta?.deltaMinutes !== undefined) {
+        const delta = audit.strongestItemDelta.deltaMinutes;
+        priceRows.push([copy.itemEvidence!, `${audit.strongestItemDelta.name} · ${delta > 0 ? "+" : ""}${number.format(delta)} ${copy.minuteShort}`]);
+      }
+      if (!priceRows.length) priceRows.push([copy.comparativeSwing!, copy.noBreak!]);
+      const priceList = root.querySelector<HTMLElement>("[data-economic-price]")!;
+      priceList.replaceChildren(...priceRows.map(([label, result]) => {
+        const row = make("div");
+        row.append(make("dt", "", label), make("dd", "", result));
+        return row;
+      }));
+
+      const replayWindow = root.querySelector<HTMLElement>("[data-economic-replay-window]")!;
+      replayWindow.textContent = critical ? windowLabel(critical) : (audit.strongestItemDelta
+        ? `${number.format(Math.max(0, audit.strongestItemDelta.minute - 5))}-${number.format(audit.strongestItemDelta.minute)} ${copy.minuteShort}`
+        : copy.finalOnlyPattern!);
+      root.querySelector<HTMLElement>("[data-economic-replay-checks]")!.replaceChildren(...replayChecks.map((check) => make("li", "", check)));
+      root.querySelector<HTMLElement>("[data-economic-boundary]")!.textContent = `${copy.thresholdNote}${economy.counterpart ? "" : ` ${copy.noOpponentAutopsy}`}`;
     };
 
     const svgNode = <K extends keyof SVGElementTagNameMap>(tag: K, attributes: Record<string, string>) => {
@@ -695,14 +998,17 @@ const payload = JSON.stringify({
       checkpoints.hidden = !audit.timelineAvailable;
       fallback.hidden = audit.timelineAvailable;
       const legend = root.querySelector<HTMLElement>("[data-chart-legend]")!;
+      const seriesLegend = root.querySelector<HTMLElement>("[data-chart-series]")!;
       legend.hidden = true;
       legend.replaceChildren();
+      seriesLegend.replaceChildren();
       if (!audit.timelineAvailable || audit.series.length < 2) return;
       const svg = root.querySelector<SVGSVGElement>("[data-audit-chart]")!;
       svg.replaceChildren();
       const left = 54, right = 872, top = 28, bottom = 272;
-      const maximumMinute = Math.max(1, audit.series.at(-1)!.minute);
-      const maximumGold = Math.max(1, ...audit.series.map((point) => point.totalGold));
+      const opponentSeries = audit.economy.counterpartSeries;
+      const maximumMinute = Math.max(1, audit.series.at(-1)!.minute, opponentSeries.at(-1)?.minute ?? 0);
+      const maximumGold = Math.max(1, ...audit.series.map((point) => point.totalGold), ...opponentSeries.map((point) => point.totalGold));
       const x = (minute: number) => left + minute / maximumMinute * (right - left);
       const y = (gold: number) => bottom - gold / maximumGold * (bottom - top);
       [0, .5, 1].forEach((ratio) => {
@@ -712,6 +1018,10 @@ const payload = JSON.stringify({
       const linePath = audit.series.map((point, index) => `${index ? "L" : "M"}${x(point.minute).toFixed(1)},${y(point.totalGold).toFixed(1)}`).join(" ");
       const areaPath = `${linePath} L${x(maximumMinute).toFixed(1)},${bottom} L${left},${bottom} Z`;
       svg.append(svgNode("path", { d: areaPath, class: "chart-area" }), svgNode("path", { d: linePath, class: "chart-line" }));
+      if (opponentSeries.length >= 2) {
+        const opponentPath = opponentSeries.map((point, index) => `${index ? "L" : "M"}${x(point.minute).toFixed(1)},${y(point.totalGold).toFixed(1)}`).join(" ");
+        svg.append(svgNode("path", { d: opponentPath, class: "chart-line is-opponent" }));
+      }
       [0, maximumMinute / 2, maximumMinute].forEach((minuteValue) => {
         const label = svgNode("text", { x: String(x(minuteValue)), y: "302", class: "chart-axis", "text-anchor": minuteValue === 0 ? "start" : minuteValue === maximumMinute ? "end" : "middle" });
         label.textContent = `${number.format(minuteValue)}m`;
@@ -742,6 +1052,17 @@ const payload = JSON.stringify({
       });
       legend.replaceChildren(...legendItems);
       legend.hidden = legendItems.length === 0;
+      const chartTitle = root.querySelector<HTMLElement>("[data-chart-title]")!;
+      const chartText = root.querySelector<HTMLElement>("[data-chart-text]")!;
+      chartTitle.textContent = opponentSeries.length >= 2 ? copy.chartTitleCompared! : copy.chartTitle!;
+      chartText.textContent = copy.chartText!;
+      const playerKey = make("span", "is-player", copy.you);
+      if (opponentSeries.length >= 2 && audit.economy.counterpart) {
+        const opponent = heroFor(audit.economy.counterpart.heroId);
+        seriesLegend.replaceChildren(playerKey, make("span", "is-opponent", `${opponent.name} · ${positionLabel(audit.economy.counterpart)}`));
+      } else {
+        seriesLegend.replaceChildren(playerKey);
+      }
       root.querySelector<HTMLElement>("[data-chart-total]")!.textContent = `${integer.format(maximumGold)} ${copy.goldUnit}`;
     };
 
@@ -811,6 +1132,7 @@ const payload = JSON.stringify({
       selectedImage.alt = hero.name;
       selectedImage.hidden = !hero.image;
       renderSignal(audit);
+      renderEconomicAutopsy(audit);
       renderStats(audit);
       renderInventory(audit);
       renderChart(audit);

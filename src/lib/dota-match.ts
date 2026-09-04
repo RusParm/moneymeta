@@ -74,6 +74,64 @@ export interface DotaMatchItemPurchase {
   deltaMinutes: number | null;
 }
 
+export type DotaEconomicWindowKind = "personal" | "team" | "mixed" | "stable";
+export type DotaEconomicConfidence = "high" | "medium" | "low";
+
+export interface DotaEconomicCheckpoint {
+  minute: number;
+  playerGold: number;
+  counterpartGold: number | null;
+  roleGap: number | null;
+  ownTeamGold: number | null;
+  enemyTeamGold: number | null;
+  teamGap: number | null;
+  playerTeamSharePct: number | null;
+  teamRank: number | null;
+  matchRank: number | null;
+}
+
+export interface DotaEconomicWindow {
+  startMinute: number;
+  endMinute: number;
+  durationMinutes: number;
+  playerGoldGain: number;
+  counterpartGoldGain: number | null;
+  playerGoldPerMinute: number;
+  counterpartGoldPerMinute: number | null;
+  roleGapChange: number | null;
+  ownTeamGoldGain: number | null;
+  enemyTeamGoldGain: number | null;
+  teamGapChange: number | null;
+  playerTeamShareChangePct: number | null;
+  kind: DotaEconomicWindowKind;
+}
+
+export interface DotaEconomicFinalSnapshot {
+  playerNetWorth: number | null;
+  counterpartNetWorth: number | null;
+  roleGap: number | null;
+  ownTeamNetWorth: number | null;
+  enemyTeamNetWorth: number | null;
+  teamGap: number | null;
+  teamRank: number | null;
+  matchRank: number | null;
+}
+
+export interface DotaEconomicAutopsy {
+  counterpart: DotaMatchPlayer | null;
+  counterpartSeries: Array<{ minute: number; totalGold: number }>;
+  checkpoints: DotaEconomicCheckpoint[];
+  windows: DotaEconomicWindow[];
+  laneCheckpoint: DotaEconomicCheckpoint | null;
+  finalCheckpoint: DotaEconomicCheckpoint | null;
+  criticalWindow: DotaEconomicWindow | null;
+  comparativeGoldSwing: number | null;
+  estimatedItemDelayMinutes: number | null;
+  confidence: DotaEconomicConfidence;
+  timelinePlayerCount: number;
+  final: DotaEconomicFinalSnapshot;
+}
+
 export interface DotaMatchAudit {
   player: DotaMatchPlayer;
   role: DotaMatchRole;
@@ -83,7 +141,15 @@ export interface DotaMatchAudit {
   majorPurchases: DotaMatchItemPurchase[];
   slowestWindow: DotaMatchCheckpoint | null;
   strongestItemDelta: DotaMatchItemPurchase | null;
+  economy: DotaEconomicAutopsy;
 }
+
+/** Thresholds are exposed so every diagnosis remains inspectable and testable. */
+export const dotaEconomicSignalThresholds = {
+  roleGapGold: 750,
+  teamGapGold: 1_500,
+  teamSharePercentagePoints: 1.5
+} as const;
 
 const finiteInteger = (value: unknown, minimum: number, maximum: number): number | null => {
   const number = typeof value === "number" ? value : Number.NaN;
@@ -273,6 +339,209 @@ export function createDotaMatchSeries(player: DotaMatchPlayer) {
   })).filter((point, index, rows) => point.minute >= 0 && (index === 0 || point.minute > rows[index - 1]!.minute));
 }
 
+export function createDotaMatchGoldSeries(player: DotaMatchPlayer) {
+  const length = Math.min(player.times.length, player.goldTimeline.length);
+  return Array.from({ length }, (_, index) => ({
+    minute: player.times[index]! / 60,
+    totalGold: player.goldTimeline[index]!
+  })).filter((point, index, rows) => point.minute >= 0 && (index === 0 || point.minute > rows[index - 1]!.minute));
+}
+
+const pointAtOrBefore = (
+  series: Array<{ minute: number; totalGold: number }>,
+  minute: number,
+  maximumLagMinutes = 1.1
+) => {
+  const point = series.findLast((candidate) => candidate.minute <= minute);
+  return point && minute - point.minute <= maximumLagMinutes ? point : null;
+};
+
+const completeSum = (values: Array<number | null>) => values.length && values.every((value) => value !== null)
+  ? values.reduce<number>((sum, value) => sum + value!, 0)
+  : null;
+
+const completeRank = (selected: number | null, values: Array<number | null>) => {
+  if (selected === null || !values.length || values.some((value) => value === null)) return null;
+  return 1 + values.filter((value) => value! > selected).length;
+};
+
+const directPositionCounterpart = (match: DotaMatch, player: DotaMatchPlayer) => {
+  if (player.positionEstimate === null) return null;
+  const candidates = match.players.filter((candidate) => (
+    candidate.isRadiant !== player.isRadiant
+    && candidate.positionEstimate === player.positionEstimate
+  ));
+  return candidates.length === 1 ? candidates[0]! : null;
+};
+
+const economicWindowKind = (
+  roleGapChange: number | null,
+  teamGapChange: number | null,
+  playerTeamShareChangePct: number | null
+): DotaEconomicWindowKind => {
+  const personalSignal = (
+    (roleGapChange !== null && roleGapChange <= -dotaEconomicSignalThresholds.roleGapGold)
+    || (playerTeamShareChangePct !== null && playerTeamShareChangePct <= -dotaEconomicSignalThresholds.teamSharePercentagePoints)
+  );
+  const teamSignal = teamGapChange !== null && teamGapChange <= -dotaEconomicSignalThresholds.teamGapGold;
+  if (personalSignal && teamSignal) return "mixed";
+  if (personalSignal) return "personal";
+  if (teamSignal) return "team";
+  return "stable";
+};
+
+const finalEconomicSnapshot = (
+  match: DotaMatch,
+  player: DotaMatchPlayer,
+  counterpart: DotaMatchPlayer | null
+): DotaEconomicFinalSnapshot => {
+  const ownTeam = match.players.filter((candidate) => candidate.isRadiant === player.isRadiant);
+  const enemyTeam = match.players.filter((candidate) => candidate.isRadiant !== player.isRadiant);
+  const ownValues = ownTeam.map((candidate) => candidate.netWorth);
+  const enemyValues = enemyTeam.map((candidate) => candidate.netWorth);
+  const allValues = match.players.map((candidate) => candidate.netWorth);
+  const completeTeams = ownTeam.length === 5 && enemyTeam.length === 5 && match.players.length === 10;
+  const ownTeamNetWorth = completeTeams ? completeSum(ownValues) : null;
+  const enemyTeamNetWorth = completeTeams ? completeSum(enemyValues) : null;
+  return {
+    playerNetWorth: player.netWorth,
+    counterpartNetWorth: counterpart?.netWorth ?? null,
+    roleGap: player.netWorth !== null && counterpart && counterpart.netWorth !== null
+      ? player.netWorth - counterpart.netWorth
+      : null,
+    ownTeamNetWorth,
+    enemyTeamNetWorth,
+    teamGap: ownTeamNetWorth !== null && enemyTeamNetWorth !== null ? ownTeamNetWorth - enemyTeamNetWorth : null,
+    teamRank: completeTeams ? completeRank(player.netWorth, ownValues) : null,
+    matchRank: completeTeams ? completeRank(player.netWorth, allValues) : null
+  };
+};
+
+/**
+ * Compare only facts contained in one match. A direct opponent is used only
+ * when OpenDota explicitly assigns both players the same position estimate.
+ */
+export function buildDotaEconomicAutopsy(match: DotaMatch, playerSlot: number): DotaEconomicAutopsy | null {
+  const player = match.players.find((candidate) => candidate.playerSlot === playerSlot);
+  if (!player) return null;
+  const counterpart = directPositionCounterpart(match, player);
+  const seriesBySlot = new Map(match.players.map((candidate) => [candidate.playerSlot, createDotaMatchGoldSeries(candidate)]));
+  const playerSeries = seriesBySlot.get(player.playerSlot)!;
+  const counterpartSeries = counterpart ? seriesBySlot.get(counterpart.playerSlot)! : [];
+  const ownTeam = match.players.filter((candidate) => candidate.isRadiant === player.isRadiant);
+  const enemyTeam = match.players.filter((candidate) => candidate.isRadiant !== player.isRadiant);
+  const completeTeams = ownTeam.length === 5 && enemyTeam.length === 5 && match.players.length === 10;
+  const timelinePlayerCount = [...seriesBySlot.values()].filter((series) => series.length >= 2).length;
+  const endMinute = playerSeries.length >= 2
+    ? Math.min(match.durationSeconds / 60, playerSeries.at(-1)!.minute)
+    : 0;
+
+  const makeCheckpoint = (targetMinute: number): DotaEconomicCheckpoint | null => {
+    const selectedPoint = pointAtOrBefore(playerSeries, targetMinute);
+    if (!selectedPoint) return null;
+    const minute = selectedPoint.minute;
+    const goldFor = (candidate: DotaMatchPlayer) => pointAtOrBefore(seriesBySlot.get(candidate.playerSlot)!, minute)?.totalGold ?? null;
+    const playerGold = selectedPoint.totalGold;
+    const counterpartGold = counterpart ? goldFor(counterpart) : null;
+    const ownValues = ownTeam.map(goldFor);
+    const enemyValues = enemyTeam.map(goldFor);
+    const allValues = match.players.map(goldFor);
+    const ownTeamGold = completeTeams ? completeSum(ownValues) : null;
+    const enemyTeamGold = completeTeams ? completeSum(enemyValues) : null;
+    return {
+      minute,
+      playerGold,
+      counterpartGold,
+      roleGap: counterpartGold === null ? null : playerGold - counterpartGold,
+      ownTeamGold,
+      enemyTeamGold,
+      teamGap: ownTeamGold !== null && enemyTeamGold !== null ? ownTeamGold - enemyTeamGold : null,
+      playerTeamSharePct: ownTeamGold && ownTeamGold > 0 ? playerGold / ownTeamGold * 100 : null,
+      teamRank: completeTeams ? completeRank(playerGold, ownValues) : null,
+      matchRank: completeTeams ? completeRank(playerGold, allValues) : null
+    };
+  };
+
+  const targets = endMinute > 0 ? checkpointTargets(endMinute) : [];
+  const checkpoints = targets.flatMap((target): DotaEconomicCheckpoint[] => {
+    const checkpoint = makeCheckpoint(target);
+    return checkpoint ? [checkpoint] : [];
+  }).filter((checkpoint, index, rows) => index === 0 || checkpoint.minute > rows[index - 1]!.minute);
+  const baseline = playerSeries.length >= 2 ? makeCheckpoint(playerSeries[0]!.minute) : null;
+  const windowPoints = baseline ? [baseline, ...checkpoints.filter((checkpoint) => checkpoint.minute > baseline.minute)] : checkpoints;
+  const windows = windowPoints.slice(1).map((end, index): DotaEconomicWindow => {
+    const start = windowPoints[index]!;
+    const durationMinutes = Math.max(1 / 60, end.minute - start.minute);
+    const playerGoldGain = end.playerGold - start.playerGold;
+    const counterpartGoldGain = end.counterpartGold !== null && start.counterpartGold !== null
+      ? end.counterpartGold - start.counterpartGold
+      : null;
+    const roleGapChange = end.roleGap !== null && start.roleGap !== null ? end.roleGap - start.roleGap : null;
+    const ownTeamGoldGain = end.ownTeamGold !== null && start.ownTeamGold !== null ? end.ownTeamGold - start.ownTeamGold : null;
+    const enemyTeamGoldGain = end.enemyTeamGold !== null && start.enemyTeamGold !== null ? end.enemyTeamGold - start.enemyTeamGold : null;
+    const teamGapChange = end.teamGap !== null && start.teamGap !== null ? end.teamGap - start.teamGap : null;
+    const playerTeamShareChangePct = end.playerTeamSharePct !== null && start.playerTeamSharePct !== null
+      ? end.playerTeamSharePct - start.playerTeamSharePct
+      : null;
+    return {
+      startMinute: start.minute,
+      endMinute: end.minute,
+      durationMinutes,
+      playerGoldGain,
+      counterpartGoldGain,
+      playerGoldPerMinute: playerGoldGain / durationMinutes,
+      counterpartGoldPerMinute: counterpartGoldGain === null ? null : counterpartGoldGain / durationMinutes,
+      roleGapChange,
+      ownTeamGoldGain,
+      enemyTeamGoldGain,
+      teamGapChange,
+      playerTeamShareChangePct,
+      kind: economicWindowKind(roleGapChange, teamGapChange, playerTeamShareChangePct)
+    };
+  });
+  const deteriorationScore = (window: DotaEconomicWindow) => (
+    Math.max(0, -(window.roleGapChange ?? 0)) / dotaEconomicSignalThresholds.roleGapGold
+    + Math.max(0, -(window.teamGapChange ?? 0)) / dotaEconomicSignalThresholds.teamGapGold
+    + Math.max(0, -(window.playerTeamShareChangePct ?? 0)) / dotaEconomicSignalThresholds.teamSharePercentagePoints
+  );
+  const criticalWindow = windows.reduce<DotaEconomicWindow | null>((critical, window) => {
+    if (window.kind === "stable") return critical;
+    return !critical || deteriorationScore(window) > deteriorationScore(critical) ? window : critical;
+  }, null);
+  const comparativeGoldSwing = criticalWindow?.roleGapChange !== null && criticalWindow?.roleGapChange !== undefined
+    ? Math.max(0, -criticalWindow.roleGapChange)
+    : null;
+  const estimatedItemDelayMinutes = criticalWindow && comparativeGoldSwing && criticalWindow.playerGoldPerMinute > 0
+    ? Math.round(comparativeGoldSwing / criticalWindow.playerGoldPerMinute * 10) / 10
+    : null;
+  const fullTimeline = completeTeams && timelinePlayerCount === 10;
+  const completeComparison = checkpoints.length > 0 && checkpoints.every((checkpoint) => (
+    checkpoint.counterpartGold !== null
+    && checkpoint.ownTeamGold !== null
+    && checkpoint.enemyTeamGold !== null
+  ));
+  const confidence: DotaEconomicConfidence = fullTimeline && completeComparison && counterpartSeries.length >= 2
+    ? "high"
+    : (counterpartSeries.length >= 2 || timelinePlayerCount >= 8) && playerSeries.length >= 2
+      ? "medium"
+      : "low";
+
+  return {
+    counterpart,
+    counterpartSeries,
+    checkpoints,
+    windows,
+    laneCheckpoint: checkpoints.find((checkpoint) => checkpoint.minute <= 10.1) ?? checkpoints[0] ?? null,
+    finalCheckpoint: checkpoints.at(-1) ?? null,
+    criticalWindow,
+    comparativeGoldSwing,
+    estimatedItemDelayMinutes,
+    confidence,
+    timelinePlayerCount,
+    final: finalEconomicSnapshot(match, player, counterpart)
+  };
+}
+
 export function createDotaMatchCheckpoints(player: DotaMatchPlayer, durationSeconds: number): DotaMatchCheckpoint[] {
   const series = createDotaMatchSeries(player);
   if (series.length < 2) return [];
@@ -359,6 +628,8 @@ export function buildDotaMatchAudit(
   const strongestItemDelta = comparable.length
     ? comparable.reduce((strongest, purchase) => Math.abs(purchase.deltaMinutes!) > Math.abs(strongest.deltaMinutes!) ? purchase : strongest)
     : null;
+  const economy = buildDotaEconomicAutopsy(match, playerSlot);
+  if (!economy) return null;
 
   return {
     player,
@@ -368,6 +639,7 @@ export function buildDotaMatchAudit(
     series: timelineAvailable ? createDotaMatchSeries(player) : [],
     majorPurchases,
     slowestWindow,
-    strongestItemDelta
+    strongestItemDelta,
+    economy
   };
 }

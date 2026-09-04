@@ -1,5 +1,9 @@
 # Decision log
 
+## 2026-09-04: match economy diagnosis compares movements, not players
+
+A Dota match audit may identify a critical economic window only from transparent changes inside the same match. The direct comparison uses the opposing player with the same explicit OpenDota position estimate; if that pairing is absent or ambiguous, it remains unavailable. The model shows the position-gap movement and team-gap movement separately, labels confidence from timeline coverage and publishes its materiality thresholds. A gold-gap equivalent is a replay prioritization aid, not proven lost income, causal blame, a skill score or an actual item delay.
+
 ## 2026-09-04: weekly challenges and repeatable routes stay separate
 
 A Rockstar weekly post may combine repeatable multipliers, one-time thresholds, free properties and later claim windows. The GTA session planner compares only activities that fit its observed payout-per-run model. One-time challenges and acquisition offers remain explicit verified facts until their threshold and capital logic are modeled directly; they must not be forced into a repeated-run formula or silently treated as free profit.

@@ -4,9 +4,11 @@ import { dotaMatchAuditConfig, getDotaMatchAuditPath } from "../src/data/dota-ma
 import { dotaMatchItems } from "../src/data/dota-match-items";
 import { sitemapPaths } from "../src/pages/sitemap.xml";
 import {
+  buildDotaEconomicAutopsy,
   buildDotaMatchAudit,
   createDotaMatchPublicPayload,
   createDotaMatchCheckpoints,
+  dotaEconomicSignalThresholds,
   inferredDotaMatchRole,
   parseDotaMatchId,
   resolveDotaMatchInventory,
@@ -75,6 +77,21 @@ const rawMatch = (overrides: Record<string, unknown> = {}) => ({
   chat: [{ key: "not retained" }],
   players: [rawPlayer(), rawPlayer({ hero_id: 82, player_slot: 128, isRadiant: false, win: 1, position_est: 4 })],
   ...overrides
+});
+
+const economicRawMatch = () => rawMatch({
+  players: [
+    rawPlayer({ hero_id: 1, player_slot: 0, isRadiant: true, position_est: 1, gold_t: [0, 4_000, 7_000, 10_000, 12_000], net_worth: 12_000 }),
+    rawPlayer({ hero_id: 2, player_slot: 1, isRadiant: true, position_est: 2, gold_t: [0, 4_200, 8_500, 13_000, 14_500], net_worth: 14_500 }),
+    rawPlayer({ hero_id: 3, player_slot: 2, isRadiant: true, position_est: 3, gold_t: [0, 3_800, 7_800, 12_000, 13_000], net_worth: 13_000 }),
+    rawPlayer({ hero_id: 4, player_slot: 3, isRadiant: true, position_est: 4, gold_t: [0, 2_500, 5_200, 8_000, 8_800], net_worth: 8_800 }),
+    rawPlayer({ hero_id: 5, player_slot: 4, isRadiant: true, position_est: 5, gold_t: [0, 2_200, 4_500, 7_000, 7_600], net_worth: 7_600 }),
+    rawPlayer({ hero_id: 6, player_slot: 128, isRadiant: false, position_est: 1, gold_t: [0, 3_500, 8_000, 12_500, 14_000], net_worth: 14_000 }),
+    rawPlayer({ hero_id: 7, player_slot: 129, isRadiant: false, position_est: 2, gold_t: [0, 4_000, 8_200, 12_500, 13_800], net_worth: 13_800 }),
+    rawPlayer({ hero_id: 8, player_slot: 130, isRadiant: false, position_est: 3, gold_t: [0, 3_700, 7_600, 11_600, 12_700], net_worth: 12_700 }),
+    rawPlayer({ hero_id: 9, player_slot: 131, isRadiant: false, position_est: 4, gold_t: [0, 2_300, 5_000, 7_800, 8_500], net_worth: 8_500 }),
+    rawPlayer({ hero_id: 10, player_slot: 132, isRadiant: false, position_est: 5, gold_t: [0, 2_100, 4_400, 7_000, 7_700], net_worth: 7_700 })
+  ]
 });
 
 const item = (overrides: Partial<DotaItemRecord> = {}): DotaItemRecord => ({
@@ -201,6 +218,64 @@ describe("Dota match economy model", () => {
     expect(audit.timelineAvailable).toBe(false);
     expect(audit.checkpoints).toEqual([]);
     expect(audit.player.goldPerMinute).toBe(564);
+    expect(audit.economy.confidence).toBe("low");
+    expect(audit.economy.counterpart).toBeNull();
+  });
+
+  it("separates a direct-position gap from the team economy and finds the critical phase", () => {
+    const economicMatch = sanitizeDotaMatchResponse(economicRawMatch())!;
+    const autopsy = buildDotaEconomicAutopsy(economicMatch, 0)!;
+    expect(autopsy.confidence).toBe("high");
+    expect(autopsy.timelinePlayerCount).toBe(10);
+    expect(autopsy.counterpart?.playerSlot).toBe(128);
+    expect(autopsy.laneCheckpoint).toMatchObject({ minute: 10, roleGap: 500, teamGap: 1_100 });
+    expect(autopsy.criticalWindow).toMatchObject({
+      startMinute: 10,
+      endMinute: 20,
+      roleGapChange: -1_500,
+      teamGapChange: -1_300,
+      kind: "personal"
+    });
+    expect(autopsy.comparativeGoldSwing).toBe(1_500);
+    expect(autopsy.estimatedItemDelayMinutes).toBe(5);
+    expect(autopsy.final).toMatchObject({ roleGap: -2_000, teamRank: 3, matchRank: 6 });
+  });
+
+  it("labels a team-wide swing without blaming the selected player", () => {
+    const economicMatch = sanitizeDotaMatchResponse(economicRawMatch())!;
+    const goldBySlot: Record<number, number[]> = {
+      0: [0, 4_000, 8_000, 12_000, 14_000],
+      128: [0, 3_500, 7_500, 11_500, 13_500],
+      129: [0, 4_000, 9_000, 13_500, 14_800],
+      130: [0, 3_700, 8_400, 12_600, 13_700],
+      131: [0, 2_300, 5_800, 8_800, 9_500],
+      132: [0, 2_100, 5_200, 8_100, 8_800]
+    };
+    const teamSwing = {
+      ...economicMatch,
+      players: economicMatch.players.map((player) => ({
+        ...player,
+        goldTimeline: goldBySlot[player.playerSlot] ?? player.goldTimeline
+      }))
+    };
+    const autopsy = buildDotaEconomicAutopsy(teamSwing, 0)!;
+    expect(autopsy.criticalWindow).toMatchObject({
+      startMinute: 10,
+      endMinute: 20,
+      roleGapChange: 0,
+      teamGapChange: -3_000,
+      kind: "team"
+    });
+    expect(autopsy.comparativeGoldSwing).toBe(0);
+    expect(autopsy.estimatedItemDelayMinutes).toBeNull();
+  });
+
+  it("documents the materiality thresholds used by the diagnosis", () => {
+    expect(dotaEconomicSignalThresholds).toEqual({
+      roleGapGold: 750,
+      teamGapGold: 1_500,
+      teamSharePercentagePoints: 1.5
+    });
   });
 });
 
@@ -248,5 +323,16 @@ describe("Dota match request UI contract", () => {
     expect(auditSource).toContain("chart-marker-label");
     expect(auditSource).not.toContain("label.textContent = purchase.name");
     expect(auditSource).toContain("copy.noPurchaseLog");
+  });
+
+  it("renders the deterministic economic autopsy before raw match detail", () => {
+    const autopsy = auditSource.indexOf('data-economic-autopsy');
+    const overview = auditSource.indexOf('class="match-audit-overview"');
+    expect(autopsy).toBeGreaterThan(0);
+    expect(overview).toBeGreaterThan(autopsy);
+    expect(auditSource).toContain("data-economic-table");
+    expect(auditSource).toContain("data-economic-replay-window");
+    expect(auditSource).toContain("audit.economy.counterpartSeries");
+    expect(auditSource).toContain("copy.thresholdNote");
   });
 });

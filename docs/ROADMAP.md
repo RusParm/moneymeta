@@ -217,6 +217,16 @@
 - Represent route-specific access requirements without implying that a short bonus pays back a new Office, Warehouse or Vehicle Cargo setup.
 - Derive displayed weekly dates from the central snapshot and retain the previous week only as excluded archive context.
 
+## P2.10: v1.22 Dota economic autopsy
+
+- Replace the one-number Match Audit signal with a deterministic phase diagnosis built from the selected player's parsed gold timeline.
+- Compare a player only with the opposing hero carrying the same explicit OpenDota position estimate; never infer a counterpart from GPM, net worth or outcome.
+- Separate the movement of the direct-position gap from the whole-team economy so a shared map collapse is not mislabeled as an individual mistake.
+- Identify one material replay window using published gold-gap, team-gap and team-share thresholds rather than an opaque performance score.
+- Translate comparative gap movement into a clearly labeled item-delay equivalent using the player's pace inside the same window; never present it as proven lost income or an actual purchase delay.
+- Keep final-only matches useful through direct-opponent and team net-worth context while refusing to assign a minute or cause without parsed timelines.
+- Require RU/EN parity, model and UI-contract tests, static build, real-match HTTPS preview QA and responsive collision checks before production promotion.
+
 ## Later
 
 - Authentication and cross-device profiles.
