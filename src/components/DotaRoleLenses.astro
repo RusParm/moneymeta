@@ -1,4 +1,5 @@
 ---
+import { getHubPath } from "../data/hub-portals";
 import { dotaRoleLenses } from "../data/dota-hub";
 import DotaMedia from "./DotaMedia.astro";
 
@@ -88,7 +89,7 @@ const copy = lang === "ru" ? {
         <div class="ranking-note">
           <span>{copy.caveat}</span>
           <p>{lens.note[lang]}</p>
-          <a href="#decision-deck">{copy.open} →</a>
+          <a href={`${getHubPath("dota", lang, "tools")}#decision-deck`}>{copy.open} →</a>
         </div>
       </div>
     ))}

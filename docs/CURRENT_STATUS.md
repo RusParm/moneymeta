@@ -1,6 +1,20 @@
 # Current status
 
-Updated: 2026-09-04
+Updated: 2026-09-07
+
+## Active release candidate: v1.23 focused replay workbench
+
+- The match form now follows a compact introduction. Summary, gold timeline, and items/final stats are separate accessible tabs; methodology and request details expand on demand.
+- The player may explicitly choose any enemy hero for comparison. Automatic pairing still requires one unambiguous matching position on each team; a manual comparison is visibly labeled and never changes provider facts.
+- A material phase narrows to its largest observed three-minute comparison decline only when the relevant players have continuous minute samples. Sparse data stays at phase level. The episode shows observed gold, last hits, logged major purchases and a replay question, with a copyable note and chart highlight.
+- Falling team-gold share no longer triggers a personal signal. Missing comparison data is distinct from a below-threshold result, and a final net-worth card never substitutes accumulated gold.
+- Gold-only timelines remain usable without last-hit samples. Misordered times and duplicate slots fail closed, matching checkpoints use the same instant, ten-minute lane context is not fabricated, and late phases remain ten minutes long.
+- Explicit comparison survives shared links and RU/EN switching. Shared links do not auto-fetch; only a deliberate originating match-form submit may carry the existing autoload flag.
+- Existing gold/hero media frames now reserve their own space, including the formerly uncontained comparison-opponent portrait. Small labels and body text are enlarged.
+- 175 model and contract tests pass. Live production relay returned the sanitized public demonstration match with ten players and 34 samples per player. The local revised model identifies a 25–28 minute episode for slot 0 within the 20–30 minute phase.
+- Static audit also found and repaired 14 legacy fragment links across Dota player paths, WoW meta and CK3 tools, using the focused section URLs.
+- Local validation: 175 tests passed, zero Astro diagnostics, 587 generated pages, 25,400 internal navigation links with no missing page or fragment, and 204 matching RU/EN copy keys.
+- Browser interaction and visual QA have not been run in this session. Production remains unchanged; preview verification is recorded in the PR before handoff.
 
 ## Active release candidate: v1.22 Dota economic autopsy
 

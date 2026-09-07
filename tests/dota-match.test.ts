@@ -273,8 +273,7 @@ describe("Dota match economy model", () => {
   it("documents the materiality thresholds used by the diagnosis", () => {
     expect(dotaEconomicSignalThresholds).toEqual({
       roleGapGold: 750,
-      teamGapGold: 1_500,
-      teamSharePercentagePoints: 1.5
+      teamGapGold: 1_500
     });
   });
 });

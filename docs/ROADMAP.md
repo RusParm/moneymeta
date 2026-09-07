@@ -227,6 +227,14 @@
 - Keep final-only matches useful through direct-opponent and team net-worth context while refusing to assign a minute or cause without parsed timelines.
 - Require RU/EN parity, model and UI-contract tests, static build, real-match HTTPS preview QA and responsive collision checks before production promotion.
 
+## P2.11: v1.23 focused replay workbench
+
+- Finish the existing single-match loop with a compact form, three result tabs and readable media-safe layouts.
+- Preserve explicit manual enemy selection alongside strict automatic position pairing.
+- Narrow a material phase to three observed minutes only with continuous samples, then expose gold, last hits, timed purchases and a replay question.
+- Keep team-share changes descriptive, distinguish absent evidence from a stable comparison, and preserve usable gold when last-hit samples are absent.
+- Preserve comparison context in shared links and language switching without automatic provider requests.
+
 ## Later
 
 - Authentication and cross-device profiles.

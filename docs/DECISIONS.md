@@ -1,5 +1,13 @@
 # Decision log
 
+## 2026-09-07: replay evidence is observed and comparison is explicit
+
+A player may override the automatic opponent with one enemy hero. The UI and share state preserve that choice as a manual comparison, never as a provider position assignment. Missing or ambiguous automatic roles must not lead to a guessed opponent.
+
+A phase is material when the opponent gap falls by 750 gold or the team gap falls by 1,500. The phase with the largest multiple of either threshold wins; ties choose the earliest phase. Team share is descriptive because its decline can be normal for supports. The largest observed three-minute opponent decline inside that phase becomes the replay focus; a team-only phase uses the team gap. Every relevant player must have continuous samples for that interval. Observed gold, last hits and purchase events support a question to verify in the replay, never an invented cause.
+
+Missing comparison evidence is a separate state from no material decline. Final net worth, cumulative gold, and spending power remain distinct quantities.
+
 ## 2026-09-04: match economy diagnosis compares movements, not players
 
 A Dota match audit may identify a critical economic window only from transparent changes inside the same match. The direct comparison uses the opposing player with the same explicit OpenDota position estimate; if that pairing is absent or ambiguous, it remains unavailable. The model shows the position-gap movement and team-gap movement separately, labels confidence from timeline coverage and publishes its materiality thresholds. A gold-gap equivalent is a replay prioritization aid, not proven lost income, causal blame, a skill score or an actual item delay.
