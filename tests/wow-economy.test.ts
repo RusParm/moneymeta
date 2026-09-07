@@ -28,6 +28,14 @@ describe("WoW crafting economics", () => {
 });
 
 describe("WoW farm liquidity", () => {
+  it("shows a cash loss and an unreachable target instead of clamping loss to zero", () => {
+    const metrics = calculateFarmMetrics({ ...farmBaseline, unitsPerHour: 100, marketPricePerUnit: 1, sellThroughPercent: 100, auctionHouseCutPercent: 0, hourlyExpenses: 500, relistingLossPerHour: 0, sessionHours: 2 });
+    expect(metrics.effectiveGoldPerHour).toBe(-400);
+    expect(metrics.expectedSessionGold).toBe(-800);
+    expect(metrics.hoursToTarget).toBe(Infinity);
+    expect(metrics.state).toBe("loss");
+  });
+
   it("separates listed gold per hour from monetizable gold per hour", () => {
     const metrics = calculateFarmMetrics(farmBaseline);
 
@@ -45,6 +53,13 @@ describe("WoW farm liquidity", () => {
 });
 
 describe("WoW crafting order floor", () => {
+  it("keeps the hourly loss on an order whose materials exceed commission", () => {
+    const metrics = calculateWorkOrderMetrics({ ...orderBaseline, commissionGold: 100, crafterMaterialCost: 200, expectedRecraftReserve: 0, serviceMinutes: 10 });
+    expect(metrics.cashProfitPerOrder).toBe(-100);
+    expect(metrics.effectiveGoldPerHour).toBe(-600);
+    expect(metrics.state).toBe("decline");
+  });
+
   it("prices crafter materials, recraft risk and time into the minimum commission", () => {
     const metrics = calculateWorkOrderMetrics(orderBaseline);
 

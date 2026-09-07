@@ -23,7 +23,7 @@ GTA Online is the proving ground for the methodology and product. It also create
 - Crusader Kings III: domain investment, war liquidity and succession resilience.
 - Civilization VII: settlement development, production timing and Economic Victory gap planning after Test of Time.
 
-GTA VI and Fable are separate pre-release watch surfaces. They track only official facts, explicit unknowns and future measurement plans. Fable remains outside live numeric models until its Autumn 2026 release build and economic behavior can be verified.
+GTA VI and Fable are separate pre-release watch surfaces. They track only official facts, explicit unknowns and future measurement plans. Fable remains outside live numeric models until its release build and economic behavior can be verified. Xbox currently lists February 23, 2027 (checked September 7, 2026).
 
 The platform therefore contains six live economies and two bounded pre-release dossiers. Expansion does not remove the sequential depth requirement for any existing hub.
 

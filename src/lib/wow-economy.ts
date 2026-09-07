@@ -39,7 +39,7 @@ export interface FarmMetrics {
   inventoryValueAtRisk: number;
   expectedSessionGold: number;
   hoursToTarget: number;
-  state: "liquid" | "discounted" | "inventory-trap";
+  state: "liquid" | "discounted" | "inventory-trap" | "loss";
 }
 
 export interface WorkOrderInput {
@@ -163,7 +163,7 @@ export function calculateFarmMetrics(input: FarmInput): FarmMetrics {
 
   const listedGoldPerHour = unitsPerHour * marketPrice;
   const saleProceedsPerHour = listedGoldPerHour * sellThrough * (1 - auctionHouseCut);
-  const effectiveGoldPerHour = Math.max(0, saleProceedsPerHour - expenses - relistingLoss);
+  const effectiveGoldPerHour = saleProceedsPerHour - expenses - relistingLoss;
   const monetizationRatePercent = listedGoldPerHour > 0
     ? effectiveGoldPerHour / listedGoldPerHour * 100
     : 0;
@@ -173,7 +173,7 @@ export function calculateFarmMetrics(input: FarmInput): FarmMetrics {
   const hoursToTarget = targetGold === 0
     ? 0
     : effectiveGoldPerHour > 0 ? targetGold / effectiveGoldPerHour : Number.POSITIVE_INFINITY;
-  const state = monetizationRatePercent >= 70
+  const state = effectiveGoldPerHour < 0 ? "loss" : monetizationRatePercent >= 70
     ? "liquid"
     : monetizationRatePercent >= 40 ? "discounted" : "inventory-trap";
 
@@ -202,8 +202,8 @@ export function calculateWorkOrderMetrics(input: WorkOrderInput): WorkOrderMetri
   const economicProfitPerOrder = cashProfitPerOrder - timeCostPerOrder;
   const minimumCommission = materialCost + recraftReserve + timeCostPerOrder;
   const effectiveGoldPerHour = serviceMinutes > 0
-    ? Math.max(0, cashProfitPerOrder) / serviceMinutes * 60
-    : cashProfitPerOrder > 0 ? Number.POSITIVE_INFINITY : 0;
+    ? cashProfitPerOrder / serviceMinutes * 60
+    : cashProfitPerOrder === 0 ? 0 : Math.sign(cashProfitPerOrder) * Number.POSITIVE_INFINITY;
   const batchEconomicProfit = economicProfitPerOrder * orders;
   const marginOfSafetyPercent = minimumCommission > 0
     ? (commission - minimumCommission) / minimumCommission * 100

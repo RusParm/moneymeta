@@ -47,7 +47,7 @@ jobs:
       - name: Detect snapshot change
         id: changes
         run: |
-          if git diff --quiet -- src/data/snapshots/dota-items-7.41e.json; then
+          if git diff --quiet -- src/data/snapshots/dota-items-7.41e.json src/data/dota-match-items.ts; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -62,7 +62,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin "$BRANCH" || true
           git switch -C "$BRANCH"
-          git add src/data/snapshots/dota-items-7.41e.json
+          git add src/data/snapshots/dota-items-7.41e.json src/data/dota-match-items.ts
           git commit -m "chore(data): refresh Dota item snapshot"
           git push --force-with-lease origin "HEAD:refs/heads/$BRANCH"
 

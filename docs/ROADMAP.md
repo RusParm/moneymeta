@@ -1,5 +1,16 @@
 # Money Meta roadmap
 
+## Next sequence from the September 7 whole-site audit
+
+See `PRODUCT_AUDIT_2026_09_07.md` for evidence, per-game gaps and acceptance criteria.
+
+1. Ship the v1.25 reliability candidate through preview: WoW initialization, signed losses, Dota component reuse, strategy reserve boundaries and shared route/accessibility checks.
+2. Establish claim-level source review across every hub, explain the overdue Dota snapshot, revalidate GTA business assumptions and finish the post-presentation GTA VI review.
+3. Shorten each game's path to its primary tool; add game/task discovery to the 35-note library and verify real mobile interactions.
+4. Deepen one concrete scenario per live game using observed examples and transparent alternatives, then add named scenarios, forecast/actual comparisons and privacy-minimal funnel measurement.
+
+Keep all six live economies maintained. Monetization stays after demonstrated recurring utility. The earlier milestones below are the development history, not a reason to add pages before resolving current gaps.
+
 ## Current increment: v1.24 match review without replay timelines
 
 - Preserve final contribution fields and turn them into transparent same-match comparisons and concrete review questions.

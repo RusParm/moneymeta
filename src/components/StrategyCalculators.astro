@@ -167,7 +167,7 @@ const copy = lang === "ru" ? {
           reserve: value("reserve")
         });
         metrics = { ...calculated };
-        positive = calculated.buffer >= 0;
+        positive = calculated.buffer >= 0 && calculated.safePeriods > 0;
         verdict.textContent = positive
           ? (lang === "ru" ? "Резерв остаётся профинансирован" : "The reserve remains funded")
           : (lang === "ru" ? "Сценарий пробивает резерв" : "The scenario breaks the reserve");

@@ -1,5 +1,13 @@
 # Decision log
 
+## 2026-09-07: improve completed decisions across the whole resource
+
+The whole-site audit found that successful formula tests and static builds did not ensure working focused routes: WoW initialization still depended on a retired hub container. Components now own their initialization boundary, and the release gate adds an audit of every generated route and accessibility reference. Browser checks must use actual inputs and inspect results.
+
+Queued Dota upgrades reuse previously completed components once. The same calculation runs on the server and in the browser; disassembly and inventory owned before the queue remain outside this model. Negative cash outcomes and immediate reserve breaches must remain visible.
+
+A fresh check timestamp does not establish that a claim is current. Corrected Fable's release date from the current Xbox page, used Firaxis's published recap for Civilization's version, and flagged overdue GTA VI review without silently advancing its editorial date. Continue every existing game through concrete player scenarios, shared source operations and observable result/return loops. The audit is the next-work reference.
+
 ## 2026-09-07: final-only matches deserve a review and an explicit recovery path
 
 The user found that the missing-timeline state merely restated the final inventory. Match totals now support bounded review questions using same-match income, team kill participation, damage, healing and deaths. Shares require complete five-player denominators; missing data is not zero. Thresholds choose questions, not good/bad player labels. Damage is never treated as a complete measure of support, control, saves or space creation. Unknown roles remain unknown.

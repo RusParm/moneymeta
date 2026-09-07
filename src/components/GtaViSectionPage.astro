@@ -15,6 +15,7 @@ import {
   type GtaViSectionId
 } from "../data/gta-vi";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import FreshnessIndicator from "./FreshnessIndicator.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GtaViMedia from "./GtaViMedia.astro";
 import GtaViNav from "./GtaViNav.astro";
@@ -234,7 +235,7 @@ const nextRoutes = (["economy", "precedent", "launch"] as DetailSection[]).filte
 
       <header class="gta6-section-hero">
         <div class="gta6-section-hero-copy">
-          <div class="gta6-status-line"><span></span>{shared.primaryOnly} · {shared.checked} {gtaViWatch.checkedAt}</div>
+          <FreshnessIndicator policy={gtaViWatch} current={lang === "ru" ? "Источники в пределах срока проверки" : "Sources are within the review window"} stale={lang === "ru" ? "Досье требует повторной проверки" : "Dossier needs a new review"} dateLabel={shared.checked} lang={lang} />
           <p class="eyebrow">{hero.kicker}</p>
           <h1>{hero.heading}</h1>
           <p class="lede">{hero.lede}</p>

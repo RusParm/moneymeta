@@ -158,7 +158,7 @@ const copy = lang === "ru" ? {
 };
 ---
 
-<section id="scenario-lab" class="section hub-section wow-scenario-lab" aria-labelledby="wow-scenario-lab-title">
+<section id="scenario-lab" class="section hub-section wow-scenario-lab" aria-labelledby="wow-scenario-lab-title" data-wow-calculators data-lang={lang}>
   <div class="section-head hub-section-head">
     <div><span class="section-kicker">{copy.kicker}</span><h2 id="wow-scenario-lab-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
     <span class="count">{copy.count}</span>
@@ -260,22 +260,22 @@ const copy = lang === "ru" ? {
   import type { WowLocale } from "../data/wow-economy";
   import { calculateCraftingMetrics, calculateFarmMetrics, calculateWorkOrderMetrics } from "../lib/wow-economy";
 
-  document.querySelectorAll<HTMLElement>("#wow-economy-hub").forEach((root) => {
+  document.querySelectorAll<HTMLElement>("[data-wow-calculators]").forEach((root) => {
     if (root.dataset.calculatorsReady === "true") return;
     root.dataset.calculatorsReady = "true";
     const lang = (root.dataset.lang ?? "ru") as WowLocale;
     const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
-    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(Math.round(value))} ${lang === "ru" ? "зол." : "g"}` : "∞";
+    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(Math.round(value))} ${lang === "ru" ? "зол." : "g"}` : value < 0 ? "−∞" : "∞";
     const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
     const target = (role: string) => root.querySelector<HTMLElement>(`[data-role='${role}']`)!;
     const value = (role: string) => Math.max(0, Number(input(role).value) || 0);
     const labels = lang === "ru" ? {
       positiveEdge: "Положительное рыночное преимущество", thinEdge: "Маржа слишком тонкая", negativeEdge: "Отрицательная ожидаемая маржа",
-      liquid: "Рынок поглощает объём", discounted: "Доход требует поправки на ликвидность", inventoryTrap: "Фарм создаёт ловушку непроданных товаров",
+      liquid: "Рынок поглощает объём", discounted: "Доход требует поправки на ликвидность", inventoryTrap: "Фарм создаёт ловушку непроданных товаров", loss: "Расходы превышают выручку от фарма",
       accept: "Заказ выше минимально разумной комиссии", negotiate: "Комиссия слишком близка к минимуму", decline: "Заказ не покрывает полную стоимость", hours: "ч"
     } : {
       positiveEdge: "Positive market edge", thinEdge: "The margin is too thin", negativeEdge: "Negative expected margin",
-      liquid: "The market absorbs this volume", discounted: "GPH needs a liquidity discount", inventoryTrap: "The farm becomes an inventory trap",
+      liquid: "The market absorbs this volume", discounted: "GPH needs a liquidity discount", inventoryTrap: "The farm becomes an inventory trap", loss: "Farming costs exceed sale proceeds",
       accept: "Order clears the economic floor", negotiate: "Commission is too close to the floor", decline: "Order does not cover its full cost", hours: "h"
     };
 
@@ -295,7 +295,7 @@ const copy = lang === "ru" ? {
 
     function renderFarm() {
       const metrics = calculateFarmMetrics({ unitsPerHour: value("farm-units"), marketPricePerUnit: value("farm-price"), sellThroughPercent: value("farm-sellthrough"), auctionHouseCutPercent: value("farm-cut"), hourlyExpenses: value("farm-expenses"), relistingLossPerHour: value("farm-relisting"), sessionHours: value("farm-session"), targetGold: value("farm-target") });
-      target("farm-decision").textContent = metrics.state === "liquid" ? labels.liquid : metrics.state === "discounted" ? labels.discounted : labels.inventoryTrap;
+      target("farm-decision").textContent = metrics.state === "loss" ? labels.loss : metrics.state === "liquid" ? labels.liquid : metrics.state === "discounted" ? labels.discounted : labels.inventoryTrap;
       target("farm-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "liquid" ? "positive" : metrics.state === "discounted" ? "caution" : "negative";
       target("farm-listed").textContent = gold(metrics.listedGoldPerHour);
       target("farm-effective").textContent = gold(metrics.effectiveGoldPerHour);

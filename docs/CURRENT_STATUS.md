@@ -1,5 +1,16 @@
 # Current status
 
+## Active release candidate: v1.25 full product audit
+
+- Full findings and the next product sequence are in `PRODUCT_AUDIT_2026_09_07.md` (Russian).
+- Restored all three WoW calculators on focused tool routes; kept farming and order losses visible instead of clamping them to zero.
+- Made Dota queued upgrades consume earlier components once, including nested recipes. Browser and static calculations now share the same function; the UI shows the actual remaining payment.
+- Corrected immediate reserve breaches in the strategy models and moved focus to the result after explicit Dota hero selection.
+- Corrected Fable's announced date to February 23, 2027 using the current Xbox page. Updated Civilization's displayed version from Firaxis's 1.4.2 August recap without claiming a full review of inaccessible patch notes. GTA VI now flags overdue editorial review and describes the August 27 presentation as published.
+- Fixed duplicate Fable heading IDs, reciprocal self/alternate hreflang pairs and 404 indexing. Added a complete built-site audit and a read-only PR quality workflow. Dota snapshot automation now stages both generated outputs.
+- Local verification: 202 tests pass in 25 files; Astro builds 587 pages with zero diagnostics. The built-site audit checks 25,374 internal links with zero errors. The remaining 586 warnings are missing social preview images. Desktop browser coverage includes all game entrances and the primary interactive flows. Mobile and a newly unparsed-to-parsed live match remain unverified.
+- Production approval remains separate. The audit records measured evidence and limits, not assumed traffic or retention.
+
 Updated: 2026-09-07
 
 ## Active release candidate: v1.24 useful final-only review and replay recovery

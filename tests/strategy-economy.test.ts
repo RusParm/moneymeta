@@ -19,6 +19,12 @@ describe("strategy investment model", () => {
 });
 
 describe("strategy reserve model", () => {
+  it("shows zero safe periods when the purchase immediately breaches the reserve despite positive future income", () => {
+    const metrics = calculateReserveMetrics({ treasury: 1000, incomePerPeriod: 500, currentOutflow: 100, newOutflow: 0, oneOffCost: 900, horizonPeriods: 10, reserve: 300 });
+    expect(metrics.safePeriods).toBe(0);
+    expect(metrics.buffer).toBeGreaterThan(0);
+  });
+
   it("separates an affordable one-off purchase from sustainable runway", () => {
     const metrics = calculateReserveMetrics({ treasury: 12_000, incomePerPeriod: 3_500, currentOutflow: 2_300, newOutflow: 1_200, oneOffCost: 4_500, horizonPeriods: 8, reserve: 3_000 });
 

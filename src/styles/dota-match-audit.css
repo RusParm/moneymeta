@@ -599,6 +599,7 @@
 
 .match-audit-result {
   background: linear-gradient(180deg, rgba(241, 184, 75, .025), transparent 32%);
+  scroll-margin-top: 200px;
 }
 
 .match-audit-result-head {

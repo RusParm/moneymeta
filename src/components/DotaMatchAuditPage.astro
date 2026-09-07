@@ -802,7 +802,12 @@ const payload = JSON.stringify({
       body.append(make("span", "", `${value(player.kills)} / ${value(player.deaths)} / ${value(player.assists)} · ${value(player.goldPerMinute)} GPM`));
       const resultLabel = make("span", player.won ? "match-audit-outcome is-win" : "match-audit-outcome", outcome(player));
       button.append(portrait, body, resultLabel);
-      button.addEventListener("click", () => selectPlayer(player.playerSlot));
+      button.addEventListener("click", () => {
+        selectPlayer(player.playerSlot);
+        result.tabIndex = -1;
+        result.focus({ preventScroll: true });
+        result.scrollIntoView({ block: "start", behavior: "instant" });
+      });
       return button;
     };
 
