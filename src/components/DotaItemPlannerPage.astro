@@ -205,7 +205,7 @@ const copy = lang === "ru" ? {
       <template data-plan-row-template>
         <article class="dota-plan-row">
           <div class="dota-plan-order"><b data-row-order></b><div><button type="button" data-move-up aria-label={copy.moveEarlier}>↑</button><button type="button" data-move-down aria-label={copy.moveLater}>↓</button></div></div>
-          <a data-row-link class="dota-plan-item"><span><img data-row-image alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" /></span><div><strong data-row-name></strong><small><span data-row-cost></span> {lang === "ru" ? "золота к оплате" : "gold to pay"}</small><small data-row-components hidden></small></div></a>
+          <a data-row-link class="dota-plan-item"><span><img data-row-image alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" /></span><div><strong data-row-name></strong><small><span data-row-cost></span> {lang === "ru" ? "зол. к оплате" : "gold to pay"}</small><small data-row-components hidden></small></div></a>
           <div class="dota-plan-metrics"><div><span>{copy.projected}</span><strong><b data-row-projected></b> {copy.minute}</strong></div><div><span>{copy.proMedian}</span><strong data-row-median></strong><small data-row-delta></small></div><div><span>{copy.sacrifice}</span><strong data-row-sacrifice></strong></div></div>
           <div class="dota-plan-state" data-row-state></div>
         </article>
@@ -296,7 +296,8 @@ const copy = lang === "ru" ? {
         row.querySelector<HTMLElement>("[data-row-cost]")!.textContent = format(calculated.incrementalCost, 0);
         const components = row.querySelector<HTMLElement>("[data-row-components]")!;
         components.hidden = calculated.reusedComponentGold === 0;
-        components.textContent = ru ? `Компоненты из очереди: ${format(calculated.reusedComponentGold, 0)} золота учтено` : `Queued components: ${format(calculated.reusedComponentGold, 0)} gold already paid`;
+        components.textContent = ru ? `Учтено: ${format(calculated.reusedComponentGold, 0)} зол.` : `Already paid: ${format(calculated.reusedComponentGold, 0)} gold`;
+        components.title = ru ? "Стоимость компонентов, купленных раньше в этой очереди" : "Cost of components bought earlier in this queue";
         row.querySelector<HTMLElement>("[data-row-projected]")!.textContent = format(projected);
         row.querySelector<HTMLElement>("[data-row-median]")!.textContent = benchmark ? `${format(benchmark.median)} ${messages.minute} · n ${benchmark.n}` : messages.noData;
         const deltaNode = row.querySelector<HTMLElement>("[data-row-delta]")!;
