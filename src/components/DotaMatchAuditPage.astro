@@ -13,6 +13,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import DotaItemNav from "./DotaItemNav.astro";
 import DotaItemsStatus from "./DotaItemsStatus.astro";
+import DotaMatchFinalReview from "./DotaMatchFinalReview.astro";
 import SiteFooter from "./SiteFooter.astro";
 import "../styles/dota-items.css";
 import "../styles/dota-match-audit.css";
@@ -28,7 +29,7 @@ const copy = lang === "ru" ? {
   back: "← К порталу Dota 2",
   kicker: "Dota 2 · разбор реального матча",
   heading: "Где в матче ушло преимущество?",
-  lede: "Загрузи матч и выбери героя. Сравни темп с соперником, найди заметное изменение разрыва и проверь конкретный эпизод в повторе.",
+  lede: "Загрузи матч и выбери героя. Сопоставь доход с участием в убийствах и давлением на строения. Добавь разбор реплея, чтобы найти момент изменения преимущества.",
   inputLabel: "Match ID или ссылка на матч",
   inputPlaceholder: "Например, 8978544633",
   inputHelp: "Подойдёт числовой ID или обычная ссылка OpenDota, Dotabuff либо Stratz.",
@@ -36,7 +37,7 @@ const copy = lang === "ru" ? {
   demo: "Запустить публичное демо",
   demoNote: `Профматч ${dotaMatchAuditConfig.demoMatchId}, проверен ${dotaMatchAuditConfig.demoCheckedAt}`,
   boundaryTitle: "Что загрузится",
-  boundaryText: "Одна кнопка отправляет только публичный Match ID через функцию Money Meta. Она получает ответ OpenDota, удаляет имена, идентификаторы аккаунтов и чат, а затем возвращает факты матча в эту вкладку.",
+  boundaryText: "Загрузка отправляет только публичный Match ID и получает факты матча без имён, аккаунтов и чата. Запрос разбора реплея выполняется отдельно, только по своей кнопке. Он отправляет тот же ID в очередь OpenDota.",
   sent: "Уйдёт",
   sentValue: "Только публичный Match ID",
   notSent: "Не уйдёт",
@@ -68,17 +69,31 @@ const copy = lang === "ru" ? {
   match: "Матч",
   auditKicker: "Экономический отпечаток",
   auditTitle: "Где золото перестало становиться силой?",
-  roleLabel: "Роль для профтаймингов",
+  roleLabel: "Роль героя",
+  roleUnknown: "Укажи роль",
   core: "Кор",
   support: "Поддержка",
-  roleNote: "OpenDota даёт оценку позиции только для разобранного матча. Проверь роль сам: она меняет только профессиональное сравнение, но не факты твоего матча.",
+  roleNote: "Проверь роль сам. Она меняет вопросы к использованию ресурсов и профессиональное сравнение. Факты матча и выбранный соперник остаются прежними.",
   share: "Скопировать ссылку",
   shared: "Ссылка скопирована: матч, герой, роль и выбранный соперник. Для загрузки нужно нажать кнопку.",
   copyFailed: "Не удалось скопировать автоматически. Разреши доступ к буферу обмена и повтори.",
   openProvider: "Открыть матч в OpenDota",
   signal: "ГЛАВНЫЙ ВЫВОД",
-  finalSignalTitle: "Финальный экран матча загружен. Таймингов пока нет.",
-  finalSignalText: "Для этого героя нет достаточной хронологии золота. Финальные показатели и доступный журнал покупок можно посмотреть во вкладке «Предметы и итог». Минуту и причину отставания по ним определить нельзя.",
+  finalSignalTitle: "Разбор по итогам матча",
+  finalSignalText: "Итоги позволяют сопоставить доход и вклад в результат. Для поиска конкретной минуты запроси разбор реплея.",
+  recoveryTitle: "Добавить поминутный разбор",
+  recoveryText: "OpenDota ещё не вернул всю хронологию. По этой кнопке он попробует получить реплей и разобрать матч. Проверим готовность несколько раз; текущие выводы останутся доступны.",
+  recoveryRequest: "Запросить разбор реплея",
+  recoveryRefresh: "Проверить готовность",
+  recoveryStop: "Остановить ожидание",
+  recoveryRequesting: "Отправляем запрос в OpenDota…",
+  recoveryWaiting: "Запрос отправлен. Ожидаем данные; можно продолжать читать разбор.",
+  recoveryChecking: "Проверяем, появилась ли хронология…",
+  recoveryReady: "Хронология загружена. Разбор обновлён, выбранный герой сохранён.",
+  recoveryPending: "Полной хронологии пока нет. Можно проверить позже. Если реплей больше недоступен, OpenDota не сможет восстановить тайминги.",
+  recoveryStopped: "Проверка остановлена. Запрос в OpenDota может продолжать выполняться. Готовность можно проверить вручную.",
+  recoveryError: "Не удалось подтвердить результат. Текущий разбор сохранён. Проверь готовность позже или открой матч в OpenDota; повторный запрос автоматически не отправляется.",
+  recoveryLimited: "OpenDota ограничил запросы. Текущий разбор сохранён. Проверь готовность позже.",
   lateItem: "позже профмедианы",
   earlyItem: "раньше профмедианы",
   itemSignalText: "Это самое заметное отклонение среди крупных покупок с выборкой не меньше 200 наблюдений в текущем патче. Медиана даёт вопрос для реплея, а не универсальную норму.",
@@ -91,7 +106,7 @@ const copy = lang === "ru" ? {
   compareHelp: "Если позиция не определена или выбрана неверно, укажи соперника сам. Выбери героя с сопоставимой ролью.",
   compareManual: "Соперник выбран тобой",
   comparePosition: "Пара по оценке позиции OpenDota",
-  tabSummary: "Вывод и эпизод",
+  tabSummary: "Выводы и что проверить",
   tabGold: "Золото по минутам",
   tabItems: "Предметы и итог",
   tabsLabel: "Разделы разбора",
@@ -238,7 +253,7 @@ const copy = lang === "ru" ? {
   back: "← Dota 2 portal",
   kicker: "Dota 2 · one real match",
   heading: "Where did the advantage slip?",
-  lede: "Load a match and choose your hero. Compare your pace with an opponent, find a material gap change and inspect a specific episode in the replay.",
+  lede: "Load a match and choose your hero. Compare income, kill involvement and building pressure. Add replay analysis to find where the advantage changed.",
   inputLabel: "Match ID or match URL",
   inputPlaceholder: "For example, 8978544633",
   inputHelp: "Use the numeric ID or a normal OpenDota, Dotabuff or Stratz match link.",
@@ -246,7 +261,7 @@ const copy = lang === "ru" ? {
   demo: "Run the public demo",
   demoNote: `Pro match ${dotaMatchAuditConfig.demoMatchId}, checked ${dotaMatchAuditConfig.demoCheckedAt}`,
   boundaryTitle: "What gets loaded",
-  boundaryText: "One button sends only the public Match ID through a Money Meta function. It receives the OpenDota response, removes names, account identifiers and chat, then returns match facts to this tab.",
+  boundaryText: "Loading sends only the public Match ID and returns match facts without names, accounts or chat. Replay parsing is a separate action, triggered only by its own button. It sends the same ID to OpenDota’s queue.",
   sent: "Sent",
   sentValue: "Public Match ID only",
   notSent: "Not sent",
@@ -278,17 +293,31 @@ const copy = lang === "ru" ? {
   match: "Match",
   auditKicker: "Economy fingerprint",
   auditTitle: "Where did gold stop becoming power?",
-  roleLabel: "Role for pro timings",
+  roleLabel: "Hero’s role",
+  roleUnknown: "Choose a role",
   core: "Core",
   support: "Support",
-  roleNote: "OpenDota estimates position only for a parsed match. Verify the role yourself: it changes only the pro comparison, not the facts from your match.",
+  roleNote: "Verify the role yourself. It changes resource-use questions and the pro comparison. Match facts and the selected opponent remain the same.",
   share: "Copy audit link",
   shared: "Link copied: match, hero, role and selected opponent. Loading still requires a button press.",
   copyFailed: "Automatic copy failed. Allow clipboard access and try again.",
   openProvider: "Open match in OpenDota",
   signal: "MAIN FINDING",
-  finalSignalTitle: "The final match screen is loaded. Timings are not.",
-  finalSignalText: "This hero lacks a usable gold timeline. Available final stats and purchases remain in the Items and final stats tab. They cannot identify the minute or cause of a decline.",
+  finalSignalTitle: "Review from match totals",
+  finalSignalText: "The totals can compare income and contribution. Request replay analysis to find a specific minute.",
+  recoveryTitle: "Add minute-by-minute analysis",
+  recoveryText: "OpenDota has not returned every timeline. This button asks it to retrieve the replay and parse the match. We will check a few times; your current findings stay available.",
+  recoveryRequest: "Request replay analysis",
+  recoveryRefresh: "Check for new data",
+  recoveryStop: "Stop waiting",
+  recoveryRequesting: "Submitting the request to OpenDota…",
+  recoveryWaiting: "Request submitted. Waiting for data; you can keep reading the review.",
+  recoveryChecking: "Checking whether the timeline is available…",
+  recoveryReady: "Timelines loaded. The review is updated and your selected hero is preserved.",
+  recoveryPending: "The full timeline is not available yet. Check again later. If the replay is no longer available, OpenDota cannot recover its timings.",
+  recoveryStopped: "Checking stopped. The OpenDota request may still be running. You can check for new data manually.",
+  recoveryError: "Could not confirm the result. Your current review is preserved. Check later or open the match in OpenDota; the submission is not automatically repeated.",
+  recoveryLimited: "OpenDota limited the requests. Your current review is preserved. Check for new data later.",
   lateItem: "later than the pro median",
   earlyItem: "earlier than the pro median",
   itemSignalText: "This is the largest visible deviation among major items with at least 200 observations on the current patch. The median creates a replay question, not a universal standard.",
@@ -301,7 +330,7 @@ const copy = lang === "ru" ? {
   compareHelp: "If the position is missing or incorrect, choose an opponent yourself. Pick a hero with a comparable role.",
   compareManual: "Opponent chosen by you",
   comparePosition: "Paired by OpenDota position estimate",
-  tabSummary: "Summary and episode",
+  tabSummary: "Findings and review",
   tabGold: "Gold timeline",
   tabItems: "Items and final stats",
   tabsLabel: "Audit sections",
@@ -525,6 +554,17 @@ const payload = JSON.stringify({
           <p class="match-audit-choose" data-match-choose>{copy.choose}</p>
         </section>
 
+        <aside class="match-recovery" data-match-recovery hidden>
+          <div><h3>{copy.recoveryTitle}</h3><p>{copy.recoveryText}</p></div>
+          <div class="match-recovery-actions">
+            <button type="button" class="button primary" data-request-replay>{copy.recoveryRequest}</button>
+            <button type="button" class="button ghost" data-refresh-replay>{copy.recoveryRefresh}</button>
+            <button type="button" class="mini-action" data-stop-replay hidden>{copy.recoveryStop}</button>
+            <a class="mini-action" data-recovery-provider href={dotaMatchAuditConfig.publicMatchBase} target="_blank" rel="noopener noreferrer">{copy.openProvider} ↗</a>
+          </div>
+          <p data-recovery-status role="status" aria-live="polite"></p>
+        </aside>
+
         <section class="match-audit-result" data-audit-result hidden aria-labelledby="match-audit-result-title">
           <header class="match-audit-result-head">
             <div class="match-audit-player-title">
@@ -532,7 +572,7 @@ const payload = JSON.stringify({
               <div><span>{copy.auditKicker}</span><h2 id="match-audit-result-title" data-selected-name>{copy.auditTitle}</h2><p data-selected-position></p></div>
             </div>
             <div class="match-audit-result-actions">
-              <label for="match-audit-role"><span>{copy.roleLabel}</span><select id="match-audit-role" data-match-role><option value="core">{copy.core}</option><option value="support">{copy.support}</option></select></label>
+              <label for="match-audit-role"><span>{copy.roleLabel}</span><select id="match-audit-role" data-match-role><option value="unknown">{copy.roleUnknown}</option><option value="core">{copy.core}</option><option value="support">{copy.support}</option></select></label>
               <div><button type="button" class="mini-action" data-match-share>{copy.share}</button><a class="mini-action" href="#" target="_blank" rel="noopener noreferrer" data-provider-link>{copy.openProvider} ↗</a></div>
               <small>{copy.roleNote}</small>
               <p data-share-status role="status" aria-live="polite"></p>
@@ -553,6 +593,8 @@ const payload = JSON.stringify({
             <strong data-signal-title></strong>
             <p data-signal-text></p>
           </article>
+
+          <DotaMatchFinalReview lang={lang} />
 
           <section class="match-economic-autopsy" data-economic-autopsy aria-labelledby="economic-autopsy-title">
             <header class="match-economic-autopsy-head">
@@ -667,6 +709,9 @@ const payload = JSON.stringify({
   } from "../lib/dota-match";
   import type { DotaMatchItemReference } from "../data/dota-match-items";
   import type { DotaItemRecord } from "../lib/dota-items";
+  import { buildDotaFinalReview } from "../lib/dota-match-summary";
+  import { dotaReviewMessage, renderDotaFinalReview } from "../lib/dota-match-review-ui";
+  import { canReplaceDotaMatch, DotaMatchRecovery, type DotaRecoveryState } from "../lib/dota-match-recovery";
 
   const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
   if (root) {
@@ -784,6 +829,7 @@ const payload = JSON.stringify({
       const sharedPlayer = String(match.matchId) === sharedMatch ? match.players.find((player) => player.playerSlot === pendingSlot) : undefined;
       if (sharedPlayer) selectPlayer(sharedPlayer.playerSlot, pendingRole ?? undefined, pendingOpponent);
       syncAuditLanguageLinks();
+      updateRecoveryControls();
     };
 
     const renderStats = (audit: DotaMatchAudit) => {
@@ -886,12 +932,11 @@ const payload = JSON.stringify({
           ? `Начни с ${windowLabel(focus)}. Сравни доступный фарм, перемещения и цели у обеих сторон. Отметь первое решение, которое объясняет изменение разрыва; по одному графику причину не назначай.`
           : `Start at ${windowLabel(focus)}. Compare available farm, movement and objectives for both sides. Mark the first decision that explains the gap change; do not assign a cause from the chart alone.`;
       } else if (!economy.windows.length) {
-        const gap = economy.final.roleGap;
-        title.textContent = gap !== null && opponent
-          ? (lang === "ru" ? `Финал: разрыв с ${opponent.name} ${signedGold(gap)}` : `Finish: ${signedGold(gap)} versus ${opponent.name}`)
-          : copy.finalSignalTitle!;
-        text.textContent = copy.finalSignalText!;
-        currentRule = copy.focusMissing!;
+        const review = buildDotaFinalReview(currentMatch!, audit.player, roleControl.value === "unknown" ? null : audit.role, economy.counterpart);
+        const message = dotaReviewMessage(review, review.findings[0], lang, opponent?.name ?? "");
+        title.textContent = message.title;
+        text.textContent = message.evidence;
+        currentRule = message.action;
       } else if (economy.windows.every((window) => window.kind === "unavailable")) {
         title.textContent = copy.dataMissingTitle!;
         text.textContent = copy.dataMissingText!;
@@ -910,6 +955,7 @@ const payload = JSON.stringify({
 
     const renderEconomicAutopsy = (audit: DotaMatchAudit) => {
       const economy = audit.economy;
+      root.querySelector<HTMLElement>("[data-economic-autopsy]")!.hidden = economy.windows.length === 0;
       const confidence = root.querySelector<HTMLElement>("[data-economic-confidence]")!;
       confidence.textContent = economy.confidence === "high"
         ? copy.confidenceHigh!
@@ -1207,14 +1253,14 @@ const payload = JSON.stringify({
       container.replaceChildren(...cards);
       const planUrl = new URL(data.plannerPath, window.location.origin);
       audit.majorPurchases.slice(0, 5).forEach((purchase, index) => planUrl.searchParams.set(`dota-item-plan.item${index + 1}`, purchase.key));
-      planUrl.searchParams.set("dota-item-plan.role", audit.role);
+      if (roleControl.value !== "unknown") planUrl.searchParams.set("dota-item-plan.role", audit.role);
       root.querySelector<HTMLAnchorElement>("[data-plan-link]")!.href = `${planUrl.pathname}${planUrl.search}`;
     };
 
     const renderAudit = () => {
       if (!currentMatch || currentSlot === null) return;
       const role = roleControl.value === "support" ? "support" : "core";
-      const audit = buildDotaMatchAudit(currentMatch, currentSlot, items, role, data.patch.id, data.patch.minimumSample, parseDotaPlayerSlot(opponentControl.value));
+      const audit = buildDotaMatchAudit(currentMatch, currentSlot, items, role, data.patch.id, data.patch.minimumSample, parseDotaPlayerSlot(opponentControl.value), roleControl.value !== "unknown");
       if (!audit) return;
       const hero = heroFor(audit.player.heroId);
       root.querySelector<HTMLElement>("[data-selected-name]")!.textContent = hero.name;
@@ -1227,6 +1273,7 @@ const payload = JSON.stringify({
       selectedImage.alt = hero.name;
       selectedImage.hidden = !hero.image;
       renderSignal(audit);
+      renderDotaFinalReview(root, buildDotaFinalReview(currentMatch, audit.player, roleControl.value === "unknown" ? null : audit.role, audit.economy.counterpart), lang, (id) => heroFor(id).name, audit.economy.windows.length === 0);
       renderEconomicAutopsy(audit);
       renderStats(audit);
       renderInventory(audit);
@@ -1238,7 +1285,7 @@ const payload = JSON.stringify({
       syncAuditLanguageLinks();
     };
 
-    function selectPlayer(slot: number, role?: DotaMatchRole, opponentSlot?: number) {
+    function selectPlayer(slot: number, role?: DotaMatchRole | "unknown", opponentSlot?: number) {
       if (!currentMatch) return;
       const player = currentMatch.players.find((candidate) => candidate.playerSlot === slot);
       if (!player) return;
@@ -1259,7 +1306,7 @@ const payload = JSON.stringify({
         node.setAttribute("aria-pressed", String(selected));
       });
       auditRoot.querySelector<HTMLElement>("[data-match-choose]")!.hidden = true;
-      roleControl.value = role ?? inferredDotaMatchRole(player) ?? "core";
+      roleControl.value = role ?? inferredDotaMatchRole(player) ?? "unknown";
       renderAudit();
     }
 
@@ -1274,7 +1321,8 @@ const payload = JSON.stringify({
         target.searchParams.set("match", String(matchId));
         if (slot != null) {
           target.searchParams.set("slot", String(slot));
-          target.searchParams.set("role", currentMatch ? roleControl.value : pendingRole ?? "core");
+          const role = currentMatch ? roleControl.value : pendingRole;
+          if (role === "core" || role === "support") target.searchParams.set("role", role);
           if (opponent !== undefined) target.searchParams.set("opponent", String(opponent));
         }
         link.href = `${target.pathname}${target.search}`;
@@ -1312,6 +1360,84 @@ const payload = JSON.stringify({
       }
     };
 
+    const recoveryPanel = root.querySelector<HTMLElement>("[data-match-recovery]")!;
+    const recoveryStatus = root.querySelector<HTMLElement>("[data-recovery-status]")!;
+    const requestReplay = root.querySelector<HTMLButtonElement>("[data-request-replay]")!;
+    const refreshReplay = root.querySelector<HTMLButtonElement>("[data-refresh-replay]")!;
+    const stopReplay = root.querySelector<HTMLButtonElement>("[data-stop-replay]")!;
+
+    const requestJson = async (endpoint: string, body: unknown, header: Record<string, string>, signal: AbortSignal, timeout: number) => {
+      const controller = new AbortController();
+      const abort = () => controller.abort();
+      if (signal.aborted) controller.abort();
+      else signal.addEventListener("abort", abort, { once: true });
+      const timer = window.setTimeout(abort, timeout);
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST", credentials: "same-origin", cache: "no-store",
+          headers: { Accept: "application/json", "Content-Type": "application/json", ...header },
+          body: JSON.stringify(body), signal: controller.signal
+        });
+        if (response.status === 404) throw new Error("not-found");
+        if (response.status === 429) throw new Error("rate-limit");
+        if (response.status === 504) throw new Error("timeout");
+        if (!response.ok) throw new Error("request-failed");
+        return await response.json();
+      } catch (error) {
+        if (controller.signal.aborted) throw new Error("timeout");
+        throw error;
+      } finally { window.clearTimeout(timer); signal.removeEventListener("abort", abort); }
+    };
+    const readMatch = async (matchId: number, signal: AbortSignal) => {
+      const payload = await requestJson(data.config.relayEndpoint, { matchId }, { "X-Money-Meta-Relay": "dota-match-v1" }, signal, data.config.relayTimeoutMs);
+      const match = sanitizeDotaMatchResponse(payload);
+      if (!match) throw new Error("malformed");
+      if (match.matchId !== matchId) throw new Error("mismatch");
+      return match;
+    };
+    const recovery = new DotaMatchRecovery({
+      request: async (matchId, signal) => {
+        const response = await requestJson(data.config.parseEndpoint, { matchId, requestReplay: true }, { "X-Money-Meta-Parse": "dota-parse-v1" }, signal, data.config.parseTimeoutMs);
+        if (response.accepted !== true || response.matchId !== matchId) throw new Error("malformed");
+      },
+      read: readMatch,
+      apply: (match) => {
+        if (!currentMatch || currentMatch.matchId !== match.matchId) return;
+        // A stale provider response must not remove an already available timeline.
+        if (!canReplaceDotaMatch(currentMatch, match)) throw new Error("stale");
+        const slot = currentSlot;
+        const role = roleControl.value as DotaMatchRole | "unknown";
+        const opponent = parseDotaPlayerSlot(opponentControl.value);
+        const tab = root.querySelector<HTMLElement>('[data-result-tab][aria-selected="true"]')?.dataset.resultTab ?? "summary";
+        const contributionExpanded = root.querySelector<HTMLDetailsElement>("[data-final-review]")!.open;
+        renderMatch(match);
+        if (slot !== null) selectPlayer(slot, role, opponent);
+        setResultTab(tab);
+        root.querySelector<HTMLDetailsElement>("[data-final-review]")!.open = contributionExpanded;
+      },
+      state: (state: DotaRecoveryState, error?: unknown) => {
+        const labels: Record<DotaRecoveryState, string> = {
+          requesting: copy.recoveryRequesting!, waiting: copy.recoveryWaiting!, checking: copy.recoveryChecking!,
+          ready: copy.recoveryReady!, pending: copy.recoveryPending!, stopped: copy.recoveryStopped!, error: copy.recoveryError!
+        };
+        recoveryStatus.textContent = error instanceof Error && error.message === "rate-limit" ? copy.recoveryLimited! : labels[state];
+        recoveryStatus.dataset.state = state;
+        updateRecoveryControls();
+      }
+    });
+    function updateRecoveryControls() {
+      const complete = currentMatch?.players.length === 10 && currentMatch.players.every(hasDotaMatchTimeline);
+      recoveryPanel.hidden = !currentMatch || Boolean(complete && !recoveryStatus.textContent);
+      requestReplay.disabled = !currentMatch || recovery.busy || Boolean(complete) || recovery.wasRequested(currentMatch.matchId);
+      refreshReplay.disabled = !currentMatch || recovery.busy;
+      stopReplay.hidden = !recovery.busy;
+      if (currentMatch) auditRoot.querySelector<HTMLAnchorElement>("[data-recovery-provider]")!.href = `${data.config.publicMatchBase}/${currentMatch.matchId}`;
+    }
+    requestReplay.addEventListener("click", () => { if (currentMatch) void recovery.run(currentMatch.matchId, true); });
+    refreshReplay.addEventListener("click", () => { if (currentMatch) void recovery.run(currentMatch.matchId); });
+    stopReplay.addEventListener("click", () => recovery.cancel());
+    window.addEventListener("pagehide", () => recovery.cancel(false), { once: true });
+
     const loadMatch = async () => {
       const matchId = parseDotaMatchId(input.value);
       if (!matchId) {
@@ -1321,6 +1447,9 @@ const payload = JSON.stringify({
       }
       submit.disabled = true;
       demo.disabled = true;
+      recovery.cancel(false);
+      recoveryPanel.hidden = true;
+      recoveryStatus.textContent = "";
       selection.hidden = true;
       result.hidden = true;
       currentMatch = null;
@@ -1328,26 +1457,8 @@ const payload = JSON.stringify({
       setStep(1);
       setStatus(copy.loading!, "loading");
       const controller = new AbortController();
-      const timer = window.setTimeout(() => controller.abort(), data.config.relayTimeoutMs);
       try {
-        const response = await fetch(data.config.relayEndpoint, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Money-Meta-Relay": "dota-match-v1"
-          },
-          body: JSON.stringify({ matchId }),
-          signal: controller.signal
-        });
-        if (response.status === 404) throw new Error("not-found");
-        if (response.status === 429) throw new Error("rate-limit");
-        if (response.status === 504) throw new Error("timeout");
-        if (!response.ok) throw new Error("request-failed");
-        const match = sanitizeDotaMatchResponse(await response.json());
-        if (!match) throw new Error("malformed");
-        if (match.matchId !== matchId) throw new Error("mismatch");
+        const match = await readMatch(matchId, controller.signal);
         setStatus("", "success");
         renderMatch(match);
       } catch (error) {
@@ -1366,7 +1477,6 @@ const payload = JSON.stringify({
                   : copy.failed!;
         setStatus(message);
       } finally {
-        window.clearTimeout(timer);
         submit.disabled = false;
         demo.disabled = false;
       }
@@ -1398,7 +1508,7 @@ const payload = JSON.stringify({
       const share = new URL(window.location.origin + window.location.pathname);
       share.searchParams.set("match", String(currentMatch.matchId));
       share.searchParams.set("slot", String(currentSlot));
-      share.searchParams.set("role", roleControl.value);
+      if (roleControl.value === "core" || roleControl.value === "support") share.searchParams.set("role", roleControl.value);
       const opponentSlot = parseDotaPlayerSlot(opponentControl.value);
       if (opponentSlot !== undefined) share.searchParams.set("opponent", String(opponentSlot));
       const copied = await copyText(share.toString());

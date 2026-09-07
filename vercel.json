@@ -2,6 +2,9 @@
   "functions": {
     "api/dota-match.ts": {
       "maxDuration": 60
+    },
+    "api/dota-match-parse.ts": {
+      "maxDuration": 30
     }
   },
   "redirects": [

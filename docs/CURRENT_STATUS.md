@@ -2,6 +2,17 @@
 
 Updated: 2026-09-07
 
+## Active release candidate: v1.24 useful final-only review and replay recovery
+
+- Final-only matches now receive a deterministic income/contribution review, not a terminal missing-timeline notice. The relay preserves hero damage, building damage and hero healing alongside the existing final fields.
+- Team GPM, damage and healing shares require five valid team slots and complete denominators. Kill participation uses kills plus assists divided by team kills; zero, missing and inconsistent values remain distinct.
+- The main finding and up to two supporting questions use observed income differences, kill involvement, building pressure, deaths and healing. A resource-use question requires an explicitly known core role and multiple matching signals. These are replay questions, never a player grade or a claimed cause.
+- Unknown roles stay unknown. They do not default to core questions or professional item benchmarks, and shared URLs do not invent a role. Manual opponent selection still requires an actual enemy.
+- A separate `Request replay analysis` button submits only the public Match ID to OpenDota through an allowlisted, same-origin endpoint. Loading, opening a shared URL and checking readiness never submit a parse.
+- One deliberate submission is followed by at most three timed reads. Waiting can be stopped; an ambiguous write is never retried automatically. Read errors and stale data preserve the current result. Enrichment keeps the selected hero, role, opponent and tab.
+- The OpenDota request contract was checked against `odota/core` commit `8d0a715a0cda362d48940cee431c1fd36100cc12`, `svc/api/spec.ts`, on 2026-09-07. Acceptance is not a promise that an old or unavailable replay can be parsed.
+- Automated and deployed verification is recorded in PR #17. No browser interaction or visual QA has been run for this update. Production still requires the owner's explicit approval.
+
 ## Active release candidate: v1.23 focused replay workbench
 
 - The match form now follows a compact introduction. Summary, gold timeline, and items/final stats are separate accessible tabs; methodology and request details expand on demand.

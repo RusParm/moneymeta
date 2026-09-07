@@ -1,5 +1,13 @@
 # Decision log
 
+## 2026-09-07: final-only matches deserve a review and an explicit recovery path
+
+The user found that the missing-timeline state merely restated the final inventory. Match totals now support bounded review questions using same-match income, team kill participation, damage, healing and deaths. Shares require complete five-player denominators; missing data is not zero. Thresholds choose questions, not good/bad player labels. Damage is never treated as a complete measure of support, control, saves or space creation. Unknown roles remain unknown.
+
+Loading a match stays read-only. A separate, clearly labeled action may submit that public Match ID to OpenDota's parse queue. This deliberately extends the earlier no-parse behavior: submission must not be attached to loading, sharing, retries or opening a page. The browser makes at most three subsequent reads and can stop waiting without pretending to cancel the upstream job. Current evidence and user selection survive failures and enrichment.
+
+Provider contract: [OpenDota request implementation](https://github.com/odota/core/blob/8d0a715a0cda362d48940cee431c1fd36100cc12/svc/api/spec.ts), checked 2026-09-07. A parse submission counts as ten calls for the provider's rate limit. The relay propagates restrictions and never sends user credentials, identities or arbitrary upstream URLs. A job receipt confirms submission only; availability of the actual timeline determines recovery.
+
 ## 2026-09-07: replay evidence is observed and comparison is explicit
 
 A player may override the automatic opponent with one enemy hero. The UI and share state preserve that choice as a manual comparison, never as a provider position assignment. Missing or ambiguous automatic roles must not lead to a guessed opponent.

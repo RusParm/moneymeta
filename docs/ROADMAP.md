@@ -1,5 +1,12 @@
 # Money Meta roadmap
 
+## Current increment: v1.24 match review without replay timelines
+
+- Preserve final contribution fields and turn them into transparent same-match comparisons and concrete review questions.
+- Keep unknown roles and missing denominators explicit; avoid role guesses and overall player grades.
+- Add a separate request for OpenDota replay parsing, bounded readiness checks and result-preserving enrichment.
+- Verify final-only, partial, complete, stopped, failed and stale-response paths before preview handoff.
+
 ## P0: v0.3 foundation
 
 - Astro/TypeScript build pipeline.

@@ -209,6 +209,7 @@ describe("Dota match economy model", () => {
 
     const oldPatch = { ...match, patchId: dotaMatchAuditConfig.currentPatchId - 1 };
     expect(buildDotaMatchAudit(oldPatch, 0, items, "core", dotaMatchAuditConfig.currentPatchId)?.majorPurchases.every((purchase) => purchase.benchmark === null)).toBe(true);
+    expect(buildDotaMatchAudit(match, 0, items, "core", dotaMatchAuditConfig.currentPatchId, 200, undefined, false)?.majorPurchases.every((purchase) => purchase.benchmark === null)).toBe(true);
   });
 
   it("keeps a final-stat audit usable when no parsed timeline exists", () => {

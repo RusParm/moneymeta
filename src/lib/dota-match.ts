@@ -35,6 +35,9 @@ export interface DotaMatchPlayer {
   netWorth: number | null;
   totalGold: number | null;
   goldSpent: number | null;
+  heroDamage: number | null;
+  towerDamage: number | null;
+  heroHealing: number | null;
   buybackCount: number | null;
   positionEstimate: number | null;
   laneRole: number | null;
@@ -240,6 +243,9 @@ export function sanitizeDotaMatchResponse(value: unknown): DotaMatch | null {
       netWorth: finiteInteger(player.net_worth, 0, 10_000_000),
       totalGold: finiteInteger(player.total_gold, 0, 10_000_000),
       goldSpent: finiteInteger(player.gold_spent, 0, 10_000_000),
+      heroDamage: finiteInteger(player.hero_damage, 0, 10_000_000),
+      towerDamage: finiteInteger(player.tower_damage, 0, 10_000_000),
+      heroHealing: finiteInteger(player.hero_healing, 0, 10_000_000),
       buybackCount: finiteInteger(player.buyback_count, 0, 100),
       positionEstimate: finiteInteger(player.position_est, 1, 5),
       laneRole: finiteInteger(player.lane_role, 1, 4),
@@ -301,6 +307,9 @@ export function createDotaMatchPublicPayload(match: DotaMatch): Record<string, u
         net_worth: player.netWorth,
         total_gold: player.totalGold,
         gold_spent: player.goldSpent,
+        hero_damage: player.heroDamage,
+        tower_damage: player.towerDamage,
+        hero_healing: player.heroHealing,
         buyback_count: player.buybackCount,
         position_est: player.positionEstimate,
         lane_role: player.laneRole,
@@ -663,14 +672,15 @@ export function buildDotaMatchAudit(
   role: DotaMatchRole,
   currentPatchId: number,
   minimumSample = 200,
-  counterpartSlot?: number
+  counterpartSlot?: number,
+  allowBenchmarks = true
 ): DotaMatchAudit | null {
   const player = match.players.find((candidate) => candidate.playerSlot === playerSlot);
   if (!player) return null;
   const series = createDotaMatchSeries(player).filter((point) => point.minute <= match.durationSeconds / 60);
   const timelineAvailable = series.length >= 2;
   const checkpoints = timelineAvailable ? createDotaMatchCheckpoints(player, match.durationSeconds) : [];
-  const majorPurchases = getDotaMatchMajorPurchases(player, items, role, match.patchId === currentPatchId, minimumSample);
+  const majorPurchases = getDotaMatchMajorPurchases(player, items, role, allowBenchmarks && match.patchId === currentPatchId, minimumSample);
   const reviewWindows = checkpoints.slice(1).length ? checkpoints.slice(1) : checkpoints;
   const slowestWindow = reviewWindows.length
     ? reviewWindows.reduce((slowest, checkpoint) => checkpoint.intervalGoldPerMinute < slowest.intervalGoldPerMinute ? checkpoint : slowest)
