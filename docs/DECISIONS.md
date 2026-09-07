@@ -1,5 +1,11 @@
 # Decision log
 
+## 2026-09-07: a saved plan survives the next calculation
+
+The owner prioritizes recurring player utility before monetization. Named calculation copies now preserve inputs, a result snapshot, language, source context and model version across all six live games. A player can return to one plan and record an outcome without changing its original forecast. No retention improvement is claimed without observed usage.
+
+Local drafts remain separate from deliberate saves. The store is bounded to fifty records, rejects unsupported/corrupt data rather than replacing it, and gives an undo for removal. Resume links carry only a local random reference in the URL fragment; restoring a calculation makes no provider request. A saved result is explicitly historical, with a new-review prompt when the model or its source context changes. Existing weekly journals are not duplicated into this store.
+
 ## 2026-09-07: improve completed decisions across the whole resource
 
 The whole-site audit found that successful formula tests and static builds did not ensure working focused routes: WoW initialization still depended on a retired hub container. Components now own their initialization boundary, and the release gate adds an audit of every generated route and accessibility reference. Browser checks must use actual inputs and inspect results.

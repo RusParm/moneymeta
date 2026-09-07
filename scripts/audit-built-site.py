@@ -92,8 +92,11 @@ def audit(root):
     if sitemap.exists():
         urls = ET.parse(sitemap).getroot()
         sitemap_paths = [urlsplit(element.text or '').path for element in urls.iter('{http://www.sitemaps.org/schemas/sitemap/0.9}loc')]
-        for path in set(pages) - {'/404.html'} - set(sitemap_paths):
+        indexable = {url for url, page in pages.items() if 'noindex' not in page.meta.get('robots', '')}
+        for path in indexable - set(sitemap_paths):
             errors.append(f'{path}: absent from sitemap')
+        for path in set(sitemap_paths) & (set(pages) - indexable):
+            errors.append(f'{path}: noindex page appears in sitemap')
         for path in set(sitemap_paths) - set(pages):
             errors.append(f'{path}: sitemap points to a missing page')
     else:

@@ -1,5 +1,12 @@
 # Money Meta roadmap
 
+## Current increment: v1.26 return to a useful calculation
+
+- Named input/result copies, a device-local list, game/state filters and direct model restoration across all six live games.
+- An after-session note and reviewed state preserve the original forecast. Explicit deletion can be undone.
+- Verify multiple variants, reload, language switching, preset-dependent fields and the Civilization active tab in preview.
+- Next: source-review operations and discovery remain high priorities from the audit. Use observed player behavior to choose the next deeper game scenario; add structured forecast/actual comparisons only where units and outcomes are comparable.
+
 ## Next sequence from the September 7 whole-site audit
 
 See `PRODUCT_AUDIT_2026_09_07.md` for evidence, per-game gaps and acceptance criteria.

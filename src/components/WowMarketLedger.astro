@@ -70,12 +70,12 @@ const copy = lang === "ru" ? {
     <form class="card wow-ledger-input">
       <div class="wow-ledger-form-head"><span>{copy.input}</span><strong>00</strong></div>
       <div class="form-grid">
-        <div class="field"><label for="wow-ledger-cash">{copy.liquidGold}</label><input id="wow-ledger-cash" data-ledger-input="liquidGold" type="number" min="0" step="1000" value="80000" /></div>
-        <div class="field"><label for="wow-ledger-stock">{copy.inventory}</label><input id="wow-ledger-stock" data-ledger-input="listedInventoryValue" type="number" min="0" step="1000" value="120000" /></div>
-        <div class="field"><label for="wow-ledger-through">{copy.sellThrough}</label><input id="wow-ledger-through" data-ledger-input="sellThroughPercent" type="number" min="0" max="100" step="5" value="55" /></div>
-        <div class="field"><label for="wow-ledger-cut">{copy.ahCut}</label><input id="wow-ledger-cut" data-ledger-input="auctionHouseCutPercent" type="number" min="0" max="100" step="0.5" value="5" /></div>
-        <div class="field"><label for="wow-ledger-spend">{copy.operating}</label><input id="wow-ledger-spend" data-ledger-input="weeklyOperatingSpend" type="number" min="0" step="1000" value="25000" /></div>
-        <div class="field"><label for="wow-ledger-cycle">{copy.cycle}</label><input id="wow-ledger-cycle" data-ledger-input="cycleDays" type="number" min="0.1" step="0.5" value="7" /></div>
+        <div class="field"><label for="wow-ledger-cash">{copy.liquidGold}</label><input id="wow-ledger-cash" data-ledger-input="liquidGold" data-role="liquidGold" type="number" min="0" step="1000" value="80000" /></div>
+        <div class="field"><label for="wow-ledger-stock">{copy.inventory}</label><input id="wow-ledger-stock" data-ledger-input="listedInventoryValue" data-role="listedInventoryValue" type="number" min="0" step="1000" value="120000" /></div>
+        <div class="field"><label for="wow-ledger-through">{copy.sellThrough}</label><input id="wow-ledger-through" data-ledger-input="sellThroughPercent" data-role="sellThroughPercent" type="number" min="0" max="100" step="5" value="55" /></div>
+        <div class="field"><label for="wow-ledger-cut">{copy.ahCut}</label><input id="wow-ledger-cut" data-ledger-input="auctionHouseCutPercent" data-role="auctionHouseCutPercent" type="number" min="0" max="100" step="0.5" value="5" /></div>
+        <div class="field"><label for="wow-ledger-spend">{copy.operating}</label><input id="wow-ledger-spend" data-ledger-input="weeklyOperatingSpend" data-role="weeklyOperatingSpend" type="number" min="0" step="1000" value="25000" /></div>
+        <div class="field"><label for="wow-ledger-cycle">{copy.cycle}</label><input id="wow-ledger-cycle" data-ledger-input="cycleDays" data-role="cycleDays" type="number" min="0.1" step="0.5" value="7" /></div>
       </div>
       <button class="button ghost wow-ledger-reset" data-ledger-reset type="button">↺ {copy.reset}</button>
     </form>

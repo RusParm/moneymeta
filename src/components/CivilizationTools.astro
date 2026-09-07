@@ -1,4 +1,5 @@
 ---
+import ScenarioActions from "./ScenarioActions.astro";
 import {
   calculateBuildingWindow,
   calculateEconomicVictoryGap,
@@ -179,14 +180,14 @@ const copy = lang === "ru" ? {
     <button type="button" role="tab" id="civ-tab-victory" aria-controls="victory-gap" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="victory"><span>03</span>{copy.victoryTab}</button>
   </div>
 
-  <article id="building-payback" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-building" data-civ-tool-panel data-model="building">
+  <article id="building-payback" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-building" data-civ-tool-panel data-model="building" data-scenario-root data-scenario-key="civ7-building" data-legacy-params="true">
     <div class="civ-model-copy"><span>{copy.buildingKicker}</span><h3>{copy.buildingTitle}</h3><p>{copy.buildingText}</p></div>
     <form class="civ-model-form" data-model-form="building">
-      <label><span>{copy.buildingCost}</span><input name="buildingCost" type="number" min="0" max="100000" step="10" value={defaults.building.cost} inputmode="decimal" /></label>
-      <label><span>{copy.buildTurns}</span><input name="buildingTurns" type="number" min="0" max="200" step="1" value={defaults.building.buildTurns} inputmode="decimal" /></label>
-      <label><span>{copy.benefit}</span><input name="buildingBenefit" type="number" min="0" max="100000" step="1" value={defaults.building.benefitPerTurn} inputmode="decimal" /></label>
-      <label><span>{copy.horizon}</span><input name="buildingHorizon" type="number" min="0" max="500" step="1" value={defaults.building.horizonTurns} inputmode="decimal" /></label>
-      <label class="civ-range"><span>{copy.confidence}</span><div><input name="buildingConfidence" type="range" min="0" max="100" step="5" value={defaults.building.confidencePercent} /><output>{defaults.building.confidencePercent}%</output></div></label>
+      <label><span>{copy.buildingCost}</span><input name="buildingCost" data-role="buildingCost" type="number" min="0" max="100000" step="10" value={defaults.building.cost} inputmode="decimal" /></label>
+      <label><span>{copy.buildTurns}</span><input name="buildingTurns" data-role="buildingTurns" type="number" min="0" max="200" step="1" value={defaults.building.buildTurns} inputmode="decimal" /></label>
+      <label><span>{copy.benefit}</span><input name="buildingBenefit" data-role="buildingBenefit" type="number" min="0" max="100000" step="1" value={defaults.building.benefitPerTurn} inputmode="decimal" /></label>
+      <label><span>{copy.horizon}</span><input name="buildingHorizon" data-role="buildingHorizon" type="number" min="0" max="500" step="1" value={defaults.building.horizonTurns} inputmode="decimal" /></label>
+      <label class="civ-range"><span>{copy.confidence}</span><div><input name="buildingConfidence" data-role="buildingConfidence" type="range" min="0" max="100" step="5" value={defaults.building.confidencePercent} /><output>{defaults.building.confidencePercent}%</output></div></label>
     </form>
     <aside class="civ-model-result" data-model-result="building" data-state="positive">
       <span>{copy.result}</span>
@@ -198,20 +199,19 @@ const copy = lang === "ru" ? {
         <div><dt>{copy.netValue}</dt><dd data-result-net>{number.format(initialBuilding.netValue)}</dd></div>
       </dl>
       <p>{copy.nextBuilding}</p>
-      <div class="civ-model-actions"><button type="button" data-share-model="building">{copy.share}</button><button type="button" data-reset-model="building">{copy.reset}</button></div>
-      <small data-model-status>{copy.saved}</small>
+      <ScenarioActions lang={lang} />
     </aside>
   </article>
 
-  <article id="settlement-choice" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-settlement" data-civ-tool-panel data-model="settlement" hidden>
+  <article id="settlement-choice" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-settlement" data-civ-tool-panel data-model="settlement" data-scenario-root data-scenario-key="civ7-settlement" data-legacy-params="true" hidden>
     <div class="civ-model-copy"><span>{copy.settlementKicker}</span><h3>{copy.settlementTitle}</h3><p>{copy.settlementText}</p></div>
     <form class="civ-model-form" data-model-form="settlement">
-      <label><span>{copy.conversionCost}</span><input name="settlementCost" type="number" min="0" max="100000" step="10" value={defaults.settlement.conversionCost} inputmode="decimal" /></label>
-      <label><span>{copy.conversionTurns}</span><input name="settlementTurns" type="number" min="0" max="200" step="1" value={defaults.settlement.conversionTurns} inputmode="decimal" /></label>
-      <label><span>{copy.currentValue}</span><input name="settlementCurrent" type="number" min="0" max="100000" step="1" value={defaults.settlement.currentValuePerTurn} inputmode="decimal" /></label>
-      <label><span>{copy.developedValue}</span><input name="settlementDeveloped" type="number" min="0" max="100000" step="1" value={defaults.settlement.developedValuePerTurn} inputmode="decimal" /></label>
-      <label><span>{copy.settlementHorizon}</span><input name="settlementHorizon" type="number" min="0" max="500" step="1" value={defaults.settlement.horizonTurns} inputmode="decimal" /></label>
-      <label class="civ-range"><span>{copy.settlementConfidence}</span><div><input name="settlementConfidence" type="range" min="0" max="100" step="5" value={defaults.settlement.confidencePercent} /><output>{defaults.settlement.confidencePercent}%</output></div></label>
+      <label><span>{copy.conversionCost}</span><input name="settlementCost" data-role="settlementCost" type="number" min="0" max="100000" step="10" value={defaults.settlement.conversionCost} inputmode="decimal" /></label>
+      <label><span>{copy.conversionTurns}</span><input name="settlementTurns" data-role="settlementTurns" type="number" min="0" max="200" step="1" value={defaults.settlement.conversionTurns} inputmode="decimal" /></label>
+      <label><span>{copy.currentValue}</span><input name="settlementCurrent" data-role="settlementCurrent" type="number" min="0" max="100000" step="1" value={defaults.settlement.currentValuePerTurn} inputmode="decimal" /></label>
+      <label><span>{copy.developedValue}</span><input name="settlementDeveloped" data-role="settlementDeveloped" type="number" min="0" max="100000" step="1" value={defaults.settlement.developedValuePerTurn} inputmode="decimal" /></label>
+      <label><span>{copy.settlementHorizon}</span><input name="settlementHorizon" data-role="settlementHorizon" type="number" min="0" max="500" step="1" value={defaults.settlement.horizonTurns} inputmode="decimal" /></label>
+      <label class="civ-range"><span>{copy.settlementConfidence}</span><div><input name="settlementConfidence" data-role="settlementConfidence" type="range" min="0" max="100" step="5" value={defaults.settlement.confidencePercent} /><output>{defaults.settlement.confidencePercent}%</output></div></label>
     </form>
     <aside class="civ-model-result" data-model-result="settlement" data-state="positive">
       <span>{copy.result}</span>
@@ -223,20 +223,19 @@ const copy = lang === "ru" ? {
         <div><dt>{copy.netValue}</dt><dd data-result-net>{number.format(initialSettlement.netValue)}</dd></div>
       </dl>
       <p>{copy.nextSettlement}</p>
-      <div class="civ-model-actions"><button type="button" data-share-model="settlement">{copy.share}</button><button type="button" data-reset-model="settlement">{copy.reset}</button></div>
-      <small data-model-status>{copy.saved}</small>
+      <ScenarioActions lang={lang} />
     </aside>
   </article>
 
-  <article id="victory-gap" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-victory" data-civ-tool-panel data-model="victory" hidden>
+  <article id="victory-gap" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-victory" data-civ-tool-panel data-model="victory" data-scenario-root data-scenario-key="civ7-victory" data-legacy-params="true" hidden>
     <div class="civ-model-copy"><span>{copy.victoryKicker}</span><h3>{copy.victoryTitle}</h3><p>{copy.victoryText}</p></div>
     <form class="civ-model-form" data-model-form="victory">
-      <label><span>{copy.currentGdp}</span><input name="victoryCurrent" type="number" min="0" max="1000000" step="1" value={defaults.victory.currentGdp} inputmode="decimal" /></label>
-      <label><span>{copy.targetGdp}</span><input name="victoryTarget" type="number" min="0" max="1000000" step="1" value={defaults.victory.targetGdp} inputmode="decimal" /></label>
-      <label><span>{copy.resourceGdp}</span><input name="victoryResources" type="number" min="0" max="1000000" step="1" value={defaults.victory.resourceGdp} inputmode="decimal" /></label>
-      <label><span>{copy.convoyGdp}</span><input name="victoryConvoys" type="number" min="0" max="1000000" step="1" value={defaults.victory.convoyGdp} inputmode="decimal" /></label>
-      <label><span>{copy.buildingGdp}</span><input name="victoryBuildings" type="number" min="0" max="1000000" step="1" value={defaults.victory.buildingGdp} inputmode="decimal" /></label>
-      <label class="civ-range"><span>{copy.victoryConfidence}</span><div><input name="victoryConfidence" type="range" min="0" max="100" step="5" value={defaults.victory.confidencePercent} /><output>{defaults.victory.confidencePercent}%</output></div></label>
+      <label><span>{copy.currentGdp}</span><input name="victoryCurrent" data-role="victoryCurrent" type="number" min="0" max="1000000" step="1" value={defaults.victory.currentGdp} inputmode="decimal" /></label>
+      <label><span>{copy.targetGdp}</span><input name="victoryTarget" data-role="victoryTarget" type="number" min="0" max="1000000" step="1" value={defaults.victory.targetGdp} inputmode="decimal" /></label>
+      <label><span>{copy.resourceGdp}</span><input name="victoryResources" data-role="victoryResources" type="number" min="0" max="1000000" step="1" value={defaults.victory.resourceGdp} inputmode="decimal" /></label>
+      <label><span>{copy.convoyGdp}</span><input name="victoryConvoys" data-role="victoryConvoys" type="number" min="0" max="1000000" step="1" value={defaults.victory.convoyGdp} inputmode="decimal" /></label>
+      <label><span>{copy.buildingGdp}</span><input name="victoryBuildings" data-role="victoryBuildings" type="number" min="0" max="1000000" step="1" value={defaults.victory.buildingGdp} inputmode="decimal" /></label>
+      <label class="civ-range"><span>{copy.victoryConfidence}</span><div><input name="victoryConfidence" data-role="victoryConfidence" type="range" min="0" max="100" step="5" value={defaults.victory.confidencePercent} /><output>{defaults.victory.confidencePercent}%</output></div></label>
     </form>
     <aside class="civ-model-result" data-model-result="victory" data-state="caution">
       <span>{copy.result}</span>
@@ -248,8 +247,7 @@ const copy = lang === "ru" ? {
         <div><dt>{copy.coverage}</dt><dd data-result-coverage>{number.format(initialVictory.targetCoveragePercent)}%</dd></div>
       </dl>
       <p>{copy.nextVictory}</p>
-      <div class="civ-model-actions"><button type="button" data-share-model="victory">{copy.share}</button><button type="button" data-reset-model="victory">{copy.reset}</button></div>
-      <small data-model-status>{copy.saved}</small>
+      <ScenarioActions lang={lang} />
     </aside>
   </article>
 
@@ -272,12 +270,6 @@ const copy = lang === "ru" ? {
     const panels = Array.from(tool.querySelectorAll<HTMLElement>("[data-civ-tool-panel]"));
     const forms = Array.from(tool.querySelectorAll<HTMLFormElement>("[data-model-form]"));
     const storageKey = "money-meta:civ7-tools:v1";
-    const defaults = new Map<string, Record<string, string>>();
-
-    forms.forEach((form) => {
-      defaults.set(form.dataset.modelForm ?? "", Object.fromEntries(Array.from(new FormData(form).entries()).map(([key, value]) => [key, String(value)])));
-    });
-
     const labels = lang === "ru" ? {
       turn: "ход",
       noPayback: "не рассчитывается",
@@ -458,44 +450,9 @@ const copy = lang === "ru" ? {
       render(model);
     });
 
-    tool.querySelectorAll<HTMLButtonElement>("[data-share-model]").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const model = button.dataset.shareModel ?? "building";
-        const form = forms.find((item) => item.dataset.modelForm === model);
-        if (!form) return;
-        const url = new URL(window.location.href);
-        url.search = "";
-        url.searchParams.set("model", model);
-        new FormData(form).forEach((value, key) => url.searchParams.set(key, String(value)));
-        history.replaceState({}, "", url);
-        const status = button.closest<HTMLElement>("[data-model-result]")?.querySelector<HTMLElement>("[data-model-status]");
-        try {
-          await navigator.clipboard.writeText(url.toString());
-          if (status) status.textContent = labels.shared;
-        } catch {
-          if (status) status.textContent = labels.shareError;
-        }
-      });
-    });
-
-    tool.querySelectorAll<HTMLButtonElement>("[data-reset-model]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const model = button.dataset.resetModel ?? "building";
-        const form = forms.find((item) => item.dataset.modelForm === model);
-        const values = defaults.get(model);
-        if (!form || !values) return;
-        Array.from(form.elements).forEach((control) => {
-          if (control instanceof HTMLInputElement && control.name && values[control.name] !== undefined) control.value = values[control.name]!;
-        });
-        render(model);
-        save();
-        const url = new URL(window.location.href);
-        url.search = "";
-        url.searchParams.set("model", model);
-        history.replaceState({}, "", url);
-        const status = button.closest<HTMLElement>("[data-model-result]")?.querySelector<HTMLElement>("[data-model-status]");
-        if (status) status.textContent = labels.saved;
-      });
+    tool.addEventListener("money-meta:restore-scenario", (event) => {
+      const panel = event.target instanceof HTMLElement ? event.target.closest<HTMLElement>("[data-civ-tool-panel]") : null;
+      if (panel?.dataset.model) select(panel.dataset.model);
     });
   }
 </script>

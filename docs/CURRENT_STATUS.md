@@ -1,5 +1,16 @@
 # Current status
 
+## Active release candidate: v1.26 named calculations and return flow
+
+- Added My calculations / Мои расчёты at `/saved/` and `/en/saved/`, linked from the global header and calculation results. These private, device-local surfaces are noindex and excluded from the sitemap.
+- All 28 existing common calculators across the six live games can save named copies of their inputs and up to four labeled result values. The list filters by game and planned/reviewed state, displays twelve records at a time, and holds at most fifty records without silent eviction.
+- Opening a saved calculation restores its inputs and focuses the correct model; Civilization also selects the matching tab. Local return URLs contain only a random reference in the fragment. User inputs, names, notes and public game identifiers are not serialized into those URLs. Deliberately shared calculation links remain a separate action.
+- After a session, players can rename a plan, add a note and mark it reviewed. These edits preserve the original inputs, result and source context. Removal has an undo action. A changed model version or source context prompts a new calculation.
+- Connected missing common input attributes in GTA capital tools, the WoW ledger and strategy tools. Civilization keeps reading legacy links and local drafts while using shared scenario actions. Draft reset does not delete named calculations.
+- Storage validation rejects malformed and future-schema data without overwriting it. Storage denial and capacity limits do not claim success. Each mutation reads the latest store; a deleted record cannot be resurrected by a stale note edit.
+- Local validation: 215 tests in 26 files; 589 pages; all 28 tools expose 163 restorable fields with source context. Full-site audit: 26,078 internal links. Final gate results and preview acceptance checks are recorded in PR #17 before handoff. Production remains subject to explicit approval.
+- GTA weekly forecast/actual history and Dota match review retain their existing flows; this increment saves calculation scenarios, not provider payloads or replay histories. Cross-device sync and numeric forecast/actual comparison across every model remain future work.
+
 ## Active release candidate: v1.25 full product audit
 
 - Full findings and the next product sequence are in `PRODUCT_AUDIT_2026_09_07.md` (Russian).
