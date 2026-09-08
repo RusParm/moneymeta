@@ -1,5 +1,13 @@
 # Current status
 
+## v1.30 candidate: draft opportunities and observed purchases
+
+- Published baseline: v1.29, PR #19, main `e89bbfa5bd43412bf65e513ca9430d022f701c0b`; production `dpl_BxvQ3TARnda8JChjj86DSqqGgiSd`.
+- Adds bilingual Draft strengths inside the match audit: reviewed ability combinations, both teams' conditions and replay checks. Evidence and capability comparisons expand on demand.
+- Strategic purchases from both teams have period filtering and matchup-specific explanations. BKB context names immunity-piercing abilities. Final inventory never creates timing evidence.
+- Coverage is explicit and versioned. There is no draft probability, fixed peak or performance grade. The relay, account-data boundary and other five live hubs are unchanged.
+- Independent review and targeted tests cover ability compatibility, side symmetry, historical dates, incomplete lineups and chronology. Final full-suite, build and preview/browser results will be recorded in the PR before handoff.
+
 ## v1.29 candidate: decisions, constraints and observed outcomes
 
 - Published baseline: v1.28, PR #18, main `55de6e41c9d3f1d01aeb977ea0a4f1b93a5da00c`, production deployment `dpl_8ABd9BAADQBVbBin5Hu4M5tvQmaJ`. Main-domain browser verification confirmed the six-game entrance, WoW example and Dota provider-backed replay focus on September 8.

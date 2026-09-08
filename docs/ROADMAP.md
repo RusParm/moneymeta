@@ -1,5 +1,13 @@
 # Money Meta roadmap
 
+## Current increment: v1.30 draft context inside match review
+
+The owner approved a first explainable comparison of opposing lineups, followed later by a validated statistical estimate. Add reviewed hero interactions, both teams' purchase chronology and explicit conditions inside the existing Dota audit. An economic episode remains an observation, not a player-error verdict.
+
+See `DOTA_DRAFT_CONTEXT.md` for boundaries and acceptance. Maintain all six live hubs. Calibrated draft probabilities, time-varying strength and the personal replay-to-next-match loop remain later work, not claims of this release.
+
+v1.29 was published in PR #19, main `e89bbfa5bd43412bf65e513ca9430d022f701c0b`. Earlier candidate entries below are historical.
+
 ## Current increment: v1.29 deepen the decision
 
 v1.28 was published in PR #18. The owner now asks for substantive analytical depth. Improve existing tasks through meaningful alternatives, cash constraints and observed outcomes.

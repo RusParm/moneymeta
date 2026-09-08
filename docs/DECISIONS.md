@@ -1,5 +1,13 @@
 # Decision log
 
+## 2026-09-08: interpret economy in the context of both drafts
+
+The owner described competent execution against a stronger opposing phase and requested draft comparison. The first release supplies reviewed mechanical opportunities and threats with named evidence, then separately displays both teams' actual strategic purchases. The result never proves draft quality retrospectively.
+
+Use deterministic, versioned rules before a numerical predictor. No invented score, averaged hero win rate, fixed time peak or causal player-error grade. Rule order is editorial specificity. Partial coverage cannot establish an absent answer. Control that restricts allied damage cannot support a generic damage-follow-up combination.
+
+The match relay and account-data boundary remain unchanged. See `DOTA_DRAFT_CONTEXT.md` for version gates, validation and later statistical-model requirements.
+
 ## 2026-09-08: compare consequences without inventing equivalence
 
 The v1.29 increment answers the owner's request for greater analytical depth. An affordable WoW batch is limited by cash available above a protected reserve; inventory cannot fund an immediate craft. A comparable observed sale count may constrain a hypothetical next batch, but it never establishes future market capacity. A recorded outcome preserves its original forecast and requires deliberate reuse for the next calculation.

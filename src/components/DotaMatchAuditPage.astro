@@ -17,6 +17,7 @@ import DotaMatchFinalReview from "./DotaMatchFinalReview.astro";
 import SiteFooter from "./SiteFooter.astro";
 import "../styles/dota-items.css";
 import "../styles/dota-match-audit.css";
+import "../styles/dota-draft-review.css";
 
 interface Props { lang: DotaItemsLocale; }
 const { lang } = Astro.props;
@@ -24,12 +25,12 @@ const path = getDotaMatchAuditPath(lang);
 const alternate = getDotaMatchAuditPath(lang === "ru" ? "en" : "ru");
 const itemPatchSource = dotaItemsSnapshot.patch.sourceUrl;
 const copy = lang === "ru" ? {
-  title: "Разбор экономики матча Dota 2 по Match ID | Money Meta",
-  description: "Вставь публичный Match ID Dota 2 и найди фазу, где изменился разрыв с прямым оппонентом: отдельно от командного провала и без оценки по KDA.",
+  title: "Разбор матча Dota 2: экономика и сила составов | Money Meta",
+  description: "Загрузи матч Dota 2 и сравни возможности обеих пятёрок, ключевые покупки и экономику по ходу игры. Найди конкретные решения для просмотра в реплее.",
   back: "← К порталу Dota 2",
   kicker: "Dota 2 · разбор реального матча",
-  heading: "Где в матче ушло преимущество?",
-  lede: "Загрузи матч и выбери героя. Сопоставь доход с участием в убийствах и давлением на строения. Добавь разбор реплея, чтобы найти момент изменения преимущества.",
+  heading: "Разбери матч с учётом составов",
+  lede: "Загрузи матч и выбери героя. Сравни возможности обеих команд, покупки и изменение экономики. Разберись, какие условия помогали или мешали реализовать ваш пик.",
   inputLabel: "Match ID или ссылка на матч",
   inputPlaceholder: "Например, 8978544633",
   inputHelp: "Подойдёт числовой ID или обычная ссылка OpenDota, Dotabuff либо Stratz.",
@@ -78,7 +79,7 @@ const copy = lang === "ru" ? {
   shared: "Ссылка скопирована: матч, герой, роль и выбранный соперник. Для загрузки нужно нажать кнопку.",
   copyFailed: "Не удалось скопировать автоматически. Разреши доступ к буферу обмена и повтори.",
   openProvider: "Открыть матч в OpenDota",
-  signal: "ГЛАВНЫЙ ВЫВОД",
+  signal: "ЭКОНОМИЧЕСКИЙ ЭПИЗОД ДЛЯ ПРОВЕРКИ",
   finalSignalTitle: "Разбор по итогам матча",
   finalSignalText: "Итоги позволяют сопоставить доход и вклад в результат. Для поиска конкретной минуты запроси разбор реплея.",
   recoveryTitle: "Добавить поминутный разбор",
@@ -107,6 +108,7 @@ const copy = lang === "ru" ? {
   compareManual: "Соперник выбран тобой",
   comparePosition: "Пара по оценке позиции OpenDota",
   tabSummary: "Выводы и что проверить",
+  tabDraft: "Сила составов",
   tabGold: "Золото по минутам",
   tabItems: "Предметы и итог",
   tabsLabel: "Разделы разбора",
@@ -248,12 +250,12 @@ const copy = lang === "ru" ? {
   choose: "Выбери героя, чтобы открыть разбор.",
   goldUnit: "золота"
 } : {
-  title: "Dota 2 match economy audit by Match ID | Money Meta",
-  description: "Paste a public Dota 2 Match ID and find the phase where the direct-position gap moved, separated from a team collapse and without a KDA grade.",
+  title: "Dota 2 match review: economy and draft strengths | Money Meta",
+  description: "Load a Dota 2 match to compare both lineups, key purchases and economy over time. Find concrete decisions to review in the replay.",
   back: "← Dota 2 portal",
   kicker: "Dota 2 · one real match",
-  heading: "Where did the advantage slip?",
-  lede: "Load a match and choose your hero. Compare income, kill involvement and building pressure. Add replay analysis to find where the advantage changed.",
+  heading: "Review your match in draft context",
+  lede: "Load a match and choose your hero. Compare both lineups, purchases and changes in economy. Understand what helped or hindered your draft's execution.",
   inputLabel: "Match ID or match URL",
   inputPlaceholder: "For example, 8978544633",
   inputHelp: "Use the numeric ID or a normal OpenDota, Dotabuff or Stratz match link.",
@@ -302,7 +304,7 @@ const copy = lang === "ru" ? {
   shared: "Link copied: match, hero, role and selected opponent. Loading still requires a button press.",
   copyFailed: "Automatic copy failed. Allow clipboard access and try again.",
   openProvider: "Open match in OpenDota",
-  signal: "MAIN FINDING",
+  signal: "ECONOMIC EPISODE TO REVIEW",
   finalSignalTitle: "Review from match totals",
   finalSignalText: "The totals can compare income and contribution. Request replay analysis to find a specific minute.",
   recoveryTitle: "Add minute-by-minute analysis",
@@ -331,6 +333,7 @@ const copy = lang === "ru" ? {
   compareManual: "Opponent chosen by you",
   comparePosition: "Paired by OpenDota position estimate",
   tabSummary: "Findings and review",
+  tabDraft: "Draft strengths",
   tabGold: "Gold timeline",
   tabItems: "Items and final stats",
   tabsLabel: "Audit sections",
@@ -585,9 +588,13 @@ const payload = JSON.stringify({
             <p id="match-comparison-help">{copy.compareHelp}</p>
           </div>
           <div class="match-result-tabs" role="tablist" aria-label={copy.tabsLabel}>
-            {[['summary', copy.tabSummary], ['gold', copy.tabGold], ['items', copy.tabItems]].map(([key, label], index) => <button type="button" id={`match-tab-${key}`} role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`match-panel-${key}`} tabindex={index === 0 ? 0 : -1} data-result-tab={key}>{label}</button>)}
+            {[['summary', copy.tabSummary], ['draft', copy.tabDraft], ['gold', copy.tabGold], ['items', copy.tabItems]].map(([key, label], index) => <button type="button" id={`match-tab-${key}`} role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`match-panel-${key}`} tabindex={index === 0 ? 0 : -1} data-result-tab={key}>{label}</button>)}
           </div>
           <section id="match-panel-summary" role="tabpanel" aria-labelledby="match-tab-summary" tabindex="0" data-result-panel="summary">
+          <aside class="match-draft-summary" data-draft-summary hidden>
+            <div><strong>{copy.tabDraft}</strong><p data-draft-summary-text></p></div>
+            <button type="button" class="button ghost" data-open-draft>{lang === "ru" ? "Разобрать возможности команд" : "Review both lineups"} →</button>
+          </aside>
           <article class="match-audit-signal" data-audit-signal>
             <span>{copy.signal}</span>
             <strong data-signal-title></strong>
@@ -633,6 +640,9 @@ const payload = JSON.stringify({
             <div><button type="button" class="button primary" data-copy-rule>{copy.copyRule}</button><a class="button ghost" data-plan-link href={getDotaItemPlannerPath(lang)}>{copy.plan} →</a></div>
             <p data-rule-status role="status" aria-live="polite"></p>
           </section>
+          </section>
+          <section id="match-panel-draft" role="tabpanel" aria-labelledby="match-tab-draft" tabindex="0" data-result-panel="draft" hidden>
+            <div data-draft-review></div>
           </section>
           <section id="match-panel-gold" role="tabpanel" aria-labelledby="match-tab-gold" tabindex="0" data-result-panel="gold" hidden>
           <section class="match-audit-trajectory" data-trajectory aria-labelledby="match-chart-title">
@@ -712,6 +722,8 @@ const payload = JSON.stringify({
   import { buildDotaFinalReview } from "../lib/dota-match-summary";
   import { dotaReviewMessage, renderDotaFinalReview } from "../lib/dota-match-review-ui";
   import { canReplaceDotaMatch, DotaMatchRecovery, type DotaRecoveryState } from "../lib/dota-match-recovery";
+  import { buildDotaDraftReview } from "../lib/dota-draft";
+  import { renderDotaDraftReview } from "../lib/dota-draft-review-ui";
 
   const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
   if (root) {
@@ -934,8 +946,8 @@ const payload = JSON.stringify({
           ? `За всю фазу ${windowLabel(critical)}: разрыв с соперником ${signedGold(critical.roleGapChange)}, разрыв команд ${signedGold(critical.teamGapChange)}. ${critical.kind === "mixed" ? "Оба разрыва ухудшились одновременно." : critical.kind === "team" ? "Сигнал виден на уровне команды." : "Сигнал виден в сравнении двух героев."} Причину проверяем в реплее.`
           : `Across the full ${windowLabel(critical)} phase: opponent gap ${signedGold(critical.roleGapChange)}, team gap ${signedGold(critical.teamGapChange)}. ${critical.kind === "mixed" ? "Both gaps declined together." : critical.kind === "team" ? "The signal is at team level." : "The signal comes from comparing the two heroes."} Verify the cause in the replay.`;
         currentRule = lang === "ru"
-          ? `Начни с ${windowLabel(focus)}. Сравни доступный фарм, перемещения и цели у обеих сторон. Отметь первое решение, которое объясняет изменение разрыва; по одному графику причину не назначай.`
-          : `Start at ${windowLabel(focus)}. Compare available farm, movement and objectives for both sides. Mark the first decision that explains the gap change; do not assign a cause from the chart alone.`;
+          ? `Начни с ${windowLabel(focus)}. Сопоставь доступный фарм, перемещения и цели с возможностями составов. Проверь, какие варианты были у команды в этой фазе и что она получила за свои действия.`
+          : `Start at ${windowLabel(focus)}. Compare available farm, movement and objectives with the lineups' capabilities. Review the options your team had in this phase and what its decisions achieved.`;
       } else if (!economy.windows.length) {
         const review = buildDotaFinalReview(currentMatch!, audit.player, roleControl.value === "unknown" ? null : audit.role, economy.counterpart);
         const message = dotaReviewMessage(review, review.findings[0], lang, opponent?.name ?? "");
@@ -1285,6 +1297,16 @@ const payload = JSON.stringify({
       renderChart(audit);
       renderCheckpoints(audit);
       renderPurchases(audit);
+      const draft = buildDotaDraftReview(currentMatch, audit.player);
+      renderDotaDraftReview(root.querySelector<HTMLElement>("[data-draft-review]")!, draft, lang, heroFor);
+      const draftSummary = root.querySelector<HTMLElement>("[data-draft-summary]")!;
+      draftSummary.hidden = draft.status !== "ready" && draft.status !== "partial";
+      const ownFinding = draft.opportunities[0];
+      const enemyFinding = draft.threats[0];
+      root.querySelector<HTMLElement>("[data-draft-summary-text]")!.textContent = [
+        ownFinding ? `${lang === "ru" ? "Ваши возможности" : "Your opportunities"}: ${ownFinding.title[lang]}.` : "",
+        enemyFinding ? `${lang === "ru" ? "У соперника" : "Opponents"}: ${enemyFinding.title[lang]}.` : ""
+      ].filter(Boolean).join(" ") || (lang === "ru" ? "Сравни проверенные способности героев и покупки обеих команд." : "Compare reviewed hero abilities and purchases on both teams.");
       result.hidden = false;
       setStep(3);
       syncAuditLanguageLinks();
@@ -1344,6 +1366,10 @@ const payload = JSON.stringify({
       auditRoot.querySelectorAll<HTMLElement>("[data-result-panel]").forEach((panel) => { panel.hidden = panel.dataset.resultPanel !== key; });
     }
     const resultTabs = [...root.querySelectorAll<HTMLButtonElement>("[data-result-tab]")];
+    root.querySelector<HTMLButtonElement>("[data-open-draft]")!.addEventListener("click", () => {
+      setResultTab("draft");
+      root.querySelector<HTMLButtonElement>('[data-result-tab="draft"]')!.focus();
+    });
     resultTabs.forEach((button, index) => {
       button.addEventListener("click", () => setResultTab(button.dataset.resultTab!));
       button.addEventListener("keydown", (event) => {
