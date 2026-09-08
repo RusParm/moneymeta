@@ -1,0 +1,124 @@
+---
+import ScenarioActions from "./ScenarioActions.astro";
+import { civilizationComparisonExample as defaults } from "../data/civ-comparison";
+import { calculateCivilizationComparison } from "../lib/civ-comparison";
+import { civilizationComparisonCopy, civilizationYieldNames, presentCivilizationComparison } from "../lib/civ-comparison-copy";
+import "../styles/civ-comparison.css";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const copy = civilizationComparisonCopy(lang);
+const units = civilizationYieldNames(lang);
+const initial = calculateCivilizationComparison(defaults)!;
+const display = presentCivilizationComparison(defaults, initial, lang);
+---
+
+<article id="building-comparison" class="civ-tool-panel civ-comparison" role="tabpanel" aria-labelledby="civ-tab-comparison" data-civ-tool-panel data-model="comparison" data-civ-comparison data-lang={lang} data-scenario-root data-scenario-key="civ7-comparison" data-legacy-params="true">
+  <div class="civ-comparison-intro"><span class="section-kicker">{copy.kicker}</span><h3>{copy.title}</h3><p>{copy.intro}</p></div>
+  <form class="civ-model-form civ-comparison-form" data-model-form="comparison" aria-describedby="civ-comparison-help">
+    <p class="civ-comparison-example">{copy.example}</p>
+    <div class="civ-comparison-settings">
+      <label><span>{copy.unit}</span><select name="comparisonUnit" data-role="comparisonUnit" disabled>{Object.entries(units).map(([key, title]) => <option value={key} selected={key === defaults.unit}>{title}</option>)}</select></label>
+      <label><span>{copy.horizon}</span><input name="comparisonHorizon" data-role="comparisonHorizon" type="number" min="0" max="500" step="1" value={defaults.horizonTurns} inputmode="numeric" required disabled /></label>
+    </div>
+    <div class="civ-comparison-options">
+      {(["a", "b"] as const).map((key) => <fieldset>
+        <legend>{copy[key]}</legend>
+        <label><span>{copy.cost}</span><input name={`comparisonCost${key.toUpperCase()}`} data-role={`comparisonCost${key.toUpperCase()}`} type="number" min="0" max="100000" step="any" value={defaults[key].productionCost} inputmode="decimal" required disabled /></label>
+        <label><span>{copy.turns}</span><input name={`comparisonTurns${key.toUpperCase()}`} data-role={`comparisonTurns${key.toUpperCase()}`} type="number" min="0" max="200" step="1" value={defaults[key].buildTurns} inputmode="numeric" required disabled /></label>
+        <label><span>{copy.yield}</span><input name={`comparisonYield${key.toUpperCase()}`} data-role={`comparisonYield${key.toUpperCase()}`} type="number" min="0" max="100000" step="any" value={defaults[key].yieldPerTurn} inputmode="decimal" required disabled /></label>
+      </fieldset>)}
+    </div>
+    <p id="civ-comparison-help" class="civ-comparison-help">{copy.inputHelp}</p>
+  </form>
+  <aside class="civ-model-result civ-comparison-result" data-model-result="comparison">
+    <p class="civ-comparison-invalid" data-comparison-invalid role="status" hidden>{copy.invalid}</p>
+    <div data-comparison-output>
+      <span class="section-kicker">{copy.result}</span>
+      <h4 data-comparison-title aria-live="polite" aria-atomic="true">{display.title}</h4>
+      <dl>
+        <div><dt>{copy.outputA}</dt><dd data-comparison-yield-a>{display.outputA}</dd></div>
+        <div><dt>{copy.outputB}</dt><dd data-comparison-yield-b>{display.outputB}</dd></div>
+        <div><dt>{copy.costA}</dt><dd data-comparison-cost-a>{display.number(initial.a.productionCost)}</dd></div>
+        <div><dt>{copy.costB}</dt><dd data-comparison-cost-b>{display.number(initial.b.productionCost)}</dd></div>
+      </dl>
+      <p data-comparison-tradeoff>{display.tradeoff}</p>
+      <p class="civ-comparison-condition" data-comparison-condition>{display.condition}</p>
+      <section class="civ-comparison-production" data-comparison-production hidden={defaults.unit !== "production"} aria-label={copy.paybackTitle}>
+        <h5>{copy.paybackTitle}</h5><p>{copy.paybackNote}</p>
+        <dl>
+          <div><dt>{copy.netA}</dt><dd data-comparison-net-a>{initial.a.netProduction === null ? "" : display.number(initial.a.netProduction)}</dd></div>
+          <div><dt>{copy.netB}</dt><dd data-comparison-net-b>{initial.b.netProduction === null ? "" : display.number(initial.b.netProduction)}</dd></div>
+          <div><dt>{copy.paybackA}</dt><dd data-comparison-payback-a>{initial.a.productionPaybackTurn === null ? copy.noPayback : display.number(initial.a.productionPaybackTurn)}</dd></div>
+          <div><dt>{copy.paybackB}</dt><dd data-comparison-payback-b>{initial.b.productionPaybackTurn === null ? copy.noPayback : display.number(initial.b.productionPaybackTurn)}</dd></div>
+        </dl>
+      </section>
+      <details class="civ-comparison-path">
+        <summary>{copy.path}</summary>
+        <p data-comparison-crossover>{display.crossover}</p>
+        <table><caption data-comparison-caption>{units[defaults.unit]}</caption><thead><tr><th scope="col">{copy.turn}</th><th scope="col">{copy.pathA}</th><th scope="col">{copy.pathB}</th></tr></thead>
+          <tbody data-comparison-checkpoints>{initial.checkpoints.map((row) => <tr><th scope="row">{display.number(row.turn)}</th><td>{display.number(row.a)}</td><td>{display.number(row.b)}</td></tr>)}</tbody>
+        </table>
+        <p>{copy.boundary}</p>
+      </details>
+    </div>
+    <ScenarioActions lang={lang} />
+  </aside>
+</article>
+
+<script>
+  import { calculateCivilizationComparison, type CivilizationComparisonInput, type CivilizationYield } from "../lib/civ-comparison";
+  import { civilizationComparisonCopy, civilizationYieldNames, presentCivilizationComparison } from "../lib/civ-comparison-copy";
+
+  document.querySelectorAll<HTMLElement>("[data-civ-comparison]").forEach((root) => {
+    const lang = root.dataset.lang === "en" ? "en" : "ru";
+    const copy = civilizationComparisonCopy(lang);
+    const form = root.querySelector<HTMLFormElement>("form")!;
+    const setText = (selector: string, value: string) => { const node = root.querySelector<HTMLElement>(selector); if (node) node.textContent = value; };
+    const numeric = (name: string) => form.querySelector<HTMLInputElement>(`[name="${name}"]`)!.valueAsNumber;
+    const render = () => {
+      const input: CivilizationComparisonInput = {
+        unit: form.querySelector<HTMLSelectElement>('[name="comparisonUnit"]')!.value as CivilizationYield,
+        horizonTurns: numeric("comparisonHorizon"),
+        a: { productionCost: numeric("comparisonCostA"), buildTurns: numeric("comparisonTurnsA"), yieldPerTurn: numeric("comparisonYieldA") },
+        b: { productionCost: numeric("comparisonCostB"), buildTurns: numeric("comparisonTurnsB"), yieldPerTurn: numeric("comparisonYieldB") }
+      };
+      const value = calculateCivilizationComparison(input);
+      root.dataset.scenarioValid = String(value !== null);
+      root.querySelector<HTMLElement>("[data-comparison-invalid]")!.hidden = value !== null;
+      root.querySelector<HTMLElement>("[data-comparison-output]")!.hidden = value === null;
+      if (!value) return;
+      const display = presentCivilizationComparison(input, value, lang);
+      setText("[data-comparison-title]", display.title);
+      setText("[data-comparison-yield-a]", display.outputA);
+      setText("[data-comparison-yield-b]", display.outputB);
+      setText("[data-comparison-cost-a]", display.number(value.a.productionCost));
+      setText("[data-comparison-cost-b]", display.number(value.b.productionCost));
+      setText("[data-comparison-tradeoff]", display.tradeoff);
+      setText("[data-comparison-condition]", display.condition);
+      setText("[data-comparison-crossover]", display.crossover);
+      root.querySelector<HTMLElement>("[data-comparison-production]")!.hidden = value.unit !== "production";
+      for (const key of ["a", "b"] as const) {
+        setText(`[data-comparison-net-${key}]`, value[key].netProduction === null ? "" : display.number(value[key].netProduction!));
+        setText(`[data-comparison-payback-${key}]`, value[key].productionPaybackUnavailable ? copy.unavailablePayback : value[key].productionPaybackTurn === null ? copy.noPayback : display.number(value[key].productionPaybackTurn!));
+      }
+      setText("[data-comparison-caption]", civilizationYieldNames(lang)[value.unit]);
+      const body = root.querySelector<HTMLTableSectionElement>("[data-comparison-checkpoints]")!;
+      body.replaceChildren(...value.checkpoints.map((checkpoint) => {
+        const row = document.createElement("tr");
+        [checkpoint.turn, checkpoint.a, checkpoint.b].forEach((number, index) => {
+          const cell = document.createElement(index === 0 ? "th" : "td");
+          if (index === 0) cell.setAttribute("scope", "row");
+          cell.textContent = display.number(number);
+          row.append(cell);
+        });
+        return row;
+      }));
+    };
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>("input, select").forEach((control) => { control.disabled = false; });
+    form.addEventListener("input", render);
+    form.addEventListener("change", render);
+    form.addEventListener("submit", (event) => event.preventDefault());
+    render();
+  });
+</script>

@@ -1,5 +1,15 @@
 # Decision log
 
+## 2026-09-08: compare consequences without inventing equivalence
+
+The v1.29 increment answers the owner's request for greater analytical depth. An affordable WoW batch is limited by cash available above a protected reserve; inventory cannot fund an immediate craft. A comparable observed sale count may constrain a hypothetical next batch, but it never establishes future market capacity. A recorded outcome preserves its original forecast and requires deliberate reuse for the next calculation.
+
+Total War and CK3 need an intermediate cash path. A recovered final treasury cannot excuse an earlier reserve breach. Delaying a commitment delays its one-off cost and upkeep together; losing the army or benefit during that delay remains an unpriced game trade-off. Income changes are explicit scenarios, not inferred mechanics of succession or conquest.
+
+Civilization comparison keeps production cost separate from the selected yield. Science, culture and gold cannot be added to or subtracted from production without an exchange-rate assumption. The first comparison ranks cumulative output only within the selected resource and shows the production commitment alongside it. Legacy payback URLs remain valid.
+
+New controls in an older named scenario restore their neutral defaults, not values from an unrelated draft. Local batch outcomes and notes must never enter ordinary share links or analytics.
+
 ## 2026-09-08: demonstrate a decision before asking for work
 
 The owner's own player experience remains unclear after v1.27. A tool count, a passing build or a saved record does not establish a reason to use the product. The source audit and primary competitor evidence show that statistics, generic arithmetic and forecast journals are already widely available.

@@ -7,7 +7,7 @@ import { calculateHomeDecisionExample, homeExampleDefault } from "../src/lib/hom
 import { calculateReserveMetrics } from "../src/lib/strategy-economy";
 
 const targetSources = import.meta.glob([
-  "../src/components/WowCalculators.astro", "../src/components/CivilizationTools.astro"
+  "../src/components/WowCalculators.astro", "../src/components/WowBatchPlanner.astro"
 ], { eager: true, import: "default", query: "?raw" }) as Record<string, string>;
 
 function result(game: HomeExampleGame, value: number | string) {
@@ -52,10 +52,12 @@ describe("consequential homepage examples", () => {
     expect(atTotalSpend(displayedCap).buffer).toBeGreaterThanOrEqual(0);
     expect(atTotalSpend(displayedCap + 1).buffer).toBeLessThan(0);
   });
-  it("Civ includes construction delay and accepts exact payback at the deadline", () => {
-    expect(result("civ7", 18).metrics.map((metric) => metric.value)).toEqual([-80, 20]);
-    expect(result("civ7", 20).state).toBe("positive");
-    expect(result("civ7", 5).metrics[0].value).toBe(-600);
+  it("Civ changes the leading option with the deadline without subtracting production from science", () => {
+    expect(result("civ7", 10).metrics.map((metric) => metric.value)).toEqual([35, 24]);
+    expect(result("civ7", 14).metrics.map((metric) => metric.value)).toEqual([55, 56]);
+    expect(result("civ7", 20).metrics.map((metric) => metric.value)).toEqual([85, 104]);
+    expect(result("civ7", 3).metrics.map((metric) => metric.value)).toEqual([0, 0]);
+    expect(result("civ7", 20).consequence).toContain("120 more production");
   });
   it.each(Object.keys(homeDecisionExamples) as HomeExampleGame[])("%s rejects unusable input without emitting a result or handoff", (game) => {
     const config = homeDecisionExamples[game];
@@ -76,7 +78,10 @@ describe("exact full-model handoff", () => {
       const url = new URL(calculated.href, "https://themoneymeta.com");
       expect(url.pathname).toBe(`${lang === "en" ? "/en" : ""}${tool.path}`);
       expect(url.hash).toBe(`#${tool.anchor}`);
-      expect(url.searchParams.size).toBe(config.fields.length);
+      expect(url.searchParams.size).toBe(config.fields.length + Object.keys(config.fixedParameters ?? {}).length);
+      Object.entries(config.fixedParameters ?? {}).forEach(([key, value]) => {
+        expect(url.searchParams.get(`${tool.key}.${key}`)).toBe(value);
+      });
       config.fields.forEach((field) => {
         expect(url.searchParams.get(`${tool.key}.${field.key}`)).toBe(String(calculated.values[field.key]));
       });
@@ -90,6 +95,7 @@ describe("exact full-model handoff", () => {
     expect(configured("ck3")).toEqual(crusaderKingsHub.models.find((model) => model.id === "war-chest")!.inputs.map((field) => field.key).sort());
     const controls = (path: string, pattern: RegExp) => [...(targetSources[path] ?? "").matchAll(pattern)].map((match) => match[1]!).sort();
     expect(configured("wow")).toEqual(controls("../src/components/WowCalculators.astro", /<input[^>]*data-role="(craft-[^"]+)"/g));
-    expect(configured("civ7")).toEqual(controls("../src/components/CivilizationTools.astro", /<input[^>]*data-role="(building[^"]+)"/g));
+    const wowExtras = Object.keys(homeDecisionExamples.wow.fixedParameters ?? {}).sort();
+    expect(wowExtras).toEqual(controls("../src/components/WowBatchPlanner.astro", /<(?:input|select)[^>]*data-role="(craft-[^"]+)"/g));
   });
 });

@@ -37,6 +37,6 @@ Primary promise: **Understand the economy. Make the smarter move.**
 
 ## Current priority
 
-Ship and operate five complete living hubs: GTA Online, Dota 2, World of Warcraft Retail, Total War: Warhammer III and Crusader Kings III. Next, validate behavior with analytics, establish recurring data freshness, deepen saved scenarios and build acquisition loops across all five verticals. Update Crusader Kings trade models only after Silk & Silver mechanics ship and can be verified. Keep Civilization and Age of Empires demand-led.
+Operate six complete living hubs: GTA Online, Dota 2, World of Warcraft Retail, Total War: Warhammer III, Crusader Kings III and Civilization VII. Deepen concrete decisions through observed player inputs, comparable alternatives and useful after-session outcomes; verify player value before monetization. Keep recurring source review and local saved-scenario reliability across all six verticals. Update Crusader Kings trade models only after Silk & Silver mechanics ship and can be verified. GTA VI and Fable remain bounded pre-release dossiers; further game expansion remains demand-led.
 
 Read `docs/PROJECT_CONTEXT.md`, `docs/ROADMAP.md`, `docs/DECISIONS.md` and `docs/CURRENT_STATUS.md` before changing product direction.

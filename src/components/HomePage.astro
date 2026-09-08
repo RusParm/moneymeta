@@ -288,6 +288,12 @@ const featuredInsights = insights.filter((insight) => insight.featuredInHub).sli
                     <div data-home-resume-list></div>
                     <small>{lang === "ru" ? "Сохранённые результаты в этом браузере. Открой расчёт, чтобы проверить его заново." : "Saved results in this browser. Open a calculation to review it again."}</small>
                   </aside>
+                  {game.id === "wow" && <aside class="mm-home-resume" data-home-batch-resume hidden
+                    aria-label={lang === "ru" ? "Продажи твоей партии" : "Your batch sales"}>
+                    <div><strong>{lang === "ru" ? "Вернись к своей партии" : "Return to your batch"}</strong></div>
+                    <div data-home-resume-list></div>
+                    <small>{lang === "ru" ? "Сопоставь продажи с исходным планом и подготовь следующую партию." : "Compare sales with the original plan and prepare your next batch."}</small>
+                  </aside>}
                   <HomeDecisionExample gameId={game.id as ScenarioGame} lang={lang} />
                 </div>
               </article>

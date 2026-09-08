@@ -1,5 +1,6 @@
 import { getScenarioTool, type ScenarioLocale } from "../data/scenario-tools";
 import { readSavedScenarios, savedScenarioHref } from "./saved-scenarios";
+import { readWowBatchJournal } from "./wow-batch-journal";
 
 const preferenceKey = "money-meta:home-game:v1";
 
@@ -39,6 +40,28 @@ export function initializeHome() {
         list.appendChild(link);
       });
     });
+    const batchRegion = home!.querySelector<HTMLElement>("[data-home-batch-resume]");
+    if (!batchRegion) return;
+    const batchList = batchRegion.querySelector<HTMLElement>("[data-home-resume-list]")!;
+    batchList.replaceChildren();
+    const journal = readWowBatchJournal({ getItem: (key) => localStorage.getItem(key), setItem: (key, value) => localStorage.setItem(key, value) });
+    const batches = journal.ok ? [...journal.records].sort((a, b) => b.createdAt.localeCompare(a.createdAt)) : [];
+    const batch = batches.find((entry) => entry.actual === null) ?? batches[0];
+    batchRegion.hidden = !batch;
+    if (batch) {
+      const link = document.createElement("a");
+      link.href = `${ru ? "" : "/en"}/wow/tools/#batch=${batch.id}`;
+      const title = document.createElement("strong");
+      title.textContent = batch.name;
+      const status = document.createElement("span");
+      status.textContent = batch.actual === null
+        ? (ru ? "План зафиксирован. Добавь результат продаж." : "Forecast recorded. Add the sales outcome.")
+        : (ru ? "Продажи записаны. Проверь вводные следующей партии." : "Sales recorded. Review your next batch's assumptions.");
+      const action = document.createElement("b");
+      action.textContent = batch.actual === null ? (ru ? "Внести продажи →" : "Record sales →") : (ru ? "Следующая партия →" : "Next batch →");
+      link.append(title, status, action);
+      batchList.appendChild(link);
+    }
   }
 
   function syncLanguage() {

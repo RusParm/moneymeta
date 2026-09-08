@@ -1,4 +1,5 @@
 import type { ScenarioGame, ScenarioLocale } from "./scenario-tools";
+import { civilizationComparisonExample as civExample } from "./civ-comparison";
 
 export type HomeExampleGame = Exclude<ScenarioGame, "dota">;
 type Copy = Record<ScenarioLocale, string>;
@@ -14,6 +15,7 @@ interface Example {
   max: number;
   step: number | "any";
   fields: Field[];
+  fixedParameters?: Record<string, string>;
   boundary: Copy;
 }
 
@@ -37,6 +39,7 @@ export const homeDecisionExamples: Record<HomeExampleGame, Example> = {
   },
   wow: {
     toolKey: "wow-crafting",
+    fixedParameters: { "craft-sales-mode": "percent", "craft-wallet": "25000", "craft-reserve": "5000", "craft-sales-cap": "70" },
     question: both("Сколько золота вернётся от продажи партии?", "How much gold comes back from selling this batch?"),
     inputKey: "craft-sellthrough", inputLabel: both("Продано из партии, %", "Share of the batch sold, %"),
     inputHint: both("Возьми долю продаж завершённой партии из почты или журнала аукциона. Для будущей партии это только предположение.", "Use a completed batch's sales from your mail or auction log. For the next batch, this is only an assumption."),
@@ -54,6 +57,7 @@ export const homeDecisionExamples: Record<HomeExampleGame, Example> = {
   },
   "total-war": {
     toolKey: "total-war-war-reserve",
+    fixedParameters: { actionDelayPeriods: "1", incomeChangePeriod: "0", incomeChange: "0" },
     question: both("Хватит казны содержать новую армию до цели?", "Can my treasury support the new army until the objective?"),
     inputKey: "horizonPeriods", inputLabel: both("Сколько ходов займёт поход", "Turns the campaign will take"),
     inputHint: both("Считай весь путь до цели и возможную осаду. В полном расчёте подставь казну и содержание с экрана финансов.", "Include travel and a possible siege. In the full tool, use treasury and upkeep figures from your finance screen."),
@@ -71,6 +75,7 @@ export const homeDecisionExamples: Record<HomeExampleGame, Example> = {
   },
   ck3: {
     toolKey: "ck3-war-chest",
+    fixedParameters: { actionDelayPeriods: "1", incomeChangePeriod: "0", incomeChange: "0" },
     question: both("Хватит золота на затяжную войну?", "Can I fund a long war?"),
     inputKey: "newOutflow", inputLabel: both("Дополнительные расходы на войну, золото в месяц", "Extra wartime costs, gold per month"),
     inputHint: both("Сравни расходы при поднятой и распущенной армии. В полном расчёте можно изменить срок войны и разовые затраты.", "Compare spending with your armies raised and disbanded. The full tool also lets you change war duration and one-off costs."),
@@ -87,19 +92,22 @@ export const homeDecisionExamples: Record<HomeExampleGame, Example> = {
     boundary: both("Условная война на 24 месяца. Доход и содержание постоянны; выкуп пленных и другие случайные поступления не заложены.", "Illustrative 24-month war. Income and upkeep stay constant; ransoms and other uncertain proceeds are excluded.")
   },
   civ7: {
-    toolKey: "civ7-building",
-    question: both("Успеет постройка окупиться до нужного хода?", "Will the building pay back before my deadline?"),
-    inputKey: "buildingHorizon", inputLabel: both("Сколько ходов осталось до цели", "Turns left until the objective"),
-    inputHint: both("Выбери срок, до которого тебе нужна отдача. Стоимость и пользу в примере сравниваем в одних условных единицах.", "Set the deadline by which you need the return. This example compares cost and benefit in the same illustrative units."),
+    toolKey: "civ7-comparison",
+    question: both("Какая постройка даст больше науки к нужному ходу?", "Which building gives more science before the deadline?"),
+    inputKey: "comparisonHorizon", inputLabel: both("Сколько ходов осталось до цели", "Turns left until the objective"),
+    inputHint: both("Сравни короткий и длинный срок. В полном расчёте подставь стоимость, время строительства и прирост выбранного ресурса из своей партии.", "Compare a short and a long deadline. In the full tool, enter production costs, build times and one resource's extra yield from your game."),
     min: 0, max: 500, step: 1,
+    fixedParameters: { comparisonUnit: civExample.unit },
     fields: [
-      { key: "buildingCost", value: 600, label: both("Стоимость, условных единиц", "Cost, illustrative units") },
-      { key: "buildingTurns", value: 5, label: both("Строительство, ходов", "Build time, turns") },
-      { key: "buildingBenefit", value: 40, label: both("Польза за ход в тех же единицах", "Benefit per turn in the same units") },
-      { key: "buildingHorizon", value: 18, label: both("До цели, ходов", "Turns until the objective") },
-      { key: "buildingConfidence", value: 100, label: both("Учтённая доля пользы, %", "Share of benefit included, %") }
+      { key: "comparisonCostA", value: civExample.a.productionCost, label: both("Вариант A: стоимость, производство", "Option A: production cost") },
+      { key: "comparisonTurnsA", value: civExample.a.buildTurns, label: both("Вариант A: строительство, ходов", "Option A: build turns") },
+      { key: "comparisonYieldA", value: civExample.a.yieldPerTurn, label: both("Вариант A: прирост науки за ход", "Option A: extra science per turn") },
+      { key: "comparisonCostB", value: civExample.b.productionCost, label: both("Вариант B: стоимость, производство", "Option B: production cost") },
+      { key: "comparisonTurnsB", value: civExample.b.buildTurns, label: both("Вариант B: строительство, ходов", "Option B: build turns") },
+      { key: "comparisonYieldB", value: civExample.b.yieldPerTurn, label: both("Вариант B: прирост науки за ход", "Option B: extra science per turn") },
+      { key: "comparisonHorizon", value: civExample.horizonTurns, label: both("До цели, ходов", "Turns until the objective") }
     ],
-    boundary: both("Условное сравнение, не цена конкретной постройки. Разные ресурсы нельзя складывать без собственной оценки их ценности. Отдача начинается после завершения строительства.", "Illustrative comparison, not a named building's price. Different resources cannot be added without your own valuation. Benefits start after construction finishes.")
+    boundary: both("Два условных варианта, начатых сейчас, с постоянной отдачей после завершения. Сравнивается только наука. Затраты производства показаны отдельно и из науки не вычитаются. Другие эффекты и строительство следующего объекта здесь не учтены.", "Two illustrative alternatives started now, with constant output after completion. Only science is compared. Production costs stay separate and are not deducted from science. Other effects and the next construction project are excluded.")
   }
 };
 

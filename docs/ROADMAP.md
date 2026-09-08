@@ -1,5 +1,15 @@
 # Money Meta roadmap
 
+## Current increment: v1.29 deepen the decision
+
+v1.28 was published in PR #18. The owner now asks for substantive analytical depth. Improve existing tasks through meaningful alternatives, cash constraints and observed outcomes.
+
+1. WoW: compare the requested batch with what fits the protected cash reserve, keep observed absolute sales separate from demand forecasts, record the actual result and prepare the next batch deliberately.
+2. Total War and CK3: compare immediate, delayed and skipped commitments; locate interim reserve breaches and account for an explicitly chosen income change.
+3. Civilization VII: compare two real construction choices using one resource's cumulative output and separate production costs. Preserve the old payback model for existing scenarios.
+4. Verify old saved plans cannot inherit new assumptions from an unrelated draft. Keep exact model handoffs and RU/EN parity.
+5. Next product evidence: observe players make a choice, record what happened and explain how the next decision changed. Continue Dota's replay-to-next-match work and GTA owned-business session planning in subsequent bounded increments.
+
 ## Current increment: v1.28 prove the useful answer at the entrance
 
 The owner asks whether Money Meta adds value and deserves repeat visits. See `PRODUCT_VALUE_AUDIT_2026_09_08.md`: the strongest present cases are Dota replay prioritization and WoW cash versus profit; a homepage rewrite alone does not close the deeper product gaps.

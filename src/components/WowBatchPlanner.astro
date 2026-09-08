@@ -1,0 +1,53 @@
+---
+import { wowBatchPlannerCopy } from "../data/wow-batch-planner-copy";
+interface Props { lang: "ru" | "en"; section: "inputs" | "result" | "journal"; }
+const { lang, section } = Astro.props;
+const c = wowBatchPlannerCopy[lang];
+---
+{section === "inputs" && <div class="craft-budget-inputs">
+  <h4>{c.budget}</h4><p>{c.budgetHint}</p>
+  <div class="form-grid">
+    <div class="field"><label for="craft-wallet">{c.wallet}</label><input id="craft-wallet" data-role="craft-wallet" type="number" min="0" max="1000000000000" step="any" value="25000" /></div>
+    <div class="field"><label for="craft-reserve">{c.reserve}</label><input id="craft-reserve" data-role="craft-reserve" type="number" min="0" max="1000000000000" step="any" value="5000" /></div>
+    <div class="field craft-wide"><label for="craft-sales-mode">{c.mode}</label><select id="craft-sales-mode" data-role="craft-sales-mode"><option value="percent" selected>{c.percent}</option><option value="observed">{c.observed}</option></select></div>
+    <div class="field craft-wide" data-batch-cap-field hidden><label for="craft-sales-cap">{c.cap}</label><input id="craft-sales-cap" data-role="craft-sales-cap" type="number" min="0" max="1000000" step="1" value="70" aria-describedby="craft-cap-hint" /><small id="craft-cap-hint">{c.capHint}</small></div>
+  </div>
+</div>}
+{section === "result" && <div class="craft-budget-result" data-batch-plan-result>
+  <h4>{c.result}</h4><p data-batch-plan-decision></p><p data-batch-max></p>
+  <div class="craft-table-scroll" tabindex="0" role="region" aria-label={c.result}>
+    <table><thead><tr><th scope="col">{c.crafts}</th><th scope="col">{c.requested}</th><th scope="col">{c.feasible}</th></tr></thead><tbody>
+      {(["crafts", "outlay", "after", "sold", "end"] as const).map((key) => <tr><th scope="row">{c[key]}</th><td data-batch-requested={key}>-</td><td data-batch-feasible={key}>-</td></tr>)}
+    </tbody></table>
+  </div>
+  <button type="button" class="mini-action" data-batch-use-size disabled>{c.applySize}</button><p class="craft-boundary">{c.boundary}</p>
+</div>}
+{section === "journal" && <details class="craft-journal card" data-batch-journal>
+  <summary>{c.journal}</summary><p>{c.journalNote}</p>
+  <div class="field"><label for="wow-batch-name">{c.name}</label><input id="wow-batch-name" data-batch-name type="text" maxlength="80" aria-describedby="wow-batch-name-hint" /><small id="wow-batch-name-hint">{c.nameHint}</small></div>
+  <button type="button" class="mini-action" data-batch-save disabled>{c.save}</button>
+  <div class="field"><label for="wow-batch-select">{c.choose}</label><select id="wow-batch-select" data-batch-select><option value="">{c.none}</option></select></div>
+  <div data-batch-record hidden>
+    <h4>{c.original}</h4><p data-batch-original></p><p data-batch-changed hidden>{c.changed}</p>
+    <div data-batch-actual-form>
+      <h4>{c.actual}</h4><p>{c.actualHint}</p>
+      <div class="form-grid">
+        <div class="field"><label for="wow-batch-actual-sold">{c.actualSold}</label><input id="wow-batch-actual-sold" data-batch-actual="soldUnits" type="number" min="0" max="1000000" step="1" /></div>
+        <div class="field"><label for="wow-batch-actual-proceeds">{c.actualProceeds}</label><input id="wow-batch-actual-proceeds" data-batch-actual="netSaleProceeds" type="number" min="0" max="1000000000000" step="any" /></div>
+        <div class="field"><label for="wow-batch-actual-deposit">{c.actualDeposit}</label><input id="wow-batch-actual-deposit" data-batch-actual="lostDeposits" type="number" min="0" max="1000000000000" step="any" /></div>
+      </div><p>{c.closeNote}</p><button type="button" class="mini-action" data-batch-close disabled>{c.close}</button>
+    </div>
+    <div data-batch-actual-result hidden>
+      <p data-batch-recorded></p>
+      <dl class="craft-accounting"><div><dt>{c.actualCash}</dt><dd data-batch-actual-cash>-</dd></div><div><dt>{c.actualStock}</dt><dd data-batch-actual-stock>-</dd></div><div><dt>{c.difference}</dt><dd data-batch-actual-difference>-</dd></div></dl>
+      <p>{c.nextNote}</p><div class="field"><label for="wow-batch-next-wallet">{c.nextWallet}</label><input id="wow-batch-next-wallet" data-batch-next-wallet type="number" min="0" max="1000000000000" step="any" aria-describedby="wow-batch-next-wallet-hint" /><small id="wow-batch-next-wallet-hint">{c.nextWalletHint}</small></div><button type="button" class="mini-action" data-batch-next disabled>{c.next}</button>
+    </div>
+    <button type="button" class="mini-action" data-batch-remove disabled>{c.remove}</button>
+    <div data-batch-remove-confirm hidden><button type="button" class="mini-action" data-batch-confirm-remove>{c.confirmRemove}</button><button type="button" class="mini-action" data-batch-cancel-remove>{c.cancel}</button></div>
+  </div>
+  <p data-batch-journal-status role="status"></p>
+</details>}
+<script>
+  import { initializeWowBatchPlanner } from "../lib/wow-batch-client";
+  document.querySelectorAll<HTMLElement>("[data-wow-calculators]").forEach(initializeWowBatchPlanner);
+</script>

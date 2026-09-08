@@ -1,5 +1,6 @@
 ---
 import ScenarioActions from "./ScenarioActions.astro";
+import CivilizationComparison from "./CivilizationComparison.astro";
 import {
   calculateBuildingWindow,
   calculateEconomicVictoryGap,
@@ -21,9 +22,9 @@ const initialSettlement = calculateSettlementChoice(defaults.settlement);
 const initialVictory = calculateEconomicVictoryGap(defaults.victory);
 
 const copy = lang === "ru" ? {
-  kicker: "ТРИ МОДЕЛИ · ВВОДНЫЕ ИЗ ТВОЕЙ ПАРТИИ",
+  kicker: "ВВОДНЫЕ ИЗ ТВОЕЙ ПАРТИИ",
   title: "Посчитай ход до того, как потратишь производство.",
-  text: "В Civilization VII нет одной цены хода. Поэтому модели используют полезность в эквиваленте производства: ты сам оцениваешь, сколько для текущей цели стоят золото, наука, культура или счастье.",
+  text: "Сравни две постройки по приросту нужного ресурса и затратам производства. Для отдельной оценки окупаемости, развития поселения и пути к победе открой соответствующую вкладку.",
   verified: "Подтверждённая механика",
   verifiedText: "Контекст Test of Time сверяется с материалами Firaxis. Числа для расчёта бери из своей партии; текущая сводка версии доступна во вкладке «Мета».",
   assumption: "Твоя оценка",
@@ -90,9 +91,9 @@ const copy = lang === "ru" ? {
   source: "Официальная граница модели",
   sourceText: "Civilization VII связывает экономическую победу с валовым продуктом от ресурсов, Treasure Convoys и золотых построек. Числа в модели вводит игрок."
 } : {
-  kicker: "THREE MODELS · INPUTS FROM YOUR GAME",
+  kicker: "INPUTS FROM YOUR GAME",
   title: "Calculate the move before spending production.",
-  text: "Civilization VII has no universal value for one turn. The models therefore use production-equivalent utility: you decide what Gold, Science, Culture or Happiness is worth for the current objective.",
+  text: "Compare two buildings by their added resource and production commitment. Open the other tabs for a separate payback assessment, settlement development or Economic Victory gap.",
   verified: "Verified mechanic",
   verifiedText: "Test of Time context is tied to Firaxis material. Use values from your own game; the current version recap is available in Meta.",
   assumption: "Your assessment",
@@ -175,12 +176,15 @@ const copy = lang === "ru" ? {
   </header>
 
   <div class="civ-tool-tabs" role="tablist" aria-label={lang === "ru" ? "Модели Civilization VII" : "Civilization VII models"}>
-    <button type="button" role="tab" id="civ-tab-building" aria-controls="building-payback" aria-selected="true" data-civ-tool-tab data-model="building"><span>01</span>{copy.buildingTab}</button>
-    <button type="button" role="tab" id="civ-tab-settlement" aria-controls="settlement-choice" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="settlement"><span>02</span>{copy.settlementTab}</button>
-    <button type="button" role="tab" id="civ-tab-victory" aria-controls="victory-gap" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="victory"><span>03</span>{copy.victoryTab}</button>
+    <button type="button" role="tab" id="civ-tab-comparison" aria-controls="building-comparison" aria-selected="true" data-civ-tool-tab data-model="comparison"><span>01</span>{lang === "ru" ? "Два варианта" : "Two choices"}</button>
+    <button type="button" role="tab" id="civ-tab-building" aria-controls="building-payback" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="building"><span>02</span>{copy.buildingTab}</button>
+    <button type="button" role="tab" id="civ-tab-settlement" aria-controls="settlement-choice" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="settlement"><span>03</span>{copy.settlementTab}</button>
+    <button type="button" role="tab" id="civ-tab-victory" aria-controls="victory-gap" aria-selected="false" tabindex="-1" data-civ-tool-tab data-model="victory"><span>04</span>{copy.victoryTab}</button>
   </div>
 
-  <article id="building-payback" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-building" data-civ-tool-panel data-model="building" data-scenario-root data-scenario-key="civ7-building" data-legacy-params="true">
+  <CivilizationComparison lang={lang} />
+
+  <article id="building-payback" class="civ-tool-panel" role="tabpanel" aria-labelledby="civ-tab-building" data-civ-tool-panel data-model="building" data-scenario-root data-scenario-key="civ7-building" data-legacy-params="true" hidden>
     <div class="civ-model-copy"><span>{copy.buildingKicker}</span><h3>{copy.buildingTitle}</h3><p>{copy.buildingText}</p></div>
     <form class="civ-model-form" data-model-form="building">
       <label><span>{copy.buildingCost}</span><input name="buildingCost" data-role="buildingCost" type="number" min="0" max="100000" step="10" value={defaults.building.cost} inputmode="decimal" /></label>
@@ -412,16 +416,22 @@ const copy = lang === "ru" ? {
     const params = new URLSearchParams(window.location.search);
     const requestedModel = params.get("model");
     const hashModel: Record<string, string> = {
+      "#building-comparison": "comparison",
       "#building-payback": "building",
       "#settlement-choice": "settlement",
       "#victory-gap": "victory"
     };
-    const initialModel = requestedModel ?? hashModel[window.location.hash];
+    const legacyModel = ["building", "settlement", "victory"].find((model) => [...params.keys()].some((key) => key.startsWith(model) || key.startsWith(`civ7-${model}.`)));
+    const initialModel = requestedModel ?? hashModel[window.location.hash] ?? legacyModel;
     if (initialModel && panels.some((panel) => panel.dataset.model === initialModel)) select(initialModel);
+    window.addEventListener("hashchange", () => {
+      const model = hashModel[window.location.hash];
+      if (model) select(model);
+    });
 
     forms.forEach((form) => {
       Array.from(form.elements).forEach((control) => {
-        if (!(control instanceof HTMLInputElement) || !control.name) return;
+        if (!(control instanceof HTMLInputElement || control instanceof HTMLSelectElement) || !control.name) return;
         const shared = params.get(control.name);
         if (shared !== null) {
           control.value = shared;
@@ -437,7 +447,7 @@ const copy = lang === "ru" ? {
           const values = saved[form.dataset.modelForm ?? ""];
           if (!values) return;
           Array.from(form.elements).forEach((control) => {
-            if (control instanceof HTMLInputElement && control.name && values[control.name] !== undefined) control.value = values[control.name]!;
+            if ((control instanceof HTMLInputElement || control instanceof HTMLSelectElement) && control.name && values[control.name] !== undefined) control.value = values[control.name]!;
           });
         });
       } catch { /* ignore invalid local state */ }
@@ -447,7 +457,9 @@ const copy = lang === "ru" ? {
       const model = form.dataset.modelForm ?? "";
       form.addEventListener("submit", (event) => event.preventDefault());
       form.addEventListener("input", () => { render(model); save(); });
+      form.addEventListener("change", () => { render(model); save(); });
       render(model);
+      if (model === "comparison") form.dispatchEvent(new Event("change", { bubbles: true }));
     });
 
     tool.addEventListener("money-meta:restore-scenario", (event) => {
