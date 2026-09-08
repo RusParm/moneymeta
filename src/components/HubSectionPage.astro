@@ -40,6 +40,7 @@ import WowMarketLedger from "./WowMarketLedger.astro";
 import WowPlayerPaths from "./WowPlayerPaths.astro";
 import WowPulse from "./WowPulse.astro";
 import WowRankings from "./WowRankings.astro";
+import ToolWorkspace from "./ToolWorkspace.astro";
 
 interface Props {
   hub: HubPortalId;
@@ -117,7 +118,7 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
     }
   }}
 >
-  <main class={`page game-page hub-section-page ${mainClass}`} data-hub-section={sectionSlug} data-hub={hubId}>
+  <main class={`page game-page hub-section-page ${mainClass} ${sectionSlug === "tools" ? "tool-page" : ""}`} data-hub-section={sectionSlug} data-hub={hubId}>
     <div class="shell">
       <BrandHeader
         lang={lang}
@@ -163,27 +164,28 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
       </nav>
 
       <div class="section-page-content">
-        {sectionSlug === "tools" && <GoalPlannerTeaser hub={hubId} lang={lang} />}
+        {sectionSlug === "tools" && <ToolWorkspace hub={hubId} lang={lang} />}
 
         {hubId === "gta" && sectionSlug === "economy" && <GtaEconomyMap lang={lang} />}
         {hubId === "gta" && sectionSlug === "player-paths" && <GtaPlayerPaths lang={lang} />}
         {hubId === "gta" && sectionSlug === "meta" && <><GtaPulse lang={lang} /><GtaWeeklyPlanner lang={lang} /><GtaRankings lang={lang} /></>}
         {hubId === "gta" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
-        {hubId === "gta" && sectionSlug === "tools" && <><GtaDecisionDeck lang={lang} /><GtaCapitalLab lang={lang} /></>}
+        {hubId === "gta" && sectionSlug === "tools" && <><GtaCapitalLab lang={lang} /><details class="tool-details"><summary>{lang === "ru" ? "Примеры решений для GTA Online" : "GTA Online decision examples"}</summary><GtaDecisionDeck lang={lang} /></details></>}
 
         {hubId === "dota" && sectionSlug === "economy" && <DotaEconomyMap lang={lang} />}
         {hubId === "dota" && sectionSlug === "player-paths" && <><DotaPlayerPaths lang={lang} /><DotaRoleLenses lang={lang} /></>}
         {hubId === "dota" && sectionSlug === "meta" && <DotaPulse lang={lang} />}
         {hubId === "dota" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
-        {hubId === "dota" && sectionSlug === "tools" && <><DotaMatchAuditGateway lang={lang} /><DotaDecisionDeck lang={lang} /><DotaCalculators lang={lang} /></>}
+        {hubId === "dota" && sectionSlug === "tools" && <><DotaCalculators lang={lang} /><details class="tool-details"><summary>{lang === "ru" ? "Примеры решений и разбор своего матча" : "Decision examples and match review"}</summary><DotaMatchAuditGateway lang={lang} /><DotaDecisionDeck lang={lang} /></details></>}
 
         {hubId === "wow" && sectionSlug === "economy" && <><WowMarketLedger lang={lang} /><WowEconomyMap lang={lang} /></>}
         {hubId === "wow" && sectionSlug === "player-paths" && <WowPlayerPaths lang={lang} />}
         {hubId === "wow" && sectionSlug === "meta" && <><WowPulse lang={lang} /><WowRankings lang={lang} /></>}
         {hubId === "wow" && sectionSlug === "guides" && <HubGuideLibrary hub={hubId} lang={lang} />}
-        {hubId === "wow" && sectionSlug === "tools" && <><WowDecisionDeck lang={lang} /><WowCalculators lang={lang} /></>}
+        {hubId === "wow" && sectionSlug === "tools" && <><WowCalculators lang={lang} /><details class="tool-details"><summary>{lang === "ru" ? "Примеры: партия, фарм и заказ" : "Examples: batches, farming and orders"}</summary><WowDecisionDeck lang={lang} /></details></>}
 
         {(hubId === "total-war" || hubId === "ck3") && <StrategySectionContent lang={lang} hub={hubId} section={sectionSlug} data={strategyData} />}
+        {sectionSlug === "tools" && <details class="tool-details"><summary>{lang === "ru" ? "Накопить на цель к нужному сроку" : "Fund a goal by your deadline"}</summary><GoalPlannerTeaser hub={hubId} lang={lang} /></details>}
       </div>
 
       <section class="section hub-section section-page-source" aria-labelledby={`${hubId}-${sectionSlug}-source-title`}>
@@ -191,7 +193,7 @@ const pageDescription = `${section.description[lang]} ${section.payoff[lang]}`;
         <aside><span>{hub.version[lang]}</span><strong>{copy.checked} {hub.checkedAt}</strong><a href={hub.sourceUrl} target="_blank" rel="noopener noreferrer">{hub.sourceLabel[lang]} · {copy.source} ↗</a><small>{copy.independent}</small></aside>
       </section>
 
-      <HubJourneyContext hub={hubId} lang={lang} context={{ kind: "section", section: sectionSlug }} />
+      {sectionSlug === "tools" ? <details class="tool-details"><summary>{lang === "ru" ? "Связанные разборы и игровые планы" : "Related guides and game plans"}</summary><HubJourneyContext hub={hubId} lang={lang} context={{ kind: "section", section: sectionSlug }} /></details> : <HubJourneyContext hub={hubId} lang={lang} context={{ kind: "section", section: sectionSlug }} />}
 
       <SiteFooter lang={lang} />
     </div>

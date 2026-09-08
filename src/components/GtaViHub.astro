@@ -13,6 +13,7 @@ import {
 } from "../data/gta-vi";
 import { gtaViInsights } from "../data/gta-vi-insights";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import FreshnessIndicator from "./FreshnessIndicator.astro";
 import BrandHeader from "./BrandHeader.astro";
 import GtaViMedia from "./GtaViMedia.astro";
 import GtaViNav from "./GtaViNav.astro";
@@ -42,7 +43,7 @@ const copy = lang === "ru" ? {
   openProtocol: "Открыть протокол 72 часов",
   checked: "Проверено",
   release: "Выход",
-  nextCheck: "Следующая проверка",
+  nextCheck: "Контрольная дата досье",
   sourceOnly: "Только официальные источники",
   factKicker: "Состояние досье",
   factTitle: "Четыре факта, на которые уже можно опираться.",
@@ -58,9 +59,9 @@ const copy = lang === "ru" ? {
     ["ГРАНИЦА", "Что этот материал не подтверждает и где начинается домысел."],
     ["ПРОВЕРКА", "Какое наблюдение или повторяемый замер сможет закрыть вопрос."]
   ],
-  eventLabel: "Ближайшая официальная точка",
-  eventTitle: "Расширенный показ может изменить карту фактов.",
-  eventText: "27 августа мы не будем пересказывать весь ролик. Обновим только те строки досье, для которых появится прямое подтверждение.",
+  eventLabel: "ОФИЦИАЛЬНЫЙ ПОКАЗ · 27 АВГУСТА",
+  eventTitle: "Расширенный показ уже опубликован.",
+  eventText: "Rockstar разместила An Extended Look. Досье требует повторной проверки по этому материалу: ниже сохраняется редакционный срез от 20 августа.",
   eventTime: "27.08.2026 · 15:00 ET",
   unknownKicker: "Честный список неизвестного",
   unknownTitle: "Важнейшие вопросы пока открыты.",
@@ -85,7 +86,7 @@ const copy = lang === "ru" ? {
   openProtocol: "Open the 72-hour protocol",
   checked: "Checked",
   release: "Release",
-  nextCheck: "Next verification",
+  nextCheck: "Dossier review milestone",
   sourceOnly: "Primary sources only",
   factKicker: "Dossier status",
   factTitle: "Four facts we can already rely on.",
@@ -101,9 +102,9 @@ const copy = lang === "ru" ? {
     ["BOUNDARY", "What the material does not prove and where inference begins."],
     ["TEST", "The observation or repeatable measurement that can close the question."]
   ],
-  eventLabel: "Next official checkpoint",
-  eventTitle: "The Extended Look may change the fact map.",
-  eventText: "On August 27 we will not recap the entire presentation. Only dossier lines supported by direct evidence will change.",
+  eventLabel: "OFFICIAL PRESENTATION · AUGUST 27",
+  eventTitle: "The extended look is now published.",
+  eventText: "Rockstar has published An Extended Look. The dossier needs a new review against that material; the editorial snapshot below is still dated August 20.",
   eventTime: "Aug 27, 2026 · 3:00 PM ET",
   unknownKicker: "The honest unknown ledger",
   unknownTitle: "The most important questions remain open.",
@@ -143,7 +144,7 @@ const copy = lang === "ru" ? {
 
       <section class="gta6-hero">
         <div class="gta6-hero-copy">
-          <div class="gta6-status-line"><span></span>{copy.sourceOnly} · {copy.checked} {gtaViWatch.checkedAt}</div>
+          <FreshnessIndicator policy={gtaViWatch} current={lang === "ru" ? "Источники в пределах срока проверки" : "Sources are within the review window"} stale={lang === "ru" ? "Досье требует повторной проверки" : "Dossier needs a new review"} dateLabel={copy.checked} lang={lang} />
           <p class="eyebrow">{copy.heroKicker}</p>
           <h1>{copy.heroTitle}</h1>
           <p class="lede">{copy.heroText}</p>

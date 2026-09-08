@@ -48,7 +48,7 @@ const copy = lang === "ru" ? {
   decisionTitle: "Сначала ограничение. Потом действие.",
   input: "Что записать",
   failure: "Когда решение меняется",
-  metaKicker: "ВЕРСИЯ 1.4.1",
+  metaKicker: "ПРОВЕРКА ВЕРСИИ",
   metaTitle: "Пять изменений, которые требуют нового мышления.",
   metaText: "Каждая карточка показывает официальный факт и границу вывода Money Meta. Это защищает модель от старых советов и лишней уверенности.",
   fact: "Факт",
@@ -92,7 +92,7 @@ const copy = lang === "ru" ? {
   decisionTitle: "Constraint first. Action second.",
   input: "What to record",
   failure: "When the choice changes",
-  metaKicker: "VERSION 1.4.1",
+  metaKicker: "VERSION REVIEW",
   metaTitle: "Five changes that require a new mental model.",
   metaText: "Every card shows an official fact and the boundary of Money Meta's inference. This protects the model from stale advice and false confidence.",
   fact: "Fact",
@@ -188,11 +188,11 @@ const publicationGates = lang === "ru" ? [
     <div class="shell">
       <BrandHeader lang={lang} ruPath={getFrontierPath(hubId, "ru", sectionSlug)} enPath={getFrontierPath(hubId, "en", sectionSlug)} backPath={root} backLabel={copy.back} />
 
-      <section class="frontier-section-hero" aria-labelledby={`${hubId}-${sectionSlug}-title`}>
+      <section class="frontier-section-hero" aria-labelledby={`${hubId}-${sectionSlug}-page-title`}>
         <Image class="frontier-section-art" src={image} alt="" widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 28px), 560px" loading="eager" decoding="async" />
         <div class="frontier-section-copy">
           <nav aria-label="Breadcrumb"><a href={root}>{hub.shortName}</a><span>/</span><span>{section.label[lang]}</span></nav>
-          <div class="frontier-section-title"><span>{section.code}</span><b>{section.mark}</b><div><small>{copy.breadcrumb}</small><h1 id={`${hubId}-${sectionSlug}-title`}>{section.title[lang]}</h1></div></div>
+          <div class="frontier-section-title"><span>{section.code}</span><b>{section.mark}</b><div><small>{copy.breadcrumb}</small><h1 id={`${hubId}-${sectionSlug}-page-title`}>{section.title[lang]}</h1></div></div>
           <p>{section.description[lang]}</p>
           <dl>
             <div><dt>{copy.question}</dt><dd>{section.question[lang]}</dd></div>

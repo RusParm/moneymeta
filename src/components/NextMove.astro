@@ -204,13 +204,13 @@ const copy = lang === "ru" ? {
     }
 
     function save() {
-      localStorage.setItem(storageKey, JSON.stringify({
+      try { localStorage.setItem(storageKey, JSON.stringify({
         profile: profile.value,
         budget: budget.value,
         hours: hours.value,
         priority: priority.value,
         friction: friction.value
-      }));
+      })); } catch { /* The calculation remains usable when local storage is blocked. */ }
     }
 
     function restore() {
@@ -222,9 +222,7 @@ const copy = lang === "ru" ? {
         hours.value = saved.hours ?? hours.value;
         priority.value = saved.priority ?? priority.value;
         friction.value = saved.friction ?? friction.value;
-      } catch {
-        localStorage.removeItem(storageKey);
-      }
+      } catch { /* Ignore unavailable storage or a damaged draft. */ }
     }
 
     profile.addEventListener("change", () => {

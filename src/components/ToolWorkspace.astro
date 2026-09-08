@@ -1,0 +1,27 @@
+---
+import { scenarioTools } from "../data/scenario-tools";
+import type { HubLocale, HubPortalId } from "../data/hub-portals";
+import "../styles/tool-workspace.css";
+interface Props { hub: HubPortalId; lang: HubLocale; }
+const { hub, lang } = Astro.props;
+const tools = scenarioTools.filter((tool) => tool.game === hub && tool.path.endsWith("/tools/"));
+const prefix = lang === "ru" ? "" : "/en";
+---
+
+<nav class="tool-workspace" data-tool-workspace aria-label={lang === "ru" ? "Выбери расчёт" : "Choose a calculation"}>
+  <p>{lang === "ru" ? "Что хочешь проверить?" : "What do you want to check?"}</p>
+  {hub === "dota" && <div class="tool-workspace-links">
+    <a href={`${prefix}/dota-2/matches/audit/`}>{lang === "ru" ? "Разобрать свой матч →" : "Review my match →"}</a>
+    <a href={`${prefix}/dota-2/items/compare/`}>{lang === "ru" ? "Сравнить предметы →" : "Compare items →"}</a>
+    <a href={`${prefix}/dota-2/items/planner/`}>{lang === "ru" ? "Очередь покупок →" : "Purchase queue →"}</a>
+  </div>}
+  <div class="tool-workspace-tabs" data-tool-tabs>
+    {tools.map((tool) => <a id={`choose-${tool.key}`} href={`#${tool.anchor}`} data-tool-tab={tool.anchor}>{tool.title[lang]}</a>)}
+  </div>
+</nav>
+
+<script>
+  import { initializeToolWorkspace } from "../lib/tool-workspace";
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeToolWorkspace, { once: true });
+  else initializeToolWorkspace();
+</script>

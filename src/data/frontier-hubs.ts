@@ -103,17 +103,17 @@ export const civilizationHub: FrontierHub = {
     "Сравни стоимость производства, момент отдачи и цель эпохи. Все значения берутся из твоей партии, а правила текущей версии подтверждаются официальными материалами.",
     "Compare production cost, the moment value arrives and the objective for this Age. Every number comes from your game while current rules stay tied to official material."
   ),
-  version: t("Обновление 1.4.1 · Test of Time", "Update 1.4.1 · Test of Time"),
-  checkedAt: "2026-09-01",
+  version: t("Обновление 1.4.2 · августовский хотфикс", "Update 1.4.2 · August hotfix"),
+  checkedAt: "2026-09-07",
   staleAfterDays: 45,
   promise: t(
     "Money Meta не выбирает цивилизацию за тебя. Он показывает, успеет ли решение вернуть вложение, что ты откладываешь ради него и сколько ещё не хватает до цели.",
     "Money Meta does not choose a civilization for you. It shows whether a move can return its cost, what it delays and how much remains before the objective."
   ),
   proof: [
-    { value: "1.4.1", label: t("текущая проверенная версия", "current verified version") },
+    { value: "1.4.2", label: t("версия в официальной сводке", "version in the official recap") },
     { value: "3", label: t("редактируемые модели", "editable models") },
-    { value: "4", label: t("официальных источника", "official sources") },
+    { value: "5", label: t("официальных источников", "official sources") },
     { value: "0", label: t("вымышленных значений", "invented values") }
   ],
   sections: [
@@ -212,6 +212,15 @@ export const civilizationHub: FrontierHub = {
       sourceId: "civ-settlements"
     },
     {
+      id: "current-version",
+      status: "verified",
+      mark: "1.4.2",
+      title: t("Опубликован хотфикс 1.4.2", "Hotfix 1.4.2 is published"),
+      claim: t("Августовская сводка Firaxis подтверждает выпуск хотфикса 1.4.2. Версия 1.4.1 больше не обозначает текущий контекст раздела.", "Firaxis's August recap confirms a 1.4.2 hotfix. Version 1.4.1 no longer represents this hub's current context."),
+      boundary: t("Сводка подтверждает версию. Формулы ниже остаются сценариями с твоими вводными; изменения отдельных механик требуют проверки полных примечаний патча.", "The recap confirms the version. Calculators remain scenarios using your inputs; individual mechanic changes require review of the full patch notes."),
+      sourceId: "civ-current"
+    },
+    {
       id: "hotseat-governments",
       status: "verified",
       mark: "1.4.1",
@@ -222,6 +231,13 @@ export const civilizationHub: FrontierHub = {
     }
   ],
   sources: [
+    {
+      id: "civ-current",
+      label: t("Firaxis · официальная сводка", "Firaxis · official recap"),
+      title: t("This Month in Civ · август 2026", "This Month in Civ · August 2026"),
+      url: "https://civilization.2k.com/civ-vii/community/",
+      checkedAt: "2026-09-07"
+    },
     {
       id: "civ-140",
       label: t("Civilization VII · заметки обновления", "Civilization VII · update notes"),
@@ -272,8 +288,8 @@ export const fableHub: FrontierHub = {
     "Fable economy: jobs, property, prices and reputation | Money Meta"
   ),
   description: t(
-    "Предрелизное досье Fable с подтверждёнными экономическими механиками, явными неизвестными и протоколом измерений после выхода игры осенью 2026 года.",
-    "A pre-release Fable dossier with confirmed economic mechanics, explicit unknowns and a post-launch measurement protocol for Autumn 2026."
+    "Предрелизное досье Fable: заявленные экономические механики, открытые вопросы и план измерений. Xbox указывает дату выхода 23 февраля 2027 года.",
+    "A pre-release Fable dossier with announced economic mechanics, open questions and a measurement plan. Xbox lists February 23, 2027 as the release date."
   ),
   eyebrow: t("FABLE · ПРЕДРЕЛИЗНОЕ ДОСЬЕ", "FABLE · PRE-RELEASE DOSSIER"),
   heading: t(
@@ -284,8 +300,8 @@ export const fableHub: FrontierHub = {
     "Playground Games подтвердила работу, собственность, репутацию и влияние на цены. До релиза мы собираем доказательства и вопросы, а не рисуем фальшивую окупаемость.",
     "Playground Games has confirmed jobs, property, reputation and price effects. Before launch, we collect evidence and questions instead of publishing fake payback numbers."
   ),
-  version: t("Релиз заявлен на осень 2026", "Announced for Autumn 2026"),
-  checkedAt: "2026-09-01",
+  version: t("Релиз заявлен на 23 февраля 2027", "Announced for February 23, 2027"),
+  checkedAt: "2026-09-07",
   staleAfterDays: 30,
   promise: t(
     "В день релиза хаб начнёт не с тир-листа. Сначала мы запишем условия, повторим наблюдения и только потом превратим устойчивые диапазоны в модель.",
@@ -359,11 +375,11 @@ export const fableHub: FrontierHub = {
     {
       id: "release-window",
       status: "announced",
-      mark: "2026",
-      title: t("Релиз заявлен на осень 2026", "Launch is announced for Autumn 2026"),
-      claim: t("Xbox называет осень 2026 года и перечисляет Xbox Series X|S, Xbox PC, Xbox Cloud, Steam и PlayStation 5.", "Xbox names Autumn 2026 and lists Xbox Series X|S, Xbox PC, Xbox Cloud, Steam and PlayStation 5."),
-      boundary: t("Точная дата и состояние релизной версии в источнике не указаны.", "The source does not provide an exact date or final launch build state."),
-      sourceId: "fable-overview"
+      mark: "2027",
+      title: t("Релиз заявлен на 23 февраля 2027", "Launch is announced for February 23, 2027"),
+      claim: t("Текущая страница игры на Xbox указывает 23 февраля 2027 года. Прежнее окно «осень 2026» устарело.", "The current Xbox game page lists February 23, 2027. The earlier Autumn 2026 window is outdated."),
+      boundary: t("Это объявленная дата, а не гарантия выхода. До доступной релизной версии доходность и цены не моделируются.", "This is an announced date, not a release guarantee. Prices and returns stay unmodeled until a release build is available."),
+      sourceId: "fable-release"
     },
     {
       id: "reputation-prices",
@@ -413,12 +429,19 @@ export const fableHub: FrontierHub = {
   ],
   sources: [
     {
+      id: "fable-release",
+      label: t("Xbox · страница игры", "Xbox · game page"),
+      title: t("Fable · текущая дата выхода", "Fable · current release date"),
+      url: "https://www.xbox.com/en-US/games/fable",
+      checkedAt: "2026-09-07"
+    },
+    {
       id: "fable-overview",
       label: t("Xbox Wire · интервью с разработчиками", "Xbox Wire · developer interview"),
       title: t("Подробный обзор Fable", "Fable deep dive"),
       url: "https://news.xbox.com/en-us/2026/01/22/fable-interview-overview-details-developer-direct-2026/",
       publishedAt: "2026-01-22",
-      checkedAt: "2026-09-01"
+      checkedAt: "2026-09-07"
     },
     {
       id: "fable-population",
@@ -426,7 +449,7 @@ export const fableHub: FrontierHub = {
       title: t("Как устроено живое население Fable", "How Fable's living population works"),
       url: "https://news.xbox.com/en-us/2026/06/10/fable-living-population-details-explained-xbox-games-showcase-2026/",
       publishedAt: "2026-06-10",
-      checkedAt: "2026-09-01"
+      checkedAt: "2026-09-07"
     }
   ],
   openQuestions: [

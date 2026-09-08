@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+import { getSavedScenariosPath, scenarioGames, localizeScenarioPath } from "../data/scenario-tools";
+import { scenarioContexts, scenarioEngineVersion } from "../data/scenario-context";
+import "../styles/saved-scenarios.css";
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const ru = lang === "ru";
+const title = ru ? "Мои расчёты" : "My calculations";
+const description = ru ? "Сохранённые планы, вводные и результаты игровых расчётов на этом устройстве." : "Saved game plans, inputs and calculation results on this device.";
+---
+<BaseLayout title={`${title} | Money Meta`} description={description} lang={lang} canonicalPath={getSavedScenariosPath(lang)} alternatePath={getSavedScenariosPath(ru ? "en" : "ru")} noindex>
+  <main class="page saved-page" data-saved-page data-engine={scenarioEngineVersion} data-contexts={JSON.stringify({ ru: scenarioContexts("ru"), en: scenarioContexts("en") })}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/saved/" enPath="/en/saved/" />
+      <header class="saved-page-intro">
+        <p class="section-kicker">{ru ? "ПРОДОЛЖИ СВОЙ ПЛАН" : "CONTINUE YOUR PLAN"}</p>
+        <h1>{title}</h1>
+        <p>{ru ? "Вернись к своему варианту. После игры запиши, что получилось, и сравни с сохранённым результатом." : "Return to your plan. After playing, note what happened and compare it with the saved result."}</p>
+        <p class="saved-device-note">{ru ? "Список хранится в этом браузере. На другом устройстве он будет пуст." : "This list stays in this browser. It will be empty on another device."}</p>
+      </header>
+      <div class="saved-filters">
+        <label>{ru ? "Игра" : "Game"}<select data-saved-game><option value="">{ru ? "Все игры" : "All games"}</option>{Object.entries(scenarioGames).map(([id, game]) => <option value={id}>{game.name}</option>)}</select></label>
+        <label>{ru ? "Показать" : "Show"}<select data-saved-state><option value="planned">{ru ? "На следующую сессию" : "For the next session"}</option><option value="reviewed">{ru ? "Уже проверено в игре" : "Reviewed after playing"}</option><option value="all">{ru ? "Все расчёты" : "All calculations"}</option></select></label>
+        <p data-saved-count aria-live="polite"></p>
+      </div>
+      <p class="saved-message" data-saved-message role="status" tabindex="-1"></p>
+      <div class="saved-undo" data-saved-undo hidden><span>{ru ? "Расчёт удалён из списка." : "Calculation removed from the list."}</span><button type="button" data-undo-delete>{ru ? "Отменить удаление" : "Undo removal"}</button></div>
+      <section class="saved-list" data-saved-list aria-label={ru ? "Сохранённые расчёты" : "Saved calculations"}></section>
+      <button class="saved-more" type="button" data-saved-more hidden>{ru ? "Показать ещё" : "Show more"}</button>
+      <section class="saved-empty" data-saved-empty hidden>
+        <h2 data-empty-title>{ru ? "Сохрани первый план на следующую сессию" : "Save your first plan for the next session"}</h2>
+        <p data-empty-text>{ru ? "Открой инструмент своей игры, подставь свои числа и нажми «Сохранить расчёт» рядом с результатом." : "Open a tool for your game, enter your numbers and choose Save calculation beside the result."}</p>
+        <button type="button" data-clear-filters hidden>{ru ? "Показать все расчёты" : "Show all calculations"}</button>
+        <div class="saved-game-links">{Object.values(scenarioGames).map((game) => <a href={`${localizeScenarioPath(game.path, lang)}tools/`}>{game.name}<span>{ru ? "Открыть инструменты" : "Open tools"}</span></a>)}</div>
+      </section>
+      <noscript><p>{ru ? "Чтобы открыть сохранённые на устройстве расчёты, включи JavaScript в браузере." : "Enable JavaScript to read calculations saved on this device."}</p></noscript>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
+<script>
+  import { initializeSavedScenariosPage } from "../lib/saved-scenarios-page";
+  initializeSavedScenariosPage();
+</script>

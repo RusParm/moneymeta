@@ -1,6 +1,71 @@
 # Current status
 
-Updated: 2026-09-04
+## Active release candidate: v1.27 decision workspaces and WoW batch cash
+
+- Five live-game tool routes show the calculation first, with keyboard-accessible model tabs and compact introductions. Examples and related plans expand on demand. Existing hashes, browser navigation and named-plan restoration remain supported. Civilization retains its existing three-tab workspace.
+- WoW crafting separates accounting profit, cash change, unsold material cost and upfront cash. The result gives the first whole-unit sale count and the conditional price needed to recover cash, plus lower-price and lower-sales comparisons.
+- Five primary craft inputs have instructions tied to the player's own Auction House/recipe. Fees and deposits are expandable. An optional completed-trial helper derives sell-through without claiming future demand or extrapolating volume as a fact. Invalid craft inputs suppress results and cannot be saved as a valid forecast.
+- Version and price freshness are unchanged: this release improves conditional analysis, not the game-data feed. Validation and exact preview results are recorded in PR #17 before handoff.
+- Production was checked on 2026-09-08 and remains v1.21, with old WoW result placeholders. v1.22 onward is still a release candidate. Production publication requires explicit owner approval.
+
+## Active release candidate: v1.26 named calculations and return flow
+
+- Added My calculations / Мои расчёты at `/saved/` and `/en/saved/`, linked from the global header and calculation results. These private, device-local surfaces are noindex and excluded from the sitemap.
+- All 28 existing common calculators across the six live games can save named copies of their inputs and up to four labeled result values. The list filters by game and planned/reviewed state, displays twelve records at a time, and holds at most fifty records without silent eviction.
+- Opening a saved calculation restores its inputs and focuses the correct model; Civilization also selects the matching tab. Local return URLs contain only a random reference in the fragment. User inputs, names, notes and public game identifiers are not serialized into those URLs. Deliberately shared calculation links remain a separate action.
+- After a session, players can rename a plan, add a note and mark it reviewed. These edits preserve the original inputs, result and source context. Removal has an undo action. A changed model version or source context prompts a new calculation.
+- Connected missing common input attributes in GTA capital tools, the WoW ledger and strategy tools. Civilization keeps reading legacy links and local drafts while using shared scenario actions. Draft reset does not delete named calculations.
+- Storage validation rejects malformed and future-schema data without overwriting it. Storage denial and capacity limits do not claim success. Each mutation reads the latest store; a deleted record cannot be resurrected by a stale note edit.
+- Local validation: 215 tests in 26 files; 589 pages; all 28 tools expose 163 restorable fields with source context. Full-site audit: 26,078 internal links. Final gate results and preview acceptance checks are recorded in PR #17 before handoff. Production remains subject to explicit approval.
+- GTA weekly forecast/actual history and Dota match review retain their existing flows; this increment saves calculation scenarios, not provider payloads or replay histories. Cross-device sync and numeric forecast/actual comparison across every model remain future work.
+
+## Active release candidate: v1.25 full product audit
+
+- Full findings and the next product sequence are in `PRODUCT_AUDIT_2026_09_07.md` (Russian).
+- Restored all three WoW calculators on focused tool routes; kept farming and order losses visible instead of clamping them to zero.
+- Made Dota queued upgrades consume earlier components once, including nested recipes. Browser and static calculations now share the same function; the UI shows the actual remaining payment.
+- Corrected immediate reserve breaches in the strategy models and moved focus to the result after explicit Dota hero selection.
+- Corrected Fable's announced date to February 23, 2027 using the current Xbox page. Updated Civilization's displayed version from Firaxis's 1.4.2 August recap without claiming a full review of inaccessible patch notes. GTA VI now flags overdue editorial review and describes the August 27 presentation as published.
+- Fixed duplicate Fable heading IDs, reciprocal self/alternate hreflang pairs and 404 indexing. Added a complete built-site audit and a read-only PR quality workflow. Dota snapshot automation now stages both generated outputs.
+- Local verification: 202 tests pass in 25 files; Astro builds 587 pages with zero diagnostics. The built-site audit checks 25,374 internal links with zero errors. The remaining 586 warnings are missing social preview images. Desktop browser coverage includes all game entrances and the primary interactive flows. Mobile and a newly unparsed-to-parsed live match remain unverified.
+- Production approval remains separate. The audit records measured evidence and limits, not assumed traffic or retention.
+
+Updated: 2026-09-07
+
+## Active release candidate: v1.24 useful final-only review and replay recovery
+
+- Final-only matches now receive a deterministic income/contribution review, not a terminal missing-timeline notice. The relay preserves hero damage, building damage and hero healing alongside the existing final fields.
+- Team GPM, damage and healing shares require five valid team slots and complete denominators. Kill participation uses kills plus assists divided by team kills; zero, missing and inconsistent values remain distinct.
+- The main finding and up to two supporting questions use observed income differences, kill involvement, building pressure, deaths and healing. A resource-use question requires an explicitly known core role and multiple matching signals. These are replay questions, never a player grade or a claimed cause.
+- Unknown roles stay unknown. They do not default to core questions or professional item benchmarks, and shared URLs do not invent a role. Manual opponent selection still requires an actual enemy.
+- A separate `Request replay analysis` button submits only the public Match ID to OpenDota through an allowlisted, same-origin endpoint. Loading, opening a shared URL and checking readiness never submit a parse.
+- One deliberate submission is followed by at most three timed reads. Waiting can be stopped; an ambiguous write is never retried automatically. Read errors and stale data preserve the current result. Enrichment keeps the selected hero, role, opponent and tab.
+- The OpenDota request contract was checked against `odota/core` commit `8d0a715a0cda362d48940cee431c1fd36100cc12`, `svc/api/spec.ts`, on 2026-09-07. Acceptance is not a promise that an old or unavailable replay can be parsed.
+- Automated and deployed verification is recorded in PR #17. No browser interaction or visual QA has been run for this update. Production still requires the owner's explicit approval.
+
+## Active release candidate: v1.23 focused replay workbench
+
+- The match form now follows a compact introduction. Summary, gold timeline, and items/final stats are separate accessible tabs; methodology and request details expand on demand.
+- The player may explicitly choose any enemy hero for comparison. Automatic pairing still requires one unambiguous matching position on each team; a manual comparison is visibly labeled and never changes provider facts.
+- A material phase narrows to its largest observed three-minute comparison decline only when the relevant players have continuous minute samples. Sparse data stays at phase level. The episode shows observed gold, last hits, logged major purchases and a replay question, with a copyable note and chart highlight.
+- Falling team-gold share no longer triggers a personal signal. Missing comparison data is distinct from a below-threshold result, and a final net-worth card never substitutes accumulated gold.
+- Gold-only timelines remain usable without last-hit samples. Misordered times and duplicate slots fail closed, matching checkpoints use the same instant, ten-minute lane context is not fabricated, and late phases remain ten minutes long.
+- Explicit comparison survives shared links and RU/EN switching. Shared links do not auto-fetch; only a deliberate originating match-form submit may carry the existing autoload flag.
+- Existing gold/hero media frames now reserve their own space, including the formerly uncontained comparison-opponent portrait. Small labels and body text are enlarged.
+- 175 model and contract tests pass. Live production relay returned the sanitized public demonstration match with ten players and 34 samples per player. The local revised model identifies a 25–28 minute episode for slot 0 within the 20–30 minute phase.
+- Static audit also found and repaired 14 legacy fragment links across Dota player paths, WoW meta and CK3 tools, using the focused section URLs.
+- Local validation: 175 tests passed, zero Astro diagnostics, 587 generated pages, 25,400 internal navigation links with no missing page or fragment, and 204 matching RU/EN copy keys.
+- Browser interaction and visual QA have not been run in this session. Production remains unchanged; preview verification is recorded in the PR before handoff.
+
+## Active release candidate: v1.22 Dota economic autopsy
+
+- Replaced Match Audit's single slow-GPM or item-median prompt with a deterministic phase diagnosis that asks where the comparative economy actually moved.
+- Added an exact same-position opponent comparison when OpenDota supplies one unambiguous position match. GPM and final net worth never choose the opponent.
+- Added 0-to-10, 10-to-20, 20-to-30 and final phase analysis across player gold, opponent gold, direct-position gap, full-team gap and the player's share of team economy.
+- Split material windows into personal-comparison, team-pressure and mixed signals using visible thresholds: 750 position gold, 1,500 team gold or 1.5 percentage points of team share.
+- Added a confidence label from ten-player timeline coverage, final-only direct-opponent and team context, and a clearly bounded item-delay equivalent based on the selected player's pace inside the critical window.
+- Upgraded the gold chart to compare the selected hero with the direct opponent and added one exact replay window with a four-check inspection list.
+- Model and UI-contract tests cover direct-position pairing, personal versus team separation, threshold disclosure, final-only fallback and the new analysis surface. Full release gates and HTTPS preview QA remain before handoff.
 
 ## Active release candidate: v1.21 GTA Business Rivalries live cycle
 

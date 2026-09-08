@@ -1,0 +1,26 @@
+---
+import { dotaFinalReviewThresholds as t } from "../lib/dota-match-summary";
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const ru = lang === "ru";
+---
+<details class="match-final-review" data-final-review>
+  <summary>{ru ? "Доход и вклад в результат" : "Income and contribution"}</summary>
+  <p>{ru ? "Сравнение внутри этого матча. Доли считаются от показателей команды каждого героя. Урон не измеряет всю пользу: контроль, спасения и создание пространства здесь не оценены." : "A comparison within this match. Shares use each hero’s own team totals. Damage does not capture all impact: control, saves and space creation are not rated here."}</p>
+  <div class="match-contribution-bars" data-contribution-bars></div>
+  <div class="match-final-findings" data-final-findings></div>
+  <details class="match-final-comparison">
+    <summary>{ru ? "Сравнить показатели с соперником" : "Compare the underlying stats"}</summary>
+    <p data-final-comparison-note></p>
+    <div class="match-economic-table-wrap" data-final-comparison></div>
+  </details>
+  <details class="match-final-comparison">
+    <summary>{ru ? "Почему выбраны эти вопросы" : "Why these review questions appear"}</summary>
+    <p>{ru
+      ? `Сначала проверяем разницу дохода: от ${t.incomeGapGpm} GPM и ${t.incomeGapPct}% одновременно. Вопрос к использованию ресурсов появляется только для указанной роли кора: доля GPM выше обеих долей урона минимум на ${t.shareGapPoints} п.п., участие в убийствах ниже ${t.participationPct}%, у команды не меньше ${t.minimumTeamKills} убийств.`
+      : `Income differences appear first when they reach both ${t.incomeGapGpm} GPM and ${t.incomeGapPct}%. The resource-use question requires a known core role, GPM share at least ${t.shareGapPoints} percentage points above both damage shares, kill participation below ${t.participationPct}%, and at least ${t.minimumTeamKills} team kills.`}</p>
+    <p>{ru
+      ? `Другие поводы для просмотра: от ${t.objectiveSharePct}% урона строениям при ${t.minimumTowerDamage} урона; участие от ${t.highParticipationPct}% при ${t.minimumTeamKills} убийствах команды; от ${t.minimumDeaths} смертей и ${t.deathSharePct}% командных смертей; от ${t.minimumHealing} лечения и ${t.healingSharePct}% командного показателя. Это пороги выбора вопроса, не нормы хорошей игры. Отсутствующие данные не считаются нулём.`
+      : `Other review prompts: at least ${t.objectiveSharePct}% of building damage with ${t.minimumTowerDamage} damage; ${t.highParticipationPct}% kill participation with ${t.minimumTeamKills} team kills; ${t.minimumDeaths} deaths and ${t.deathSharePct}% of team deaths; ${t.minimumHealing} healing and ${t.healingSharePct}% of team healing. These select review questions, not standards of good play. Missing values do not become zero.`}</p>
+  </details>
+</details>

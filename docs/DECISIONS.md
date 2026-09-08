@@ -1,5 +1,49 @@
 # Decision log
 
+## 2026-09-08: an answer must change a player's decision
+
+The owner still finds the product weak. More surfaces and persistence alone are insufficient evidence of utility. Each deeper scenario should deliver a concrete conclusion, its numerical consequence, a condition that changes the conclusion and a useful follow-up after play. Fewer required assumptions and clear in-game input instructions take priority over additional catalogs.
+
+The five existing `/tools/` surfaces now put calculations before examples, use one selected model at a time, and keep all previous anchors and saved-plan restoration. Civilization already has model tabs. Supporting examples, goal teasers and related playbooks remain available on demand.
+
+WoW's existing crafting model now distinguishes spendable cash from accounting profit and stock at material cost. One completed listing cycle determines proportional deposit refunds and losses. Whole-unit sales and a price threshold show when the initial outlay is recovered. A trial-batch helper supplies a conditional sell-through assumption; it does not claim that demand scales with batch size. Price and sales stress cases are labeled hypothetical, not probabilities. No new market feed or profession-effect model is implied.
+
+The September 8 production check still shows v1.21. Improvements in v1.22–v1.27 must be reviewed as preview changes until production approval is explicitly given. A passing build is not a claim of player retention or demand.
+
+## 2026-09-07: a saved plan survives the next calculation
+
+The owner prioritizes recurring player utility before monetization. Named calculation copies now preserve inputs, a result snapshot, language, source context and model version across all six live games. A player can return to one plan and record an outcome without changing its original forecast. No retention improvement is claimed without observed usage.
+
+Local drafts remain separate from deliberate saves. The store is bounded to fifty records, rejects unsupported/corrupt data rather than replacing it, and gives an undo for removal. Resume links carry only a local random reference in the URL fragment; restoring a calculation makes no provider request. A saved result is explicitly historical, with a new-review prompt when the model or its source context changes. Existing weekly journals are not duplicated into this store.
+
+## 2026-09-07: improve completed decisions across the whole resource
+
+The whole-site audit found that successful formula tests and static builds did not ensure working focused routes: WoW initialization still depended on a retired hub container. Components now own their initialization boundary, and the release gate adds an audit of every generated route and accessibility reference. Browser checks must use actual inputs and inspect results.
+
+Queued Dota upgrades reuse previously completed components once. The same calculation runs on the server and in the browser; disassembly and inventory owned before the queue remain outside this model. Negative cash outcomes and immediate reserve breaches must remain visible.
+
+A fresh check timestamp does not establish that a claim is current. Corrected Fable's release date from the current Xbox page, used Firaxis's published recap for Civilization's version, and flagged overdue GTA VI review without silently advancing its editorial date. Continue every existing game through concrete player scenarios, shared source operations and observable result/return loops. The audit is the next-work reference.
+
+## 2026-09-07: final-only matches deserve a review and an explicit recovery path
+
+The user found that the missing-timeline state merely restated the final inventory. Match totals now support bounded review questions using same-match income, team kill participation, damage, healing and deaths. Shares require complete five-player denominators; missing data is not zero. Thresholds choose questions, not good/bad player labels. Damage is never treated as a complete measure of support, control, saves or space creation. Unknown roles remain unknown.
+
+Loading a match stays read-only. A separate, clearly labeled action may submit that public Match ID to OpenDota's parse queue. This deliberately extends the earlier no-parse behavior: submission must not be attached to loading, sharing, retries or opening a page. The browser makes at most three subsequent reads and can stop waiting without pretending to cancel the upstream job. Current evidence and user selection survive failures and enrichment.
+
+Provider contract: [OpenDota request implementation](https://github.com/odota/core/blob/8d0a715a0cda362d48940cee431c1fd36100cc12/svc/api/spec.ts), checked 2026-09-07. A parse submission counts as ten calls for the provider's rate limit. The relay propagates restrictions and never sends user credentials, identities or arbitrary upstream URLs. A job receipt confirms submission only; availability of the actual timeline determines recovery.
+
+## 2026-09-07: replay evidence is observed and comparison is explicit
+
+A player may override the automatic opponent with one enemy hero. The UI and share state preserve that choice as a manual comparison, never as a provider position assignment. Missing or ambiguous automatic roles must not lead to a guessed opponent.
+
+A phase is material when the opponent gap falls by 750 gold or the team gap falls by 1,500. The phase with the largest multiple of either threshold wins; ties choose the earliest phase. Team share is descriptive because its decline can be normal for supports. The largest observed three-minute opponent decline inside that phase becomes the replay focus; a team-only phase uses the team gap. Every relevant player must have continuous samples for that interval. Observed gold, last hits and purchase events support a question to verify in the replay, never an invented cause.
+
+Missing comparison evidence is a separate state from no material decline. Final net worth, cumulative gold, and spending power remain distinct quantities.
+
+## 2026-09-04: match economy diagnosis compares movements, not players
+
+A Dota match audit may identify a critical economic window only from transparent changes inside the same match. The direct comparison uses the opposing player with the same explicit OpenDota position estimate; if that pairing is absent or ambiguous, it remains unavailable. The model shows the position-gap movement and team-gap movement separately, labels confidence from timeline coverage and publishes its materiality thresholds. A gold-gap equivalent is a replay prioritization aid, not proven lost income, causal blame, a skill score or an actual item delay.
+
 ## 2026-09-04: weekly challenges and repeatable routes stay separate
 
 A Rockstar weekly post may combine repeatable multipliers, one-time thresholds, free properties and later claim windows. The GTA session planner compares only activities that fit its observed payout-per-run model. One-time challenges and acquisition offers remain explicit verified facts until their threshold and capital logic are modeled directly; they must not be forced into a repeated-run formula or silently treated as free profit.

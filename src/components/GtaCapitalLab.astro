@@ -124,12 +124,12 @@ const copy = lang === "ru" ? {
     <div class="grid-2 gta-inline-grid">
       <form class="card gta-inline-input">
         <div class="form-grid">
-          <div class="field" style="grid-column:1/-1"><label for="gta-inline-business">{copy.asset}</label><select id="gta-inline-business" data-roi-input="business">{gtaBusinesses.map((business) => <option value={business.id}>{business.name[lang]}</option>)}</select></div>
-          <div class="field"><label for="gta-inline-setup">{copy.setup}</label><input id="gta-inline-setup" data-roi-input="setup" type="number" min="0" step="10000" /></div>
-          <div class="field"><label for="gta-inline-sale">{copy.sale}</label><input id="gta-inline-sale" data-roi-input="sale" type="number" min="0" step="5000" /></div>
-          <div class="field"><label for="gta-inline-supply">{copy.supply}</label><input id="gta-inline-supply" data-roi-input="supply" type="number" min="0" step="5000" /></div>
-          <div class="field"><label for="gta-inline-production">{copy.production}</label><input id="gta-inline-production" data-roi-input="production" type="number" min="0.1" step="0.1" /></div>
-          <div class="field" style="grid-column:1/-1"><label for="gta-inline-weekly">{copy.weeklyOnline}</label><input id="gta-inline-weekly" data-roi-input="weekly" type="number" min="1" max="168" step="1" value="8" /></div>
+          <div class="field" style="grid-column:1/-1"><label for="gta-inline-business">{copy.asset}</label><select id="gta-inline-business" data-roi-input="business" data-role="business">{gtaBusinesses.map((business) => <option value={business.id}>{business.name[lang]}</option>)}</select></div>
+          <div class="field"><label for="gta-inline-setup">{copy.setup}</label><input id="gta-inline-setup" data-roi-input="setup" data-role="setup" type="number" min="0" step="10000" /></div>
+          <div class="field"><label for="gta-inline-sale">{copy.sale}</label><input id="gta-inline-sale" data-roi-input="sale" data-role="sale" type="number" min="0" step="5000" /></div>
+          <div class="field"><label for="gta-inline-supply">{copy.supply}</label><input id="gta-inline-supply" data-roi-input="supply" data-role="supply" type="number" min="0" step="5000" /></div>
+          <div class="field"><label for="gta-inline-production">{copy.production}</label><input id="gta-inline-production" data-roi-input="production" data-role="production" type="number" min="0.1" step="0.1" /></div>
+          <div class="field" style="grid-column:1/-1"><label for="gta-inline-weekly">{copy.weeklyOnline}</label><input id="gta-inline-weekly" data-roi-input="weekly" data-role="weekly" type="number" min="1" max="168" step="1" value="8" /></div>
         </div>
         <button class="button ghost gta-inline-reset" data-roi-reset type="button">↺ {copy.reset}</button>
       </form>
@@ -151,10 +151,10 @@ const copy = lang === "ru" ? {
     <div class="gta-inline-head"><div class="gta-business-mark">{copy.mark2}</div><div><span class="section-kicker">{copy.model2}</span><h3>{copy.goalTitle}</h3><p>{copy.goalText}</p></div></div>
     <div class="grid-2 gta-inline-grid">
       <form class="card gta-inline-input"><div class="form-grid">
-        <div class="field"><label for="gta-goal-bank">{copy.bank}</label><input id="gta-goal-bank" data-goal-input="bank" type="number" min="0" step="50000" value="1250000" /></div>
-        <div class="field"><label for="gta-goal-target">{copy.target}</label><input id="gta-goal-target" data-goal-input="target" type="number" min="0" step="50000" value="4000000" /></div>
-        <div class="field"><label for="gta-goal-weekly">{copy.weeklyProfit}</label><input id="gta-goal-weekly" data-goal-input="weekly" type="number" min="0" step="25000" value="650000" /></div>
-        <div class="field"><label for="gta-goal-reserve">{copy.reserve}</label><input id="gta-goal-reserve" data-goal-input="reserve" type="number" min="0" step="25000" value="250000" /></div>
+        <div class="field"><label for="gta-goal-bank">{copy.bank}</label><input id="gta-goal-bank" data-goal-input="bank" data-role="bank" type="number" min="0" step="50000" value="1250000" /></div>
+        <div class="field"><label for="gta-goal-target">{copy.target}</label><input id="gta-goal-target" data-goal-input="target" data-role="target" type="number" min="0" step="50000" value="4000000" /></div>
+        <div class="field"><label for="gta-goal-weekly">{copy.weeklyProfit}</label><input id="gta-goal-weekly" data-goal-input="weekly" data-role="weekly" type="number" min="0" step="25000" value="650000" /></div>
+        <div class="field"><label for="gta-goal-reserve">{copy.reserve}</label><input id="gta-goal-reserve" data-goal-input="reserve" data-role="reserve" type="number" min="0" step="25000" value="250000" /></div>
       </div></form>
       <article class="card result-panel gta-inline-result" data-goal-result aria-live="polite"><span class="result-label">{copy.goalResult}</span><div class="result-name" data-goal-name>{copy.building}</div>
         <div class="result-metrics">
@@ -170,8 +170,8 @@ const copy = lang === "ru" ? {
     <div class="gta-inline-head"><div class="gta-business-mark">{copy.mark3}</div><div><span class="section-kicker">{copy.model3}</span><h3>{copy.portfolioTitle}</h3><p>{copy.portfolioText}</p></div></div>
     <div class="grid-2 gta-inline-grid">
       <form class="card gta-inline-input"><div class="form-grid">
-        <div class="field"><label for="gta-portfolio-budget-inline">{copy.budget}</label><input id="gta-portfolio-budget-inline" data-portfolio-input="budget" type="number" min="0" step="100000" value="5000000" /></div>
-        <div class="field"><label for="gta-portfolio-hours-inline">{copy.hours}</label><input id="gta-portfolio-hours-inline" data-portfolio-input="hours" type="number" min="0" max="168" step="0.5" value="2" /></div>
+        <div class="field"><label for="gta-portfolio-budget-inline">{copy.budget}</label><input id="gta-portfolio-budget-inline" data-portfolio-input="budget" data-role="budget" type="number" min="0" step="100000" value="5000000" /></div>
+        <div class="field"><label for="gta-portfolio-hours-inline">{copy.hours}</label><input id="gta-portfolio-hours-inline" data-portfolio-input="hours" data-role="hours" type="number" min="0" max="168" step="0.5" value="2" /></div>
       </div></form>
       <article class="card result-panel gta-inline-result" data-portfolio-result aria-live="polite"><span class="result-label">{copy.portfolioResult}</span><div class="gta-portfolio-picks" data-portfolio-picks>-</div>
         <div class="result-metrics"><div class="result-metric"><span>{copy.totalCost}</span><strong data-portfolio-output="cost">-</strong></div><div class="result-metric"><span>{copy.activeTime}</span><strong data-portfolio-output="time">-</strong></div><div class="result-metric"><span>{copy.weekly}</span><strong class="teal" data-portfolio-output="weekly">-</strong></div><div class="result-metric"><span>{copy.portfolioMonth}</span><strong class="gold" data-portfolio-output="monthly">-</strong></div></div><ScenarioActions lang={lang} />

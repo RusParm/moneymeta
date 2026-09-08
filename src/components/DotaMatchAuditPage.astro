@@ -13,6 +13,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import DotaItemNav from "./DotaItemNav.astro";
 import DotaItemsStatus from "./DotaItemsStatus.astro";
+import DotaMatchFinalReview from "./DotaMatchFinalReview.astro";
 import SiteFooter from "./SiteFooter.astro";
 import "../styles/dota-items.css";
 import "../styles/dota-match-audit.css";
@@ -24,11 +25,11 @@ const alternate = getDotaMatchAuditPath(lang === "ru" ? "en" : "ru");
 const itemPatchSource = dotaItemsSnapshot.patch.sourceUrl;
 const copy = lang === "ru" ? {
   title: "Разбор экономики матча Dota 2 по Match ID | Money Meta",
-  description: "Вставь публичный Match ID Dota 2, выбери героя и разбери темп золота, ключевые покупки, выкупы и отклонения от текущих профессиональных таймингов.",
+  description: "Вставь публичный Match ID Dota 2 и найди фазу, где изменился разрыв с прямым оппонентом: отдельно от командного провала и без оценки по KDA.",
   back: "← К порталу Dota 2",
   kicker: "Dota 2 · разбор реального матча",
-  heading: "Вставь Match ID. Найди экономическую развилку.",
-  lede: "Не ещё одна оценка KDA. Money Meta собирает темп золота, контрольные точки, крупные покупки и выкупы в один короткий разбор. Итогом становится один вопрос для реплея и одно правило на следующий матч.",
+  heading: "Где в матче ушло преимущество?",
+  lede: "Загрузи матч и выбери героя. Сопоставь доход с участием в убийствах и давлением на строения. Добавь разбор реплея, чтобы найти момент изменения преимущества.",
   inputLabel: "Match ID или ссылка на матч",
   inputPlaceholder: "Например, 8978544633",
   inputHelp: "Подойдёт числовой ID или обычная ссылка OpenDota, Dotabuff либо Stratz.",
@@ -36,7 +37,7 @@ const copy = lang === "ru" ? {
   demo: "Запустить публичное демо",
   demoNote: `Профматч ${dotaMatchAuditConfig.demoMatchId}, проверен ${dotaMatchAuditConfig.demoCheckedAt}`,
   boundaryTitle: "Что загрузится",
-  boundaryText: "Одна кнопка отправляет только публичный Match ID через функцию Money Meta. Она получает ответ OpenDota, удаляет имена, идентификаторы аккаунтов и чат, а затем возвращает факты матча в эту вкладку.",
+  boundaryText: "Загрузка отправляет только публичный Match ID и получает факты матча без имён, аккаунтов и чата. Запрос разбора реплея выполняется отдельно, только по своей кнопке. Он отправляет тот же ID в очередь OpenDota.",
   sent: "Уйдёт",
   sentValue: "Только публичный Match ID",
   notSent: "Не уйдёт",
@@ -68,17 +69,31 @@ const copy = lang === "ru" ? {
   match: "Матч",
   auditKicker: "Экономический отпечаток",
   auditTitle: "Где золото перестало становиться силой?",
-  roleLabel: "Роль для профтаймингов",
+  roleLabel: "Роль героя",
+  roleUnknown: "Укажи роль",
   core: "Кор",
   support: "Поддержка",
-  roleNote: "OpenDota даёт оценку позиции только для разобранного матча. Проверь роль сам: она меняет только профессиональное сравнение, но не факты твоего матча.",
+  roleNote: "Проверь роль сам. Она меняет вопросы к использованию ресурсов и профессиональное сравнение. Факты матча и выбранный соперник остаются прежними.",
   share: "Скопировать ссылку",
-  shared: "Ссылка скопирована. Она содержит только Match ID, слот героя и выбранную роль.",
+  shared: "Ссылка скопирована: матч, герой, роль и выбранный соперник. Для загрузки нужно нажать кнопку.",
   copyFailed: "Не удалось скопировать автоматически. Разреши доступ к буферу обмена и повтори.",
   openProvider: "Открыть матч в OpenDota",
-  signal: "ПЕРВАЯ ПРОВЕРКА",
-  finalSignalTitle: "Финальный экран матча загружен. Таймингов пока нет.",
-  finalSignalText: "Money Meta показывает итоговый инвентарь и счёт, которые OpenDota вернул без обработки реплея. Журнала покупок и поминутного золота в этом ответе нет, поэтому мы не придумываем момент провала.",
+  signal: "ГЛАВНЫЙ ВЫВОД",
+  finalSignalTitle: "Разбор по итогам матча",
+  finalSignalText: "Итоги позволяют сопоставить доход и вклад в результат. Для поиска конкретной минуты запроси разбор реплея.",
+  recoveryTitle: "Добавить поминутный разбор",
+  recoveryText: "OpenDota ещё не вернул всю хронологию. По этой кнопке он попробует получить реплей и разобрать матч. Проверим готовность несколько раз; текущие выводы останутся доступны.",
+  recoveryRequest: "Запросить разбор реплея",
+  recoveryRefresh: "Проверить готовность",
+  recoveryStop: "Остановить ожидание",
+  recoveryRequesting: "Отправляем запрос в OpenDota…",
+  recoveryWaiting: "Запрос отправлен. Ожидаем данные; можно продолжать читать разбор.",
+  recoveryChecking: "Проверяем, появилась ли хронология…",
+  recoveryReady: "Хронология загружена. Разбор обновлён, выбранный герой сохранён.",
+  recoveryPending: "Полной хронологии пока нет. Можно проверить позже. Если реплей больше недоступен, OpenDota не сможет восстановить тайминги.",
+  recoveryStopped: "Проверка остановлена. Запрос в OpenDota может продолжать выполняться. Готовность можно проверить вручную.",
+  recoveryError: "Не удалось подтвердить результат. Текущий разбор сохранён. Проверь готовность позже или открой матч в OpenDota; повторный запрос автоматически не отправляется.",
+  recoveryLimited: "OpenDota ограничил запросы. Текущий разбор сохранён. Проверь готовность позже.",
   lateItem: "позже профмедианы",
   earlyItem: "раньше профмедианы",
   itemSignalText: "Это самое заметное отклонение среди крупных покупок с выборкой не меньше 200 наблюдений в текущем патче. Медиана даёт вопрос для реплея, а не универсальную норму.",
@@ -86,6 +101,83 @@ const copy = lang === "ru" ? {
   slowSignalText: "Проверь карту, смерти и вынужденные действия внутри этого окна. Низкий темп сам по себе не доказывает ошибку: полезная драка или поддержка команды могли быть правильной конверсией.",
   reviewSignalTitle: "Факты собраны. Теперь найди одно решение.",
   reviewSignalText: "Сравни момент крупной покупки с ближайшей целью команды. Этот экран видит экономику, но не знает драфт, голосовую связь и состояние карты.",
+  compareLabel: "С кем сравниваем?",
+  compareAuto: "Автоматически по позиции",
+  compareHelp: "Если позиция не определена или выбрана неверно, укажи соперника сам. Выбери героя с сопоставимой ролью.",
+  compareManual: "Соперник выбран тобой",
+  comparePosition: "Пара по оценке позиции OpenDota",
+  tabSummary: "Выводы и что проверить",
+  tabGold: "Золото по минутам",
+  tabItems: "Предметы и итог",
+  tabsLabel: "Разделы разбора",
+  focusTitle: "С чего начать просмотр",
+  focusNarrow: "Три минуты внутри отмеченной фазы. Показаны наблюдения; причину проверь в повторе.",
+  focusStable: "Порог ухудшения разрыва не пересечён. Для следующего просмотра ниже есть отдельная задача по доступным покупкам.",
+  focusNoFlag: "эпизод не выделен",
+  focusBroad: "Данные позволяют сравнить всю фазу, но не выделить надёжный трёхминутный эпизод.",
+  focusMissing: "Для эпизода нужны поминутные данные и сопоставимый разрыв. Выбери соперника или проверь доступную хронологию.",
+  focusPurchases: "Покупки в эпизоде",
+  focusNoPurchases: "В журнале нет крупных завершённых покупок в этом эпизоде. Это не означает, что герой ничего не покупал.",
+  focusFacts: "Что видно в данных",
+  focusQuestion: "Что проверить в повторе",
+  focusFarmQuestion: "Сравни доступные волны и лагеря. Выясни, почему добиваний меньше: смерть, перемещение или полезное действие для команды?",
+  focusGoldQuestion: "Сравни источники золота у обоих героев. Добивания не объясняют весь разрыв: проверь драки, цели и размены.",
+  focusTeamQuestion: "Посмотри, что изменилось на карте у обеих команд. Был ли размен цели или потеря доступа к фарму?",
+  focusCopy: "Скопировать заметку для реплея",
+  focusCopied: "Заметка скопирована",
+  dataMissing: "сравнение недоступно",
+  dataPartial: "Проверенные отрезки ниже порога. Неполные отрезки остаются без оценки.",
+  dataMissingTitle: "Пока недостаточно данных для сравнения",
+  dataMissingText: "Твоё золото загружено, но сопоставимой хронологии соперника или двух полных команд нет. Выбери соперника вручную и проверь вкладку с золотом.",
+  methodToggle: "Как устроен разбор и откуда данные",
+  autopsyKicker: "РАЗБОР ПО ФАКТАМ",
+  autopsyTitle: "Как менялось преимущество",
+  autopsyText: "Сравниваем золото за одинаковые отрезки. Личный разрыв и движение экономики команды показаны отдельно.",
+  confidence: "Полнота сравнения",
+  confidenceHigh: "высокая",
+  confidenceMedium: "средняя",
+  confidenceLow: "ограниченная",
+  timelineCoverage: "хронологий игроков",
+  directOpponent: "Соперник для сравнения",
+  you: "Ты",
+  noDirectOpponent: "позиция соперника не определена",
+  laneVerdict: "Линия",
+  breakVerdict: "Критическое окно",
+  finishVerdict: "Финиш",
+  noBreak: "порог не пересечён",
+  ahead: "впереди",
+  behind: "позади",
+  even: "почти поровну",
+  unavailableShort: "не рассчитано",
+  roleGap: "Разрыв с соперником",
+  teamGap: "Разрыв команд",
+  teamShare: "Доля золота команды",
+  rank: "Место по экономике",
+  ofTeam: "в команде",
+  ofMatch: "в матче",
+  phaseTitle: "Как менялся разрыв",
+  phaseText: "Здесь важна не финальная цифра, а изменение за отрезок. Отрицательный сдвиг означает, что соперник или его команда набрали больше золота за то же время.",
+  phase: "Окно",
+  yourPace: "Твой темп",
+  opponentPace: "Темп оппонента",
+  pattern: "Сигнал",
+  personalPattern: "личный разрыв",
+  teamPattern: "командное давление",
+  mixedPattern: "смешанный",
+  stablePattern: "ниже порога",
+  finalOnlyPattern: "только финал",
+  priceKicker: "МАСШТАБ РАЗРЫВА",
+  priceTitle: "Что изменилось за фазу",
+  comparativeSwing: "Оппонент набрал сверху",
+  delayEquivalent: "Эквивалент задержки предмета",
+  priceNote: "Это не доказанный потерянный доход и не фактическая задержка покупки. Эквивалент делит изменение разрыва на твой темп золота внутри того же окна.",
+  itemEvidence: "Тайминг предмета",
+  replayKicker: "ОТКРОЙ РЕПЛЕЙ",
+  replayTitle: "Проверь одно окно, а не весь матч",
+  replayChecks: ["Первая смерть или долгий путь без фарма", "Пропущенные волны и доступные лагеря", "Вынужденная ротация без цели или размена", "Момент следующего крупного предмета"],
+  finalOnlyAutopsy: "Поминутной хронологии нет. Ниже показан только проверяемый финальный разрыв; момент и причина не вычисляются.",
+  noOpponentAutopsy: "Автоматическая пара не определена. Выбери соперника той же роли вручную; командный контекст доступен отдельно.",
+  thresholdNote: "Фаза отмечается при ухудшении разрыва с соперником на 750 золота или командного разрыва на 1 500. Выбирается наибольшее превышение своего порога; при равенстве ранняя фаза. Доля золота команды сама по себе не считается ошибкой. Трёхминутный эпизод внутри фазы выбирается по наибольшему ухудшению сравниваемого разрыва и только при непрерывных данных.",
   overview: "Финальный срез",
   gpm: "GPM",
   netWorth: "Стоимость героя",
@@ -107,6 +199,7 @@ const copy = lang === "ru" ? {
   noInventory: "OpenDota не вернул финальные слоты этого игрока.",
   chartKicker: "ТРАЕКТОРИЯ",
   chartTitle: "Накопленное золото по минутам",
+  chartTitleCompared: "Твоё золото против прямого оппонента",
   chartText: "Линия показывает полученное золото, а не свободное золото в кошельке. Метки показывают крупные завершённые покупки, найденные в журнале покупок.",
   chartAria: "График накопленного золота игрока по минутам матча",
   noTimelineTitle: "Нет поминутной хронологии",
@@ -128,10 +221,10 @@ const copy = lang === "ru" ? {
   inspectItem: "Открыть предмет",
   noPurchaseLog: "Точного журнала покупок в ответе OpenDota нет. Финальные предметы выше реальные, но Money Meta не угадывает минуту их покупки.",
   noMajorPurchases: "Журнал покупок есть, но в нём нет крупных завершённых предметов, которые можно надёжно сопоставить с текущим каталогом.",
-  nextKicker: "ОДНО ПРАВИЛО",
-  nextTitle: "Что перенести в следующий матч",
-  copyRule: "Скопировать правило",
-  ruleCopied: "Правило скопировано",
+  nextKicker: "ЗАБЕРИ С СОБОЙ",
+  nextTitle: "Одна задача для реплея",
+  copyRule: "Скопировать задачу",
+  ruleCopied: "Задача скопирована",
   plan: "Переиграть порядок предметов",
   methodKicker: "Границы разбора",
   methodTitle: "Наблюдение, не приговор",
@@ -156,11 +249,11 @@ const copy = lang === "ru" ? {
   goldUnit: "золота"
 } : {
   title: "Dota 2 match economy audit by Match ID | Money Meta",
-  description: "Paste a public Dota 2 Match ID, choose a hero and audit gold pace, key purchases, buybacks and current pro timing deviations.",
+  description: "Paste a public Dota 2 Match ID and find the phase where the direct-position gap moved, separated from a team collapse and without a KDA grade.",
   back: "← Dota 2 portal",
   kicker: "Dota 2 · one real match",
-  heading: "Paste a Match ID. Find the economy fork.",
-  lede: "This is not another KDA grade. Money Meta connects gold pace, checkpoints, major purchases and buybacks in one short audit. The output is one replay question and one rule for the next match.",
+  heading: "Where did the advantage slip?",
+  lede: "Load a match and choose your hero. Compare income, kill involvement and building pressure. Add replay analysis to find where the advantage changed.",
   inputLabel: "Match ID or match URL",
   inputPlaceholder: "For example, 8978544633",
   inputHelp: "Use the numeric ID or a normal OpenDota, Dotabuff or Stratz match link.",
@@ -168,7 +261,7 @@ const copy = lang === "ru" ? {
   demo: "Run the public demo",
   demoNote: `Pro match ${dotaMatchAuditConfig.demoMatchId}, checked ${dotaMatchAuditConfig.demoCheckedAt}`,
   boundaryTitle: "What gets loaded",
-  boundaryText: "One button sends only the public Match ID through a Money Meta function. It receives the OpenDota response, removes names, account identifiers and chat, then returns match facts to this tab.",
+  boundaryText: "Loading sends only the public Match ID and returns match facts without names, accounts or chat. Replay parsing is a separate action, triggered only by its own button. It sends the same ID to OpenDota’s queue.",
   sent: "Sent",
   sentValue: "Public Match ID only",
   notSent: "Not sent",
@@ -200,17 +293,31 @@ const copy = lang === "ru" ? {
   match: "Match",
   auditKicker: "Economy fingerprint",
   auditTitle: "Where did gold stop becoming power?",
-  roleLabel: "Role for pro timings",
+  roleLabel: "Hero’s role",
+  roleUnknown: "Choose a role",
   core: "Core",
   support: "Support",
-  roleNote: "OpenDota estimates position only for a parsed match. Verify the role yourself: it changes only the pro comparison, not the facts from your match.",
+  roleNote: "Verify the role yourself. It changes resource-use questions and the pro comparison. Match facts and the selected opponent remain the same.",
   share: "Copy audit link",
-  shared: "Link copied. It contains only the Match ID, hero slot and selected role.",
+  shared: "Link copied: match, hero, role and selected opponent. Loading still requires a button press.",
   copyFailed: "Automatic copy failed. Allow clipboard access and try again.",
   openProvider: "Open match in OpenDota",
-  signal: "CHECK FIRST",
-  finalSignalTitle: "The final match screen is loaded. Timings are not.",
-  finalSignalText: "Money Meta shows the final inventory and scoreboard OpenDota returned without replay parsing. This response has no purchase log or minute-by-minute gold, so we do not invent a failure point.",
+  signal: "MAIN FINDING",
+  finalSignalTitle: "Review from match totals",
+  finalSignalText: "The totals can compare income and contribution. Request replay analysis to find a specific minute.",
+  recoveryTitle: "Add minute-by-minute analysis",
+  recoveryText: "OpenDota has not returned every timeline. This button asks it to retrieve the replay and parse the match. We will check a few times; your current findings stay available.",
+  recoveryRequest: "Request replay analysis",
+  recoveryRefresh: "Check for new data",
+  recoveryStop: "Stop waiting",
+  recoveryRequesting: "Submitting the request to OpenDota…",
+  recoveryWaiting: "Request submitted. Waiting for data; you can keep reading the review.",
+  recoveryChecking: "Checking whether the timeline is available…",
+  recoveryReady: "Timelines loaded. The review is updated and your selected hero is preserved.",
+  recoveryPending: "The full timeline is not available yet. Check again later. If the replay is no longer available, OpenDota cannot recover its timings.",
+  recoveryStopped: "Checking stopped. The OpenDota request may still be running. You can check for new data manually.",
+  recoveryError: "Could not confirm the result. Your current review is preserved. Check later or open the match in OpenDota; the submission is not automatically repeated.",
+  recoveryLimited: "OpenDota limited the requests. Your current review is preserved. Check for new data later.",
   lateItem: "later than the pro median",
   earlyItem: "earlier than the pro median",
   itemSignalText: "This is the largest visible deviation among major items with at least 200 observations on the current patch. The median creates a replay question, not a universal standard.",
@@ -218,6 +325,83 @@ const copy = lang === "ru" ? {
   slowSignalText: "Check the map, deaths and forced actions inside this window. Low pace alone does not prove a mistake: a useful fight or team support may have been the right conversion.",
   reviewSignalTitle: "The facts are assembled. Find one decision.",
   reviewSignalText: "Compare a major purchase with the team's nearest objective. This screen sees economy, but it does not know the draft, voice comms or map state.",
+  compareLabel: "Compare against",
+  compareAuto: "Automatic by position",
+  compareHelp: "If the position is missing or incorrect, choose an opponent yourself. Pick a hero with a comparable role.",
+  compareManual: "Opponent chosen by you",
+  comparePosition: "Paired by OpenDota position estimate",
+  tabSummary: "Findings and review",
+  tabGold: "Gold timeline",
+  tabItems: "Items and final stats",
+  tabsLabel: "Audit sections",
+  focusTitle: "Where to start watching",
+  focusNarrow: "Three minutes inside the flagged phase. These are observations; verify the cause in the replay.",
+  focusStable: "No gap-decline threshold was crossed. The replay task below uses the available purchases instead.",
+  focusNoFlag: "no episode flagged",
+  focusBroad: "The samples support the whole phase, but not a reliable three-minute episode.",
+  focusMissing: "An episode needs minute-by-minute samples and a comparable gap. Choose an opponent or inspect the available timeline.",
+  focusPurchases: "Purchases in this episode",
+  focusNoPurchases: "No major completed purchases appear in this interval's log. This does not mean the hero bought nothing.",
+  focusFacts: "Observed in the data",
+  focusQuestion: "Check in the replay",
+  focusFarmQuestion: "Compare available waves and camps. Were the fewer last hits caused by a death, movement or a useful team action?",
+  focusGoldQuestion: "Compare both heroes' gold sources. Last hits do not explain the entire gap: inspect fights, objectives and trades.",
+  focusTeamQuestion: "Inspect how the map changed for both teams. Was an objective traded, or was access to farm lost?",
+  focusCopy: "Copy replay note",
+  focusCopied: "Replay note copied",
+  dataMissing: "comparison unavailable",
+  dataPartial: "Observed intervals are below threshold. Incomplete intervals remain ungraded.",
+  dataMissingTitle: "Not enough comparable data yet",
+  dataMissingText: "Your gold is available, but the opponent or two full teams lack matching timelines. Choose an opponent manually and inspect the gold tab.",
+  methodToggle: "How the audit works and its sources",
+  autopsyKicker: "REPLAY EVIDENCE",
+  autopsyTitle: "How the advantage changed",
+  autopsyText: "Compare gold over matching intervals. The opponent gap and the whole team's movement stay separate.",
+  confidence: "Comparison coverage",
+  confidenceHigh: "high",
+  confidenceMedium: "medium",
+  confidenceLow: "limited",
+  timelineCoverage: "player timelines",
+  directOpponent: "Comparison opponent",
+  you: "You",
+  noDirectOpponent: "opponent position unavailable",
+  laneVerdict: "Lane",
+  breakVerdict: "Critical window",
+  finishVerdict: "Finish",
+  noBreak: "below the threshold",
+  ahead: "ahead",
+  behind: "behind",
+  even: "nearly even",
+  unavailableShort: "not calculated",
+  roleGap: "Opponent gap",
+  teamGap: "Team gap",
+  teamShare: "Share of team gold",
+  rank: "Economy rank",
+  ofTeam: "on team",
+  ofMatch: "in match",
+  phaseTitle: "How the gap moved",
+  phaseText: "The change inside a segment matters more than the final number. A negative swing means the opponent or enemy team earned more gold over the same period.",
+  phase: "Window",
+  yourPace: "Your pace",
+  opponentPace: "Opponent pace",
+  pattern: "Signal",
+  personalPattern: "personal gap",
+  teamPattern: "team pressure",
+  mixedPattern: "mixed",
+  stablePattern: "below threshold",
+  finalOnlyPattern: "final only",
+  priceKicker: "PRICE OF THE WINDOW",
+  priceTitle: "What changed in this phase",
+  comparativeSwing: "Opponent earned extra",
+  delayEquivalent: "Item-delay equivalent",
+  priceNote: "This is not proven lost income or an actual purchase delay. The equivalent divides the gap movement by your gold pace inside the same window.",
+  itemEvidence: "Item timing",
+  replayKicker: "OPEN THE REPLAY",
+  replayTitle: "Inspect one window, not the whole match",
+  replayChecks: ["First death or long path without farm", "Missed waves and available camps", "Forced rotation without an objective or trade", "Timing of the next major item"],
+  finalOnlyAutopsy: "There is no minute-by-minute timeline. Only the verifiable final gap is shown below; its moment and cause are not calculated.",
+  noOpponentAutopsy: "No automatic pair was found. Choose a comparable opponent manually; team context remains separate.",
+  thresholdNote: "A phase is flagged at a 750-gold opponent-gap decline or a 1,500-gold team-gap decline. The largest multiple of its threshold wins; ties choose the earlier phase. Team share alone never signals a mistake. Within that phase, the largest comparable three-minute decline is shown only with continuous samples.",
   overview: "Final snapshot",
   gpm: "GPM",
   netWorth: "Net worth",
@@ -239,6 +423,7 @@ const copy = lang === "ru" ? {
   noInventory: "OpenDota did not return this player's final slots.",
   chartKicker: "TRAJECTORY",
   chartTitle: "Cumulative gold by match minute",
+  chartTitleCompared: "Your gold versus the direct opponent",
   chartText: "The line shows gold earned, not liquid gold in the wallet. Markers show major completed purchases found in the purchase log.",
   chartAria: "Chart of the player's cumulative gold by match minute",
   noTimelineTitle: "No minute-by-minute timeline",
@@ -260,10 +445,10 @@ const copy = lang === "ru" ? {
   inspectItem: "Open item",
   noPurchaseLog: "The OpenDota response has no timed purchase log. The final items above are real, but Money Meta will not guess when they were bought.",
   noMajorPurchases: "A purchase log exists, but it has no major completed item that can be matched reliably to the current catalog.",
-  nextKicker: "ONE RULE",
-  nextTitle: "What to carry into the next match",
-  copyRule: "Copy rule",
-  ruleCopied: "Rule copied",
+  nextKicker: "TAKE IT WITH YOU",
+  nextTitle: "One replay task",
+  copyRule: "Copy task",
+  ruleCopied: "Task copied",
   plan: "Replay the item order",
   methodKicker: "Audit boundaries",
   methodTitle: "An observation, not a verdict",
@@ -316,22 +501,10 @@ const payload = JSON.stringify({
           <p class="eyebrow">{copy.kicker}</p>
           <h1>{copy.heading}</h1>
           <p>{copy.lede}</p>
-          <a class="button primary button-large" href="#match-audit-console">{copy.load} →</a>
-        </div>
-        <div class="match-audit-terminal" aria-label={lang === "ru" ? "Граница запроса матча" : "Match request boundary"}>
-          <div><span>MM / MATCH AUDIT</span><b>PUBLIC ID</b></div>
-          <ol>
-            <li><span>INPUT</span><strong>public_match_id</strong></li>
-            <li><span>AUTH</span><strong>none</strong></li>
-            <li><span>FILES</span><strong>none</strong></li>
-            <li><span>STORE</span><strong>tab_only</strong></li>
-          </ol>
-          <p>OpenDota API · checked {dotaMatchAuditConfig.checkedAt}</p>
         </div>
       </header>
 
       <DotaItemNav lang={lang} active="audit" />
-      <DotaItemsStatus lang={lang} compact />
 
       <section id="match-audit-console" class="match-audit-console" aria-labelledby="match-audit-input-title">
         <nav class="match-audit-steps" aria-label={lang === "ru" ? "Шаги разбора" : "Audit steps"}>
@@ -351,15 +524,15 @@ const payload = JSON.stringify({
             <button class="match-audit-demo" type="button" data-match-demo><span>DEMO</span><strong>{copy.demo}</strong><small>{copy.demoNote}</small></button>
           </form>
 
-          <aside class="match-audit-boundary">
-            <span>{copy.boundaryTitle}</span>
+          <details class="match-audit-boundary">
+            <summary>{copy.boundaryTitle}</summary>
             <p>{copy.boundaryText}</p>
             <dl>
               <div><dt>{copy.sent}</dt><dd>{copy.sentValue}</dd></div>
               <div><dt>{copy.notSent}</dt><dd>{copy.notSentValue}</dd></div>
               <div><dt>{copy.retention}</dt><dd>{copy.retentionValue}</dd></div>
             </dl>
-          </aside>
+          </details>
         </div>
 
         <div class="match-audit-status" data-match-status role="status" aria-live="polite" hidden></div>
@@ -381,6 +554,17 @@ const payload = JSON.stringify({
           <p class="match-audit-choose" data-match-choose>{copy.choose}</p>
         </section>
 
+        <aside class="match-recovery" data-match-recovery hidden>
+          <div><h3>{copy.recoveryTitle}</h3><p>{copy.recoveryText}</p></div>
+          <div class="match-recovery-actions">
+            <button type="button" class="button primary" data-request-replay>{copy.recoveryRequest}</button>
+            <button type="button" class="button ghost" data-refresh-replay>{copy.recoveryRefresh}</button>
+            <button type="button" class="mini-action" data-stop-replay hidden>{copy.recoveryStop}</button>
+            <a class="mini-action" data-recovery-provider href={dotaMatchAuditConfig.publicMatchBase} target="_blank" rel="noopener noreferrer">{copy.openProvider} ↗</a>
+          </div>
+          <p data-recovery-status role="status" aria-live="polite"></p>
+        </aside>
+
         <section class="match-audit-result" data-audit-result hidden aria-labelledby="match-audit-result-title">
           <header class="match-audit-result-head">
             <div class="match-audit-player-title">
@@ -388,32 +572,71 @@ const payload = JSON.stringify({
               <div><span>{copy.auditKicker}</span><h2 id="match-audit-result-title" data-selected-name>{copy.auditTitle}</h2><p data-selected-position></p></div>
             </div>
             <div class="match-audit-result-actions">
-              <label for="match-audit-role"><span>{copy.roleLabel}</span><select id="match-audit-role" data-match-role><option value="core">{copy.core}</option><option value="support">{copy.support}</option></select></label>
+              <label for="match-audit-role"><span>{copy.roleLabel}</span><select id="match-audit-role" data-match-role><option value="unknown">{copy.roleUnknown}</option><option value="core">{copy.core}</option><option value="support">{copy.support}</option></select></label>
               <div><button type="button" class="mini-action" data-match-share>{copy.share}</button><a class="mini-action" href="#" target="_blank" rel="noopener noreferrer" data-provider-link>{copy.openProvider} ↗</a></div>
               <small>{copy.roleNote}</small>
               <p data-share-status role="status" aria-live="polite"></p>
             </div>
           </header>
 
+          <div class="match-comparison-control">
+            <label for="match-audit-opponent">{copy.compareLabel}</label>
+            <select id="match-audit-opponent" data-match-opponent aria-describedby="match-comparison-help"><option value="auto">{copy.compareAuto}</option></select>
+            <p id="match-comparison-help">{copy.compareHelp}</p>
+          </div>
+          <div class="match-result-tabs" role="tablist" aria-label={copy.tabsLabel}>
+            {[['summary', copy.tabSummary], ['gold', copy.tabGold], ['items', copy.tabItems]].map(([key, label], index) => <button type="button" id={`match-tab-${key}`} role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls={`match-panel-${key}`} tabindex={index === 0 ? 0 : -1} data-result-tab={key}>{label}</button>)}
+          </div>
+          <section id="match-panel-summary" role="tabpanel" aria-labelledby="match-tab-summary" tabindex="0" data-result-panel="summary">
           <article class="match-audit-signal" data-audit-signal>
             <span>{copy.signal}</span>
             <strong data-signal-title></strong>
             <p data-signal-text></p>
           </article>
 
-          <section class="match-audit-overview" aria-labelledby="match-overview-title">
-            <h3 id="match-overview-title">{copy.overview}</h3>
-            <div data-audit-stats></div>
+          <DotaMatchFinalReview lang={lang} />
+
+          <section class="match-economic-autopsy" data-economic-autopsy aria-labelledby="economic-autopsy-title">
+            <header class="match-economic-autopsy-head">
+              <div><span class="section-kicker">{copy.autopsyKicker}</span><h3 id="economic-autopsy-title">{copy.autopsyTitle}</h3><p>{copy.autopsyText}</p></div>
+              <div class="match-economic-confidence"><span>{copy.confidence}</span><strong data-economic-confidence></strong><small data-economic-coverage></small></div>
+            </header>
+
+            <div class="match-economic-opponent" data-economic-opponent></div>
+            <div class="match-economic-verdicts" data-economic-verdicts></div>
+
+            <aside class="match-economic-final-only" data-economic-final-only hidden></aside>
+
+            <section class="match-replay-focus" data-replay-focus aria-labelledby="match-focus-title">
+              <header><div><span class="section-kicker">{copy.replayKicker}</span><h4 id="match-focus-title">{copy.focusTitle}</h4></div><strong data-economic-replay-window></strong></header>
+              <p data-focus-explanation></p>
+              <div class="match-focus-columns">
+                <div><h5>{copy.focusFacts}</h5><dl data-focus-facts></dl><h5>{copy.focusPurchases}</h5><div data-focus-purchases></div></div>
+                <div class="match-focus-question"><h5>{copy.focusQuestion}</h5><p data-focus-question></p><ol data-economic-replay-checks></ol><button class="mini-action" type="button" data-copy-focus>{copy.focusCopy}</button><p data-focus-copy-status role="status" aria-live="polite"></p></div>
+              </div>
+            </section>
+            <details class="match-economic-explanation"><summary>{copy.priceTitle}</summary>
+              <article class="match-economic-price">
+                <span>{copy.priceKicker}</span>
+                <h4>{copy.priceTitle}</h4>
+                <dl data-economic-price></dl>
+                <p>{copy.priceNote}</p>
+              </article>
+            </details>
+
+            <p class="match-economic-threshold" data-economic-boundary></p>
           </section>
 
-          <section class="match-audit-inventory" aria-labelledby="match-inventory-title">
-            <header><div><span class="section-kicker">{copy.inventoryKicker}</span><h3 id="match-inventory-title">{copy.inventory}</h3><p>{copy.inventoryText}</p></div></header>
-            <div data-audit-inventory></div>
-            <p class="match-audit-empty" data-no-inventory hidden>{copy.noInventory}</p>
+          <section class="match-audit-next" aria-labelledby="match-next-title">
+            <div><span>{copy.nextKicker}</span><h3 id="match-next-title">{copy.nextTitle}</h3></div>
+            <blockquote data-next-rule></blockquote>
+            <div><button type="button" class="button primary" data-copy-rule>{copy.copyRule}</button><a class="button ghost" data-plan-link href={getDotaItemPlannerPath(lang)}>{copy.plan} →</a></div>
+            <p data-rule-status role="status" aria-live="polite"></p>
           </section>
-
+          </section>
+          <section id="match-panel-gold" role="tabpanel" aria-labelledby="match-tab-gold" tabindex="0" data-result-panel="gold" hidden>
           <section class="match-audit-trajectory" data-trajectory aria-labelledby="match-chart-title">
-            <header><div><span>{copy.chartKicker}</span><h3 id="match-chart-title">{copy.chartTitle}</h3><p>{copy.chartText}</p></div><strong data-chart-total></strong></header>
+            <header><div><span>{copy.chartKicker}</span><h3 id="match-chart-title" data-chart-title>{copy.chartTitle}</h3><p data-chart-text>{copy.chartText}</p><div class="match-audit-chart-series" data-chart-series></div></div><strong data-chart-total></strong></header>
             <div class="match-audit-chart-wrap"><svg data-audit-chart viewBox="0 0 900 320" role="img" aria-label={copy.chartAria}></svg></div>
             <div class="match-audit-chart-legend" data-chart-legend hidden></div>
           </section>
@@ -427,26 +650,41 @@ const payload = JSON.stringify({
             <div data-audit-checkpoints></div>
           </section>
 
+            <section class="match-economic-phases" data-economic-phases aria-labelledby="economic-phases-title">
+              <header><div><span class="section-kicker">0:00 → GG</span><h4 id="economic-phases-title">{copy.phaseTitle}</h4><p>{copy.phaseText}</p></div></header>
+              <div class="match-economic-table-wrap" data-economic-table></div>
+            </section>
+
+          </section>
+          <section id="match-panel-items" role="tabpanel" aria-labelledby="match-tab-items" tabindex="0" data-result-panel="items" hidden>
+            <DotaItemsStatus lang={lang} compact />
+          <section class="match-audit-overview" aria-labelledby="match-overview-title">
+            <h3 id="match-overview-title">{copy.overview}</h3>
+            <div data-audit-stats></div>
+          </section>
+
+          <section class="match-audit-inventory" aria-labelledby="match-inventory-title">
+            <header><div><span class="section-kicker">{copy.inventoryKicker}</span><h3 id="match-inventory-title">{copy.inventory}</h3><p>{copy.inventoryText}</p></div></header>
+            <div data-audit-inventory></div>
+            <p class="match-audit-empty" data-no-inventory hidden>{copy.noInventory}</p>
+          </section>
+
           <section class="match-audit-purchases" aria-labelledby="match-purchases-title">
             <header><div><span class="section-kicker">PURCHASE LOG</span><h3 id="match-purchases-title">{copy.purchases}</h3><p>{copy.purchasesText}</p></div></header>
             <div data-audit-purchases></div>
             <p class="match-audit-empty" data-no-purchases hidden></p>
           </section>
 
-          <section class="match-audit-next" aria-labelledby="match-next-title">
-            <div><span>{copy.nextKicker}</span><h3 id="match-next-title">{copy.nextTitle}</h3></div>
-            <blockquote data-next-rule></blockquote>
-            <div><button type="button" class="button primary" data-copy-rule>{copy.copyRule}</button><a class="button ghost" data-plan-link href={getDotaItemPlannerPath(lang)}>{copy.plan} →</a></div>
-            <p data-rule-status role="status" aria-live="polite"></p>
           </section>
         </section>
       </section>
 
-      <section class="section match-audit-method" aria-labelledby="match-method-title">
+      <details class="section match-audit-method">
+        <summary>{copy.methodToggle}</summary>
         <div class="section-head"><div><span class="section-kicker">{copy.methodKicker}</span><h2 id="match-method-title">{copy.methodTitle}</h2></div><span class="count">PUBLIC ID · NO LOGIN · NO STORE</span></div>
         <div class="match-audit-method-grid">{copy.methods.map(([code, title, text]) => <article><span>{code}</span><h3>{title}</h3><p>{text}</p></article>)}</div>
         <aside class="match-audit-sources"><div><span>{copy.sources}</span><p>{copy.sourceText}</p></div><nav><a href={dotaMatchAuditConfig.docsUrl} target="_blank" rel="noopener noreferrer">OpenDota API · {copy.source} ↗</a><a href={dotaHeroSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Hero constants · {copy.source} ↗</a><a href={dotaMatchItemSnapshot.sourceUrl} target="_blank" rel="noopener noreferrer">Item constants · {copy.source} ↗</a><a href={itemPatchSource} target="_blank" rel="noopener noreferrer">Valve · Patch {dotaItemsSnapshot.patch.label} ↗</a></nav></aside>
-      </section>
+      </details>
 
       <SiteFooter lang={lang} />
     </div>
@@ -459,8 +697,11 @@ const payload = JSON.stringify({
     buildDotaMatchAudit,
     inferredDotaMatchRole,
     parseDotaMatchId,
+    parseDotaPlayerSlot,
+    hasDotaMatchTimeline,
     resolveDotaMatchInventory,
     sanitizeDotaMatchResponse,
+    type DotaEconomicWindow,
     type DotaMatch,
     type DotaMatchAudit,
     type DotaMatchPlayer,
@@ -468,12 +709,16 @@ const payload = JSON.stringify({
   } from "../lib/dota-match";
   import type { DotaMatchItemReference } from "../data/dota-match-items";
   import type { DotaItemRecord } from "../lib/dota-items";
+  import { buildDotaFinalReview } from "../lib/dota-match-summary";
+  import { dotaReviewMessage, renderDotaFinalReview } from "../lib/dota-match-review-ui";
+  import { canReplaceDotaMatch, DotaMatchRecovery, type DotaRecoveryState } from "../lib/dota-match-recovery";
 
   const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
   if (root) {
     const auditRoot = root;
     const data = JSON.parse(root.querySelector("[data-match-audit-data]")?.textContent ?? "{}");
     const copy: Record<string, string> = data.copy;
+    let currentFocusNote = "";
     const lang: "ru" | "en" = data.lang;
     const items: DotaItemRecord[] = data.items;
     const matchItems: DotaMatchItemReference[] = data.matchItems;
@@ -490,6 +735,7 @@ const payload = JSON.stringify({
     const selection = root.querySelector<HTMLElement>("[data-match-selection]")!;
     const result = root.querySelector<HTMLElement>("[data-audit-result]")!;
     const roleControl = root.querySelector<HTMLSelectElement>("[data-match-role]")!;
+    const opponentControl = root.querySelector<HTMLSelectElement>("[data-match-opponent]")!;
     const params = new URL(window.location.href).searchParams;
     const sharedMatch = params.get("match");
     if (sharedMatch && parseDotaMatchId(sharedMatch)) input.value = sharedMatch;
@@ -497,7 +743,8 @@ const payload = JSON.stringify({
     let currentMatch: DotaMatch | null = null;
     let currentSlot: number | null = null;
     let currentRule = "";
-    const pendingSlot = Number(params.get("slot"));
+    const pendingSlot = parseDotaPlayerSlot(params.get("slot"));
+    const pendingOpponent = parseDotaPlayerSlot(params.get("opponent"));
     const pendingRole = params.get("role") === "support" ? "support" : params.get("role") === "core" ? "core" : null;
 
     const setStatus = (message: string, state: "loading" | "error" | "success" = "error") => {
@@ -555,7 +802,12 @@ const payload = JSON.stringify({
       body.append(make("span", "", `${value(player.kills)} / ${value(player.deaths)} / ${value(player.assists)} · ${value(player.goldPerMinute)} GPM`));
       const resultLabel = make("span", player.won ? "match-audit-outcome is-win" : "match-audit-outcome", outcome(player));
       button.append(portrait, body, resultLabel);
-      button.addEventListener("click", () => selectPlayer(player.playerSlot));
+      button.addEventListener("click", () => {
+        selectPlayer(player.playerSlot);
+        result.tabIndex = -1;
+        result.focus({ preventScroll: true });
+        result.scrollIntoView({ block: "start", behavior: "instant" });
+      });
       return button;
     };
 
@@ -570,7 +822,7 @@ const payload = JSON.stringify({
       root.querySelector<HTMLElement>("[data-match-date]")!.textContent = date.format(new Date(match.startTime * 1000));
       root.querySelector<HTMLElement>("[data-match-winner]")!.textContent = match.radiantWin === null ? copy.unknownResult! : match.radiantWin ? copy.radiant! : copy.dire!;
       root.querySelector<HTMLAnchorElement>("[data-provider-link]")!.href = `${data.config.publicMatchBase}/${match.matchId}`;
-      const hasAnyTimeline = match.players.some((player) => player.times.length > 1 && player.goldTimeline.length > 1 && player.lastHitTimeline.length > 1);
+      const hasAnyTimeline = match.players.some(hasDotaMatchTimeline);
       const badge = root.querySelector<HTMLElement>("[data-match-badge]")!;
       badge.textContent = `${hasAnyTimeline ? copy.fullTimeline : copy.finalOnly} · ${match.patchId === data.patch.id ? copy.patchCurrent : copy.patchArchive}`;
       badge.dataset.state = hasAnyTimeline ? "parsed" : "final";
@@ -579,8 +831,10 @@ const payload = JSON.stringify({
       radiant.replaceChildren(...match.players.filter((player) => player.isRadiant).map(renderPlayer));
       dire.replaceChildren(...match.players.filter((player) => !player.isRadiant).map(renderPlayer));
       root.querySelector<HTMLElement>("[data-match-choose]")!.hidden = false;
-      const sharedPlayer = match.players.find((player) => player.playerSlot === pendingSlot);
-      if (sharedPlayer) selectPlayer(sharedPlayer.playerSlot, pendingRole ?? undefined);
+      const sharedPlayer = String(match.matchId) === sharedMatch ? match.players.find((player) => player.playerSlot === pendingSlot) : undefined;
+      if (sharedPlayer) selectPlayer(sharedPlayer.playerSlot, pendingRole ?? undefined, pendingOpponent);
+      syncAuditLanguageLinks();
+      updateRecoveryControls();
     };
 
     const renderStats = (audit: DotaMatchAudit) => {
@@ -647,38 +901,228 @@ const payload = JSON.stringify({
       container.replaceChildren(...groups);
     };
 
+    const signedGold = (amount: number | null) => amount === null
+      ? copy.unavailableShort!
+      : `${amount > 0 ? "+" : ""}${integer.format(amount)} ${copy.goldUnit}`;
+    const windowLabel = (window: Pick<DotaEconomicWindow, "startMinute" | "endMinute">) => `${number.format(window.startMinute)}-${number.format(window.endMinute)} ${copy.minuteShort}`;
+    const gapState = (gap: number | null) => gap === null
+      ? copy.unavailableShort!
+      : gap > 500 ? copy.ahead! : gap < -500 ? copy.behind! : copy.even!;
+    const kindLabel = (kind: DotaEconomicWindow["kind"]) => ({
+      personal: copy.personalPattern!,
+      team: copy.teamPattern!,
+      mixed: copy.mixedPattern!,
+      unavailable: copy.dataMissing!,
+      stable: copy.stablePattern!
+    })[kind];
+
     const renderSignal = (audit: DotaMatchAudit) => {
       const title = root.querySelector<HTMLElement>("[data-signal-title]")!;
       const text = root.querySelector<HTMLElement>("[data-signal-text]")!;
-      const itemDelta = audit.strongestItemDelta;
-      if (!audit.timelineAvailable) {
-        title.textContent = copy.finalSignalTitle!;
-        text.textContent = copy.finalSignalText!;
+      const economy = audit.economy;
+      const critical = economy.criticalWindow;
+      const focus = economy.replayFocus ?? critical;
+      const opponent = economy.counterpart ? heroFor(economy.counterpart.heroId) : null;
+      if (critical && focus) {
+        const individual = critical.kind !== "team" && focus.roleGapChange !== null && opponent;
+        title.textContent = individual
+          ? (lang === "ru" ? `${windowLabel(focus)}: ${opponent.name} набрал на ${integer.format(Math.max(0, -focus.roleGapChange!))} золота больше`
+            : `${windowLabel(focus)}: ${opponent.name} gained ${integer.format(Math.max(0, -focus.roleGapChange!))} more gold`)
+          : (lang === "ru" ? `${windowLabel(focus)}: разрыв команд ухудшился на ${integer.format(Math.max(0, -(focus.teamGapChange ?? 0)))} золота`
+            : `${windowLabel(focus)}: the team gap worsened by ${integer.format(Math.max(0, -(focus.teamGapChange ?? 0))) } gold`);
+        text.textContent = lang === "ru"
+          ? `За всю фазу ${windowLabel(critical)}: разрыв с соперником ${signedGold(critical.roleGapChange)}, разрыв команд ${signedGold(critical.teamGapChange)}. ${critical.kind === "mixed" ? "Оба разрыва ухудшились одновременно." : critical.kind === "team" ? "Сигнал виден на уровне команды." : "Сигнал виден в сравнении двух героев."} Причину проверяем в реплее.`
+          : `Across the full ${windowLabel(critical)} phase: opponent gap ${signedGold(critical.roleGapChange)}, team gap ${signedGold(critical.teamGapChange)}. ${critical.kind === "mixed" ? "Both gaps declined together." : critical.kind === "team" ? "The signal is at team level." : "The signal comes from comparing the two heroes."} Verify the cause in the replay.`;
         currentRule = lang === "ru"
-          ? "Не угадывать минуту провала по финальному GPM. Сначала получить разобранную хронологию или отметить один момент вручную в реплее."
-          : "Do not guess the failure minute from final GPM. Get a parsed timeline or mark one replay moment manually first.";
-      } else if (itemDelta && itemDelta.deltaMinutes !== null && Math.abs(itemDelta.deltaMinutes) >= 2.5) {
-        const direction = itemDelta.deltaMinutes > 0 ? copy.lateItem : copy.earlyItem;
-        title.textContent = `${itemDelta.name}: ${number.format(Math.abs(itemDelta.deltaMinutes))} ${copy.minuteShort} ${direction}`;
-        text.textContent = copy.itemSignalText!;
-        currentRule = lang === "ru"
-          ? `В следующем реплее проверить, какую задачу решала команда на ${number.format(itemDelta.minute)}-й минуте, когда появился ${itemDelta.name}. Сравнивать решение, а не только цифру.`
-          : `In the next replay, inspect the team objective at minute ${number.format(itemDelta.minute)}, when ${itemDelta.name} arrived. Compare the decision, not just the number.`;
-      } else if (audit.slowestWindow) {
-        title.textContent = `${copy.slowSignalTitle} ${number.format(audit.slowestWindow.minute)} ${copy.minuteShort}`;
-        text.textContent = `${integer.format(audit.slowestWindow.intervalGoldPerMinute)} GPM · ${integer.format(audit.slowestWindow.intervalLastHits)} ${copy.intervalCs}. ${copy.slowSignalText}`;
-        const previous = audit.checkpoints[audit.checkpoints.indexOf(audit.slowestWindow) - 1]?.minute ?? 0;
-        currentRule = lang === "ru"
-          ? `В следующем реплее разобрать только окно ${number.format(previous)}-${number.format(audit.slowestWindow.minute)}: какая смерть, драка или потерянная зона изменила темп золота?`
-          : `In the next replay, review only minutes ${number.format(previous)}-${number.format(audit.slowestWindow.minute)}: which death, fight or lost area changed gold pace?`;
+          ? `Начни с ${windowLabel(focus)}. Сравни доступный фарм, перемещения и цели у обеих сторон. Отметь первое решение, которое объясняет изменение разрыва; по одному графику причину не назначай.`
+          : `Start at ${windowLabel(focus)}. Compare available farm, movement and objectives for both sides. Mark the first decision that explains the gap change; do not assign a cause from the chart alone.`;
+      } else if (!economy.windows.length) {
+        const review = buildDotaFinalReview(currentMatch!, audit.player, roleControl.value === "unknown" ? null : audit.role, economy.counterpart);
+        const message = dotaReviewMessage(review, review.findings[0], lang, opponent?.name ?? "");
+        title.textContent = message.title;
+        text.textContent = message.evidence;
+        currentRule = message.action;
+      } else if (economy.windows.every((window) => window.kind === "unavailable")) {
+        title.textContent = copy.dataMissingTitle!;
+        text.textContent = copy.dataMissingText!;
+        currentRule = copy.compareHelp!;
       } else {
-        title.textContent = copy.reviewSignalTitle!;
-        text.textContent = copy.reviewSignalText!;
-        currentRule = lang === "ru"
-          ? "Перед следующей крупной покупкой назвать цель команды на ближайшие пять минут и после матча проверить, помог ли предмет её забрать."
-          : "Before the next major purchase, name the team's five-minute objective and check after the match whether the item helped secure it.";
+        title.textContent = lang === "ru" ? "На проверенных отрезках порог не пересечён" : "No threshold crossed in the observed intervals";
+        text.textContent = copy.dataPartial!;
+        const purchase = audit.majorPurchases[0];
+        currentRule = purchase
+          ? (lang === "ru" ? `Открой ${purchase.name} на ${number.format(purchase.minute)} мин. Проверь, какую цель команды помогла забрать покупка и что произошло в следующие три минуты.`
+            : `Inspect ${purchase.name} at ${number.format(purchase.minute)} min. Check which team objective it helped secure and what happened in the next three minutes.`)
+          : copy.reviewSignalText!;
       }
       root.querySelector<HTMLElement>("[data-next-rule]")!.textContent = currentRule;
+    };
+
+    const renderEconomicAutopsy = (audit: DotaMatchAudit) => {
+      const economy = audit.economy;
+      root.querySelector<HTMLElement>("[data-economic-autopsy]")!.hidden = economy.windows.length === 0;
+      const confidence = root.querySelector<HTMLElement>("[data-economic-confidence]")!;
+      confidence.textContent = economy.confidence === "high"
+        ? copy.confidenceHigh!
+        : economy.confidence === "medium" ? copy.confidenceMedium! : copy.confidenceLow!;
+      confidence.dataset.level = economy.confidence;
+      root.querySelector<HTMLElement>("[data-economic-coverage]")!.textContent = `${economy.timelinePlayerCount}/${currentMatch?.players.length ?? 0} ${copy.timelineCoverage}`;
+
+      const opponentRoot = root.querySelector<HTMLElement>("[data-economic-opponent]")!;
+      if (economy.counterpart) {
+        const opponent = heroFor(economy.counterpart.heroId);
+        const body = make("div");
+        body.append(make("span", "", copy.directOpponent), make("strong", "", opponent.name), make("small", "", economy.comparisonBasis === "manual" ? copy.compareManual : copy.comparePosition));
+        opponentRoot.classList.remove("is-missing");
+        opponentRoot.replaceChildren(media("match-economic-opponent-image", opponent.name, opponent.image), body);
+      } else {
+        opponentRoot.classList.add("is-missing");
+        opponentRoot.replaceChildren(make("span", "", copy.directOpponent), make("strong", "", copy.noDirectOpponent));
+      }
+
+      const verdictCard = (code: string, title: string, main: string, detail: string, tone = "neutral") => {
+        const card = make("article", `is-${tone}`);
+        card.append(make("span", "", code));
+        card.append(make("h4", "", title));
+        card.append(make("strong", "", main));
+        card.append(make("p", "", detail));
+        return card;
+      };
+      const lane = economy.laneCheckpoint;
+      const critical = economy.criticalWindow;
+      const finalGap = economy.final.roleGap;
+      const comparable = economy.windows.some((window) => window.kind !== "unavailable");
+      const rankText = economy.final.teamRank !== null && economy.final.matchRank !== null
+        ? `${economy.final.teamRank}/5 ${copy.ofTeam} · ${economy.final.matchRank}/10 ${copy.ofMatch}`
+        : copy.unavailableShort!;
+      const verdicts = [
+        verdictCard(
+          "01",
+          lane ? `${copy.laneVerdict} · ${number.format(lane.minute)} ${copy.minuteShort}` : copy.laneVerdict!,
+          lane ? signedGold(lane.roleGap) : copy.unavailableShort!,
+          lane ? `${copy.roleGap}: ${gapState(lane.roleGap)}` : copy.dataMissing!,
+          lane?.roleGap !== null && lane?.roleGap !== undefined ? (lane.roleGap > 500 ? "positive" : lane.roleGap < -500 ? "negative" : "neutral") : "neutral"
+        ),
+        verdictCard(
+          "02",
+          copy.breakVerdict!,
+          critical ? windowLabel(critical) : comparable ? copy.noBreak! : copy.dataMissing!,
+          critical ? `${kindLabel(critical.kind)} · ${critical.kind === "team" ? copy.teamGap : copy.roleGap}: ${signedGold(critical.kind === "team" ? critical.teamGapChange : critical.roleGapChange)}` : comparable ? copy.dataPartial! : copy.focusMissing!,
+          critical?.kind ?? "stable"
+        ),
+        verdictCard(
+          "03",
+          copy.finishVerdict!,
+          signedGold(finalGap),
+          `${copy.netWorth} · ${copy.rank}: ${rankText}`,
+          finalGap === null ? "neutral" : finalGap > 500 ? "positive" : finalGap < -500 ? "negative" : "neutral"
+        )
+      ];
+      root.querySelector<HTMLElement>("[data-economic-verdicts]")!.replaceChildren(...verdicts);
+
+      const phaseRoot = root.querySelector<HTMLElement>("[data-economic-phases]")!;
+      const finalOnly = root.querySelector<HTMLElement>("[data-economic-final-only]")!;
+      phaseRoot.hidden = economy.windows.length === 0;
+      finalOnly.hidden = economy.windows.length > 0;
+      if (economy.windows.length) {
+        const table = make("table");
+        const head = make("thead");
+        const headRow = make("tr");
+        [copy.phase, copy.yourPace, copy.opponentPace, copy.roleGap, copy.teamGap, copy.pattern].forEach((label) => headRow.append(make("th", "", label)));
+        head.append(headRow);
+        const body = make("tbody");
+        economy.windows.forEach((window) => {
+          const row = make("tr", `is-${window.kind}`);
+          const pace = (gain: number | null, gpm: number | null) => gain === null || gpm === null
+            ? copy.unavailableShort!
+            : `${gain > 0 ? "+" : ""}${integer.format(gain)} · ${integer.format(gpm)} GPM`;
+          const signal = make("span", `match-economic-kind is-${window.kind}`, kindLabel(window.kind));
+          [
+            windowLabel(window),
+            pace(window.playerGoldGain, window.playerGoldPerMinute),
+            pace(window.counterpartGoldGain, window.counterpartGoldPerMinute),
+            signedGold(window.roleGapChange),
+            signedGold(window.teamGapChange)
+          ].forEach((entry) => row.append(make("td", "", entry)));
+          const signalCell = make("td");
+          signalCell.append(signal);
+          row.append(signalCell);
+          body.append(row);
+        });
+        table.append(head, body);
+        root.querySelector<HTMLElement>("[data-economic-table]")!.replaceChildren(table);
+      } else {
+        const finalDetails = [
+          copy.finalOnlyAutopsy!,
+          `${copy.roleGap}: ${signedGold(economy.final.roleGap)}.`,
+          `${copy.teamGap}: ${signedGold(economy.final.teamGap)}.`,
+          `${copy.rank}: ${rankText}.`
+        ];
+        finalOnly.textContent = finalDetails.join(" ");
+        root.querySelector<HTMLElement>("[data-economic-table]")!.replaceChildren();
+      }
+
+      const priceRows: Array<[string, string]> = [];
+      if (economy.comparativeGoldSwing !== null && economy.comparativeGoldSwing > 0) {
+        priceRows.push([copy.comparativeSwing!, `${integer.format(economy.comparativeGoldSwing)} ${copy.goldUnit}`]);
+      }
+      if (economy.estimatedItemDelayMinutes !== null) {
+        priceRows.push([copy.delayEquivalent!, `≈ ${number.format(economy.estimatedItemDelayMinutes)} ${copy.minuteShort}`]);
+      }
+      if (audit.strongestItemDelta?.deltaMinutes !== null && audit.strongestItemDelta?.deltaMinutes !== undefined) {
+        const delta = audit.strongestItemDelta.deltaMinutes;
+        priceRows.push([copy.itemEvidence!, `${audit.strongestItemDelta.name} · ${delta > 0 ? "+" : ""}${number.format(delta)} ${copy.minuteShort}`]);
+      }
+      if (!priceRows.length) priceRows.push([copy.comparativeSwing!, comparable ? copy.noBreak! : copy.dataMissing!]);
+      const priceList = root.querySelector<HTMLElement>("[data-economic-price]")!;
+      priceList.replaceChildren(...priceRows.map(([label, result]) => {
+        const row = make("div");
+        row.append(make("dt", "", label), make("dd", "", result));
+        return row;
+      }));
+
+      const focus = economy.replayFocus;
+      const review = focus ?? critical;
+      const focusHeading = root.querySelector<HTMLElement>("[data-economic-replay-window]")!;
+      focusHeading.textContent = review ? windowLabel(review) : copy.focusNoFlag!;
+      root.querySelector<HTMLElement>("[data-replay-focus]")!.dataset.available = String(Boolean(review));
+      root.querySelector<HTMLElement>("[data-focus-explanation]")!.textContent = focus ? copy.focusNarrow! : critical ? copy.focusBroad! : comparable ? copy.focusStable! : copy.focusMissing!;
+      const facts: Array<[string, string]> = [];
+      if (review) {
+        facts.push([copy.you!, signedGold(review.playerGoldGain)]);
+        facts.push([copy.directOpponent!, signedGold(review.counterpartGoldGain)]);
+        facts.push([copy.roleGap!, signedGold(review.roleGapChange)]);
+        facts.push([copy.teamGap!, signedGold(review.teamGapChange)]);
+      }
+      if (focus) {
+        facts.push([`${copy.lastHits} · ${copy.you}`, value(focus.playerLastHits)]);
+        facts.push([`${copy.lastHits} · ${copy.directOpponent}`, value(focus.counterpartLastHits)]);
+      }
+      const factsRoot = root.querySelector<HTMLElement>("[data-focus-facts]")!;
+      factsRoot.replaceChildren(...facts.map(([label, amount]) => {
+        const row = make("div"); row.append(make("dt", "", label), make("dd", "", amount)); return row;
+      }));
+      const purchaseRoot = root.querySelector<HTMLElement>("[data-focus-purchases]")!;
+      const nearby = review ? audit.majorPurchases.filter((purchase) => purchase.minute >= review.startMinute && purchase.minute <= review.endMinute) : [];
+      purchaseRoot.replaceChildren(...(nearby.length ? nearby.map((purchase) => {
+        const link = make("a", "match-focus-purchase");
+        link.href = itemPaths[purchase.key] ?? data.plannerPath;
+        link.append(media("match-focus-item-image", purchase.name, purchase.image), make("span", "", `${purchase.name} · ${number.format(purchase.minute)} ${copy.minuteShort}`));
+        return link;
+      }) : [make("p", "", review ? copy.focusNoPurchases : copy.focusMissing)]));
+      const question = !review ? copy.focusMissing! : critical?.kind === "team" ? copy.focusTeamQuestion!
+        : focus?.playerLastHits != null && focus.counterpartLastHits != null && focus.playerLastHits < focus.counterpartLastHits
+          ? copy.focusFarmQuestion! : copy.focusGoldQuestion!;
+      root.querySelector<HTMLElement>("[data-focus-question]")!.textContent = question;
+      const checks = lang === "ru"
+        ? ["Начни за 30 секунд до эпизода: что было доступно обоим героям?", "В конце эпизода проверь результат действия, включая пользу для команды."]
+        : ["Start 30 seconds before the episode: what was available to both heroes?", "At the end, inspect the action's outcome, including its value to the team."];
+      root.querySelector<HTMLElement>("[data-economic-replay-checks]")!.replaceChildren(...(review ? checks.map((check) => make("li", "", check)) : []));
+      currentFocusNote = currentMatch && review
+        ? `Money Meta · ${currentMatch.matchId} · ${heroFor(audit.player.heroId).name} · ${windowLabel(review)}\n${economy.counterpart ? `${heroFor(economy.counterpart.heroId).name} · ${economy.comparisonBasis === "manual" ? copy.compareManual : copy.comparePosition}` : copy.noDirectOpponent}\n${facts.map(([label, amount]) => `${label}: ${amount}`).join("\n")}\n${question}` : "";
+      root.querySelector<HTMLButtonElement>("[data-copy-focus]")!.disabled = !currentFocusNote;
+      root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = "";
+      root.querySelector<HTMLElement>("[data-economic-boundary]")!.textContent = `${copy.thresholdNote}${economy.counterpart ? "" : ` ${copy.noOpponentAutopsy}`}`;
     };
 
     const svgNode = <K extends keyof SVGElementTagNameMap>(tag: K, attributes: Record<string, string>) => {
@@ -695,29 +1139,41 @@ const payload = JSON.stringify({
       checkpoints.hidden = !audit.timelineAvailable;
       fallback.hidden = audit.timelineAvailable;
       const legend = root.querySelector<HTMLElement>("[data-chart-legend]")!;
+      const seriesLegend = root.querySelector<HTMLElement>("[data-chart-series]")!;
       legend.hidden = true;
       legend.replaceChildren();
+      seriesLegend.replaceChildren();
       if (!audit.timelineAvailable || audit.series.length < 2) return;
       const svg = root.querySelector<SVGSVGElement>("[data-audit-chart]")!;
       svg.replaceChildren();
       const left = 54, right = 872, top = 28, bottom = 272;
-      const maximumMinute = Math.max(1, audit.series.at(-1)!.minute);
-      const maximumGold = Math.max(1, ...audit.series.map((point) => point.totalGold));
+      const opponentSeries = audit.economy.counterpartSeries;
+      const maximumMinute = Math.max(1, audit.series.at(-1)!.minute, opponentSeries.at(-1)?.minute ?? 0);
+      const maximumGold = Math.max(1, ...audit.series.map((point) => point.totalGold), ...opponentSeries.map((point) => point.totalGold));
       const x = (minute: number) => left + minute / maximumMinute * (right - left);
       const y = (gold: number) => bottom - gold / maximumGold * (bottom - top);
       [0, .5, 1].forEach((ratio) => {
         const line = svgNode("line", { x1: String(left), x2: String(right), y1: String(bottom - ratio * (bottom - top)), y2: String(bottom - ratio * (bottom - top)), class: "chart-grid" });
         svg.append(line);
       });
+      const focus = audit.economy.replayFocus ?? audit.economy.criticalWindow;
+      if (focus) {
+        const band = svgNode("rect", { x: String(x(focus.startMinute)), y: String(top), width: String(Math.max(0, x(focus.endMinute) - x(focus.startMinute))), height: String(bottom - top), class: "chart-focus-band" });
+        const title = svgNode("title", {}); title.textContent = `${copy.focusTitle}: ${windowLabel(focus)}`; band.append(title); svg.append(band);
+      }
       const linePath = audit.series.map((point, index) => `${index ? "L" : "M"}${x(point.minute).toFixed(1)},${y(point.totalGold).toFixed(1)}`).join(" ");
-      const areaPath = `${linePath} L${x(maximumMinute).toFixed(1)},${bottom} L${left},${bottom} Z`;
+      const areaPath = `${linePath} L${x(audit.series.at(-1)!.minute).toFixed(1)},${bottom} L${x(audit.series[0]!.minute).toFixed(1)},${bottom} Z`;
       svg.append(svgNode("path", { d: areaPath, class: "chart-area" }), svgNode("path", { d: linePath, class: "chart-line" }));
+      if (opponentSeries.length >= 2) {
+        const opponentPath = opponentSeries.map((point, index) => `${index ? "L" : "M"}${x(point.minute).toFixed(1)},${y(point.totalGold).toFixed(1)}`).join(" ");
+        svg.append(svgNode("path", { d: opponentPath, class: "chart-line is-opponent" }));
+      }
       [0, maximumMinute / 2, maximumMinute].forEach((minuteValue) => {
         const label = svgNode("text", { x: String(x(minuteValue)), y: "302", class: "chart-axis", "text-anchor": minuteValue === 0 ? "start" : minuteValue === maximumMinute ? "end" : "middle" });
         label.textContent = `${number.format(minuteValue)}m`;
         svg.append(label);
       });
-      const chartPurchases = audit.majorPurchases.slice(0, 6);
+      const chartPurchases = audit.majorPurchases.filter((purchase) => purchase.minute <= maximumMinute).slice(0, 6);
       chartPurchases.forEach((purchase, index) => {
         const purchaseMinute = Math.min(maximumMinute, Math.max(0, purchase.minute));
         const point = audit.series.reduce((nearest, candidate) => Math.abs(candidate.minute - purchase.minute) < Math.abs(nearest.minute - purchase.minute) ? candidate : nearest);
@@ -742,6 +1198,17 @@ const payload = JSON.stringify({
       });
       legend.replaceChildren(...legendItems);
       legend.hidden = legendItems.length === 0;
+      const chartTitle = root.querySelector<HTMLElement>("[data-chart-title]")!;
+      const chartText = root.querySelector<HTMLElement>("[data-chart-text]")!;
+      chartTitle.textContent = opponentSeries.length >= 2 ? copy.chartTitleCompared! : copy.chartTitle!;
+      chartText.textContent = `${copy.chartText}${focus ? ` ${copy.focusTitle}: ${windowLabel(focus)}.` : ""}`;
+      const playerKey = make("span", "is-player", copy.you);
+      if (opponentSeries.length >= 2 && audit.economy.counterpart) {
+        const opponent = heroFor(audit.economy.counterpart.heroId);
+        seriesLegend.replaceChildren(playerKey, make("span", "is-opponent", `${opponent.name} · ${positionLabel(audit.economy.counterpart)}`));
+      } else {
+        seriesLegend.replaceChildren(playerKey);
+      }
       root.querySelector<HTMLElement>("[data-chart-total]")!.textContent = `${integer.format(maximumGold)} ${copy.goldUnit}`;
     };
 
@@ -756,7 +1223,7 @@ const payload = JSON.stringify({
         const gpm = make("div");
         gpm.append(make("dt", "", copy.intervalGpm), make("dd", "", integer.format(checkpoint.intervalGoldPerMinute)));
         const cs = make("div");
-        cs.append(make("dt", "", copy.intervalCs), make("dd", "", integer.format(checkpoint.intervalLastHits)));
+        cs.append(make("dt", "", copy.intervalCs), make("dd", "", value(checkpoint.intervalLastHits)));
         details.append(gpm, cs);
         card.append(details);
         previous = checkpoint.minute;
@@ -791,14 +1258,14 @@ const payload = JSON.stringify({
       container.replaceChildren(...cards);
       const planUrl = new URL(data.plannerPath, window.location.origin);
       audit.majorPurchases.slice(0, 5).forEach((purchase, index) => planUrl.searchParams.set(`dota-item-plan.item${index + 1}`, purchase.key));
-      planUrl.searchParams.set("dota-item-plan.role", audit.role);
+      if (roleControl.value !== "unknown") planUrl.searchParams.set("dota-item-plan.role", audit.role);
       root.querySelector<HTMLAnchorElement>("[data-plan-link]")!.href = `${planUrl.pathname}${planUrl.search}`;
     };
 
     const renderAudit = () => {
       if (!currentMatch || currentSlot === null) return;
       const role = roleControl.value === "support" ? "support" : "core";
-      const audit = buildDotaMatchAudit(currentMatch, currentSlot, items, role, data.patch.id, data.patch.minimumSample);
+      const audit = buildDotaMatchAudit(currentMatch, currentSlot, items, role, data.patch.id, data.patch.minimumSample, parseDotaPlayerSlot(opponentControl.value), roleControl.value !== "unknown");
       if (!audit) return;
       const hero = heroFor(audit.player.heroId);
       root.querySelector<HTMLElement>("[data-selected-name]")!.textContent = hero.name;
@@ -811,6 +1278,8 @@ const payload = JSON.stringify({
       selectedImage.alt = hero.name;
       selectedImage.hidden = !hero.image;
       renderSignal(audit);
+      renderDotaFinalReview(root, buildDotaFinalReview(currentMatch, audit.player, roleControl.value === "unknown" ? null : audit.role, audit.economy.counterpart), lang, (id) => heroFor(id).name, audit.economy.windows.length === 0);
+      renderEconomicAutopsy(audit);
       renderStats(audit);
       renderInventory(audit);
       renderChart(audit);
@@ -818,22 +1287,73 @@ const payload = JSON.stringify({
       renderPurchases(audit);
       result.hidden = false;
       setStep(3);
+      syncAuditLanguageLinks();
     };
 
-    function selectPlayer(slot: number, role?: DotaMatchRole) {
+    function selectPlayer(slot: number, role?: DotaMatchRole | "unknown", opponentSlot?: number) {
       if (!currentMatch) return;
       const player = currentMatch.players.find((candidate) => candidate.playerSlot === slot);
       if (!player) return;
       currentSlot = slot;
+      const auto = make("option", "", copy.compareAuto); auto.value = "auto";
+      const opponents = currentMatch.players.filter((candidate) => candidate.isRadiant !== player.isRadiant);
+      opponentControl.replaceChildren(auto, ...opponents.map((candidate) => {
+        const option = make("option", "", `${heroFor(candidate.heroId).name} · ${positionLabel(candidate)}`);
+        option.value = String(candidate.playerSlot); return option;
+      }));
+      opponentControl.value = opponents.some((candidate) => candidate.playerSlot === opponentSlot) ? String(opponentSlot) : "auto";
+      setResultTab("summary");
+      auditRoot.querySelector<HTMLElement>("[data-share-status]")!.textContent = "";
+      auditRoot.querySelector<HTMLElement>("[data-rule-status]")!.textContent = "";
       auditRoot.querySelectorAll<HTMLElement>("[data-player-slot]").forEach((node) => {
         const selected = Number(node.dataset.playerSlot) === slot;
         node.classList.toggle("is-selected", selected);
         node.setAttribute("aria-pressed", String(selected));
       });
       auditRoot.querySelector<HTMLElement>("[data-match-choose]")!.hidden = true;
-      roleControl.value = role ?? inferredDotaMatchRole(player) ?? "core";
+      roleControl.value = role ?? inferredDotaMatchRole(player) ?? "unknown";
       renderAudit();
     }
+
+    function syncAuditLanguageLinks() {
+      const matchId = currentMatch?.matchId ?? parseDotaMatchId(sharedMatch ?? "");
+      if (!matchId) return;
+      const slot = currentMatch ? currentSlot : pendingSlot;
+      const opponent = currentMatch ? parseDotaPlayerSlot(opponentControl.value) : pendingOpponent;
+      auditRoot.querySelectorAll<HTMLAnchorElement>(".lang-switch a").forEach((link) => {
+        const target = new URL(link.href, window.location.origin);
+        target.search = "";
+        target.searchParams.set("match", String(matchId));
+        if (slot != null) {
+          target.searchParams.set("slot", String(slot));
+          const role = currentMatch ? roleControl.value : pendingRole;
+          if (role === "core" || role === "support") target.searchParams.set("role", role);
+          if (opponent !== undefined) target.searchParams.set("opponent", String(opponent));
+        }
+        link.href = `${target.pathname}${target.search}`;
+      });
+    }
+    syncAuditLanguageLinks();
+
+    function setResultTab(key: string) {
+      auditRoot.querySelectorAll<HTMLButtonElement>("[data-result-tab]").forEach((button) => {
+        const selected = button.dataset.resultTab === key;
+        button.setAttribute("aria-selected", String(selected));
+        button.tabIndex = selected ? 0 : -1;
+      });
+      auditRoot.querySelectorAll<HTMLElement>("[data-result-panel]").forEach((panel) => { panel.hidden = panel.dataset.resultPanel !== key; });
+    }
+    const resultTabs = [...root.querySelectorAll<HTMLButtonElement>("[data-result-tab]")];
+    resultTabs.forEach((button, index) => {
+      button.addEventListener("click", () => setResultTab(button.dataset.resultTab!));
+      button.addEventListener("keydown", (event) => {
+        const next = event.key === "ArrowRight" ? (index + 1) % resultTabs.length
+          : event.key === "ArrowLeft" ? (index + resultTabs.length - 1) % resultTabs.length
+          : event.key === "Home" ? 0 : event.key === "End" ? resultTabs.length - 1 : null;
+        if (next === null) return;
+        event.preventDefault(); setResultTab(resultTabs[next]!.dataset.resultTab!); resultTabs[next]!.focus();
+      });
+    });
 
     const copyText = async (text: string) => {
       try {
@@ -845,6 +1365,84 @@ const payload = JSON.stringify({
       }
     };
 
+    const recoveryPanel = root.querySelector<HTMLElement>("[data-match-recovery]")!;
+    const recoveryStatus = root.querySelector<HTMLElement>("[data-recovery-status]")!;
+    const requestReplay = root.querySelector<HTMLButtonElement>("[data-request-replay]")!;
+    const refreshReplay = root.querySelector<HTMLButtonElement>("[data-refresh-replay]")!;
+    const stopReplay = root.querySelector<HTMLButtonElement>("[data-stop-replay]")!;
+
+    const requestJson = async (endpoint: string, body: unknown, header: Record<string, string>, signal: AbortSignal, timeout: number) => {
+      const controller = new AbortController();
+      const abort = () => controller.abort();
+      if (signal.aborted) controller.abort();
+      else signal.addEventListener("abort", abort, { once: true });
+      const timer = window.setTimeout(abort, timeout);
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST", credentials: "same-origin", cache: "no-store",
+          headers: { Accept: "application/json", "Content-Type": "application/json", ...header },
+          body: JSON.stringify(body), signal: controller.signal
+        });
+        if (response.status === 404) throw new Error("not-found");
+        if (response.status === 429) throw new Error("rate-limit");
+        if (response.status === 504) throw new Error("timeout");
+        if (!response.ok) throw new Error("request-failed");
+        return await response.json();
+      } catch (error) {
+        if (controller.signal.aborted) throw new Error("timeout");
+        throw error;
+      } finally { window.clearTimeout(timer); signal.removeEventListener("abort", abort); }
+    };
+    const readMatch = async (matchId: number, signal: AbortSignal) => {
+      const payload = await requestJson(data.config.relayEndpoint, { matchId }, { "X-Money-Meta-Relay": "dota-match-v1" }, signal, data.config.relayTimeoutMs);
+      const match = sanitizeDotaMatchResponse(payload);
+      if (!match) throw new Error("malformed");
+      if (match.matchId !== matchId) throw new Error("mismatch");
+      return match;
+    };
+    const recovery = new DotaMatchRecovery({
+      request: async (matchId, signal) => {
+        const response = await requestJson(data.config.parseEndpoint, { matchId, requestReplay: true }, { "X-Money-Meta-Parse": "dota-parse-v1" }, signal, data.config.parseTimeoutMs);
+        if (response.accepted !== true || response.matchId !== matchId) throw new Error("malformed");
+      },
+      read: readMatch,
+      apply: (match) => {
+        if (!currentMatch || currentMatch.matchId !== match.matchId) return;
+        // A stale provider response must not remove an already available timeline.
+        if (!canReplaceDotaMatch(currentMatch, match)) throw new Error("stale");
+        const slot = currentSlot;
+        const role = roleControl.value as DotaMatchRole | "unknown";
+        const opponent = parseDotaPlayerSlot(opponentControl.value);
+        const tab = root.querySelector<HTMLElement>('[data-result-tab][aria-selected="true"]')?.dataset.resultTab ?? "summary";
+        const contributionExpanded = root.querySelector<HTMLDetailsElement>("[data-final-review]")!.open;
+        renderMatch(match);
+        if (slot !== null) selectPlayer(slot, role, opponent);
+        setResultTab(tab);
+        root.querySelector<HTMLDetailsElement>("[data-final-review]")!.open = contributionExpanded;
+      },
+      state: (state: DotaRecoveryState, error?: unknown) => {
+        const labels: Record<DotaRecoveryState, string> = {
+          requesting: copy.recoveryRequesting!, waiting: copy.recoveryWaiting!, checking: copy.recoveryChecking!,
+          ready: copy.recoveryReady!, pending: copy.recoveryPending!, stopped: copy.recoveryStopped!, error: copy.recoveryError!
+        };
+        recoveryStatus.textContent = error instanceof Error && error.message === "rate-limit" ? copy.recoveryLimited! : labels[state];
+        recoveryStatus.dataset.state = state;
+        updateRecoveryControls();
+      }
+    });
+    function updateRecoveryControls() {
+      const complete = currentMatch?.players.length === 10 && currentMatch.players.every(hasDotaMatchTimeline);
+      recoveryPanel.hidden = !currentMatch || Boolean(complete && !recoveryStatus.textContent);
+      requestReplay.disabled = !currentMatch || recovery.busy || Boolean(complete) || recovery.wasRequested(currentMatch.matchId);
+      refreshReplay.disabled = !currentMatch || recovery.busy;
+      stopReplay.hidden = !recovery.busy;
+      if (currentMatch) auditRoot.querySelector<HTMLAnchorElement>("[data-recovery-provider]")!.href = `${data.config.publicMatchBase}/${currentMatch.matchId}`;
+    }
+    requestReplay.addEventListener("click", () => { if (currentMatch) void recovery.run(currentMatch.matchId, true); });
+    refreshReplay.addEventListener("click", () => { if (currentMatch) void recovery.run(currentMatch.matchId); });
+    stopReplay.addEventListener("click", () => recovery.cancel());
+    window.addEventListener("pagehide", () => recovery.cancel(false), { once: true });
+
     const loadMatch = async () => {
       const matchId = parseDotaMatchId(input.value);
       if (!matchId) {
@@ -854,6 +1452,9 @@ const payload = JSON.stringify({
       }
       submit.disabled = true;
       demo.disabled = true;
+      recovery.cancel(false);
+      recoveryPanel.hidden = true;
+      recoveryStatus.textContent = "";
       selection.hidden = true;
       result.hidden = true;
       currentMatch = null;
@@ -861,26 +1462,8 @@ const payload = JSON.stringify({
       setStep(1);
       setStatus(copy.loading!, "loading");
       const controller = new AbortController();
-      const timer = window.setTimeout(() => controller.abort(), data.config.relayTimeoutMs);
       try {
-        const response = await fetch(data.config.relayEndpoint, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Money-Meta-Relay": "dota-match-v1"
-          },
-          body: JSON.stringify({ matchId }),
-          signal: controller.signal
-        });
-        if (response.status === 404) throw new Error("not-found");
-        if (response.status === 429) throw new Error("rate-limit");
-        if (response.status === 504) throw new Error("timeout");
-        if (!response.ok) throw new Error("request-failed");
-        const match = sanitizeDotaMatchResponse(await response.json());
-        if (!match) throw new Error("malformed");
-        if (match.matchId !== matchId) throw new Error("mismatch");
+        const match = await readMatch(matchId, controller.signal);
         setStatus("", "success");
         renderMatch(match);
       } catch (error) {
@@ -899,7 +1482,6 @@ const payload = JSON.stringify({
                   : copy.failed!;
         setStatus(message);
       } finally {
-        window.clearTimeout(timer);
         submit.disabled = false;
         demo.disabled = false;
       }
@@ -916,12 +1498,24 @@ const payload = JSON.stringify({
     });
     if (sharedMatch && params.get("autoload") === "1") form.requestSubmit();
     roleControl.addEventListener("change", renderAudit);
+    opponentControl.addEventListener("change", () => {
+      auditRoot.querySelector<HTMLElement>("[data-share-status]")!.textContent = "";
+      auditRoot.querySelector<HTMLElement>("[data-rule-status]")!.textContent = "";
+      renderAudit();
+    });
+    root.querySelector<HTMLButtonElement>("[data-copy-focus]")!.addEventListener("click", async () => {
+      if (!currentFocusNote) return;
+      const copied = await copyText(currentFocusNote);
+      root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = copied ? copy.focusCopied! : copy.copyFailed!;
+    });
     root.querySelector<HTMLButtonElement>("[data-match-share]")!.addEventListener("click", async () => {
       if (!currentMatch || currentSlot === null) return;
       const share = new URL(window.location.origin + window.location.pathname);
       share.searchParams.set("match", String(currentMatch.matchId));
       share.searchParams.set("slot", String(currentSlot));
-      share.searchParams.set("role", roleControl.value);
+      if (roleControl.value === "core" || roleControl.value === "support") share.searchParams.set("role", roleControl.value);
+      const opponentSlot = parseDotaPlayerSlot(opponentControl.value);
+      if (opponentSlot !== undefined) share.searchParams.set("opponent", String(opponentSlot));
       const copied = await copyText(share.toString());
       root.querySelector<HTMLElement>("[data-share-status]")!.textContent = copied ? copy.shared! : copy.copyFailed!;
     });

@@ -146,6 +146,41 @@ describe("Dota item alternatives", () => {
 });
 
 describe("Dota item sequence planner", () => {
+  const recipeItems = [
+    item({ key: "blade", cost: 1000, components: [] }),
+    item({ key: "yasha", cost: 2000, components: ["blade"] }),
+    item({ key: "manta", cost: 5000, components: ["yasha"] }),
+    item({ key: "sange_and_yasha", cost: 4000, components: ["yasha"] })
+  ];
+  const plan = (keys: string[]) => calculateItemPlan(recipeItems, {
+    role: "core", currentMinute: 10, goldPerMinute: 500, startingGold: 0, itemKeys: keys
+  });
+
+  it("pays only the upgrade balance when a queued item becomes a component", () => {
+    const rows = plan(["yasha", "manta"]);
+    expect(rows.map((row) => row.incrementalCost)).toEqual([2000, 3000]);
+    expect(rows[1]?.cumulativeCost).toBe(5000);
+    expect(rows[1]?.projectedMinute).toBe(20);
+    expect(rows[1]?.moveFirstGainMinutes).toBe(0);
+  });
+
+  it("reuses nested components and charges each once across successive upgrades", () => {
+    expect(plan(["blade", "manta"])[1]?.incrementalCost).toBe(4000);
+    expect(plan(["blade", "yasha", "manta"]).map((row) => row.incrementalCost)).toEqual([1000, 1000, 3000]);
+  });
+
+  it("does not reuse a consumed component for a second upgrade or disassemble a finished item", () => {
+    expect(plan(["yasha", "manta", "sange_and_yasha"])[2]?.incrementalCost).toBe(4000);
+    expect(plan(["manta", "yasha"])[1]?.incrementalCost).toBe(2000);
+    expect(plan(["yasha", "yasha"])[1]?.incrementalCost).toBe(2000);
+  });
+
+  it("does not give a free unknown component or recurse forever on a malformed recipe", () => {
+    const bad = item({ key: "loop", cost: 200, components: ["loop", "missing"] });
+    const rows = calculateItemPlan([bad], { role: "core", currentMinute: 0, goldPerMinute: 100, startingGold: 0, itemKeys: ["loop", "loop"] });
+    expect(rows[1]?.cumulativeCost).toBe(400);
+  });
+
   it("projects an absolute match minute and exposes the delay caused by earlier items", () => {
     const blink = item({ id: 1, key: "blink", name: "Blink Dagger", cost: 2_250, timings: { core: { n: 250, p25: 15, median: 19, p75: 24, purchaseRatePct: 30 } } });
     const bkb = item();

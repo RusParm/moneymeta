@@ -1,5 +1,43 @@
 # Money Meta roadmap
 
+## Current increment: v1.27 answers before more features
+
+The owner wants a product that changes player decisions and earns repeat use. Finish the compact working surface and WoW batch cash explanation, then publish the already verified release only after approval. Do not treat unpublished improvements as user-visible progress.
+
+Next quality sequence:
+
+1. Operate the published product: review expiring source claims, verify the primary path per game and distinguish data gaps from interface failures.
+2. Test one flagship task per game with players using their actual situation. First collect whether they can reach an answer, understand what to do and explain what changed; do not infer demand from the number of tools. Five initial observed sessions are a practical starting point, not a statistical validation target.
+3. Choose deeper work from those failures: GTA owned-business session planning; Dota one replay decision and a next-match check; WoW observed batch sales; Total War build versus army before war; CK3 heir cash under adverse income; Civilization two actions before a chosen turn.
+4. Measure the result-to-return path with minimal event fields only after reviewing existing analytics URL handling. Never include match IDs, input values or saved notes in events.
+
+Acceptance standard for a flagship task: a useful example opens immediately; the player can find each required input in-game; the result states a choice, consequence and switching condition; the saved result can be revisited after play. The first-minute answer is a target to test, not a measured current result. Monetization follows demonstrated recurring use.
+
+## Current increment: v1.26 return to a useful calculation
+
+- Named input/result copies, a device-local list, game/state filters and direct model restoration across all six live games.
+- An after-session note and reviewed state preserve the original forecast. Explicit deletion can be undone.
+- Verify multiple variants, reload, language switching, preset-dependent fields and the Civilization active tab in preview.
+- Next: source-review operations and discovery remain high priorities from the audit. Use observed player behavior to choose the next deeper game scenario; add structured forecast/actual comparisons only where units and outcomes are comparable.
+
+## Next sequence from the September 7 whole-site audit
+
+See `PRODUCT_AUDIT_2026_09_07.md` for evidence, per-game gaps and acceptance criteria.
+
+1. Ship the v1.25 reliability candidate through preview: WoW initialization, signed losses, Dota component reuse, strategy reserve boundaries and shared route/accessibility checks.
+2. Establish claim-level source review across every hub, explain the overdue Dota snapshot, revalidate GTA business assumptions and finish the post-presentation GTA VI review.
+3. Shorten each game's path to its primary tool; add game/task discovery to the 35-note library and verify real mobile interactions.
+4. Deepen one concrete scenario per live game using observed examples and transparent alternatives, then add named scenarios, forecast/actual comparisons and privacy-minimal funnel measurement.
+
+Keep all six live economies maintained. Monetization stays after demonstrated recurring utility. The earlier milestones below are the development history, not a reason to add pages before resolving current gaps.
+
+## Current increment: v1.24 match review without replay timelines
+
+- Preserve final contribution fields and turn them into transparent same-match comparisons and concrete review questions.
+- Keep unknown roles and missing denominators explicit; avoid role guesses and overall player grades.
+- Add a separate request for OpenDota replay parsing, bounded readiness checks and result-preserving enrichment.
+- Verify final-only, partial, complete, stopped, failed and stale-response paths before preview handoff.
+
 ## P0: v0.3 foundation
 
 - Astro/TypeScript build pipeline.
@@ -216,6 +254,24 @@
 - Keep the GTA$1,000,000 Special Cargo challenge, free Arcadius office, doubled sourcing speed and later vehicle claim window visible as verified facts outside the repeated-run formula.
 - Represent route-specific access requirements without implying that a short bonus pays back a new Office, Warehouse or Vehicle Cargo setup.
 - Derive displayed weekly dates from the central snapshot and retain the previous week only as excluded archive context.
+
+## P2.10: v1.22 Dota economic autopsy
+
+- Replace the one-number Match Audit signal with a deterministic phase diagnosis built from the selected player's parsed gold timeline.
+- Compare a player only with the opposing hero carrying the same explicit OpenDota position estimate; never infer a counterpart from GPM, net worth or outcome.
+- Separate the movement of the direct-position gap from the whole-team economy so a shared map collapse is not mislabeled as an individual mistake.
+- Identify one material replay window using published gold-gap, team-gap and team-share thresholds rather than an opaque performance score.
+- Translate comparative gap movement into a clearly labeled item-delay equivalent using the player's pace inside the same window; never present it as proven lost income or an actual purchase delay.
+- Keep final-only matches useful through direct-opponent and team net-worth context while refusing to assign a minute or cause without parsed timelines.
+- Require RU/EN parity, model and UI-contract tests, static build, real-match HTTPS preview QA and responsive collision checks before production promotion.
+
+## P2.11: v1.23 focused replay workbench
+
+- Finish the existing single-match loop with a compact form, three result tabs and readable media-safe layouts.
+- Preserve explicit manual enemy selection alongside strict automatic position pairing.
+- Narrow a material phase to three observed minutes only with continuous samples, then expose gold, last hits, timed purchases and a replay question.
+- Keep team-share changes descriptive, distinguish absent evidence from a stable comparison, and preserve usable gold when last-hit samples are absent.
+- Preserve comparison context in shared links and language switching without automatic provider requests.
 
 ## Later
 

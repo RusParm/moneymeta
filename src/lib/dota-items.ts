@@ -198,9 +198,13 @@ export function getComparableAttributes(items: DotaItemRecord[]) {
 
 export type ItemPlanState = "ahead" | "on-pace" | "late" | "no-benchmark";
 
-export interface ItemPlanRow {
-  item: DotaItemRecord;
+export type DotaPlanItem = Pick<DotaItemRecord, "key" | "cost" | "components" | "timings">;
+
+export interface ItemPlanRow<T extends DotaPlanItem = DotaItemRecord> {
+  item: T;
   order: number;
+  incrementalCost: number;
+  reusedComponentGold: number;
   cumulativeCost: number;
   projectedMinute: number;
   benchmark: DotaItemTiming | null;
@@ -220,18 +224,36 @@ export interface ItemPlanInput {
 
 const clamp = (value: number, minimum: number, maximum: number) => Math.min(maximum, Math.max(minimum, value));
 
-export function calculateItemPlan(items: DotaItemRecord[], input: ItemPlanInput): ItemPlanRow[] {
+export function calculateItemPlan<T extends DotaPlanItem>(items: T[], input: ItemPlanInput): ItemPlanRow<T>[] {
   const role = input.role;
   const currentMinute = clamp(Number.isFinite(input.currentMinute) ? input.currentMinute : 0, 0, 180);
   const goldPerMinute = clamp(Number.isFinite(input.goldPerMinute) ? input.goldPerMinute : 1, 1, 2_500);
   const startingGold = clamp(Number.isFinite(input.startingGold) ? input.startingGold : 0, 0, 100_000);
-  const minimumSample = input.minimumSample ?? 200;
+  const minimumSample = Math.max(200, Number.isFinite(input.minimumSample) ? input.minimumSample! : 200);
   const byKey = new Map(items.map((item) => [item.key, item]));
-  const selected = input.itemKeys.slice(0, 5).map((key) => byKey.get(key)).filter((item): item is DotaItemRecord => Boolean(item));
+  const selected = input.itemKeys.slice(0, 5).map((key) => byKey.get(key)).filter((item): item is T => Boolean(item));
+  const inventory = new Map<string, number>();
+  // Consume each previously completed component once. Finished items are not
+  // disassembled; recursive lookup only follows the new item's recipe.
+  const consumeComponent = (key: string, ancestors: Set<string>): number => {
+    if (ancestors.has(key)) return 0;
+    const component = byKey.get(key);
+    if (!component) return 0;
+    const owned = inventory.get(key) ?? 0;
+    if (owned > 0) {
+      inventory.set(key, owned - 1);
+      return component.cost;
+    }
+    const visited = new Set([...ancestors, key]);
+    return Math.min(component.cost, component.components.reduce((total, child) => total + consumeComponent(child, visited), 0));
+  };
   let cumulativeCost = 0;
 
   return selected.map((item, index) => {
-    cumulativeCost += item.cost;
+    const reusedComponentGold = Math.min(item.cost, item.components.reduce((total, key) => total + consumeComponent(key, new Set([item.key])), 0));
+    const incrementalCost = item.cost - reusedComponentGold;
+    cumulativeCost += incrementalCost;
+    inventory.set(item.key, (inventory.get(item.key) ?? 0) + 1);
     const projectedMinute = currentMinute + Math.max(0, cumulativeCost - startingGold) / goldPerMinute;
     const movedFirstMinute = currentMinute + Math.max(0, item.cost - startingGold) / goldPerMinute;
     const timing = item.timings[role];
@@ -248,6 +270,8 @@ export function calculateItemPlan(items: DotaItemRecord[], input: ItemPlanInput)
     return {
       item,
       order: index + 1,
+      incrementalCost,
+      reusedComponentGold,
       cumulativeCost,
       projectedMinute,
       benchmark,

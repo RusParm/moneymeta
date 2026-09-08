@@ -30,6 +30,9 @@ const providerMatch = {
       deaths: 7,
       assists: 6,
       gold_per_min: 564,
+      hero_damage: 25400,
+      tower_damage: 1400,
+      hero_healing: 0,
       item_0: 137,
       times: [0, 600],
       gold_t: [0, 4_000],
@@ -89,6 +92,7 @@ describe("Dota match fallback relay", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toContain("no-store");
     expect(sanitizeDotaMatchResponse(payload)?.players).toHaveLength(2);
+    expect(sanitizeDotaMatchResponse(payload)?.players[0]).toMatchObject({ heroDamage: 25400, towerDamage: 1400, heroHealing: 0 });
     expect(serialized).not.toContain("account_id");
     expect(serialized).not.toContain("personaname");
     expect(serialized).not.toContain("discard me");

@@ -23,7 +23,7 @@ const alternatePath = getDotaItemPlannerPath(lang === "ru" ? "en" : "ru");
 const minimumSample = dotaItemsSnapshot.methodology.minimumSample;
 const defaults = ["blink", "black_king_bar", "", "", ""];
 const initialRows = calculateItemPlan(dotaItems, { role: "core", currentMinute: 10, goldPerMinute: 500, startingGold: 1_000, itemKeys: defaults.filter(Boolean) });
-const plannerData = JSON.stringify(dotaItems.map((item) => ({ key: item.key, name: item.name, cost: item.cost, image: item.image, timings: item.timings, path: getDotaItemPath(item, lang) }))).replace(/</g, "\\u003c");
+const plannerData = JSON.stringify(dotaItems.map((item) => ({ key: item.key, name: item.name, cost: item.cost, components: item.components, image: item.image, timings: item.timings, path: getDotaItemPath(item, lang) }))).replace(/</g, "\\u003c");
 const copy = lang === "ru" ? {
   back: "← К атласу предметов",
   title: "План сборки предметов Dota 2 | Money Meta",
@@ -76,8 +76,8 @@ const copy = lang === "ru" ? {
   assumptionsKicker: "Граница модели",
   assumptionsTitle: "Что расчёт учитывает и чего не знает.",
   assumptions: [
-    ["Учитывает", "Текущее золото, устойчивый будущий GPM, стоимость и заданный порядок до пяти предметов."],
-    ["Не учитывает", "Продажу предметов, стоимость курьера, случайные убийства, потерю фарма, buyback и изменения маршрута по ходу матча."],
+    ["Учитывает", "Текущее золото, устойчивый будущий GPM и порядок до пяти покупок. Если купленный в этой очереди предмет входит в следующий, его стоимость повторно не списывается."],
+    ["Не учитывает", "Предметы, купленные до начала очереди, разборку и продажу предметов, случайные убийства, потерю фарма, buyback и изменения маршрута по ходу матча."],
     ["Сравнивает", `Первую покупку предмета в профессиональном срезе ${dotaItemsSnapshot.patch.label}. Числа скрыты при n < ${minimumSample}.`]
   ],
   source: "Открыть источник"
@@ -133,8 +133,8 @@ const copy = lang === "ru" ? {
   assumptionsKicker: "Model boundary",
   assumptionsTitle: "What the calculation knows and what it does not.",
   assumptions: [
-    ["Included", "Current gold, sustainable future GPM, cost and the entered order of up to five items."],
-    ["Excluded", "Selling items, courier costs, random kills, lost farm, buyback and route changes during the match."],
+    ["Included", "Current gold, sustainable future GPM and up to five purchases. A component bought earlier in this queue is consumed by its upgrade without charging its cost again."],
+    ["Excluded", "Items owned before the queue, disassembly, selling items, random kills, lost farm, buyback and route changes during the match."],
     ["Compared", `First item purchases in the professional ${dotaItemsSnapshot.patch.label} cohort. Numbers stay hidden below n ${minimumSample}.`]
   ],
   source: "Open source"
@@ -205,7 +205,7 @@ const copy = lang === "ru" ? {
       <template data-plan-row-template>
         <article class="dota-plan-row">
           <div class="dota-plan-order"><b data-row-order></b><div><button type="button" data-move-up aria-label={copy.moveEarlier}>↑</button><button type="button" data-move-down aria-label={copy.moveLater}>↓</button></div></div>
-          <a data-row-link class="dota-plan-item"><span><img data-row-image alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" /></span><div><strong data-row-name></strong><small><span data-row-cost></span> {lang === "ru" ? "золота" : "gold"}</small></div></a>
+          <a data-row-link class="dota-plan-item"><span><img data-row-image alt="" width="88" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" /></span><div><strong data-row-name></strong><small><span data-row-cost></span> {lang === "ru" ? "зол. к оплате" : "gold to pay"}</small><small data-row-components hidden></small></div></a>
           <div class="dota-plan-metrics"><div><span>{copy.projected}</span><strong><b data-row-projected></b> {copy.minute}</strong></div><div><span>{copy.proMedian}</span><strong data-row-median></strong><small data-row-delta></small></div><div><span>{copy.sacrifice}</span><strong data-row-sacrifice></strong></div></div>
           <div class="dota-plan-state" data-row-state></div>
         </article>
@@ -229,7 +229,8 @@ const copy = lang === "ru" ? {
 
 <script is:inline type="application/json" data-planner-items set:html={plannerData}></script>
 <script>
-  interface PlannerItem { key: string; name: string; cost: number; image: string; path: string; timings: Partial<Record<"core" | "support", { n: number; p25: number; median: number; p75: number; purchaseRatePct: number }>>; }
+  import { calculateItemPlan } from "../lib/dota-items";
+  interface PlannerItem { key: string; name: string; cost: number; components: string[]; image: string; path: string; timings: Partial<Record<"core" | "support", { n: number; p25: number; median: number; p75: number; purchaseRatePct: number }>>; }
   const plannerReady = (callback: () => void) => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", callback, { once: true }) : callback();
   plannerReady(() => {
     const root = document.querySelector<HTMLElement>("[data-item-planner]");
@@ -275,18 +276,13 @@ const copy = lang === "ru" ? {
       const pace = clamp(Number(gpm.value), 1, 2500);
       const gold = clamp(Number(currentGold.value), 0, 100000);
       const selectedRole = role.value === "support" ? "support" : "core";
-      let cumulative = 0;
+      const plan = calculateItemPlan(items, { role: selectedRole, currentMinute: start, goldPerMinute: pace, startingGold: gold, itemKeys: selected.map((entry) => entry.item.key), minimumSample: minimum });
+      const cumulative = plan.at(-1)?.cumulativeCost ?? 0;
       results.replaceChildren();
 
       selected.forEach((entry, visibleIndex) => {
-        cumulative += entry.item.cost;
-        const projected = start + Math.max(0, cumulative - gold) / pace;
-        const movedFirst = start + Math.max(0, entry.item.cost - gold) / pace;
-        const sacrifice = Math.max(0, projected - movedFirst);
-        const rawBenchmark = entry.item.timings[selectedRole];
-        const benchmark = rawBenchmark && rawBenchmark.n >= minimum ? rawBenchmark : null;
-        const delta = benchmark ? projected - benchmark.median : null;
-        const state = delta === null ? "no-benchmark" : delta < -2 ? "ahead" : delta > 2 ? "late" : "on-pace";
+        const calculated = plan[visibleIndex]!;
+        const { projectedMinute: projected, moveFirstGainMinutes: sacrifice, benchmark, deltaMinutes: delta, state } = calculated;
         const fragment = template.content.cloneNode(true) as DocumentFragment;
         const row = fragment.querySelector<HTMLElement>(".dota-plan-row")!;
         row.dataset.state = state;
@@ -297,7 +293,11 @@ const copy = lang === "ru" ? {
         image.src = entry.item.image;
         image.onerror = () => { image.style.display = "none"; };
         row.querySelector<HTMLElement>("[data-row-name]")!.textContent = entry.item.name;
-        row.querySelector<HTMLElement>("[data-row-cost]")!.textContent = entry.item.cost.toLocaleString("en-US");
+        row.querySelector<HTMLElement>("[data-row-cost]")!.textContent = format(calculated.incrementalCost, 0);
+        const components = row.querySelector<HTMLElement>("[data-row-components]")!;
+        components.hidden = calculated.reusedComponentGold === 0;
+        components.textContent = ru ? `Учтено: ${format(calculated.reusedComponentGold, 0)} зол.` : `Already paid: ${format(calculated.reusedComponentGold, 0)} gold`;
+        components.title = ru ? "Стоимость компонентов, купленных раньше в этой очереди" : "Cost of components bought earlier in this queue";
         row.querySelector<HTMLElement>("[data-row-projected]")!.textContent = format(projected);
         row.querySelector<HTMLElement>("[data-row-median]")!.textContent = benchmark ? `${format(benchmark.median)} ${messages.minute} · n ${benchmark.n}` : messages.noData;
         const deltaNode = row.querySelector<HTMLElement>("[data-row-delta]")!;

@@ -86,7 +86,7 @@ export function calculateReserveMetrics(input: ReserveScenario): ReserveMetrics 
   const cashAtTarget = startingCash + netFlow * horizonPeriods;
   const buffer = cashAtTarget - reserve;
   const burn = Math.max(0, -netFlow);
-  const safePeriods = burn > 0 ? Math.max(0, (startingCash - reserve) / burn) : Number.POSITIVE_INFINITY;
+  const safePeriods = startingCash < reserve ? 0 : burn > 0 ? (startingCash - reserve) / burn : Number.POSITIVE_INFINITY;
   const maxSustainableOutflow = horizonPeriods > 0
     ? Math.max(0, incomePerPeriod + (startingCash - reserve) / horizonPeriods)
     : Math.max(0, incomePerPeriod);

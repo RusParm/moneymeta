@@ -1484,7 +1484,12 @@
 
 .dota-plan-item small {
   color: var(--muted-dim);
-  font: 600 9px "JetBrains Mono", monospace;
+  font: 600 10px/1.5 "JetBrains Mono", monospace;
+}
+
+.dota-plan-item small:not([hidden]) {
+  display: block;
+  margin-top: 4px;
 }
 
 .dota-plan-metrics {

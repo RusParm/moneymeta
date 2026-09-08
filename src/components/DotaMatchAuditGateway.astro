@@ -6,27 +6,27 @@ import "../styles/dota-match-audit.css";
 interface Props { lang: DotaItemsLocale; }
 const { lang } = Astro.props;
 const copy = lang === "ru" ? {
-  kicker: "Новый разбор · публичный Match ID",
-  title: "Не считай GPM в вакууме. Найди минуту, где изменился темп.",
-  text: "Вставь ID, выбери своего героя и получи контрольные точки, крупные покупки, выкупы и один вопрос для реплея. Без Steam-входа, файлов и автоматического запроса к провайдеру.",
+  kicker: "Разбор матча · публичный Match ID",
+  title: "Найди эпизод, который стоит пересмотреть.",
+  text: "Сравни золото с выбранным соперником и командой. При полной хронологии Money Meta выделит три минуты внутри заметного отставания и покажет, что проверить в повторе.",
   action: "Разобрать мой матч",
   request: "Запрос",
   requestValue: "только по клику",
   identity: "Личность",
   identityValue: "имена скрыты",
   result: "Результат",
-  resultValue: "одно правило"
+  resultValue: "эпизод для проверки"
 } : {
-  kicker: "New audit · public Match ID",
-  title: "Stop reading GPM in isolation. Find the minute when pace changed.",
-  text: "Paste an ID, choose your hero and get checkpoints, major purchases, buybacks and one replay question. No Steam sign-in, files or automatic provider request.",
+  kicker: "Match audit · public Match ID",
+  title: "Find the episode worth watching again.",
+  text: "Compare your gold with a chosen opponent and both teams. With complete timelines, Money Meta narrows a material decline to three observed minutes and shows what to check in the replay.",
   action: "Audit my match",
   request: "Request",
   requestValue: "click only",
   identity: "Identity",
   identityValue: "names hidden",
   result: "Output",
-  resultValue: "one rule"
+  resultValue: "one replay episode"
 };
 ---
 
@@ -38,7 +38,7 @@ const copy = lang === "ru" ? {
     <a class="button primary button-large" href={getDotaMatchAuditPath(lang)}>{copy.action} →</a>
   </div>
   <aside>
-    <span>OpenDota · GET /matches/:id · {dotaMatchAuditConfig.checkedAt}</span>
+    <span>OpenDota · {dotaMatchAuditConfig.checkedAt}</span>
     <div><small>{copy.request}</small><strong>{copy.requestValue}</strong></div>
     <div><small>{copy.identity}</small><strong>{copy.identityValue}</strong></div>
     <div><small>{copy.result}</small><strong>{copy.resultValue}</strong></div>
