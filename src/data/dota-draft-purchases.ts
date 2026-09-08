@@ -13,6 +13,30 @@ export interface DotaDraftPurchaseContext {
 
 const itemConstantsSource = "https://api.opendota.com/api/constants/items";
 
+export interface DotaDraftPurchaseThreatContext {
+  key: string;
+  heroId: number;
+  ability: string;
+  explanation: { ru: string; en: string };
+  sourceUrl: string;
+}
+
+// The current immutable ability snapshot establishes Duel as Unit Target.
+// This names a threat to review, not a verified item/ability interaction matrix.
+// Keep it separate from the narrowly reviewed Soulbind follow-up trait.
+export const dotaDraftPurchaseThreatContexts: DotaDraftPurchaseThreatContext[] = [
+  {
+    key: "sphere",
+    heroId: 104,
+    ability: "Duel",
+    explanation: {
+      ru: "Перед попыткой Duel отдельно проверь готовность защиты Linken's Sphere и не была ли она израсходована раньше.",
+      en: "Before a Duel attempt, specifically check whether Linken's Sphere protection was ready or had already been consumed."
+    },
+    sourceUrl: "https://api.github.com/repos/odota/dotaconstants/git/blobs/3f1229d41b1b07beb0a08e125ecb6e3a9118b8cd"
+  }
+];
+
 export const dotaDraftPurchaseContexts: DotaDraftPurchaseContext[] = [
   {
     key: "blink",

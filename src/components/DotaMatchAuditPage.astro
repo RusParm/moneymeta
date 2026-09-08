@@ -1303,9 +1303,11 @@ const payload = JSON.stringify({
       draftSummary.hidden = draft.status !== "ready" && draft.status !== "partial";
       const ownFinding = draft.opportunities[0];
       const enemyFinding = draft.threats[0];
+      const ownFindingHeroes = ownFinding?.heroIds.map((id) => heroFor(id).name).join(" + ");
+      const enemyFindingHeroes = enemyFinding?.heroIds.map((id) => heroFor(id).name).join(" + ");
       root.querySelector<HTMLElement>("[data-draft-summary-text]")!.textContent = [
-        ownFinding ? `${lang === "ru" ? "Ваши возможности" : "Your opportunities"}: ${ownFinding.title[lang]}.` : "",
-        enemyFinding ? `${lang === "ru" ? "У соперника" : "Opponents"}: ${enemyFinding.title[lang]}.` : ""
+        ownFinding ? `${lang === "ru" ? "Твоя команда" : "Your team"}${ownFindingHeroes ? ` (${ownFindingHeroes})` : ""}: ${ownFinding.title[lang]}.` : "",
+        enemyFinding ? `${lang === "ru" ? "Соперники" : "Opponents"}${enemyFindingHeroes ? ` (${enemyFindingHeroes})` : ""}: ${enemyFinding.title[lang]}.` : ""
       ].filter(Boolean).join(" ") || (lang === "ru" ? "Сравни проверенные способности героев и покупки обеих команд." : "Compare reviewed hero abilities and purchases on both teams.");
       result.hidden = false;
       setStep(3);

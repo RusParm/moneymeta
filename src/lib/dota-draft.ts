@@ -1,6 +1,6 @@
 import { dotaDraftHeroProfiles, dotaDraftProfileSnapshot, type DotaDraftHeroProfile, type DotaDraftTrait } from "../data/dota-draft-profiles";
 import { dotaDraftRules, dotaDraftAxes } from "../data/dota-draft-rules";
-import { dotaDraftPurchaseContexts } from "../data/dota-draft-purchases";
+import { dotaDraftPurchaseContexts, dotaDraftPurchaseThreatContexts } from "../data/dota-draft-purchases";
 import type { DotaMatch, DotaMatchPlayer } from "./dota-match";
 
 type Copy = { ru: string; en: string };
@@ -22,7 +22,7 @@ export interface DotaDraftPurchaseEvent {
   title: Copy;
   explanation: Copy;
   sourceUrl: string;
-  context?: { heroIds: number[]; text: Copy; abilities?: Array<{ heroId: number; ability: string }> };
+  context?: { heroIds: number[]; text: Copy; abilities?: Array<{ heroId: number; ability: string }>; sourceUrls?: string[] };
 }
 export interface DotaDraftReview {
   status: "ready" | "partial" | "unavailable" | "patch-mismatch";
@@ -132,6 +132,27 @@ function purchaseEvents(match: DotaMatch, player: DotaMatchPlayer, patchMatches:
             en: "These enemies have reviewed unit-targeted spells. Check protection against the specific ability and the order of casts."
           } };
         }
+        if (key === "sphere") {
+          const namedThreats = dotaDraftPurchaseThreatContexts.filter((threat) => threat.key === key
+            && otherSide.some((opponent) => opponent.heroId === threat.heroId));
+          if (namedThreats.length) {
+            const existing = event.context;
+            event.context = {
+              heroIds: unique([...(existing?.heroIds ?? []), ...namedThreats.map((threat) => threat.heroId)]).sort((a, b) => a - b),
+              text: {
+                ru: [existing?.text.ru, ...namedThreats.map((threat) => threat.explanation.ru)].filter(Boolean).join(" "),
+                en: [existing?.text.en, ...namedThreats.map((threat) => threat.explanation.en)].filter(Boolean).join(" ")
+              },
+              abilities: [
+                ...(existing?.heroIds ?? []).flatMap((id) => profiles.get(id)!.evidence
+                  .filter((entry) => entry.trait === "targetedSpell")
+                  .map((entry) => ({ heroId: id, ability: entry.ability }))),
+                ...namedThreats.map((threat) => ({ heroId: threat.heroId, ability: threat.ability }))
+              ],
+              sourceUrls: unique(namedThreats.map((threat) => threat.sourceUrl))
+            };
+          }
+        }
       }
       return event;
     });
@@ -164,7 +185,7 @@ export function buildDotaDraftReview(match: DotaMatch, player: DotaMatchPlayer):
   if (!valid) return review;
   review.purchases = purchaseEvents(match, player, patchMatches);
   review.purchaseLogHeroCount = match.players.filter((row) => row.purchases.some((purchase) => Number.isFinite(purchase.time) && purchase.time >= 0 && purchase.time <= match.durationSeconds)).length;
-  review.sourceUrls = unique([...review.sourceUrls, ...review.purchases.map((purchase) => purchase.sourceUrl)]);
+  review.sourceUrls = unique([...review.sourceUrls, ...review.purchases.flatMap((purchase) => [purchase.sourceUrl, ...(purchase.context?.sourceUrls ?? [])])]);
   if (!patchMatches || !covered) return review;
   review.axes = dotaDraftAxes.map((axis) => ({
     id: axis.id, title: axis.title, explanation: axis.explanation,

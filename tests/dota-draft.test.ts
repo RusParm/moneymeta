@@ -269,6 +269,26 @@ describe("Dota draft context", () => {
 });
 
 describe("Dota draft purchase observations", () => {
+  it("names Duel for an opposing Linken holder without extending Lotus or Soulbind eligibility", () => {
+    const match = matchFixture();
+    selected(match, 53).purchases = [{ key: "sphere", time: 1900 }, { key: "lotus_orb", time: 1950 }];
+    selected(match, 104).purchases = [{ key: "sphere", time: 2000 }];
+    const result = review(match);
+    const sphere = result.purchases.find((event) => event.heroId === 53 && event.key === "sphere")!;
+    expect(sphere.context?.heroIds).toEqual([26, 104]);
+    expect(sphere.context?.abilities).toEqual(expect.arrayContaining([
+      expect.objectContaining({ heroId: 26 }), { heroId: 104, ability: "Duel" }
+    ]));
+    expect(sphere.context?.text.ru).toContain("Duel");
+    expect(sphere.context?.text.en).toContain("Duel");
+    expect(sphere.context?.sourceUrls?.every((url) => result.sourceUrls.includes(url))).toBe(true);
+    expect(result.purchases.find((event) => event.key === "lotus_orb")?.context?.heroIds).not.toContain(104);
+    expect(result.purchases.find((event) => event.heroId === 104)?.context?.heroIds ?? []).not.toContain(104);
+    expect(result.threats.find((finding) => finding.id === "bound-targets")?.heroIds).toEqual([121, 26]);
+    match.startTime = Date.parse("2026-07-01T00:00:00Z") / 1000;
+    expect(review(match).purchases.every((event) => !event.context)).toBe(true);
+  });
+
   it("grounds item context in the holder's opponents or teammates and never the holder's own synergy", () => {
     const match = matchFixture();
     selected(match).purchases = [{ key: "black_king_bar", time: 1800 }, { key: "desolator", time: 2100 }];
