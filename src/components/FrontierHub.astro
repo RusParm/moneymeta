@@ -152,8 +152,8 @@ const evidenceSection = hub.status === "live" ? "meta" : "sources";
             />
           </div>
           {hubId === "civ7" ? <>
-            <h1 id={`${hubId}-title`}>{lang === "ru" ? "Civilization VII: успеет ли вложение окупиться?" : "Civilization VII: will the investment pay back in time?"}</h1>
-            <p class="lede">{lang === "ru" ? "Сопоставь цену и время строительства с пользой, которую ты ожидаешь получить до выбранного хода." : "Compare cost and construction time with the benefit you expect before your target turn."}</p>
+            <h1 id={`${hubId}-title`}>{lang === "ru" ? "Civilization VII: какую постройку выбрать к нужному ходу?" : "Civilization VII: which building delivers before your deadline?"}</h1>
+            <p class="lede">{lang === "ru" ? "Сравни два варианта по времени и приросту выбранного ресурса. Затраты производства остаются отдельной частью решения." : "Compare two options by timing and output of one chosen resource. Production costs remain a separate part of the decision."}</p>
             <a class="hub-entry-context" href={getFrontierPath(hubId, lang, "meta")}>{lang === "ru" ? "Механики текущей версии →" : "Current version mechanics →"}</a>
           </> : <>
             <p class="eyebrow">{hub.eyebrow[lang]}</p>

@@ -1,0 +1,38 @@
+.civ-tools .civ-tool-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.civ-tools .civ-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; min-height: 0; }
+.civ-comparison-intro { grid-column: 1 / -1; }
+.civ-comparison-intro h3 { margin: 8px 0; font-size: clamp(25px, 3vw, 36px); }
+.civ-comparison-intro p { margin: 0; max-width: 90ch; color: #b2afba; font-size: 14px; line-height: 1.6; }
+.civ-comparison-form { min-width: 0; }
+.civ-comparison-example, .civ-comparison-help { margin: 0; color: #b2afba; font-size: 13px; line-height: 1.5; }
+.civ-comparison-settings, .civ-comparison-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.civ-comparison label { display: grid; gap: 7px; min-width: 0; }
+.civ-comparison label > span { color: #b2afba; font-size: 13px; line-height: 1.4; }
+.civ-comparison select { width: 100%; min-width: 0; height: 46px; padding: 0 12px; border: 1px solid #41404a; border-radius: 10px; background: #171920; color: #f4f1f6; font-size: 14px; }
+.civ-comparison input:focus-visible, .civ-comparison select:focus-visible, .civ-comparison summary:focus-visible { outline: 2px solid var(--frontier-accent); outline-offset: 3px; }
+.civ-comparison fieldset { display: grid; gap: 12px; min-width: 0; margin: 0; padding: 14px; border: 1px solid #383740; border-radius: 12px; }
+.civ-comparison legend { padding: 0 6px; color: #f4f1f6; font-weight: 700; }
+.civ-comparison .civ-comparison-result { grid-column: auto; min-width: 0; align-self: start; padding: 20px; }
+.civ-comparison-result h4 { font-size: clamp(24px, 2.8vw, 30px); line-height: 1.15; }
+.civ-comparison-result p { color: #b2afba; font-size: 14px; line-height: 1.6; }
+.civ-comparison-result dt { color: #b2afba; font-size: 11px; text-transform: none; letter-spacing: 0; }
+.civ-comparison-result dd { font-size: 16px; }
+.civ-comparison-result .civ-comparison-condition { padding-left: 12px; border-left: 2px solid var(--frontier-accent); color: #e8e5ee; }
+.civ-comparison-production h5 { margin: 18px 0 8px; font-size: 17px; }
+.civ-comparison-path { margin: 18px 0; padding-top: 14px; border-top: 1px solid #383740; }
+.civ-comparison-path summary { cursor: pointer; color: #e8e5ee; font-size: 14px; font-weight: 700; line-height: 1.5; }
+.civ-comparison-path table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.civ-comparison-path caption { padding: 6px 0; text-align: left; color: #b2afba; }
+.civ-comparison-path th, .civ-comparison-path td { padding: 9px 6px; border-bottom: 1px solid #383740; text-align: right; }
+.civ-comparison-path th:first-child { text-align: left; }
+.civ-comparison-result .scenario-actions { margin-top: 16px; }
+.civ-comparison-invalid { color: #ffc6cb !important; }
+@media (max-width: 860px) { .civ-tools .civ-comparison { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .civ-tools .civ-tool-tabs { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .civ-tools .civ-comparison { padding: 18px; }
+  .civ-comparison-settings { grid-template-columns: 1fr; }
+  .civ-comparison-options { gap: 8px; }
+  .civ-comparison fieldset { padding: 10px; }
+  .civ-comparison-result dl > div { padding: 10px; }
+}

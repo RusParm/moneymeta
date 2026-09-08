@@ -2,6 +2,9 @@
 import type { StrategyHubData, StrategyLocale } from "../data/strategy-hubs";
 import ScenarioActions from "./ScenarioActions.astro";
 import StrategyMark from "./StrategyMark.astro";
+import { strategyDecisionCopy } from "../lib/strategy-decision-copy";
+import { strategyMoneyLimit } from "../lib/strategy-decision";
+import "../styles/strategy-decision.css";
 
 interface Props { lang: StrategyLocale; data: StrategyHubData; }
 const { lang, data } = Astro.props;
@@ -39,7 +42,9 @@ const copy = lang === "ru" ? {
     <span class="pill strategy-pill">{copy.status}</span>
   </div>
 
-  {data.models.map((model, modelIndex) => (
+  {data.models.map((model, modelIndex) => {
+    const decision = strategyDecisionCopy(lang, data.id, model.id);
+    return (
     <section
       id={model.id}
       class="strategy-model"
@@ -52,13 +57,14 @@ const copy = lang === "ru" ? {
       data-winner-b={model.winnerLabels?.b[lang] ?? "B"}
       data-winner-tie={model.winnerLabels?.tie[lang] ?? "Tie"}
       data-lang={lang}
+      data-game-id={data.id}
     >
       <div class="strategy-model-head">
         <StrategyMark mark={model.mark} lang={lang} label={`0${modelIndex + 1}`} large />
         <div>
           <span class="section-kicker">{model.kicker[lang]}</span>
-          <h3 id={`${model.id}-title`}>{model.title[lang]}</h3>
-          <p>{model.text[lang]}</p>
+          <h3 id={`${model.id}-title`}>{model.kind === "reserve" ? decision.title : model.title[lang]}</h3>
+          <p>{model.kind === "reserve" ? decision.intro : model.text[lang]}</p>
         </div>
         <span class="pill muted">{data.version[lang]}</span>
       </div>
@@ -66,6 +72,7 @@ const copy = lang === "ru" ? {
       <div class="grid-2 strategy-model-grid" data-scenario-root data-scenario-key={`${data.id}-${model.id}`}>
         <form class="card strategy-input-card">
           <div class="strategy-input-title"><span>{copy.inputTitle}</span><strong>0{modelIndex + 1}</strong></div>
+          {model.kind === "reserve" && <p class="strategy-decision-help">{decision.inputs}</p>}
           <div class="form-grid strategy-form-grid">
             {model.inputs.map((input, index) => (
               <div class:list={["field", input.group && `option-${input.group}`]}>
@@ -79,19 +86,76 @@ const copy = lang === "ru" ? {
                   data-role={input.key}
                   type="number"
                   value={input.value}
-                  min={input.min}
-                  max={input.max}
-                  step={input.step ?? 1}
+                  min={model.kind === "reserve" && input.key === "incomePerPeriod" ? -strategyMoneyLimit : input.min}
+                  max={model.kind === "reserve" ? (input.key === "horizonPeriods" ? 600 : strategyMoneyLimit) : input.max}
+                  step={model.kind === "reserve" && input.key !== "horizonPeriods" ? "any" : input.step ?? 1}
+                  required
                 />
               </div>
             ))}
           </div>
+          {model.kind === "reserve" && <>
+            <p class="strategy-decision-help">{decision.sourceHint}</p>
+            <details class="strategy-decision-changes">
+              <summary>{decision.changes}</summary>
+              <div class="form-grid strategy-form-grid">
+                <div class="field">
+                  <label for={`${data.id}-${model.id}-actionDelayPeriods`}>{decision.delay}</label>
+                  <input id={`${data.id}-${model.id}-actionDelayPeriods`} type="number" data-model-input="actionDelayPeriods" data-role="actionDelayPeriods" value="1" min="0" max="600" step="1" required />
+                </div>
+                <div class="field">
+                  <label for={`${data.id}-${model.id}-incomeChangePeriod`}>{decision.changePeriod}</label>
+                  <input id={`${data.id}-${model.id}-incomeChangePeriod`} type="number" data-model-input="incomeChangePeriod" data-role="incomeChangePeriod" value="0" min="0" max="600" step="1" required />
+                </div>
+                <div class="field">
+                  <label for={`${data.id}-${model.id}-incomeChange`}>{decision.change}</label>
+                  <input id={`${data.id}-${model.id}-incomeChange`} type="number" data-model-input="incomeChange" data-role="incomeChange" value="0" min={-strategyMoneyLimit} max={strategyMoneyLimit} step="any" required />
+                </div>
+              </div>
+              <p class="strategy-decision-help">{decision.changeHelp}</p>
+            </details>
+          </>}
           <button class="button ghost strategy-reset" data-model-reset type="button">↺ {copy.reset}</button>
         </form>
 
         <article class="card result-panel strategy-result-panel" data-model-result aria-live="polite">
           <div class="strategy-result-top"><span class="result-label">{copy.result}</span><StrategyMark mark={model.mark} lang={lang} /></div>
           <div class="result-name" data-model-verdict>{model.title[lang]}</div>
+          {model.kind === "reserve" ? <>
+            <p class="strategy-decision-invalid" data-decision-invalid hidden>{decision.invalid}</p>
+            <div data-decision-body>
+              <p class="strategy-decision-answer" data-decision-answer></p>
+              <div class="result-metrics strategy-result-metrics">
+                <div class="result-metric is-primary"><span>{decision.final}</span><strong data-decision-output="cashAtTarget">-</strong></div>
+                <div class="result-metric"><span>{decision.minimum}</span><strong data-decision-output="lowestCash">-</strong></div>
+                <div class="result-metric"><span>{decision.breach}</span><strong data-decision-output="firstBreach">-</strong></div>
+                <div class="result-metric"><span>{decision.maxAdded}</span><strong data-decision-output="maxAdded">-</strong></div>
+              </div>
+              <div class="strategy-decision-table-wrap">
+                <table class="strategy-decision-table">
+                  <caption>{decision.tableLabel}</caption>
+                  <thead><tr><th scope="col">{decision.choice}</th><th scope="col">{decision.cash}</th><th scope="col">{decision.first}</th></tr></thead>
+                  <tbody>{["now", "later", "keep"].map((choice) => <tr data-decision-choice={choice}>
+                    <th scope="row" data-decision-choice-name>{decision[choice as "now" | "later" | "keep"]}</th>
+                    <td data-decision-choice-cash>-</td><td data-decision-choice-breach>-</td>
+                  </tr>)}</tbody>
+                </table>
+              </div>
+              <p class="strategy-decision-help" data-decision-income-note></p>
+              <p class="strategy-decision-help">{decision.timing}</p>
+              <details class="strategy-decision-path">
+                <summary>{decision.path}</summary>
+                <p class="strategy-decision-help">{decision.pathHelp}</p>
+                <div class="strategy-decision-table-wrap" tabindex="0" role="region" aria-label={decision.path}>
+                  <table class="strategy-decision-table">
+                    <thead><tr><th scope="col">{decision.period}</th><th scope="col">{decision.now}</th><th scope="col">{decision.later}</th><th scope="col">{decision.keep}</th></tr></thead>
+                    <tbody data-decision-path></tbody>
+                  </table>
+                </div>
+              </details>
+              <p class="strategy-decision-help">{decision.after}</p>
+            </div>
+          </> : <>
           <p class="result-reason">{model.note[lang]}</p>
           <div class="result-metrics strategy-result-metrics">
             {model.results.map((result) => (
@@ -101,21 +165,24 @@ const copy = lang === "ru" ? {
               </div>
             ))}
           </div>
+          </>}
           <ScenarioActions lang={lang} />
         </article>
       </div>
     </section>
-  ))}
+  );})}
 </section>
 
 <script>
   import {
     calculateComparisonMetrics,
-    calculateInvestmentMetrics,
-    calculateReserveMetrics
+    calculateInvestmentMetrics
   } from "../lib/strategy-economy";
+  import { calculateReserveDecision } from "../lib/strategy-decision";
+  import { strategyDecisionCopy } from "../lib/strategy-decision-copy";
 
   document.querySelectorAll<HTMLElement>("[data-strategy-model]").forEach((root) => {
+    root.querySelector("form")?.addEventListener("submit", (event) => event.preventDefault());
     const inputs = [...root.querySelectorAll<HTMLInputElement>("[data-model-input]")];
     const outputs = [...root.querySelectorAll<HTMLElement>("[data-model-output]")];
     const resultPanel = root.querySelector<HTMLElement>("[data-model-result]")!;
@@ -123,6 +190,8 @@ const copy = lang === "ru" ? {
     const reset = root.querySelector<HTMLButtonElement>("[data-model-reset]")!;
     const baselines = new Map(inputs.map((input) => [input.dataset.modelInput ?? "", input.value]));
     const lang = root.dataset.lang === "ru" ? "ru" : "en";
+    const decision = strategyDecisionCopy(lang, root.dataset.gameId ?? "", root.id);
+    const scenario = root.querySelector<HTMLElement>("[data-scenario-root]")!;
     const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
 
     const value = (key: string) => {
@@ -144,6 +213,76 @@ const copy = lang === "ru" ? {
       let metrics: Record<string, number | string> = {};
       let positive = true;
 
+      if (kind === "reserve") {
+        const invalid = inputs.some((input) => !input.value.trim() || !Number.isFinite(Number(input.value)) || input.validity.rangeOverflow || input.validity.rangeUnderflow);
+        const calculated = invalid ? null : calculateReserveDecision({
+          treasury: value("treasury"), incomePerPeriod: value("incomePerPeriod"),
+          currentOutflow: value("currentOutflow"), newOutflow: value("newOutflow"),
+          oneOffCost: value("oneOffCost"), horizonPeriods: value("horizonPeriods"), reserve: value("reserve"),
+          actionDelayPeriods: value("actionDelayPeriods"), incomeChangePeriod: value("incomeChangePeriod"), incomeChange: value("incomeChange")
+        });
+        scenario.dataset.scenarioValid = String(calculated !== null);
+        root.querySelector<HTMLElement>("[data-decision-invalid]")!.hidden = calculated !== null;
+        root.querySelector<HTMLElement>("[data-decision-body]")!.hidden = calculated === null;
+        if (!calculated) {
+          verdict.textContent = lang === "ru" ? "Проверь вводные" : "Check the inputs";
+          resultPanel.dataset.state = "invalid";
+          root.querySelectorAll<HTMLElement>("[data-decision-output]").forEach((output) => { output.textContent = "-"; });
+          return;
+        }
+        const isRu = lang === "ru";
+        const precise = new Intl.NumberFormat(isRu ? "ru-RU" : "en-US", { maximumFractionDigits: 2 });
+        const cash = (amount: number) => `${precise.format(amount)} ${root.dataset.currencyUnit}`;
+        const period = (number: number | null) => number === null ? decision.none
+          : number === 0 ? decision.immediate : `${decision.period} ${number}`;
+        const cap = calculated.maxAddedOutflow;
+        // Display an affordable cap rounded down; do not round an unaffordable amount up.
+        const capText = cap === null ? decision.impossible : `${precise.format(Math.floor(cap * 100 + 1e-8) / 100)} ${root.dataset.currencyUnit}`;
+        const extraCash = `${precise.format(Math.ceil(calculated.extraTreasuryNeeded * 100 - 1e-8) / 100)} ${root.dataset.currencyUnit}`;
+        verdict.textContent = calculated.now.firstBreachPeriod === null ? decision.safe : decision.unsafe;
+        resultPanel.dataset.state = calculated.now.firstBreachPeriod === null ? "positive" : "negative";
+        const outputValues: Record<string, string> = {
+          cashAtTarget: cash(calculated.now.cashAtTarget), lowestCash: cash(calculated.now.lowestCash),
+          firstBreach: period(calculated.now.firstBreachPeriod), maxAdded: capText
+        };
+        root.querySelectorAll<HTMLElement>("[data-decision-output]").forEach((output) => { output.textContent = outputValues[output.dataset.decisionOutput ?? ""] ?? "-"; });
+        const unit = root.dataset.periodUnit ?? "";
+        const perUnit = root.dataset.gameId === "total-war" ? (isRu ? "ход" : "turn") : (isRu ? "месяц" : "month");
+        root.querySelector<HTMLElement>("[data-decision-answer]")!.textContent = cap === null
+          ? (isRu ? `Даже без нового регулярного расхода этот платёж и текущие обязательства затрагивают резерв. Чтобы начать сейчас с указанным расходом, нужно ещё ${extraCash} в начальной казне либо пересмотреть платёж и обязательства.` : `Even with no added recurring outflow, this payment and existing commitments breach the reserve. Acting now with the entered costs needs ${extraCash} more initial cash, or a change to the payment and commitments.`)
+          : (isRu ? `Чтобы начать сейчас и сохранить резерв на всём горизонте, новый регулярный расход должен быть не выше ${capText} / ${perUnit}.${calculated.now.firstBreachPeriod !== null ? ` При указанном расходе не хватает ${extraCash} начальной казны.` : ""}` : `To act now and preserve the reserve throughout the horizon, added recurring outflow must stay at or below ${capText} / ${perUnit}.${calculated.now.firstBreachPeriod !== null ? ` The entered outflow needs ${extraCash} more initial cash.` : ""}`);
+        root.querySelectorAll<HTMLElement>("[data-decision-choice]").forEach((row) => {
+          const choice = row.dataset.decisionChoice as "now" | "later" | "keep";
+          const path = calculated[choice];
+          row.querySelector<HTMLElement>("[data-decision-choice-name]")!.textContent = choice === "later"
+            ? (isRu ? `Начать через ${calculated.delayPeriods} ${unit}` : `Start after ${calculated.delayPeriods} ${unit}`) : decision[choice];
+          row.querySelector<HTMLElement>("[data-decision-choice-cash]")!.textContent = cash(path.cashAtTarget);
+          const breach = row.querySelector<HTMLElement>("[data-decision-choice-breach]")!;
+          breach.textContent = period(path.firstBreachPeriod);
+          breach.dataset.breached = String(path.firstBreachPeriod !== null);
+        });
+        const change = value("incomeChange");
+        const activeChange = calculated.incomeChangePeriod > 0 && calculated.incomeChangePeriod <= value("horizonPeriods");
+        const changeNote = activeChange
+          ? (isRu ? `Во всех трёх вариантах доход меняется на ${cash(change)} с периода ${calculated.incomeChangePeriod}.` : `Income changes by ${cash(change)} from period ${calculated.incomeChangePeriod} in all three alternatives.`)
+          : (isRu ? "На выбранном горизонте доход неизменен во всех трёх вариантах." : "Income stays unchanged throughout this horizon in all three alternatives.");
+        root.querySelector<HTMLElement>("[data-decision-income-note]")!.textContent = changeNote + (calculated.delayPeriods > value("horizonPeriods")
+          ? (isRu ? " Отложенное действие не начинается до конечной даты." : " The postponed action does not start within the horizon.") : "");
+        const body = root.querySelector<HTMLElement>("[data-decision-path]")!;
+        const rows = document.createDocumentFragment();
+        calculated.points.forEach((point) => {
+          const row = document.createElement("tr");
+          const heading = document.createElement("th"); heading.scope = "row"; heading.textContent = String(point.period); row.append(heading);
+          (["now", "later", "keep"] as const).forEach((choice) => {
+            const cell = document.createElement("td"); cell.textContent = cash(point[choice]);
+            cell.dataset.breached = String(point[choice] < value("reserve") - 1e-8); row.append(cell);
+          });
+          rows.append(row);
+        });
+        body.replaceChildren(rows);
+        return;
+      }
+
       if (kind === "investment") {
         const calculated = calculateInvestmentMetrics({
           cost: value("cost"),
@@ -157,21 +296,6 @@ const copy = lang === "ru" ? {
         verdict.textContent = positive
           ? (lang === "ru" ? "Инвестиция окупается в горизонте" : "Investment pays back inside the horizon")
           : (lang === "ru" ? "Горизонт короче окупаемости" : "The horizon is shorter than payback");
-      } else if (kind === "reserve") {
-        const calculated = calculateReserveMetrics({
-          treasury: value("treasury"),
-          incomePerPeriod: value("incomePerPeriod"),
-          currentOutflow: value("currentOutflow"),
-          newOutflow: value("newOutflow"),
-          oneOffCost: value("oneOffCost"),
-          horizonPeriods: value("horizonPeriods"),
-          reserve: value("reserve")
-        });
-        metrics = { ...calculated };
-        positive = calculated.buffer >= 0 && calculated.safePeriods > 0;
-        verdict.textContent = positive
-          ? (lang === "ru" ? "Резерв остаётся профинансирован" : "The reserve remains funded")
-          : (lang === "ru" ? "Сценарий пробивает резерв" : "The scenario breaks the reserve");
       } else {
         const calculated = calculateComparisonMetrics({
           aImmediate: value("aImmediate"),

@@ -41,6 +41,7 @@ export const scenarioTools: ScenarioTool[] = [
   tool("ck3-war-chest", "ck3", "tools", "war-chest", "Казна на войну", "War chest"),
   tool("ck3-succession-buffer", "ck3", "tools", "succession-buffer", "Резерв наследника", "Heir reserve"),
   tool("civ7-building", "civ7", "tools", "building-payback", "Окупаемость постройки", "Building payback"),
+  tool("civ7-comparison", "civ7", "tools", "building-comparison", "Две постройки к нужному ходу", "Two builds before the deadline"),
   tool("civ7-settlement", "civ7", "tools", "settlement-choice", "Развитие поселения", "Settlement development"),
   tool("civ7-victory", "civ7", "tools", "victory-gap", "Путь к экономической победе", "Economic Victory gap"),
   ...(["gta", "dota", "wow", "total-war", "ck3"] as const).map((game) =>

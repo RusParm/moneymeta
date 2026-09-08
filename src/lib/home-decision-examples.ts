@@ -3,7 +3,7 @@ import { getScenarioTool, localizeScenarioPath, type ScenarioLocale } from "../d
 import { calculateRunway } from "./runway";
 import { calculateCraftingCashFlow } from "./wow-economy";
 import { calculateReserveMetrics } from "./strategy-economy";
-import { calculateBuildingWindow } from "./civilization-economy";
+import { calculateCivilizationComparison } from "./civ-comparison";
 
 export interface HomeExampleMetric { label: string; value: number; display: string }
 export type HomeExampleResult = { valid: false } | {
@@ -28,7 +28,7 @@ export function homeExampleContext(game: HomeExampleGame, lang: ScenarioLocale):
     wow: ru ? `${f("craft-count")} крафтов по ${f("craft-output")} предметов. Материалы ${f("craft-materials")} за крафт; цена ${f("craft-price")} золота за предмет, комиссия ${f("craft-cut")}%.` : `${f("craft-count")} crafts of ${f("craft-output")} items each. Materials cost ${f("craft-materials")} per craft; price ${f("craft-price")} gold per item, with a ${f("craft-cut")}% cut.`,
     "total-war": ru ? `казна ${f("treasury")}, найм ${f("oneOffCost")}, запас ${f("reserve")}. Каждый ход: доход ${f("incomePerPeriod")}, содержание ${f("currentOutflow")} + ${f("newOutflow")} золота.` : `${f("treasury")} treasury, ${f("oneOffCost")} recruitment, ${f("reserve")} reserve. Per turn: ${f("incomePerPeriod")} income, ${f("currentOutflow")} + ${f("newOutflow")} gold upkeep.`,
     ck3: ru ? `казна ${f("treasury")}, разовые затраты ${f("oneOffCost")}, запас ${f("reserve")}. Доход ${f("incomePerPeriod")} и мирные расходы ${f("currentOutflow")} золота в месяц; война на ${f("horizonPeriods")} месяца.` : `${f("treasury")} treasury, ${f("oneOffCost")} one-off costs, ${f("reserve")} reserve. ${f("incomePerPeriod")} income and ${f("currentOutflow")} peacetime costs monthly; a ${f("horizonPeriods")}-month war.`,
-    civ7: ru ? `стоимость ${f("buildingCost")} условных единиц, строительство ${f("buildingTurns")} ходов, отдача ${f("buildingBenefit")} тех же единиц за ход после завершения.` : `${f("buildingCost")} illustrative units spent, ${f("buildingTurns")} turns to build, ${f("buildingBenefit")} of the same units per turn after completion.`
+    civ7: ru ? `A: ${f("comparisonCostA")} производства, ${f("comparisonTurnsA")} хода, затем +${f("comparisonYieldA")} науки за ход. B: ${f("comparisonCostB")} производства, ${f("comparisonTurnsB")} ходов, затем +${f("comparisonYieldB")} науки за ход.` : `A: ${f("comparisonCostA")} production, ${f("comparisonTurnsA")} build turns, then +${f("comparisonYieldA")} science per turn. B: ${f("comparisonCostB")} production, ${f("comparisonTurnsB")} build turns, then +${f("comparisonYieldB")} science per turn.`
   };
   return label + cases[game];
 }
@@ -43,6 +43,7 @@ export function calculateHomeDecisionExample(game: HomeExampleGame, raw: string 
   const values = Object.fromEntries(example.fields.map((field) => [field.key, field.key === example.inputKey ? value : field.value]));
   const tool = getScenarioTool(example.toolKey)!;
   const params = new URLSearchParams(Object.entries(values).map(([key, number]) => [`${tool.key}.${key}`, String(number)]));
+  Object.entries(example.fixedParameters ?? {}).forEach(([key, parameter]) => params.set(`${tool.key}.${key}`, parameter));
   const href = `${localizeScenarioPath(tool.path, lang)}?${params}#${tool.anchor}`;
   const ru = lang === "ru";
   const f = (number: number, digits = 0) => new Intl.NumberFormat(ru ? "ru-RU" : "en-US", { maximumFractionDigits: digits }).format(number);
@@ -85,12 +86,17 @@ export function calculateHomeDecisionExample(game: HomeExampleGame, raw: string 
         ? (ru ? "Проверь ещё один вариант с более долгой войной или меньшим доходом." : "Check another case with a longer war or lower income.")
         : (ru ? "До найма сократи содержание или пересчитай более короткий поход. Победа здесь не предполагается." : "Before recruiting, reduce upkeep or test a shorter campaign. This calculation does not assume victory.") };
   }
-  const result = calculateBuildingWindow({ cost: values.buildingCost!, buildTurns: values.buildingTurns!, benefitPerTurn: values.buildingBenefit!, horizonTurns: value, confidencePercent: values.buildingConfidence! });
-  return { ...base, state: result.clearsHorizon ? "positive" : "caution", metrics: [
-    metric(ru ? "Отдача за вычетом затрат" : "Return after cost", result.netValue, `${signed(result.netValue)} ${ru ? "усл. ед." : "units"}`),
-    metric(ru ? "Ход окупаемости от текущего" : "Turns from now to payback", result.paybackTurn!, f(result.paybackTurn!))
-  ], consequence: ru ? `После строительства останется ${f(result.activeTurns)} ходов отдачи. К этому сроку постройка вернёт ${f(result.expectedReturn)} из ${f(values.buildingCost!)} затраченных единиц.` : `There are ${f(result.activeTurns)} productive turns after construction. By this deadline, the building returns ${f(result.expectedReturn)} against ${f(values.buildingCost!)} units spent.`,
-    nextAction: result.clearsHorizon
-      ? (ru ? "Постройка успевает окупиться по этим вводным. Сравни её с другим применением ресурсов." : "The building pays back under these assumptions. Compare it with another use of the resources.")
-      : (ru ? "Если ресурсы нужны к этому сроку, сравни более быструю постройку или сохрани их для цели." : "If you need the resources by this deadline, compare a faster building or keep them for the objective.") };
+  const result = calculateCivilizationComparison({ unit: "science", horizonTurns: value,
+    a: { productionCost: values.comparisonCostA!, buildTurns: values.comparisonTurnsA!, yieldPerTurn: values.comparisonYieldA! },
+    b: { productionCost: values.comparisonCostB!, buildTurns: values.comparisonTurnsB!, yieldPerTurn: values.comparisonYieldB! }
+  });
+  if (!result) return { valid: false };
+  const lead = result.leader === "tie"
+    ? (ru ? "К этому сроку оба варианта дадут одинаковое количество науки." : "Both options deliver the same science by this deadline.")
+    : (ru ? `Вариант ${result.leader.toUpperCase()} даст на ${f(Math.abs(result.yieldDifference))} науки больше.` : `Option ${result.leader.toUpperCase()} delivers ${f(Math.abs(result.yieldDifference))} more science.`);
+  return { ...base, state: result.leader === "tie" ? "caution" : "positive", metrics: [
+    metric(ru ? "Наука от варианта A" : "Science from option A", result.a.totalYield, f(result.a.totalYield)),
+    metric(ru ? "Наука от варианта B" : "Science from option B", result.b.totalYield, f(result.b.totalYield))
+  ], consequence: lead + (ru ? ` При этом B требует на ${f(-result.productionCostDifference)} производства больше.` : ` B also commits ${f(-result.productionCostDifference)} more production.`),
+    nextAction: ru ? `B обгоняет A по накопленной науке с ${f(result.crossover!.firstLeadTurn)}-го хода. Для короткого срока проверь более быструю постройку; другие эффекты сравни отдельно.` : `B overtakes A in cumulative science from turn ${f(result.crossover!.firstLeadTurn)}. For a short deadline, check the faster build; compare other effects separately.` };
 }

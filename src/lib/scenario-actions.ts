@@ -92,6 +92,9 @@ export function initializeScenarioActions() {
     const isRequested = requested?.toolKey === key && window.location.pathname.replace(/^\/en\//, "/") === tool.path;
     if (isRequested) {
       root.dispatchEvent(new CustomEvent("money-meta:restore-scenario", { bubbles: true }));
+      // Older named plans do not contain newly introduced comparison fields.
+      // Clear unrelated draft assumptions before restoring that historical plan.
+      apply(defaults);
       const complete = apply(requested.values);
       say(complete ? (ru ? `Открыт «${requested.name}». Изменения можно сохранить копией.` : `Opened “${requested.name}”. Save changes as a new copy.`)
         : (ru ? "Часть полей изменилась с момента сохранения. Проверь вводные перед новым решением." : "Some fields have changed since saving. Review the inputs before deciding."));

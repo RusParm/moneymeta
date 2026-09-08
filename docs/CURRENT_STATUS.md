@@ -1,5 +1,14 @@
 # Current status
 
+## v1.29 candidate: decisions, constraints and observed outcomes
+
+- Published baseline: v1.28, PR #18, main `55de6e41c9d3f1d01aeb977ea0a4f1b93a5da00c`, production deployment `dpl_8ABd9BAADQBVbBin5Hu4M5tvQmaJ`. Main-domain browser verification confirmed the six-game entrance, WoW example and Dota provider-backed replay focus on September 8.
+- The next increment deepens existing player decisions across WoW, Total War, CK3 and Civilization VII. Dota replay review and GTA weekly forecast/actual remain available. All six live economies continue to be maintained.
+- WoW scope: cash reserve and whole-craft affordability, conditional absolute unit sales instead of automatic demand scaling, an explicit local batch forecast and actual outcome, and deliberate reuse for the next batch. One listing cycle only; no auction feed or recipe optimizer is claimed.
+- Strategy scope: compare acting now, delaying the entire commitment, and keeping current commitments at the same deadline. Inspect intermediate cash and immediate outlays, with an explicitly entered income change. These are cash constraints, not a prediction of war outcomes or inheritance distribution.
+- Civilization scope: compare two production commitments and cumulative output of one resource. Gold, science and culture are never subtracted from production cost. A higher resource total is not a universal best-build recommendation. Previous model URLs remain supported.
+- Implementation and local validation are complete: 281 tests in 30 files, Astro check of 243 files with zero diagnostics, 589 built pages, 26,048 internal links with no link errors. Independent review covered cash timing, resource units, immutable outcomes and restore boundaries. Preview/browser verification remains the next release gate; its final evidence will be recorded in the PR. No observed retention or commercial traction is claimed.
+
 ## Published baseline and current v1.28 work
 
 - v1.27 is published at themoneymeta.com. PR #17 merged as `0f813839e27e56638270729b6cfaffbf42f15cd5`; Vercel production `dpl_BKDLJSXbsNyPGiQ9ovBNdnJDcfQF` is READY. The final tested preview tree matched main. Production browser verification and exact-commit CI passed on September 8.

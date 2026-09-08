@@ -23,3 +23,27 @@
 .craft-accounting > div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; font-size: 14px; }
 .craft-accounting dd { margin: 0; white-space: nowrap; }
 [data-craft-valid-result][hidden] { display: none !important; }
+.craft-budget-inputs, .craft-budget-result { margin-top: 22px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.14); }
+.craft-budget-inputs h4, .craft-budget-result h4, .craft-journal h4 { margin: 0 0 10px; font-size: 17px; line-height: 1.4; }
+.craft-budget-inputs p, .craft-budget-result p, .craft-journal p, .craft-journal small { color: rgba(255,255,255,.7); font-size: 14px; line-height: 1.6; }
+.craft-budget-result table { border-collapse: collapse; width: 100%; min-width: 360px; }
+.craft-budget-result th, .craft-budget-result td { padding: 10px 6px; border-bottom: 1px solid rgba(255,255,255,.13); text-align: right; font-size: 13px; line-height: 1.5; }
+.craft-budget-result th:first-child { text-align: left; }
+.craft-budget-result button { margin-top: 16px; }
+.craft-journal { margin-top: 22px; padding: 20px; }
+.craft-journal > summary { font-size: 17px; font-weight: 650; line-height: 1.5; cursor: pointer; }
+.craft-journal .field { margin: 16px 0; min-width: 0; }
+.craft-journal input, .craft-journal select { width: 100%; max-width: 100%; min-width: 0; }
+.craft-journal [data-batch-record] { padding-top: 20px; border-top: 1px solid rgba(255,255,255,.14); }
+.craft-journal button, .craft-budget-result button { min-height: 44px; white-space: normal; }
+.craft-journal [data-batch-changed] { padding: 12px; border-left: 3px solid #ecc879; background: rgba(236,200,121,.06); }
+.craft-journal [data-batch-actual-form], .craft-journal [data-batch-actual-result] { margin: 20px 0; }
+.craft-journal [data-batch-journal-status] { min-height: 1.5em; }
+.craft-journal [hidden], [data-batch-cap-field][hidden], [data-role="craft-form"] .field[hidden], [data-batch-use-size][hidden] { display: none !important; }
+.craft-journal summary:focus-visible { outline: 2px solid #78bfff; outline-offset: 4px; }
+@media (max-width: 600px) {
+  .craft-journal { padding: 16px; }
+  .craft-journal .form-grid { grid-template-columns: 1fr; }
+  .craft-journal .craft-accounting > div { flex-wrap: wrap; gap: 6px 16px; }
+  .craft-journal .craft-accounting dd { white-space: normal; overflow-wrap: anywhere; }
+}
