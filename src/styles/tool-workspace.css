@@ -14,13 +14,17 @@
 .tool-page .section-page-hero-art, .tool-page .section-page-hero::after, .tool-page .section-page-hero-copy dl, .tool-page .section-page-title-row > .hub-game-mark, .tool-page .section-page-title-row > div > span { display: none; }
 .tool-page .section-page-hero-copy { width: 100%; padding: 22px 26px; }
 .tool-page .section-page-title-row { display: block; }
-.tool-page .section-page-title-row h1 { font-size: clamp(28px, 3.3vw, 42px); line-height: 1.08; margin-top: 12px; }
-.tool-page .section-page-hero-copy > p { margin-top: 12px; line-height: 1.5; }
+.tool-page .section-page-title-row h1 { font-size: clamp(26px, 2.5vw, 34px); line-height: 1.08; margin-top: 12px; }
+.tool-page .section-page-hero-copy > p { display: none; }
 .tool-page .section-page-version { margin-top: 12px; }
 .tool-page .section-page-nav { margin: 14px 0; }
 .tool-page .section-page-content > .hub-section, .tool-page .section-page-content > .section { margin-top: 12px; }
 .tool-page :is(.wow-scenario-lab, .strategy-scenario-lab, .gta-capital-lab, .dota-scenario-lab) > .section-head { display: none; }
 .tool-page :is(.wow-model, .strategy-model, .gta-inline-model, .dota-model) { margin-top: 16px; }
+.tool-page :is(.wow-model-head, .strategy-model-head, .gta-inline-head, .dota-model-head) { grid-template-columns: 64px minmax(0, 1fr); gap: 16px; margin-bottom: 18px; }
+.tool-page :is(.wow-model-head, .strategy-model-head, .gta-inline-head, .dota-model-head) h3 { font-size: clamp(23px, 2.1vw, 29px); line-height: 1.15; }
+.tool-page :is(.wow-model-head, .strategy-model-head, .gta-inline-head, .dota-model-head) > .pill { display: none; }
+.tool-page :is(.wow-model-head, .strategy-model-head, .gta-inline-head, .dota-model-head) > :is(.wow-market-mark, .strategy-mark, .gta-business-mark, .dota-media) { width: 64px; height: 64px; --mark-size: 64px; }
 .tool-page [data-scenario-root] { scroll-margin-top: 100px; }
 .tool-page .section-page-source { margin-top: 32px; }
 @media (max-width: 640px) {

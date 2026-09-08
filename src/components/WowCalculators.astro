@@ -295,7 +295,7 @@ const copy = lang === "ru" ? {
     const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
     const priceFormat = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 2 });
     const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
-    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(Math.round(value))} ${lang === "ru" ? "зол." : "g"}` : value < 0 ? "−∞" : "∞";
+    const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(value)} ${lang === "ru" ? "зол." : "g"}` : value < 0 ? "−∞" : "∞";
     const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
     const target = (role: string) => root.querySelector<HTMLElement>(`[data-role='${role}']`)!;
     const value = (role: string) => Math.max(0, Number(input(role).value) || 0);
