@@ -1,5 +1,15 @@
 # Decision log
 
+## 2026-09-08: an answer must change a player's decision
+
+The owner still finds the product weak. More surfaces and persistence alone are insufficient evidence of utility. Each deeper scenario should deliver a concrete conclusion, its numerical consequence, a condition that changes the conclusion and a useful follow-up after play. Fewer required assumptions and clear in-game input instructions take priority over additional catalogs.
+
+The five existing `/tools/` surfaces now put calculations before examples, use one selected model at a time, and keep all previous anchors and saved-plan restoration. Civilization already has model tabs. Supporting examples, goal teasers and related playbooks remain available on demand.
+
+WoW's existing crafting model now distinguishes spendable cash from accounting profit and stock at material cost. One completed listing cycle determines proportional deposit refunds and losses. Whole-unit sales and a price threshold show when the initial outlay is recovered. A trial-batch helper supplies a conditional sell-through assumption; it does not claim that demand scales with batch size. Price and sales stress cases are labeled hypothetical, not probabilities. No new market feed or profession-effect model is implied.
+
+The September 8 production check still shows v1.21. Improvements in v1.22–v1.27 must be reviewed as preview changes until production approval is explicitly given. A passing build is not a claim of player retention or demand.
+
 ## 2026-09-07: a saved plan survives the next calculation
 
 The owner prioritizes recurring player utility before monetization. Named calculation copies now preserve inputs, a result snapshot, language, source context and model version across all six live games. A player can return to one plan and record an outcome without changing its original forecast. No retention improvement is claimed without observed usage.

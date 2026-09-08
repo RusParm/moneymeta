@@ -1,6 +1,67 @@
 import { describe, expect, it } from "vitest";
 import { craftingBaseline, farmBaseline, orderBaseline } from "../src/data/wow-economy";
-import { calculateCraftingMetrics, calculateFarmMetrics, calculateMarketLedger, calculateWorkOrderMetrics, rankWowMarketRoutes } from "../src/lib/wow-economy";
+import { calculateCraftingMetrics, calculateCraftingCashFlow, sellThroughFromObservation, calculateFarmMetrics, calculateMarketLedger, calculateWorkOrderMetrics, rankWowMarketRoutes } from "../src/lib/wow-economy";
+
+describe("WoW batch decision: cash is separate from profit", () => {
+  it("exposes a profitable batch that has not returned its cash", () => {
+    const r = calculateCraftingCashFlow(craftingBaseline);
+    expect(r.upfrontGold).toBe(16_740);
+    expect(r.saleProceeds).toBeCloseTo(14_962.5);
+    expect(r.cashChange).toBeCloseTo(-1_609.5);
+    expect(r.inventoryCost).toBeCloseTo(4_950);
+    expect(r.profit).toBeCloseTo(3_340.5);
+    expect(r.state).toBe("cash-tied");
+    expect(r.recoveryUnits).toBe(78);
+  });
+  it("the displayed whole-unit threshold is the first sale count to recover cash", () => {
+    const r = calculateCraftingCashFlow(craftingBaseline);
+    for (const delta of [-1, 0]) {
+      const check = calculateCraftingCashFlow({ ...craftingBaseline, sellThroughPercent: (r.recoveryUnits + delta) / r.units * 100 });
+      if (delta < 0) expect(check.cashChange).toBeLessThan(0);
+      else expect(check.cashChange).toBeGreaterThanOrEqual(0);
+    }
+    expect(calculateCraftingCashFlow({ ...craftingBaseline, salePricePerUnit: r.recoveryPrice }).cashChange).toBeCloseTo(0);
+  });
+  it("zero sales lose the deposits and lock all material cost", () => {
+    const r = calculateCraftingCashFlow({ ...craftingBaseline, sellThroughPercent: 0 });
+    expect(r.cashChange).toBe(-16_740);
+    expect(r.profit).toBe(-240);
+    expect(r.inventoryCost).toBe(16_500);
+    expect(r.recoveryPrice).toBe(Infinity);
+  });
+  it("a complete sale returns deposits and leaves no inventory", () => {
+    const r = calculateCraftingCashFlow({ ...craftingBaseline, sellThroughPercent: 100 });
+    expect(r.cashChange).toBeCloseTo(4_875);
+    expect(r.profit).toBeCloseTo(r.cashChange);
+    expect(r.lostDeposits).toBe(0);
+    expect(r.inventoryCost).toBe(0);
+  });
+  it("does not promise recovery below material cost or at a 100% fee", () => {
+    expect(calculateCraftingCashFlow({ ...craftingBaseline, salePricePerUnit: 100 }).recoveryUnits).toBe(Infinity);
+    const r = calculateCraftingCashFlow({ ...craftingBaseline, auctionHouseCutPercent: 100 });
+    expect(r.recoveryUnits).toBe(Infinity);
+    expect(r.recoveryPrice).toBe(Infinity);
+  });
+  it("keeps the accounting identity across batch sizes and conditional prices", () => {
+    for (const crafts of [1, 20, 200]) for (const sellThroughPercent of [0, 33, 70, 100]) for (const salePricePerUnit of [0, 180, 225]) {
+      const input = { ...craftingBaseline, crafts, sellThroughPercent, salePricePerUnit };
+      const r = calculateCraftingCashFlow(input);
+      expect(r.cashChange + r.inventoryCost).toBeCloseTo(calculateCraftingMetrics(input).expectedBatchProfit);
+      expect(r.saleProceeds + r.depositOutlay - r.lostDeposits - r.upfrontGold).toBeCloseTo(r.cashChange);
+    }
+  });
+  it("keeps empty batches distinct and handles free inputs", () => {
+    expect(calculateCraftingCashFlow({ ...craftingBaseline, crafts: 0 }).state).toBe("empty");
+    const free = calculateCraftingCashFlow({ ...craftingBaseline, materialCostPerCraft: 0, depositPerListing: 0, salePricePerUnit: 0 });
+    expect(free.recoveryUnits).toBe(0);
+    expect(free.cashChange).toBe(0);
+  });
+  it("uses completed trial sales without accepting impossible observations", () => {
+    expect(sellThroughFromObservation(20, 7)).toBe(35);
+    expect(sellThroughFromObservation(20, 0)).toBe(0);
+    for (const [listed, sold] of [[0, 0], [10, 11], [10, -1], [2.5, 1], [10, NaN], [Infinity, 2]] as const) expect(sellThroughFromObservation(listed, sold)).toBeNull();
+  });
+});
 
 describe("WoW crafting economics", () => {
   it("deducts the Auction House cut before measuring crafting profit", () => {

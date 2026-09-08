@@ -142,7 +142,7 @@ export function initializeScenarioActions() {
     saveButton.addEventListener("click", () => {
       const invalid = controls.find((control) => control instanceof HTMLInputElement && (!control.value.trim() || !Number.isFinite(Number(control.value)) || control.validity.rangeOverflow || control.validity.rangeUnderflow));
       const missingItems = key === "dota-item-plan" && controls.filter((control) => ["item1", "item2"].includes(control.dataset.role ?? "")).some((control) => !control.value);
-      if (invalid || missingItems || !name.value.trim()) {
+      if (invalid || missingItems || root.dataset.scenarioValid === "false" || !name.value.trim()) {
         editorStatus.textContent = ru ? "Укажи название и заполни вводные расчёта допустимыми значениями." : "Enter a name and valid calculation inputs.";
         (invalid ?? name).focus(); return;
       }

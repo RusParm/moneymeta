@@ -3,25 +3,28 @@ import { craftingBaseline, farmBaseline, orderBaseline } from "../data/wow-econo
 import ScenarioActions from "./ScenarioActions.astro";
 import WowMarketMark from "./WowMarketMark.astro";
 import { wowMarks } from "../data/wow-hub";
+import { wowBatchCopy } from "../data/wow-batch-copy";
+import "../styles/wow-batch.css";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
+const batch = wowBatchCopy[lang];
 
 const copy = lang === "ru" ? {
   kicker: "Калькуляторы · три способа заработка",
   title: "Три модели для трёх разных способов зарабатывать золото",
   text: "Изготовление для аукциона, фарм материалов и заказы на изготовление нельзя сравнивать по одной красивой марже. Каждая модель показывает свой денежный поток, риск и границу выгодности.",
-  count: "22 вводных · локальное сохранение · ссылка на сценарий",
+  count: "Вводные из твоей игры · сохранение расчёта",
   craftKicker: "Модель 01 · экономика рецепта",
-  craftTitle: "Маржа изготовления: прибыль после поправки на ликвидность",
-  craftText: "Модель учитывает комиссию аукциона, вероятность продажи и потерю залога при неудачном размещении.",
-  materialCost: "Материалы на изготовление",
-  outputUnits: "Количество товара",
+  craftTitle: "Стоит ли изготавливать эту партию?",
+  craftText: "Проверь, сколько золота вернётся после продажи и сколько останется в товаре. Все числа можно заменить своими.",
+  materialCost: "Материалы на одно изготовление, зол.",
+  outputUnits: "Выход за одно изготовление, ед.",
   salePrice: "Цена продажи / ед.",
   ahCut: "Комиссия аукциона, %",
   deposit: "Залог за размещение",
   sellThrough: "Доля продаж за цикл, %",
-  crafts: "Размер партии",
+  crafts: "Размер партии, изготовлений",
   craftResult: "Результат изготовления",
   craftNote: "Доля продаж задаётся для одного цикла размещения. Непроданный товар сохраняет стоимость, но блокирует капитал и требует нового листинга.",
   gross: "Выручка с проданного изделия",
@@ -85,10 +88,10 @@ const copy = lang === "ru" ? {
   kicker: "Scenario Lab · three market engines",
   title: "Three models for three different ways to earn gold",
   text: "Auction House crafting, material farming and Crafting Orders cannot share one headline margin. Each engine exposes its own cash flow, risk and stop condition.",
-  count: "22 inputs · local save · shareable URL",
+  count: "Your game inputs · saved calculations",
   craftKicker: "Model 01 · recipe economics",
-  craftTitle: "Crafting Margin: profit after liquidity",
-  craftText: "The model includes the Auction House cut, sell-through and lost deposit in an unsuccessful listing cycle.",
+  craftTitle: "Is this batch worth crafting?",
+  craftText: "Check how much gold returns after sales and how much stays in stock. Replace the example with your own numbers.",
   materialCost: "Materials / craft",
   outputUnits: "Output units / craft",
   salePrice: "Sale price / unit",
@@ -169,26 +172,49 @@ const copy = lang === "ru" ? {
     <div class="grid-2 wow-model-grid" data-scenario-root data-scenario-key="wow-crafting">
       <form class="card wow-input-card" data-role="craft-form">
         <div class="form-grid">
-          <div class="field"><label for="craft-materials">{copy.materialCost}</label><input id="craft-materials" data-role="craft-materials" type="number" min="0" step="25" value={craftingBaseline.materialCostPerCraft} /></div>
-          <div class="field"><label for="craft-output">{copy.outputUnits}</label><input id="craft-output" data-role="craft-output" type="number" min="0" step="1" value={craftingBaseline.outputUnits} /></div>
-          <div class="field"><label for="craft-price">{copy.salePrice}</label><input id="craft-price" data-role="craft-price" type="number" min="0" step="5" value={craftingBaseline.salePricePerUnit} /></div>
-          <div class="field"><label for="craft-cut">{copy.ahCut}</label><input id="craft-cut" data-role="craft-cut" type="number" min="0" max="100" step="1" value={craftingBaseline.auctionHouseCutPercent} /></div>
-          <div class="field"><label for="craft-deposit">{copy.deposit}</label><input id="craft-deposit" data-role="craft-deposit" type="number" min="0" step="1" value={craftingBaseline.depositPerListing} /></div>
-          <div class="field"><label for="craft-sellthrough">{copy.sellThrough}</label><input id="craft-sellthrough" data-role="craft-sellthrough" type="number" min="0" max="100" step="5" value={craftingBaseline.sellThroughPercent} /></div>
-          <div class="field" style="grid-column:1/-1"><label for="craft-count">{copy.crafts}</label><input id="craft-count" data-role="craft-count" type="number" min="0" step="1" value={craftingBaseline.crafts} /></div>
+          <div class="field"><label for="craft-materials">{copy.materialCost}</label><input id="craft-materials" data-role="craft-materials" type="number" min="0" step="any" value={craftingBaseline.materialCostPerCraft} aria-describedby="craft-cost-hint" /><small id="craft-cost-hint">{batch.costHint}</small></div>
+          <div class="field"><label for="craft-output">{copy.outputUnits}</label><input id="craft-output" data-role="craft-output" type="number" min="1" step="1" value={craftingBaseline.outputUnits} aria-describedby="craft-output-hint" /><small id="craft-output-hint">{batch.outputHint}</small></div>
+          <div class="field"><label for="craft-price">{copy.salePrice}</label><input id="craft-price" data-role="craft-price" type="number" min="0" step="any" value={craftingBaseline.salePricePerUnit} aria-describedby="craft-price-hint" /><small id="craft-price-hint">{batch.priceHint}</small></div>
+          <div class="field"><label for="craft-count">{copy.crafts}</label><input id="craft-count" data-role="craft-count" type="number" min="1" step="1" value={craftingBaseline.crafts} aria-describedby="craft-count-hint" /><small id="craft-count-hint">{batch.countHint}</small></div>
+          <div class="field craft-wide"><label for="craft-sellthrough">{copy.sellThrough}</label><input id="craft-sellthrough" data-role="craft-sellthrough" type="number" min="0" max="100" step="any" value={craftingBaseline.sellThroughPercent} aria-describedby="craft-share-hint" /><small id="craft-share-hint">{batch.shareHint}</small></div>
         </div>
+        <details class="craft-help"><summary>{batch.observe}</summary>
+          <p>{batch.observationNote}</p>
+          <div class="form-grid">
+            <div class="field"><label for="craft-trial-listed">{batch.listed}</label><input id="craft-trial-listed" type="number" min="1" step="1" inputmode="numeric" /></div>
+            <div class="field"><label for="craft-trial-sold">{batch.sold}</label><input id="craft-trial-sold" type="number" min="0" step="1" inputmode="numeric" /></div>
+          </div>
+          <button type="button" class="mini-action" data-use-craft-trial>{batch.apply}</button>
+          <p data-craft-trial-status role="status"></p>
+        </details>
+        <details class="craft-help"><summary>{batch.assumptions}</summary>
+          <div class="form-grid">
+            <div class="field"><label for="craft-cut">{copy.ahCut}</label><input id="craft-cut" data-role="craft-cut" type="number" min="0" max="100" step="any" value={craftingBaseline.auctionHouseCutPercent} /></div>
+            <div class="field"><label for="craft-deposit">{copy.deposit}</label><input id="craft-deposit" data-role="craft-deposit" type="number" min="0" step="any" value={craftingBaseline.depositPerListing} /></div>
+          </div><p>{batch.depositHint}</p>
+        </details>
+        <p class="craft-boundary">{batch.boundary}</p>
       </form>
-      <article class="card result-panel wow-result-panel" aria-live="polite">
-        <span class="result-label">{copy.craftResult}</span><div class="result-name" data-role="craft-decision">-</div><p class="result-reason">{copy.craftNote}</p>
-        <div class="result-metrics">
-          <div class="result-metric"><span>{copy.gross}</span><strong data-role="craft-gross">-</strong></div>
-          <div class="result-metric"><span>{copy.netRevenue}</span><strong data-role="craft-net-revenue">-</strong></div>
-          <div class="result-metric"><span>{copy.soldProfit}</span><strong class="teal" data-role="craft-sold-profit">-</strong></div>
-          <div class="result-metric"><span>{copy.expectedProfit}</span><strong data-role="craft-expected">-</strong></div>
-          <div class="result-metric"><span>{copy.batchProfit}</span><strong class="gold" data-role="craft-batch">-</strong></div>
-          <div class="result-metric"><span>{copy.roi}</span><strong class="magenta" data-role="craft-roi">-</strong></div>
-          <div class="result-metric"><span>{copy.breakEven}</span><strong data-role="craft-break-even">-</strong></div>
-          <div class="result-metric"><span>{copy.inventoryRisk}</span><strong data-role="craft-inventory">-</strong></div>
+      <article class="card result-panel wow-result-panel craft-result" aria-live="polite">
+        <span class="result-label">{batch.result}</span><div class="result-name" data-role="craft-decision">-</div>
+        <div data-craft-valid-result>
+          <div class="result-metrics">
+            <div class="result-metric"><span>{batch.cash}</span><strong data-role="craft-cash">-</strong></div>
+            <div class="result-metric"><span>{batch.profit}</span><strong data-role="craft-batch">-</strong></div>
+            <div class="result-metric"><span>{batch.inventory}</span><strong data-role="craft-inventory">-</strong></div>
+            <div class="result-metric"><span>{batch.upfront}</span><strong data-role="craft-upfront">-</strong></div>
+          </div>
+          <div class="craft-next"><strong>{batch.next}</strong><p data-craft-recovery>-</p><p data-craft-action>-</p></div>
+          <details class="craft-help"><summary>{batch.details}</summary>
+            <div class="craft-table-scroll" tabindex="0" role="region" aria-label={batch.details}>
+              <table><thead><tr><th scope="col">{batch.case}</th><th scope="col">{batch.profit}</th><th scope="col">{batch.cash}</th></tr></thead><tbody>
+                {(["current", "lowerPrice", "fewerSales"] as const).map((key) => <tr data-craft-case={key}><th scope="row">{batch[key]}</th><td data-case-profit>-</td><td data-case-cash>-</td></tr>)}
+              </tbody></table>
+            </div><p>{batch.conditional}</p>
+          </details>
+          <details class="craft-help"><summary>{batch.accounting}</summary><p>{batch.accountingNote}</p>
+            <dl class="craft-accounting"><div><dt>{lang === "ru" ? "Выручка партии после комиссии" : "Batch proceeds after fees"}</dt><dd data-craft-proceeds>-</dd></div><div><dt>{lang === "ru" ? "Потерянный залог" : "Lost deposits"}</dt><dd data-craft-deposits>-</dd></div></dl>
+          </details>
         </div>
         <ScenarioActions lang={lang} />
       </article>
@@ -258,12 +284,16 @@ const copy = lang === "ru" ? {
 
 <script>
   import type { WowLocale } from "../data/wow-economy";
-  import { calculateCraftingMetrics, calculateFarmMetrics, calculateWorkOrderMetrics } from "../lib/wow-economy";
+  import { calculateCraftingCashFlow, sellThroughFromObservation, calculateFarmMetrics, calculateWorkOrderMetrics } from "../lib/wow-economy";
+  import { wowBatchCopy } from "../data/wow-batch-copy";
 
   document.querySelectorAll<HTMLElement>("[data-wow-calculators]").forEach((root) => {
     if (root.dataset.calculatorsReady === "true") return;
     root.dataset.calculatorsReady = "true";
     const lang = (root.dataset.lang ?? "ru") as WowLocale;
+    const batch = wowBatchCopy[lang];
+    const number = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 1 });
+    const priceFormat = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 2 });
     const formatter = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 0 });
     const gold = (value: number) => Number.isFinite(value) ? `${formatter.format(Math.round(value))} ${lang === "ru" ? "зол." : "g"}` : value < 0 ? "−∞" : "∞";
     const input = (role: string) => root.querySelector<HTMLInputElement>(`[data-role='${role}']`)!;
@@ -280,17 +310,41 @@ const copy = lang === "ru" ? {
     };
 
     function renderCrafting() {
-      const metrics = calculateCraftingMetrics({ materialCostPerCraft: value("craft-materials"), outputUnits: value("craft-output"), salePricePerUnit: value("craft-price"), auctionHouseCutPercent: value("craft-cut"), depositPerListing: value("craft-deposit"), sellThroughPercent: value("craft-sellthrough"), crafts: value("craft-count") });
-      target("craft-decision").textContent = metrics.state === "positive-edge" ? labels.positiveEdge : metrics.state === "thin-edge" ? labels.thinEdge : labels.negativeEdge;
-      target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "positive-edge" ? "positive" : metrics.state === "thin-edge" ? "caution" : "negative";
-      target("craft-gross").textContent = gold(metrics.grossRevenueIfSold);
-      target("craft-net-revenue").textContent = gold(metrics.netRevenueIfSold);
-      target("craft-sold-profit").textContent = gold(metrics.profitIfSold);
-      target("craft-expected").textContent = gold(metrics.expectedProfitPerCycle);
-      target("craft-batch").textContent = gold(metrics.expectedBatchProfit);
-      target("craft-roi").textContent = `${metrics.expectedRoiPercent.toFixed(1)}%`;
-      target("craft-break-even").textContent = gold(metrics.breakEvenPricePerUnit);
-      target("craft-inventory").textContent = gold(metrics.inventoryCapitalAtRisk);
+      const scenario = root.querySelector<HTMLElement>("[data-scenario-key='wow-crafting']")!;
+      const controls = [...scenario.querySelectorAll<HTMLInputElement>("input[data-role]")];
+      const valid = controls.every((control) => control.value.trim() && Number.isFinite(Number(control.value)) && control.validity.valid);
+      scenario.dataset.scenarioValid = String(valid);
+      const result = scenario.querySelector<HTMLElement>("[data-craft-valid-result]")!;
+      result.hidden = !valid;
+      if (!valid) { target("craft-decision").textContent = batch.empty; return; }
+      const input = { materialCostPerCraft: value("craft-materials"), outputUnits: value("craft-output"), salePricePerUnit: value("craft-price"), auctionHouseCutPercent: value("craft-cut"), depositPerListing: value("craft-deposit"), sellThroughPercent: value("craft-sellthrough"), crafts: value("craft-count") };
+      const metrics = calculateCraftingCashFlow(input);
+      target("craft-decision").textContent = metrics.state === "cash-tied" ? batch.tied : metrics.state === "loss" ? batch.loss : metrics.state === "empty" ? batch.empty : batch.recovered;
+      target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "cash-recovered" ? "positive" : metrics.state === "cash-tied" ? "caution" : "negative";
+      target("craft-cash").textContent = gold(metrics.cashChange);
+      target("craft-cash").className = metrics.cashChange < 0 ? "magenta" : "teal";
+      target("craft-batch").textContent = gold(metrics.profit);
+      target("craft-inventory").textContent = gold(metrics.inventoryCost);
+      target("craft-upfront").textContent = gold(metrics.upfrontGold);
+      root.querySelector("[data-craft-proceeds]")!.textContent = gold(metrics.saleProceeds);
+      root.querySelector("[data-craft-deposits]")!.textContent = gold(metrics.lostDeposits);
+      const price = Number.isFinite(metrics.recoveryPrice) ? priceFormat.format(Math.ceil(metrics.recoveryPrice * 100 - 1e-9) / 100) : null;
+      const recovery = Number.isFinite(metrics.recoveryUnits)
+        ? lang === "ru" ? `При текущей цене нужно продать не меньше ${number.format(metrics.recoveryUnits)} из ${number.format(metrics.units)} ед. В твоём сценарии продаётся ${number.format(metrics.soldUnits)} ед.`
+          : `At this price, sell at least ${number.format(metrics.recoveryUnits)} of ${number.format(metrics.units)} units. Your scenario sells ${number.format(metrics.soldUnits)} units.`
+        : lang === "ru" ? "Даже продажа всей партии по этой цене не вернёт затраты." : "Even selling the whole batch at this price will not recover the costs.";
+      root.querySelector("[data-craft-recovery]")!.textContent = recovery + (price ? (lang === "ru" ? ` При заданной доле продаж цена возврата затрат: ${price} зол. за ед.` : ` At your sell-through, the cash-recovery price is ${price} g per unit.`) : "");
+      root.querySelector("[data-craft-action]")!.textContent = metrics.state === "cash-tied"
+        ? lang === "ru" ? "Если золото понадобится уже после этого цикла, не увеличивай партию до проверки фактических продаж." : "If you need the gold after this cycle, verify actual sales before increasing the batch."
+        : metrics.state === "loss"
+          ? lang === "ru" ? "Сначала перепроверь цену и затраты. При неизменных условиях большая партия увеличит убыток." : "Recheck price and costs first. A larger batch increases the loss under the same assumptions."
+          : lang === "ru" ? "Сохрани расчёт и после цикла сравни продажи с планом. Увеличение партии само по себе не увеличивает спрос." : "Save the calculation and compare sales after the cycle. A larger batch does not create more demand.";
+      const cases = { current: metrics, lowerPrice: calculateCraftingCashFlow({ ...input, salePricePerUnit: input.salePricePerUnit * 0.9 }), fewerSales: calculateCraftingCashFlow({ ...input, sellThroughPercent: Math.max(0, input.sellThroughPercent - 20) }) };
+      for (const [key, check] of Object.entries(cases)) {
+        const row = root.querySelector(`[data-craft-case='${key}']`)!;
+        row.querySelector("[data-case-profit]")!.textContent = gold(check.profit);
+        row.querySelector("[data-case-cash]")!.textContent = gold(check.cashChange);
+      }
     }
 
     function renderFarm() {
@@ -325,6 +379,16 @@ const copy = lang === "ru" ? {
     craftRoles.forEach((role) => input(role).addEventListener("input", renderCrafting));
     farmRoles.forEach((role) => input(role).addEventListener("input", renderFarm));
     orderRoles.forEach((role) => input(role).addEventListener("input", renderOrder));
+    root.querySelectorAll("form").forEach((form) => form.addEventListener("submit", (event) => event.preventDefault()));
+    root.querySelector("[data-use-craft-trial]")!.addEventListener("click", () => {
+      const listed = root.querySelector<HTMLInputElement>("#craft-trial-listed")!;
+      const sold = root.querySelector<HTMLInputElement>("#craft-trial-sold")!;
+      const share = listed.value.trim() && sold.value.trim() ? sellThroughFromObservation(Number(listed.value), Number(sold.value)) : null;
+      root.querySelector("[data-craft-trial-status]")!.textContent = share === null ? batch.invalidObservation : batch.appliedObservation;
+      if (share === null) return;
+      input("craft-sellthrough").value = String(share);
+      input("craft-sellthrough").dispatchEvent(new Event("input", { bubbles: true }));
+    });
     renderCrafting();
     renderFarm();
     renderOrder();

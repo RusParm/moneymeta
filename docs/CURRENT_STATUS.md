@@ -1,5 +1,13 @@
 # Current status
 
+## Active release candidate: v1.27 decision workspaces and WoW batch cash
+
+- Five live-game tool routes show the calculation first, with keyboard-accessible model tabs and compact introductions. Examples and related plans expand on demand. Existing hashes, browser navigation and named-plan restoration remain supported. Civilization retains its existing three-tab workspace.
+- WoW crafting separates accounting profit, cash change, unsold material cost and upfront cash. The result gives the first whole-unit sale count and the conditional price needed to recover cash, plus lower-price and lower-sales comparisons.
+- Five primary craft inputs have instructions tied to the player's own Auction House/recipe. Fees and deposits are expandable. An optional completed-trial helper derives sell-through without claiming future demand or extrapolating volume as a fact. Invalid craft inputs suppress results and cannot be saved as a valid forecast.
+- Version and price freshness are unchanged: this release improves conditional analysis, not the game-data feed. Validation and exact preview results are recorded in PR #17 before handoff.
+- Production was checked on 2026-09-08 and remains v1.21, with old WoW result placeholders. v1.22 onward is still a release candidate. Production publication requires explicit owner approval.
+
 ## Active release candidate: v1.26 named calculations and return flow
 
 - Added My calculations / Мои расчёты at `/saved/` and `/en/saved/`, linked from the global header and calculation results. These private, device-local surfaces are noindex and excluded from the sitemap.

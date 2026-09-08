@@ -211,6 +211,8 @@ const copy = lang === "ru" ? {
 
 {section === "tools" && (
   <>
+    <StrategyCalculators lang={lang} data={data} />
+    <details class="tool-details"><summary>{lang === "ru" ? "Примеры решений для твоей кампании" : "Decision examples for your campaign"}</summary>
     <section class="section hub-section strategy-focused-scenarios" aria-labelledby={`${hub}-focused-scenarios-title`}>
       <div class="section-head hub-section-head"><div><span class="section-kicker">{copy.toolsKicker}</span><h2 id={`${hub}-focused-scenarios-title`}>{copy.toolsTitle}</h2><p class="section-copy">{copy.toolsText}</p></div><span class="count">6 → 3</span></div>
       <div class="decision-deck-grid strategy-decision-deck">
@@ -223,6 +225,6 @@ const copy = lang === "ru" ? {
         ))}
       </div>
     </section>
-    <StrategyCalculators lang={lang} data={data} />
+    </details>
   </>
 )}

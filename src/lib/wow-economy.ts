@@ -151,6 +151,43 @@ export function calculateCraftingMetrics(input: CraftingInput): CraftingMetrics 
   };
 }
 
+/** One listing cycle. Deposits are allocated proportionally to units sold.
+ * Unsold goods retain material cost for accounting, never spendable gold.
+ * This is conditional arithmetic, not a prediction of regional demand.
+ */
+export function calculateCraftingCashFlow(input: CraftingInput) {
+  const metrics = calculateCraftingMetrics(input);
+  const crafts = positive(input.crafts);
+  const units = positive(input.outputUnits) * crafts;
+  const soldShare = percentage(input.sellThroughPercent);
+  const retainedShare = 1 - percentage(input.auctionHouseCutPercent);
+  const materialOutlay = positive(input.materialCostPerCraft) * crafts;
+  const depositOutlay = positive(input.depositPerListing) * crafts;
+  const upfrontGold = materialOutlay + depositOutlay;
+  const soldUnits = units * soldShare;
+  const saleProceeds = soldUnits * positive(input.salePricePerUnit) * retainedShare;
+  const lostDeposits = depositOutlay * (1 - soldShare);
+  const cashChange = saleProceeds - materialOutlay - lostDeposits;
+  const inventoryCost = metrics.inventoryCapitalAtRisk;
+  const profit = cashChange + inventoryCost;
+  const perUnitRecovery = positive(input.salePricePerUnit) * retainedShare + (units > 0 ? depositOutlay / units : 0);
+  const rawRecoveryUnits = perUnitRecovery > 0 ? upfrontGold / perUnitRecovery : upfrontGold === 0 ? 0 : Infinity;
+  // Tolerate only floating-point noise at an exact whole-unit boundary.
+  const wholeRecoveryUnits = Math.ceil(rawRecoveryUnits - 1e-9);
+  const recoveryUnits = units > 0 && wholeRecoveryUnits <= units ? Math.max(0, wholeRecoveryUnits) : Infinity;
+  const recoveryPrice = soldUnits > 0 && retainedShare > 0
+    ? (materialOutlay + lostDeposits) / (soldUnits * retainedShare) : Infinity;
+  const state = units <= 0 || crafts <= 0 ? "empty"
+    : profit < -1e-7 ? "loss"
+    : cashChange < -1e-7 ? "cash-tied" : "cash-recovered";
+  return { units, soldUnits, materialOutlay, depositOutlay, upfrontGold, saleProceeds, lostDeposits, cashChange, inventoryCost, profit, recoveryUnits, recoveryPrice, state };
+}
+
+export function sellThroughFromObservation(listedUnits: number, soldUnits: number): number | null {
+  if (![listedUnits, soldUnits].every(Number.isSafeInteger) || listedUnits <= 0 || soldUnits < 0 || soldUnits > listedUnits) return null;
+  return soldUnits / listedUnits * 100;
+}
+
 export function calculateFarmMetrics(input: FarmInput): FarmMetrics {
   const unitsPerHour = positive(input.unitsPerHour);
   const marketPrice = positive(input.marketPricePerUnit);

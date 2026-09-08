@@ -1,5 +1,18 @@
 # Money Meta roadmap
 
+## Current increment: v1.27 answers before more features
+
+The owner wants a product that changes player decisions and earns repeat use. Finish the compact working surface and WoW batch cash explanation, then publish the already verified release only after approval. Do not treat unpublished improvements as user-visible progress.
+
+Next quality sequence:
+
+1. Operate the published product: review expiring source claims, verify the primary path per game and distinguish data gaps from interface failures.
+2. Test one flagship task per game with players using their actual situation. First collect whether they can reach an answer, understand what to do and explain what changed; do not infer demand from the number of tools. Five initial observed sessions are a practical starting point, not a statistical validation target.
+3. Choose deeper work from those failures: GTA owned-business session planning; Dota one replay decision and a next-match check; WoW observed batch sales; Total War build versus army before war; CK3 heir cash under adverse income; Civilization two actions before a chosen turn.
+4. Measure the result-to-return path with minimal event fields only after reviewing existing analytics URL handling. Never include match IDs, input values or saved notes in events.
+
+Acceptance standard for a flagship task: a useful example opens immediately; the player can find each required input in-game; the result states a choice, consequence and switching condition; the saved result can be revisited after play. The first-minute answer is a target to test, not a measured current result. Monetization follows demonstrated recurring use.
+
 ## Current increment: v1.26 return to a useful calculation
 
 - Named input/result copies, a device-local list, game/state filters and direct model restoration across all six live games.
