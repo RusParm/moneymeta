@@ -65,9 +65,9 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
     q("[data-batch-plan-decision]").textContent = plan.reserveAlreadyShort ? c.noCash : plan.feasibleCrafts === 0 ? c.noCraft : plan.fits ? c.fits : c.tooLarge;
     q("[data-batch-max]").textContent = plan.affordableCrafts === null ? c.unlimited
       : plan.affordableLimitReached ? ru
-        ? `Бюджет позволяет не меньше ${format.format(plan.affordableCrafts)} изготовлений. Это предел расчёта: до 1 000 000 ед. товара в партии.`
+        ? `Доступное число изготовлений: не меньше ${format.format(plan.affordableCrafts)}. Это предел расчёта: до 1 000 000 ед. товара в партии.`
         : `The budget can fund at least ${format.format(plan.affordableCrafts)} crafts. This reaches the calculation limit: 1,000,000 output units per batch.`
-      : ru ? `Бюджет на материалы и залог: ${gold(plan.budgetGold)}. Его хватает максимум на ${format.format(plan.affordableCrafts)} изготовлений.`
+      : ru ? `Бюджет на материалы и залог: ${gold(plan.budgetGold)} Максимальное число изготовлений: ${format.format(plan.affordableCrafts)}.`
         : `Materials and deposit budget: ${gold(plan.budgetGold)}. It can fund at most ${format.format(plan.affordableCrafts)} crafts.`;
     for (const [side, crafts, cashAfter, endCash, metrics] of [
       ["requested", input.crafts, plan.requestedCashAfterCraft, plan.requestedEndCash, plan.requested],
@@ -92,7 +92,7 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
     const plan = calculateWowBatchPlan(selected.forecast)!;
     const stamp = new Intl.DateTimeFormat(ru ? "ru-RU" : "en-GB", { dateStyle: "medium" }).format(new Date(selected.createdAt));
     q("[data-batch-original]").textContent = ru
-      ? `${selected.name} · ${stamp}. ${format.format(selected.forecast.crafts)} изготовлений, ${format.format(plan.requested.units)} ед.; продажи ${format.format(plan.requested.soldUnits)} ед.; материалы ${gold(plan.requested.materialOutlay)} и залог ${gold(plan.requested.depositOutlay)}; изменение золота ${gold(plan.requested.cashChange)}; кошелёк до партии ${gold(selected.forecast.walletGold)}.`
+      ? `${selected.name} · ${stamp} · Число изготовлений: ${format.format(selected.forecast.crafts)}; выход: ${format.format(plan.requested.units)} ед.; продажи: ${format.format(plan.requested.soldUnits)} ед.; материалы: ${gold(plan.requested.materialOutlay)} и залог: ${gold(plan.requested.depositOutlay)}; изменение золота: ${gold(plan.requested.cashChange)}; кошелёк до партии: ${gold(selected.forecast.walletGold)}`
       : `${selected.name} · ${stamp}. ${format.format(selected.forecast.crafts)} crafts, ${format.format(plan.requested.units)} units; sales ${format.format(plan.requested.soldUnits)} units; materials ${gold(plan.requested.materialOutlay)} and deposit ${gold(plan.requested.depositOutlay)}; cash change ${gold(plan.requested.cashChange)}; initial wallet ${gold(selected.forecast.walletGold)}.`;
     q("[data-batch-actual-form]").hidden = selected.actual !== null;
     q("[data-batch-actual-result]").hidden = selected.actual === null;
@@ -103,7 +103,7 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
     if (selected.actual) {
       const actual = calculateWowBatchActual(selected.forecast, selected.actual)!;
       q("[data-batch-recorded]").textContent = ru
-        ? `Записанный факт: продано ${format.format(selected.actual.soldUnits)} ед.; выручка после комиссии ${gold(selected.actual.netSaleProceeds)}; потерянный залог ${gold(selected.actual.lostDeposits)}.`
+        ? `Записанный факт: продано ${format.format(selected.actual.soldUnits)} ед.; выручка после комиссии ${gold(selected.actual.netSaleProceeds)}; потерянный залог ${gold(selected.actual.lostDeposits)}`
         : `Recorded outcome: ${format.format(selected.actual.soldUnits)} units sold; proceeds after fees ${gold(selected.actual.netSaleProceeds)}; lost deposits ${gold(selected.actual.lostDeposits)}.`;
       q("[data-batch-actual-cash]").textContent = gold(actual.cashChange);
       q("[data-batch-actual-stock]").textContent = format.format(actual.inventoryUnits);
