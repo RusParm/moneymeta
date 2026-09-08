@@ -12,9 +12,11 @@ import {
 } from "../data/frontier-hubs";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/frontier-hub.css";
+import "../styles/hub-entry.css";
 import BrandHeader from "./BrandHeader.astro";
 import FreshnessIndicator from "./FreshnessIndicator.astro";
 import SiteFooter from "./SiteFooter.astro";
+import HomeDecisionExample from "./HomeDecisionExample.astro";
 
 interface Props {
   hub: FrontierHubId;
@@ -114,7 +116,7 @@ const evidenceSection = hub.status === "live" ? "meta" : "sources";
     }))
   }}
 >
-  <main class={`page frontier-hub frontier-${hubId}`} data-frontier-hub={hubId} data-status={hub.status}>
+  <main class:list={["page", "frontier-hub", `frontier-${hubId}`, { "hub-entry": hubId === "civ7" }]} data-frontier-hub={hubId} data-status={hub.status}>
     <div class="shell">
       <BrandHeader
         lang={lang}
@@ -149,24 +151,34 @@ const evidenceSection = hub.status === "live" ? "meta" : "sources";
               dateLabel={copy.checked}
             />
           </div>
-          <p class="eyebrow">{hub.eyebrow[lang]}</p>
-          <h1 id={`${hubId}-title`}>{hub.heading[lang]}</h1>
-          <p class="lede">{hub.lede[lang]}</p>
-          <div class="hero-actions">
-            <a class="button primary button-large" href={getFrontierPath(hubId, lang, primarySection)}>{copy.primary} →</a>
-            <a class="button ghost button-large" href={getFrontierPath(hubId, lang, "economy")}>{copy.secondary}</a>
-          </div>
+          {hubId === "civ7" ? <>
+            <h1 id={`${hubId}-title`}>{lang === "ru" ? "Civilization VII: успеет ли вложение окупиться?" : "Civilization VII: will the investment pay back in time?"}</h1>
+            <p class="lede">{lang === "ru" ? "Сопоставь цену и время строительства с пользой, которую ты ожидаешь получить до выбранного хода." : "Compare cost and construction time with the benefit you expect before your target turn."}</p>
+            <a class="hub-entry-context" href={getFrontierPath(hubId, lang, "meta")}>{lang === "ru" ? "Механики текущей версии →" : "Current version mechanics →"}</a>
+          </> : <>
+            <p class="eyebrow">{hub.eyebrow[lang]}</p>
+            <h1 id={`${hubId}-title`}>{hub.heading[lang]}</h1>
+            <p class="lede">{hub.lede[lang]}</p>
+            <div class="hero-actions">
+              <a class="button primary button-large" href={getFrontierPath(hubId, lang, primarySection)}>{copy.primary} →</a>
+              <a class="button ghost button-large" href={getFrontierPath(hubId, lang, "economy")}>{copy.secondary}</a>
+            </div>
+          </>}
         </div>
-        <aside class="frontier-promise">
+        {hubId !== "civ7" && <aside class="frontier-promise">
           <span>{hub.shortName} / MONEY META</span>
           <p>{hub.promise[lang]}</p>
           <div class="frontier-proof-grid">
             {hub.proof.map((item) => <div><strong>{item.value}</strong><small>{item.label[lang]}</small></div>)}
           </div>
-        </aside>
+        </aside>}
       </section>
 
-      <nav class="frontier-rail" aria-label={copy.routes}>
+      {hubId === "civ7" && <section class="hub-entry-example" aria-label={lang === "ru" ? "Проверь решение на примере" : "Test a decision with an example"}>
+        <HomeDecisionExample gameId="civ7" lang={lang} />
+      </section>}
+
+      {hubId !== "civ7" && <nav class="frontier-rail" aria-label={copy.routes}>
         {hub.sections.map((item) => (
           <a href={getFrontierPath(hubId, lang, item.slug)}>
             <span class="frontier-section-mark">{item.mark}</span>
@@ -174,13 +186,13 @@ const evidenceSection = hub.status === "live" ? "meta" : "sources";
             <strong>{item.label[lang]}</strong>
           </a>
         ))}
-      </nav>
+      </nav>}
 
       <section class="frontier-routes" aria-labelledby={`${hubId}-routes-title`}>
         <header class="frontier-section-head">
           <div>
             <span class="section-kicker">{copy.routeKicker}</span>
-            <h2 id={`${hubId}-routes-title`}>{copy.routeTitle}</h2>
+            <h2 id={`${hubId}-routes-title`}>{hubId === "civ7" ? (lang === "ru" ? "Механики, версия и другие расчёты" : "Mechanics, updates and more calculations") : copy.routeTitle}</h2>
           </div>
           <p>{copy.routeText}</p>
         </header>

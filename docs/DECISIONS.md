@@ -1,5 +1,17 @@
 # Decision log
 
+## 2026-09-08: demonstrate a decision before asking for work
+
+The owner's own player experience remains unclear after v1.27. A tool count, a passing build or a saved record does not establish a reason to use the product. The source audit and primary competitor evidence show that statistics, generic arithmetic and forecast journals are already widely available.
+
+Each live game entrance now starts with a small worked example using the existing tested model. The player sees a question, known assumptions, a consequence and a full-model handoff carrying those assumptions. One adjustable input demonstrates what changes the result. Hypothetical examples are not named game benchmarks or market forecasts. Dota's observed public-match excerpt remains distinct and requests a fresh match only on deliberate form submission.
+
+The shared gateway becomes optional; it is a navigation aid rather than personalized analysis. The homepage remembers the selected game and displays unfinished saved plans without treating historical outputs as fresh recommendations. No additional telemetry or provider storage is introduced.
+
+GTA's inline portfolio selects at most one cycle per business. Its interface must describe this actual scope and cannot extrapolate a monthly production schedule that the model does not calculate.
+
+Deeper work remains game-native: observed session returns in GTA, replay evidence and a next-match check in Dota, budgeted batch liquidity in WoW, near-term army budgets in Total War, explicit income changes in CK3 succession and two same-unit alternatives in Civilization. Full acceptance requires observing real players reach and explain a decision; this release improves the entrance, not proof of product-market fit.
+
 ## 2026-09-08: an answer must change a player's decision
 
 The owner still finds the product weak. More surfaces and persistence alone are insufficient evidence of utility. Each deeper scenario should deliver a concrete conclusion, its numerical consequence, a condition that changes the conclusion and a useful follow-up after play. Fewer required assumptions and clear in-game input instructions take priority over additional catalogs.
@@ -8,7 +20,7 @@ The five existing `/tools/` surfaces now put calculations before examples, use o
 
 WoW's existing crafting model now distinguishes spendable cash from accounting profit and stock at material cost. One completed listing cycle determines proportional deposit refunds and losses. Whole-unit sales and a price threshold show when the initial outlay is recovered. A trial-batch helper supplies a conditional sell-through assumption; it does not claim that demand scales with batch size. Price and sales stress cases are labeled hypothetical, not probabilities. No new market feed or profession-effect model is implied.
 
-The September 8 production check still shows v1.21. Improvements in v1.22–v1.27 must be reviewed as preview changes until production approval is explicitly given. A passing build is not a claim of player retention or demand.
+The early September 8 production check showed v1.21. The owner later approved the reviewed v1.22–v1.27 release, published in PR #17 on September 8. A passing build is not a claim of player retention or demand.
 
 ## 2026-09-07: a saved plan survives the next calculation
 
