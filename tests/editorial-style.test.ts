@@ -107,11 +107,14 @@ describe("editorial style", () => {
 
     expect(gameIds).toHaveLength(7);
     expect(home).toContain("data-home-launcher");
-    expect(home).toContain('role="tablist"');
+    const client = sourceFiles["../src/lib/home-page.ts"] ?? "";
+    const example = sourceFiles["../src/components/HomeDecisionExample.astro"] ?? "";
+    expect(client).toContain('tablist.setAttribute("role", "tablist")');
     expect(home).toContain('id="game-picker"');
     expect(home).toContain('const activeGameId: HubPortalId = "gta"');
-    expect(home).toContain('class="mm-home-match-loader"');
-    expect(home).toContain('name="autoload"');
+    expect(home).toContain("<HomeDecisionExample");
+    expect(example).toContain('name="match"');
+    expect(example).toContain('name="autoload"');
     expect(home).not.toContain("data-home-demo");
     expect(home).not.toContain("Попробовать на Dota 2");
     expect(home).not.toContain("Try it with Dota 2");

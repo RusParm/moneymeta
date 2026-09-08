@@ -46,15 +46,15 @@ const copy = lang === "ru" ? {
   model3: "Модель 03 · набор бизнесов",
   mark3: "НАБ",
   portfolioTitle: "Что помещается в твой капитал и свободное время",
-  portfolioText: "Модель перебирает сочетания активов и выбирает максимальный чистый доход с учётом бюджета и доступного времени.",
+  portfolioText: "Сравниваем по одному циклу каждого выбранного бизнеса. Учитываем вложения и ручную работу; ожидание производства, расписание и повторные циклы сюда не входят.",
   budget: "Бюджет, GTA$",
-  hours: "Часов ручной работы в неделю",
-  portfolioResult: "Оптимальная комбинация",
+  hours: "Часов ручной работы на выбранные циклы",
+  portfolioResult: "Лучший набор в рамках этой модели",
   noFit: "Ни один актив не проходит оба ограничения.",
   totalCost: "Общие вложения",
   activeTime: "Ручная работа",
-  weekly: "Чистыми за неделю",
-  portfolioMonth: "Чистыми за месяц",
+  weekly: "Чистыми за выбранные циклы",
+  portfolioCount: "Бизнесов в наборе",
   reset: "Вернуть исходные значения",
   note: "Часы производства не равны времени ручной игры. Месячный результат является рабочей оценкой без простоев, ограничений доставки и риска незавершённой продажи."
 } : {
@@ -99,15 +99,15 @@ const copy = lang === "ru" ? {
   model3: "Model 03 · portfolio allocation",
   mark3: "PF",
   portfolioTitle: "Portfolio: what fits capital and active time",
-  portfolioText: "The optimizer searches asset sets and maximizes baseline weekly net inside both constraints.",
+  portfolioText: "Compares one cycle of each selected business using investment and active work. Production waiting time, scheduling and repeated cycles are outside this model.",
   budget: "Budget, GTA$",
-  hours: "Active hours / week",
-  portfolioResult: "Optimal combination",
+  hours: "Active hours for selected cycles",
+  portfolioResult: "Best set within this model",
   noFit: "No asset passes both constraints.",
   totalCost: "Total investment",
   activeTime: "Active time",
-  weekly: "Net / week",
-  portfolioMonth: "Net / month",
+  weekly: "Net for selected cycles",
+  portfolioCount: "Businesses in the set",
   reset: "Restore baseline",
   note: "Production hours are not active grind. Monthly results are steady-state estimates without downtime, delivery caps or failed-sale risk."
 };
@@ -174,7 +174,7 @@ const copy = lang === "ru" ? {
         <div class="field"><label for="gta-portfolio-hours-inline">{copy.hours}</label><input id="gta-portfolio-hours-inline" data-portfolio-input="hours" data-role="hours" type="number" min="0" max="168" step="0.5" value="2" /></div>
       </div></form>
       <article class="card result-panel gta-inline-result" data-portfolio-result aria-live="polite"><span class="result-label">{copy.portfolioResult}</span><div class="gta-portfolio-picks" data-portfolio-picks>-</div>
-        <div class="result-metrics"><div class="result-metric"><span>{copy.totalCost}</span><strong data-portfolio-output="cost">-</strong></div><div class="result-metric"><span>{copy.activeTime}</span><strong data-portfolio-output="time">-</strong></div><div class="result-metric"><span>{copy.weekly}</span><strong class="teal" data-portfolio-output="weekly">-</strong></div><div class="result-metric"><span>{copy.portfolioMonth}</span><strong class="gold" data-portfolio-output="monthly">-</strong></div></div><ScenarioActions lang={lang} />
+        <div class="result-metrics"><div class="result-metric"><span>{copy.totalCost}</span><strong data-portfolio-output="cost">-</strong></div><div class="result-metric"><span>{copy.activeTime}</span><strong data-portfolio-output="time">-</strong></div><div class="result-metric"><span>{copy.weekly}</span><strong class="teal" data-portfolio-output="weekly">-</strong></div><div class="result-metric"><span>{copy.portfolioCount}</span><strong class="gold" data-portfolio-output="count">-</strong></div></div><ScenarioActions lang={lang} />
       </article>
     </div>
   </section>
@@ -290,7 +290,7 @@ const copy = lang === "ru" ? {
       cost: must<HTMLElement>(portfolio, '[data-portfolio-output="cost"]'),
       time: must<HTMLElement>(portfolio, '[data-portfolio-output="time"]'),
       weekly: must<HTMLElement>(portfolio, '[data-portfolio-output="weekly"]'),
-      monthly: must<HTMLElement>(portfolio, '[data-portfolio-output="monthly"]')
+      count: must<HTMLElement>(portfolio, '[data-portfolio-output="count"]')
     };
     const picks = must<HTMLElement>(portfolio, "[data-portfolio-picks]");
     const portfolioResult = must<HTMLElement>(portfolio, "[data-portfolio-result]");
@@ -312,7 +312,7 @@ const copy = lang === "ru" ? {
       portfolioOutputs.cost.textContent = money(best.setupCost);
       portfolioOutputs.time.textContent = `${best.activeHours.toFixed(1)} ${lang === "ru" ? "ч" : "h"}`;
       portfolioOutputs.weekly.textContent = money(best.weeklyProfit);
-      portfolioOutputs.monthly.textContent = money(best.weeklyProfit * 4.345);
+      portfolioOutputs.count.textContent = String(best.businesses.length);
       portfolioResult.dataset.state = "positive";
     };
     Object.values(portfolioInputs).forEach((input) => input.addEventListener("input", renderPortfolio));

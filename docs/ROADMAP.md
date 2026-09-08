@@ -1,5 +1,17 @@
 # Money Meta roadmap
 
+## Current increment: v1.28 prove the useful answer at the entrance
+
+The owner asks whether Money Meta adds value and deserves repeat visits. See `PRODUCT_VALUE_AUDIT_2026_09_08.md`: the strongest present cases are Dota replay prioritization and WoW cash versus profit; a homepage rewrite alone does not close the deeper product gaps.
+
+1. Put a worked, editable answer on all six live entrances and preserve an exact path into the full model. Make the route questionnaire optional.
+2. Restore the selected game on return and show that game's unfinished saved plans. Historical results remain explicitly historical.
+3. Remove claims that exceed actual model scope, starting with GTA's one-cycle portfolio and monthly extrapolation.
+4. Prioritize one completed decision per game from observed player friction, using real in-game inputs and comparable alternatives; do not add generic calculators to increase the tool count.
+5. Test whether the player can state what they will do differently and why, then whether the after-session result changes their next decision. Technical tests are a separate reliability gate.
+
+The v1.27 release is already in production through PR #17. Monetization remains after demonstrated recurring utility.
+
 ## Current increment: v1.27 answers before more features
 
 The owner wants a product that changes player decisions and earns repeat use. Finish the compact working surface and WoW batch cash explanation, then publish the already verified release only after approval. Do not treat unpublished improvements as user-visible progress.

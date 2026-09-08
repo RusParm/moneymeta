@@ -1,0 +1,148 @@
+---
+import { homeDecisionExamples, homeDotaEvidence } from "../data/home-decision-examples";
+import type { ScenarioGame, ScenarioLocale } from "../data/scenario-tools";
+import { calculateHomeDecisionExample, homeExampleDefault, homeExampleContext } from "../lib/home-decision-examples";
+
+interface Props { gameId: ScenarioGame; lang: ScenarioLocale }
+const { gameId, lang } = Astro.props;
+const ru = lang === "ru";
+const numericGame = gameId === "dota" ? null : gameId;
+const config = numericGame ? homeDecisionExamples[numericGame] : null;
+const result = numericGame ? calculateHomeDecisionExample(numericGame, homeExampleDefault(numericGame), lang) : null;
+const id = `decision-example-${gameId}-${lang}`;
+const number = (value: number) => new Intl.NumberFormat(ru ? "ru-RU" : "en-US", { maximumFractionDigits: 2 }).format(value);
+const matchPath = `${ru ? "" : "/en"}/dota-2/matches/audit/`;
+---
+
+<article class="home-decision-example" data-home-example={gameId} data-example-lang={lang} aria-labelledby={`${id}-title`}>
+  {config && numericGame && result?.valid ? <>
+    <div class="example-heading">
+      <span class="example-kicker">{ru ? "Попробуй на примере" : "Try a worked example"}</span>
+      <h3 id={`${id}-title`}>{config.question[lang]}</h3>
+    </div>
+    <p class="example-context">{homeExampleContext(numericGame, lang)}</p>
+    <div class="example-input">
+      <label for={`${id}-input`}>{config.inputLabel[lang]}</label>
+      <input id={`${id}-input`} data-example-input type="number" inputmode="decimal" value={homeExampleDefault(numericGame)} min={config.min} max={config.max} step={config.step} required disabled aria-describedby={`${id}-hint ${id}-error`} />
+      <p id={`${id}-hint`}>{config.inputHint[lang]}</p>
+    </div>
+    <div data-example-result data-state={result.state} class="example-result" aria-live="polite" aria-atomic="true">
+      <dl>{result.metrics.map((metric, index) => <div><dt>{metric.label}</dt><dd data-example-metric={index}>{metric.display}</dd></div>)}</dl>
+      <p class="example-consequence" data-example-consequence>{result.consequence}</p>
+      <p class="example-next" data-example-next>{result.nextAction}</p>
+    </div>
+    <p id={`${id}-error`} class="example-error" data-example-error role="status" hidden>{ru ? `Введи число от ${config.min} до ${config.max}${config.step === "any" ? "" : ", без дробной части"}.` : `Enter a ${config.step === "any" ? "number" : "whole number"} from ${config.min} to ${config.max}.`}</p>
+    <a class="button example-action" data-example-handoff href={result.href}>{ru ? "Подставить свои вводные" : "Use my own figures"}<span aria-hidden="true">↗</span></a>
+    <details class="example-assumptions">
+      <summary>{ru ? "Из чего получился ответ" : "How this answer was calculated"}</summary>
+      <p>{config.boundary[lang]}</p>
+      <dl>{config.fields.map((field) => <div><dt>{field.label[lang]}</dt><dd data-example-assumption={field.key}>{number(field.value)}</dd></div>)}</dl>
+      <p>{ru ? "Все эти вводные перейдут в полный расчёт. Их можно изменить и сохранить свой вариант." : "All these inputs carry over to the full tool. Change them and save your own version."}</p>
+    </details>
+    <noscript><p class="example-noscript">{ru ? "Показан исходный пример. Для изменения вводных открой полный расчёт с включённым JavaScript." : "The original example is shown. To change inputs, open the full tool with JavaScript enabled."}</p></noscript>
+  </> : <>
+    <div class="example-heading">
+      <span class="example-kicker">{ru ? "Эпизод из реального матча" : "An episode from a real match"}</span>
+      <h3 id={`${id}-title`}>{ru ? "С какого момента начать пересмотр матча?" : "Where should I start reviewing the match?"}</h3>
+    </div>
+    <div class="example-result" data-state="caution">
+      <p class="example-dota-window">{homeDotaEvidence.startMinute}-{homeDotaEvidence.endMinute} {ru ? "минуты" : "minutes"}</p>
+      <dl>
+        <div><dt>{homeDotaEvidence.hero}</dt><dd>+{number(homeDotaEvidence.heroGold)} {ru ? "золота" : "gold"}</dd></div>
+        <div><dt>{homeDotaEvidence.opponent}</dt><dd>+{number(homeDotaEvidence.opponentGold)} {ru ? "золота" : "gold"}</dd></div>
+      </dl>
+      <p class="example-consequence">{ru ? `За эти три минуты Meepo заработал на ${number(-homeDotaEvidence.gapChange)} золота больше Necrophos.` : `Across these three minutes, Meepo earned ${number(-homeDotaEvidence.gapChange)} more gold than Necrophos.`}</p>
+      <p class="example-next">{ru ? "Начни просмотр реплея с 25-й минуты. Проверь, чем занимался каждый герой: цифры показывают разрыв, но не объясняют его причину." : "Start your replay review at minute 25. Check what each hero was doing: the numbers locate the gap but do not explain its cause."}</p>
+    </div>
+    <form action={matchPath} method="get" class="example-demo-form">
+      <input type="hidden" name="match" value={homeDotaEvidence.matchId} />
+      <input type="hidden" name="slot" value={homeDotaEvidence.slot} />
+      <input type="hidden" name="role" value={homeDotaEvidence.role} />
+      <input type="hidden" name="autoload" value="1" />
+      <button type="submit" class="button example-action">{ru ? "Открыть разбор этого матча" : "Open this match review"}<span aria-hidden="true">↗</span></button>
+    </form>
+    <form action={matchPath} method="get" class="example-own-match" data-example-match-form>
+      <label for={`${id}-match`}>{ru ? "Свой матч: Match ID или ссылка" : "Your match: Match ID or URL"}</label>
+      <div><input id={`${id}-match`} name="match" type="text" required autocomplete="off" placeholder={ru ? "Match ID или ссылка" : "Match ID or URL"} aria-describedby={`${id}-match-hint`} /><button type="submit" class="button ghost">{ru ? "Разобрать" : "Review"}</button></div>
+      <input type="hidden" name="autoload" value="1" />
+      <p id={`${id}-match-hint`}>{ru ? "ID есть на итоговом экране матча. Нажатие отправит публичный ID в OpenDota. Наличие хронологии зависит от доступных данных." : "Find the ID on the post-match screen. Clicking sends the public ID to OpenDota. Timeline availability depends on the data."}</p>
+    </form>
+    <details class="example-assumptions"><summary>{ru ? "Источник примера" : "Example source"}</summary><p>{ru ? "OpenDota, публичный матч" : "OpenDota, public match"} {homeDotaEvidence.matchId}, {homeDotaEvidence.hero}. {ru ? "Проверено" : "Checked"} {homeDotaEvidence.checkedAt}. {ru ? "Показан прирост накопленного золота за интервал. Это не общая оценка игрока и не объяснение исхода матча." : "This shows the change in accumulated gold during the interval. It is not a player grade or an explanation of the match outcome."}</p></details>
+  </>}
+</article>
+
+<script>
+  import { homeDecisionExamples, type HomeExampleGame } from "../data/home-decision-examples";
+  import { calculateHomeDecisionExample } from "../lib/home-decision-examples";
+  document.querySelectorAll<HTMLElement>("[data-home-example]").forEach((root) => {
+    const game = root.dataset.homeExample;
+    if (!game || game === "dota" || !(game in homeDecisionExamples)) return;
+    const numericGame = game as HomeExampleGame;
+    const lang = root.dataset.exampleLang === "en" ? "en" : "ru";
+    const input = root.querySelector<HTMLInputElement>("[data-example-input]")!;
+    const panel = root.querySelector<HTMLElement>("[data-example-result]")!;
+    const error = root.querySelector<HTMLElement>("[data-example-error]")!;
+    const link = root.querySelector<HTMLAnchorElement>("[data-example-handoff]")!;
+    const update = () => {
+      const result = calculateHomeDecisionExample(numericGame, input.value, lang);
+      input.setAttribute("aria-invalid", String(!result.valid));
+      panel.hidden = !result.valid;
+      error.hidden = result.valid;
+      if (!result.valid) {
+        link.removeAttribute("href"); link.setAttribute("aria-disabled", "true"); link.tabIndex = -1;
+        return;
+      }
+      link.href = result.href; link.removeAttribute("aria-disabled"); link.removeAttribute("tabindex");
+      panel.dataset.state = result.state;
+      result.metrics.forEach((metric, index) => { root.querySelector<HTMLElement>(`[data-example-metric="${index}"]`)!.textContent = metric.display; });
+      root.querySelector<HTMLElement>("[data-example-consequence]")!.textContent = result.consequence;
+      root.querySelector<HTMLElement>("[data-example-next]")!.textContent = result.nextAction;
+      const field = homeDecisionExamples[numericGame].inputKey;
+      root.querySelector<HTMLElement>(`[data-example-assumption="${field}"]`)!.textContent = new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US", { maximumFractionDigits: 2 }).format(result.values[field]!);
+    };
+    link.addEventListener("click", (event) => { if (link.getAttribute("aria-disabled") === "true") event.preventDefault(); });
+    input.addEventListener("input", update);
+    input.disabled = false;
+    update();
+  });
+</script>
+
+<style>
+  .home-decision-example { --example-accent: var(--home-accent, var(--game-accent, #79d9ba)); color: #f2f4f3; padding: clamp(18px, 3vw, 28px); background: #101718; border: 1px solid #344140; border-radius: 16px; min-width: 0; }
+  .example-heading { margin-bottom: 18px; }
+  .example-kicker { display: block; color: var(--example-accent); font-size: .74rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 8px; }
+  h3 { margin: 0; font-size: clamp(1.2rem, 2.1vw, 1.65rem); line-height: 1.22; max-width: 36ch; }
+  .example-context { margin: -4px 0 16px; font-size: .84rem; line-height: 1.5; color: #bdcbc5; }
+  .example-input { display: grid; grid-template-columns: minmax(0, 1fr) 110px; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+  label { font-size: .95rem; font-weight: 600; line-height: 1.35; }
+  input { width: 100%; min-width: 0; border: 1px solid #536462; background: #0b1112; color: #fff; border-radius: 8px; padding: 10px 12px; font-size: 1rem; line-height: 1.35; }
+  input:focus-visible, a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--example-accent); outline-offset: 4px; }
+  input[aria-invalid="true"] { border-color: #f4b48d; }
+  .example-input > p, .example-own-match > p { grid-column: 1 / -1; margin: 0; color: #abbab6; font-size: .8rem; line-height: 1.5; }
+  .example-result { background: #182423; border-radius: 10px; padding: 16px; }
+  .example-result[hidden], .example-error[hidden] { display: none !important; }
+  dl { margin: 0; }
+  .example-result dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  dt { font-size: .8rem; line-height: 1.4; color: #b7c5c1; }
+  dd { margin: 5px 0 0; line-height: 1.2; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .example-result dd { font-size: clamp(1.15rem, 2vw, 1.5rem); color: #aff0d5; overflow-wrap: anywhere; }
+  .example-result[data-state="caution"] dl > div:last-child dd { color: #f1cd8c; }
+  .example-consequence { margin: 14px 0 0; font-size: .94rem; line-height: 1.5; }
+  .example-next { margin: 8px 0 0; font-size: .85rem; line-height: 1.5; color: #bfcdc7; }
+  .example-error { color: #f4b48d; margin: 12px 0; font-size: .9rem; }
+  .example-action { display: flex; justify-content: space-between; align-items: center; gap: 16px; width: 100%; margin-top: 16px; padding: 13px 16px; border-radius: 8px; background: #b7f1d1; border: 1px solid #b7f1d1; color: #0a251b; text-decoration: none; font-weight: 700; font-size: .92rem; line-height: 1.3; cursor: pointer; }
+  .example-action[aria-disabled="true"] { opacity: .5; cursor: default; }
+  .example-assumptions { margin-top: 14px; font-size: .8rem; line-height: 1.45; color: #b7c5c1; }
+  .example-assumptions summary { cursor: pointer; padding: 4px 0; }
+  .example-assumptions p { margin: 10px 0; }
+  .example-assumptions dl { display: grid; gap: 6px; }
+  .example-assumptions dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .example-assumptions dd { margin: 0; white-space: nowrap; font-size: .85rem; }
+  .example-dota-window { margin: 0 0 12px; color: #e0dfd4; font-size: .82rem; }
+  .example-demo-form { margin: 0; }
+  .example-own-match { margin-top: 18px; padding-top: 16px; border-top: 1px solid #344140; display: grid; gap: 8px; }
+  .example-own-match > div { display: flex; gap: 8px; }
+  .example-own-match button { flex-shrink: 0; border: 1px solid #647972; border-radius: 8px; padding: 10px 14px; color: #e9f1ed; background: transparent; cursor: pointer; font-size: .86rem; }
+  .example-noscript { font-size: .8rem; color: #b7c5c1; }
+  @media (max-width: 400px) { .example-input { grid-template-columns: minmax(0, 1fr) 85px; gap: 8px; } .example-result { padding: 13px; } .example-result dl { gap: 12px; } .example-result dd { font-size: 1.08rem; } }
+</style>

@@ -14,12 +14,14 @@ import { insights, type InsightGame } from "../data/insights";
 import "../styles/wow-hub.css";
 import "../styles/strategy-hub.css";
 import "../styles/hub-portal.css";
+import "../styles/hub-entry.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import HubDecisionGateway from "./HubDecisionGateway.astro";
 import HubGameMark from "./HubGameMark.astro";
 import SiteFooter from "./SiteFooter.astro";
 import FreshnessIndicator from "./FreshnessIndicator.astro";
+import HomeDecisionExample from "./HomeDecisionExample.astro";
 
 interface Props {
   hub: HubPortalId;
@@ -53,18 +55,41 @@ const featuredGuides = insights
   .sort((left, right) => Number(Boolean(right.featuredInHub)) - Number(Boolean(left.featuredInHub)) || right.updatedAt.localeCompare(left.updatedAt))
   .slice(0, 2);
 
+const entry = {
+  gta: {
+    ru: { title: "GTA Online: накопить на покупку и сохранить резерв", text: "Проверь, какой недельный доход нужен к твоему сроку, чтобы после покупки в банке остался выбранный запас." },
+    en: { title: "GTA Online: fund a purchase and keep a reserve", text: "Check the weekly income needed by your deadline while preserving the cash reserve you choose." }
+  },
+  dota: {
+    ru: { title: "Dota 2: экономика твоего матча", text: "Начни разбор с изменения золота относительно соперника и команды. Когда есть хронология, найди эпизод для просмотра." },
+    en: { title: "Dota 2: your match economy", text: "Start with gold changes against an opponent and the teams. When a timeline is available, find an episode to review." }
+  },
+  wow: {
+    ru: { title: "WoW: прибыль и свободное золото", text: "Перед изготовлением партии проверь, сколько продаж вернёт затраты и сколько золота останется в товаре." },
+    en: { title: "WoW: profit and spendable gold", text: "Before crafting a batch, check how many sales recover its cost and how much gold stays in stock." }
+  },
+  "total-war": {
+    ru: { title: "Total War: казна после найма армии", text: "Проверь, хватит ли золота на найм и содержание до выбранного хода, с запасом на непредвиденные расходы." },
+    en: { title: "Total War: cash after recruiting an army", text: "Check recruitment and upkeep through your target turn while protecting an emergency reserve." }
+  },
+  ck3: {
+    ru: { title: "CK3: хватит ли казны на затяжную войну?", text: "Сопоставь разовые затраты, военные расходы и длительность войны с запасом золота, который хочешь сохранить." },
+    en: { title: "CK3: can your treasury cover a longer war?", text: "Compare one-off costs, wartime spending and duration with the gold reserve you want to preserve." }
+  }
+}[hubId][lang];
+
 const copy = lang === "ru" ? {
   back: "← Все экономики",
   live: "Рабочий контекст",
   checked: "проверено",
-  primary: "Подобрать мой маршрут",
   secondary: "Что изменилось",
   value: "Ценность",
   valueLink: "Понять экономику",
   destinations: "Пять направлений",
   commandKicker: "Куда дальше",
-  commandTitle: "Один вопрос. Одна короткая страница",
-  commandText: "Хаб больше не пытается вместить всю игру. Выбери задачу, получи вывод и вернись сюда только за следующим решением.",
+  commandTitle: "Другие задачи и разборы",
+  commandText: "Механики, расчёты и примеры для других решений в этой игре.",
+  choose: "Не знаю, с чего начать",
   commandCount: "05 РАЗДЕЛОВ · 03 МАРШРУТА",
   result: "Что получишь",
   playbooks: "Готовые маршруты",
@@ -88,14 +113,14 @@ const copy = lang === "ru" ? {
   back: "← All economies",
   live: "Working context",
   checked: "checked",
-  primary: "Find my route",
   secondary: "What changed",
   value: "Value",
   valueLink: "Understand the economy",
   destinations: "Five destinations",
   commandKicker: "Where next",
-  commandTitle: "One question, one focused page",
-  commandText: "The hub no longer tries to contain the whole game. Pick the task, reach a conclusion and return only for the next decision.",
+  commandTitle: "More decisions and analysis",
+  commandText: "Mechanics, calculations and examples for other decisions in this game.",
+  choose: "Help me choose",
   commandCount: "05 PAGES · 03 PLAYBOOKS",
   result: "What you get",
   playbooks: "Connected playbooks",
@@ -145,7 +170,7 @@ const copy = lang === "ru" ? {
     ]
   }}
 >
-  <main class={`page game-page hub-portal hub-portal-v14 ${mainClass}`} data-hub-portal={hubId} data-insight-game={insightGame}>
+  <main class={`page game-page hub-portal hub-portal-v14 hub-entry ${mainClass}`} data-hub-portal={hubId} data-insight-game={insightGame}>
     <div class="shell">
       <BrandHeader
         lang={lang}
@@ -169,37 +194,20 @@ const copy = lang === "ru" ? {
         <div class="portal-hero-shade" aria-hidden="true"></div>
         <div class="portal-hero-copy">
           <FreshnessIndicator lang={lang} policy={freshness} current={copy.live} stale={staleLabel} dateLabel={copy.checked} />
-          <p class="eyebrow">{hub.eyebrow[lang]}</p>
-          <h1 id={`${hubId}-portal-title`}>{hub.heading[lang]}</h1>
-          <p class="lede">{hub.lede[lang]}</p>
-          <div class="hero-actions">
-            <a class="button primary button-large" href="#quick-start">{copy.primary} →</a>
-            <a class="button ghost button-large" href={getHubPath(hubId, lang, "meta")}>{copy.secondary}</a>
-          </div>
-          <div class="portal-proof-grid">
-            {hub.stats.map((stat) => <div><strong>{stat.value}</strong><span>{stat.label[lang]}</span></div>)}
-          </div>
+          <h1 id={`${hubId}-portal-title`}>{entry.title}</h1>
+          <p class="lede">{entry.text}</p>
+          <a class="hub-entry-context" href={getHubPath(hubId, lang, "meta")}>{hub.version[lang]} · {copy.secondary} →</a>
         </div>
-
-        <aside class="portal-value-card">
-          <span>{hub.shortName} / {copy.value}</span>
-          <h2>{hub.valueTitle[lang]}</h2>
-          <p>{hub.valueText[lang]}</p>
-          <a class="portal-value-link" href={getHubPath(hubId, lang, "economy")}>{copy.valueLink} →</a>
-        </aside>
       </section>
 
-      <nav class="portal-section-rail" aria-label={copy.destinations}>
-        {hub.sections.map((item) => (
-          <a href={getHubPath(hubId, lang, item.slug)}>
-            <HubGameMark hub={hubId} section={item.slug} lang={lang} />
-            <span>{item.code}</span>
-            <strong>{item.label[lang]}</strong>
-          </a>
-        ))}
-      </nav>
+      <section class="hub-entry-example" aria-label={lang === "ru" ? "Проверь решение на примере" : "Test a decision with an example"}>
+        <HomeDecisionExample gameId={hubId} lang={lang} />
+      </section>
 
-      <HubDecisionGateway hub={hubId} lang={lang} />
+      <details class="hub-entry-help">
+        <summary>{copy.choose}</summary>
+        <HubDecisionGateway hub={hubId} lang={lang} />
+      </details>
 
       <section class="section hub-section portal-command-center" aria-labelledby={`${hubId}-command-title`}>
         <header class="portal-command-head">
@@ -285,3 +293,16 @@ const copy = lang === "ru" ? {
     </div>
   </main>
 </BaseLayout>
+
+<script>
+  // Preserve existing links to the optional route finder.
+  const revealRouteFinder = () => {
+    if (window.location.hash !== "#quick-start") return;
+    const target = document.getElementById("quick-start");
+    const details = target?.closest("details");
+    if (details) details.open = true;
+    target?.scrollIntoView({ block: "start" });
+  };
+  revealRouteFinder();
+  window.addEventListener("hashchange", revealRouteFinder);
+</script>
