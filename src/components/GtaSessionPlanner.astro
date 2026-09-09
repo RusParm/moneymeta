@@ -1,0 +1,68 @@
+---
+import ScenarioActions from "./ScenarioActions.astro";
+import { gtaSessionCopy } from "../data/gta-session-copy";
+import { calculateGtaSession, GTA_SESSION_KINDS, type GtaSessionSource } from "../lib/gta-session";
+import "../styles/gta-session.css";
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const c = gtaSessionCopy[lang];
+const sources: GtaSessionSource[] = [
+  { kind: "ready-sale", available: true, cashPerRun: 200000, minutesPerRun: 35, entryMinutes: 5, maxRuns: 1 },
+  { kind: "mission", available: true, cashPerRun: 140000, minutesPerRun: 25, entryMinutes: 5, maxRuns: 4 },
+  { kind: "contract", available: false, cashPerRun: 0, minutesPerRun: 30, entryMinutes: 5, maxRuns: 1 },
+  { kind: "other", available: false, cashPerRun: 0, minutesPerRun: 30, entryMinutes: 5, maxRuns: 1 }
+];
+const initial = calculateGtaSession({ minutesAvailable: 75, sources: sources.slice(0, 2) })!;
+const money = (n: number) => `GTA$${new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US").format(n)}`;
+---
+
+<section id="session-plan" class="gta-inline-model gta-session" data-gta-session data-lang={lang} data-scenario-root data-scenario-key="gta-session">
+  <div class="gta-inline-head"><div class="gta-business-mark" aria-hidden="true">⏱</div><div><span class="section-kicker">{c.kicker}</span><h3>{c.title}</h3><p>{c.text}</p></div></div>
+  <p class="gta-session-example">{c.example}</p>
+  <form class="gta-session-form">
+    <div class="gta-session-controls">
+      <div class="field"><label for="gta-session-minutes">{c.minutes}</label><input id="gta-session-minutes" data-role="minutes" type="number" min="0" max="240" step="1" value="75" /></div>
+      <div class="field"><label for="gta-session-count">{c.sourceCount}</label><select id="gta-session-count" data-role="sources">{[1, 2, 3, 4].map((n) => <option value={n} selected={n === 2}>{n}</option>)}</select></div>
+    </div>
+    <div class="gta-session-sources">
+      {sources.map((source, i) => <fieldset class="gta-session-source" data-session-source={i} hidden={i >= 2}>
+        <legend>{c.source} {i + 1}</legend>
+        <div class="gta-session-source-fields">
+          <div class="field gta-session-wide"><label for={`gta-session-${i}-kind`}>{c.kind}</label><select id={`gta-session-${i}-kind`} data-role={`s${i}-kind`}>{GTA_SESSION_KINDS.map((kind) => <option value={kind} selected={source.kind === kind}>{c.kinds[kind]}</option>)}</select></div>
+          <div class="field gta-session-wide"><label for={`gta-session-${i}-available`}>{c.available}</label><select id={`gta-session-${i}-available`} data-role={`s${i}-available`}><option value="yes" selected={source.available}>{c.yes}</option><option value="no" selected={!source.available}>{c.no}</option></select></div>
+          <div class="field"><label for={`gta-session-${i}-cash`}>{c.cash}</label><input id={`gta-session-${i}-cash`} data-role={`s${i}-cash`} type="number" min="-1000000000" max="1000000000" step="1" value={source.cashPerRun} aria-describedby="gta-session-cash-hint" /></div>
+          <div class="field"><label for={`gta-session-${i}-duration`}>{c.duration}</label><input id={`gta-session-${i}-duration`} data-role={`s${i}-duration`} type="number" min="1" max="240" step="1" value={source.minutesPerRun} aria-describedby="gta-session-time-hint" /></div>
+          <div class="field"><label for={`gta-session-${i}-entry`}>{c.entry}</label><input id={`gta-session-${i}-entry`} data-role={`s${i}-entry`} type="number" min="0" max="240" step="1" value={source.entryMinutes} aria-describedby="gta-session-time-hint" /></div>
+          <div class="field"><label for={`gta-session-${i}-runs`}>{c.runs}</label><input id={`gta-session-${i}-runs`} data-role={`s${i}-runs`} type="number" min="0" max={source.kind === "ready-sale" ? 1 : 240} step="1" value={source.maxRuns} aria-describedby="gta-session-time-hint" /></div>
+        </div>
+      </fieldset>)}
+    </div>
+    <details class="gta-session-help"><summary>{c.assumptions}</summary><p id="gta-session-cash-hint">{c.cashHint}</p><p id="gta-session-time-hint">{c.timingHint}</p></details>
+  </form>
+  <p class="gta-session-error" data-session-error role="status" hidden>{c.invalid}</p>
+  <article class="card result-panel gta-session-result" data-session-result aria-live="polite">
+    <span class="result-label">{c.result}</span><h4 class="result-name" data-session-decision>{c.mixed}</h4><p class="result-reason" data-session-reason>{c.mixedText}</p>
+    <div class="result-metrics gta-session-metrics">
+      <div class="result-metric"><span>{c.cashResult}</span><strong class="teal" data-session-output="cash">{money(initial.best.cash)}</strong></div>
+      <div class="result-metric"><span>{c.soloResult}</span><strong data-session-output="solo-cash">{money(initial.solo.cash)}</strong></div>
+      <div class="result-metric"><span>{c.gain}</span><strong class="gold" data-session-output="gain">{money(initial.gainOverSolo)}</strong></div>
+      <div class="result-metric"><span>{c.unused}</span><strong data-session-output="unused">{initial.best.unusedMinutes}</strong></div>
+    </div>
+    <div class="gta-session-blocks" data-session-blocks-wrap>
+      <h5>{c.blocks}</h5><p class="dim">{c.orderNote}</p>
+      <ol data-session-blocks>{initial.best.blocks.map((block) => <li><strong>{block.sourceIndex + 1}. {c.kinds[sources[block.sourceIndex]!.kind]} × {block.runs}</strong><span>{block.totalMinutes} {c.min} · {money(block.cash)}</span><small>{c.entryNote}: {block.entryMinutes} {c.min}</small></li>)}</ol>
+    </div>
+    <div class="gta-session-alternative"><h5>{c.soloTitle}</h5><p data-session-solo>{c.kinds.mission} × 2 · 55 {c.min} · {money(initial.solo.cash)}</p><p class="dim">{c.rest}</p></div>
+    <p class="gta-session-boundary">{c.boundary}</p>
+  </article>
+  <ScenarioActions lang={lang} />
+  <details class="gta-session-help"><summary>{c.limits}</summary><p>{c.limitsText}</p></details>
+  <noscript><p>{c.js}</p></noscript>
+</section>
+
+<script>
+  import { initializeGtaSession } from "../lib/gta-session-client";
+  const ready = () => document.querySelectorAll<HTMLElement>("[data-gta-session]").forEach(initializeGtaSession);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", ready, { once: true });
+  else ready();
+</script>

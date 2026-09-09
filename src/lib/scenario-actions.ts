@@ -1,4 +1,5 @@
 import { getScenarioTool, type ScenarioLocale } from "../data/scenario-tools";
+import { captureScenarioSnapshot } from "./scenario-snapshot";
 import { addSavedScenario, readSavedScenarios, savedScenarioIdFromHash, type SavedScenario, type ScenarioStorage } from "./saved-scenarios";
 
 type Control = HTMLInputElement | HTMLSelectElement;
@@ -6,28 +7,6 @@ export const browserScenarioStorage: ScenarioStorage = {
   getItem: (key) => window.localStorage.getItem(key),
   setItem: (key, value) => window.localStorage.setItem(key, value)
 };
-const clean = (text: string | null | undefined) => (text ?? "").replace(/\s+/g, " ").trim();
-
-function resultSnapshot(root: HTMLElement, key: string, lang: ScenarioLocale): SavedScenario["summary"] {
-  if (key === "dota-compare") {
-    return [...root.querySelectorAll<HTMLElement>("[data-compare-option]")].map((option) => ({
-      label: `${clean(option.querySelector("[data-item-name]")?.textContent)} · ${lang === "ru" ? "прогноз, мин" : "projected minute"}`,
-      value: clean(option.querySelector("[data-item-projected]")?.textContent)
-    })).filter((row) => row.value && row.value !== "-");
-  }
-  const nodes = root.querySelectorAll<HTMLElement>(key === "dota-item-plan"
-    ? ".dota-planner-summary > div" : ".result-metric, [data-runway-result] dl > div, .civ-model-result dl > div");
-  const rows = [...nodes].map((node) => ({
-    label: clean(node.querySelector("dt, span")?.textContent).slice(0, 120),
-    value: clean(node.querySelector("dd, strong")?.textContent).slice(0, 160)
-  })).filter((row) => row.label && row.value && row.value !== "-").slice(0, 4);
-  if (key === "dota-item-plan") {
-    const items = [...root.querySelectorAll<HTMLSelectElement>("select[data-role^='item']")].filter((select) => select.value).map((select) => clean(select.selectedOptions[0]?.textContent).split(" · ")[0]);
-    if (items.length) rows.push({ label: lang === "ru" ? "Покупки" : "Purchases", value: items.join(" → ").slice(0, 160) });
-  }
-  return rows;
-}
-
 export function initializeScenarioActions() {
   const lang: ScenarioLocale = document.documentElement.lang === "ru" ? "ru" : "en";
   const ru = lang === "ru";
@@ -149,15 +128,18 @@ export function initializeScenarioActions() {
         editorStatus.textContent = ru ? "Укажи название и заполни вводные расчёта допустимыми значениями." : "Enter a name and valid calculation inputs.";
         (invalid ?? name).focus(); return;
       }
-      const summary = resultSnapshot(root, key, lang);
+      const snapshot = captureScenarioSnapshot(root, key, lang);
+      const { summary } = snapshot;
       if (!summary.length) { editorStatus.textContent = ru ? "Сначала дождись результата расчёта." : "Wait for the calculation result first."; return; }
       const now = new Date().toISOString();
       const context = (JSON.parse(actions.dataset.contexts ?? "{}") as Record<string, string>)[key] ?? "";
       const record: SavedScenario = { id: crypto.randomUUID(), toolKey: key, name: name.value.trim(), lang, createdAt: now, updatedAt: now, values: values(), summary,
-        context, engineVersion: actions.dataset.engine ?? "", note: "", reviewed: false };
+        context, engineVersion: actions.dataset.engine ?? "", note: "", reviewed: false, inputs: snapshot.inputs,
+        ...(snapshot.decision ? { decision: snapshot.decision } : {}) };
       const result = addSavedScenario(browserScenarioStorage, record);
       if (!result.ok) {
-        editorStatus.textContent = result.error === "limit" ? (ru ? "Сохранено 50 расчётов. Удали ненужный в «Мои расчёты», чтобы добавить новый." : "50 calculations saved. Remove an unneeded one in My calculations to add another.")
+        editorStatus.textContent = result.error === "capacity" ? (ru ? "В списке слишком много подробностей для безопасного сохранения. Удали ненужный расчёт в «Мои расчёты». Существующие записи не изменены." : "The list has reached its safe storage size. Remove an unneeded calculation in My calculations. Existing records are unchanged.")
+          : result.error === "limit" ? (ru ? "Сохранено 50 расчётов. Удали ненужный в «Мои расчёты», чтобы добавить новый." : "50 calculations saved. Remove an unneeded one in My calculations to add another.")
           : (ru ? "Не удалось сохранить. Проверь доступ к хранилищу браузера. Существующие записи не изменены." : "Could not save. Check browser storage access. Existing records are unchanged.");
         return;
       }

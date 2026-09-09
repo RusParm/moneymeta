@@ -18,7 +18,7 @@ const description = ru ? "Сохранённые планы, вводные и �
       <header class="saved-page-intro">
         <p class="section-kicker">{ru ? "ПРОДОЛЖИ СВОЙ ПЛАН" : "CONTINUE YOUR PLAN"}</p>
         <h1>{title}</h1>
-        <p>{ru ? "Вернись к своему варианту. После игры запиши, что получилось, и сравни с сохранённым результатом." : "Return to your plan. After playing, note what happened and compare it with the saved result."}</p>
+        <p>{ru ? "Сравни два варианта одной задачи и проверь, чем отличаются вводные. После игры вернись и запиши, что получилось." : "Compare two variants of the same task and check which inputs changed. Return after playing to note what happened."}</p>
         <p class="saved-device-note">{ru ? "Список хранится в этом браузере. На другом устройстве он будет пуст." : "This list stays in this browser. It will be empty on another device."}</p>
       </header>
       <div class="saved-filters">
@@ -28,6 +28,13 @@ const description = ru ? "Сохранённые планы, вводные и �
       </div>
       <p class="saved-message" data-saved-message role="status" tabindex="-1"></p>
       <div class="saved-undo" data-saved-undo hidden><span>{ru ? "Расчёт удалён из списка." : "Calculation removed from the list."}</span><button type="button" data-undo-delete>{ru ? "Отменить удаление" : "Undo removal"}</button></div>
+      <section class="saved-comparison" data-saved-comparison hidden aria-labelledby="saved-comparison-title">
+        <div class="saved-comparison-top"><h2 id="saved-comparison-title" tabindex="-1">{ru ? "Сравнить варианты" : "Compare variants"}</h2><button type="button" data-close-comparison>{ru ? "Закрыть сравнение" : "Close comparison"}</button></div>
+        <p class="saved-comparison-base" data-comparison-base></p>
+        <label class="saved-comparison-picker">{ru ? "Второй вариант той же задачи" : "Another variant of the same task"}<select data-comparison-partner></select></label>
+        <p class="saved-comparison-status" data-comparison-status role="status"></p>
+        <div data-comparison-content></div>
+      </section>
       <section class="saved-list" data-saved-list aria-label={ru ? "Сохранённые расчёты" : "Saved calculations"}></section>
       <button class="saved-more" type="button" data-saved-more hidden>{ru ? "Показать ещё" : "Show more"}</button>
       <section class="saved-empty" data-saved-empty hidden>

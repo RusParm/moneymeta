@@ -130,7 +130,8 @@
 .strategy-ranking-lab .ranking-question span { font-size: 10px; }
 .strategy-ranking-lab .ranking-question code { color: var(--strategy-accent); font-size: 10px; line-height: 1.5; }
 .strategy-rank-card { min-height: 350px; }
-.strategy-rank-card.rank-1 { border-color: rgba(var(--strategy-accent-rgb), .42); box-shadow: inset 0 0 45px rgba(var(--strategy-accent-rgb), .035); }
+.strategy-lens-criteria { display: grid; gap: 8px; max-width: 470px; padding: 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); font: 400 .9rem/1.6 "Inter Variable", sans-serif; }
+.strategy-lens-criteria small { color: var(--muted); font-size: .8rem; }
 .strategy-rank-card .conditional-rank-top { align-items: start; }
 .strategy-rank-card .conditional-rank-top > div { display: flex; align-items: start; gap: 8px; }
 .strategy-rank-card .conditional-rank-top .strategy-mark { --mark-size: 58px; }

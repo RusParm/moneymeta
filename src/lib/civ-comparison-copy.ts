@@ -19,6 +19,8 @@ export const civilizationComparisonCopy = (lang: "ru" | "en") => lang === "ru" ?
   path: "Как меняется преимущество по ходам",
   turn: "Ход от текущего", pathA: "Прирост A", pathB: "Прирост B",
   paybackTitle: "Возврат производства",
+  delayTitle: "Если стройка задержится",
+  delayHelp: "Меняется только срок завершения одного варианта. Прирост, затраты, второй вариант и контрольный ход остаются прежними.",
   paybackNote: "Здесь стоимость и прирост выражены в производстве, поэтому их можно вычесть. Для сравнения вычитается полная стоимость постройки. Больше произведённого не всегда означает больше после затрат.",
   netA: "A: после затрат", netB: "B: после затрат", paybackA: "A: вернёт затраты на ходу", paybackB: "B: вернёт затраты на ходу",
   noPayback: "не возвращает при этих вводных",
@@ -43,6 +45,8 @@ export const civilizationComparisonCopy = (lang: "ru" | "en") => lang === "ru" ?
   path: "How the lead changes over time",
   turn: "Turns from now", pathA: "Added yield A", pathB: "Added yield B",
   paybackTitle: "Production payback",
+  delayTitle: "If construction takes longer",
+  delayHelp: "Only one choice's completion time changes. Yield, cost, the other choice and your checkpoint stay the same.",
   paybackNote: "Cost and yield both use production here, so they can be subtracted. The comparison deducts the full building cost. More production earned does not always mean more after costs.",
   netA: "A: after cost", netB: "B: after cost", paybackA: "A: recovers cost on turn", paybackB: "B: recovers cost on turn",
   noPayback: "not recovered at these inputs",
@@ -100,5 +104,27 @@ export function presentCivilizationComparison(input: CivilizationComparisonInput
       ? ru ? "Смена лидера находится за пределами расчётного диапазона. Точный ход не указан." : "The reversal lies outside the calculation range. No exact turn is shown."
     : ru ? "При постоянных вводных смены установившегося лидера нет. Начальные ходы с нулевым приростом не считаются сменой лидера."
       : "With constant inputs there is no later reversal of an established lead. Initial turns with zero yield are not a lead change.";
-  return { title, tradeoff, condition, crossover, outputA, outputB, number };
+  const slack = value.completionSlack;
+  let delayCondition = ru ? "Сейчас накопленный прирост одинаков. Запас задержки для лидера не рассчитывается, пока нет преимущества одного варианта."
+    : "Cumulative yield is tied. A leader's delay allowance is unavailable until one choice is ahead.";
+  let delayNext = "";
+  let delayButton = "";
+  if (slack) {
+    const choice = slack.choice.toUpperCase();
+    const other = slack.choice === "a" ? "B" : "A";
+    delayCondition = ru
+      ? `${slack.next ? slack.extraTurns > 0 ? `Запас по сроку для ${choice}: ${number(slack.extraTurns)} ход.` : `У ${choice} нет запаса на задержку.` : `Вариант ${choice} сохраняет преимущество даже при самом позднем доступном сроке.`} При завершении через ${number(slack.latestCompletionTurn)} ход. он даст ${number(slack.outputAtBoundary)} (${resource}) против ${number(slack.otherOutput)} у ${other} к ходу ${number(value.horizonTurns)}.`
+      : `${slack.next ? slack.extraTurns > 0 ? `Choice ${choice} has ${number(slack.extraTurns)} turns of delay allowance.` : `Choice ${choice} has no room for a delay.` : `Choice ${choice} still leads at the latest supported completion time.`} Finishing in ${number(slack.latestCompletionTurn)} turns gives ${number(slack.outputAtBoundary)} ${resource}, compared with ${number(slack.otherOutput)} from ${other} at turn ${number(value.horizonTurns)}.`;
+    if (slack.next) {
+      delayNext = ru
+        ? `Если ${choice} завершится через ${number(slack.next.completionTurn)} ход., он даст ${number(slack.next.output)} (${resource}). ${slack.next.leader === "tie" ? "Накопленный прирост будет одинаков." : `Впереди будет ${other} с приростом ${number(slack.otherOutput)}.`}`
+        : `If ${choice} finishes in ${number(slack.next.completionTurn)} turns, it gives ${number(slack.next.output)} ${resource}. ${slack.next.leader === "tie" ? "Cumulative yield is tied." : `${other} leads with ${number(slack.otherOutput)}.`}`;
+      delayButton = ru ? `Проверить завершение ${choice} через ${number(slack.next.completionTurn)} ход.`
+        : `Check ${choice} finishing in ${number(slack.next.completionTurn)} turns`;
+    } else {
+      delayNext = ru ? "В пределах доступных сроков завершения до 200 ходов лидер не меняется. За этой границей задержка не проверялась."
+        : "The leader does not change within the supported completion times up to 200 turns. Delays beyond this range were not checked.";
+    }
+  }
+  return { title, tradeoff, condition, crossover, outputA, outputB, number, delayCondition, delayNext, delayButton };
 }

@@ -113,4 +113,58 @@ describe("strategy decision cash paths", () => {
     expect(calculateReserveDecision({ ...base, incomeChange: -strategyMoneyLimit - 1 })).toBeNull();
     expect(calculateReserveDecision({ ...base, incomePerPeriod: strategyMoneyLimit })!.maxAddedOutflow).toBeLessThanOrEqual(strategyMoneyLimit);
   });
+
+  it("finds income headroom with the player's selected upkeep left in place", () => {
+    const input = { ...base, newOutflow: 1200 };
+    const threshold = calculateReserveDecision(input)!.incomeThreshold!;
+    expect(threshold).toEqual({ minimumIncome: 2937.5, adjustment: -562.5, limitingPeriod: 8, incomeToApply: 2937.5 });
+    expect(calculateReserveDecision({ ...input, incomePerPeriod: threshold.incomeToApply! })!.now.firstBreachPeriod).toBeNull();
+    expect(calculateReserveDecision({ ...input, incomePerPeriod: 2937.49 })!.now.firstBreachPeriod).toBe(8);
+  });
+
+  it("requires extra income when current flow fails and cannot repair an immediate payment breach", () => {
+    expect(calculateReserveDecision(base)!.incomeThreshold).toEqual({ minimumIncome: 3637.5, adjustment: 137.5, limitingPeriod: 8, incomeToApply: 3637.5 });
+    expect(calculateReserveDecision({ ...base, treasury: 1000, oneOffCost: 900, reserve: 300, incomePerPeriod: 5000 })!.incomeThreshold).toBeNull();
+  });
+
+  it("uses the binding intermediate checkpoint and preserves the scheduled income recovery", () => {
+    const input = { treasury: 700, incomePerPeriod: 10, currentOutflow: 110,
+      newOutflow: 20, oneOffCost: 0, horizonPeriods: 6, reserve: 400,
+      incomeChangePeriod: 4, incomeChange: 300 };
+    const threshold = calculateReserveDecision(input)!.incomeThreshold!;
+    expect(threshold).toEqual({ minimumIncome: 30, adjustment: 20, limitingPeriod: 3, incomeToApply: 30 });
+    const applied = calculateReserveDecision({ ...input, incomePerPeriod: threshold.incomeToApply! })!;
+    expect(applied.now.firstBreachPeriod).toBeNull();
+    expect(applied.points[3]!.now).toBe(400);
+    expect(applied.points[4]!.now).toBe(600);
+    expect(calculateReserveDecision({ ...input, incomePerPeriod: 29.99 })!.now.firstBreachPeriod).toBe(3);
+  });
+
+  it("rounds a usable income threshold upward, including negative net-income inputs", () => {
+    const input = { treasury: 1, incomePerPeriod: 0, currentOutflow: 1, newOutflow: 0,
+      oneOffCost: 0, horizonPeriods: 3, reserve: 0 };
+    expect(calculateReserveDecision(input)!.incomeThreshold!.incomeToApply).toBe(0.67);
+    expect(calculateReserveDecision({ ...input, currentOutflow: 0 })!.incomeThreshold!.incomeToApply).toBe(-0.33);
+    expect(calculateReserveDecision({ ...input, currentOutflow: 0, incomePerPeriod: -0.33 })!.now.firstBreachPeriod).toBeNull();
+    expect(calculateReserveDecision({ ...input, currentOutflow: 0, incomePerPeriod: -0.34 })!.now.firstBreachPeriod).toBe(3);
+  });
+
+  it("does not offer a threshold outside the supported input range", () => {
+    const value = calculateReserveDecision({ ...base, treasury: 0, reserve: 0, oneOffCost: 0,
+      incomePerPeriod: 0, currentOutflow: strategyMoneyLimit, newOutflow: strategyMoneyLimit })!;
+    expect(value.incomeThreshold!.minimumIncome).toBe(2 * strategyMoneyLimit);
+    expect(value.incomeThreshold!.incomeToApply).toBeNull();
+  });
+
+  it("changing only base income shifts every checkpoint by elapsed periods times the change", () => {
+    const input = { ...base, incomeChangePeriod: 3, incomeChange: -500 };
+    const original = calculateReserveDecision(input)!;
+    const adjusted = calculateReserveDecision({ ...input, incomePerPeriod: input.incomePerPeriod + 75 })!;
+    original.points.forEach((point, index) => {
+      for (const choice of ["now", "later", "keep"] as const) {
+        expect(adjusted.points[index]![choice] - point[choice]).toBe(point.period * 75);
+      }
+    });
+    expect(adjusted.incomeThreshold!.minimumIncome).toBe(original.incomeThreshold!.minimumIncome);
+  });
 });

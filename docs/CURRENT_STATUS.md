@@ -1,5 +1,16 @@
 # Current status
 
+## v1.31 candidate: compare alternatives and test their limits
+
+- Published baseline: v1.30, PR #20, main `23e46cb76a0b783b0fcb197991dc007f96eac216`; production `dpl_22BneynhxZeghthWnxtzj6bY2az6`. Main-domain Slardar review and exact-commit CI passed after explicit publication approval.
+- Adds same-task comparison in My calculations across six games, readable input snapshots and deliberate selection of the primary saved results. Existing records stay historical and readable.
+- Adds a GTA session allocation using personally observed, available complete runs and block-entry time; it does not simulate production or official payouts.
+- Adds income-drop limits to Total War/CK3 and completion-delay limits to Civilization comparisons without new required inputs.
+- Makes the analysis library searchable and shorter; removes unsupported numerical strategy grades and inheritance-calculation promises.
+- Local validation passed after the browser-discovered saved-text punctuation fix: 352 tests in 34 files, Astro check of 260 files with zero diagnostics, 589 built pages and 26,052 internal links with no link errors. Independent review found no remaining model, storage or restore blockers.
+- PR #21 and the Vercel preview were created after the user's explicit September 9 authorization to upload v1.31 source to public `RusParm/moneymeta`. Initial preview browser acceptance verified GTA 75/60/29-minute boundaries, historical comparison and restore, RU/EN continuity, TW/CK3 income buttons, Civilization delay, Midas/WoW primary saved results and library search/filter/loading. The Product quality workflow passed on the initial preview commit. Final commit and browser evidence are tracked in PR #21. Production approval remains a separate release gate.
+- See `PLATFORM_DECISIONS.md` for scope and acceptance. Exact final preview/browser and CI results will be recorded in the release PR. Production approval applies to the reviewed release.
+
 ## v1.30 candidate: draft opportunities and observed purchases
 
 - Published baseline: v1.29, PR #19, main `e89bbfa5bd43412bf65e513ca9430d022f701c0b`; production `dpl_BxvQ3TARnda8JChjj86DSqqGgiSd`.

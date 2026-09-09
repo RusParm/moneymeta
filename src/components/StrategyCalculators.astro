@@ -131,6 +131,12 @@ const copy = lang === "ru" ? {
                 <div class="result-metric"><span>{decision.breach}</span><strong data-decision-output="firstBreach">-</strong></div>
                 <div class="result-metric"><span>{decision.maxAdded}</span><strong data-decision-output="maxAdded">-</strong></div>
               </div>
+              <section class="strategy-decision-income-threshold" aria-label={decision.incomeThresholdTitle}>
+                <h4>{decision.incomeThresholdTitle}</h4>
+                <p data-decision-income-threshold></p>
+                <button class="button ghost" type="button" data-decision-income-apply hidden></button>
+                <details><summary>{lang === "ru" ? "Что меняется в проверке" : "What changes in this check"}</summary><p>{decision.incomeThresholdHelp}</p></details>
+              </section>
               <div class="strategy-decision-table-wrap">
                 <table class="strategy-decision-table">
                   <caption>{decision.tableLabel}</caption>
@@ -178,7 +184,7 @@ const copy = lang === "ru" ? {
     calculateComparisonMetrics,
     calculateInvestmentMetrics
   } from "../lib/strategy-economy";
-  import { calculateReserveDecision } from "../lib/strategy-decision";
+  import { calculateReserveDecision, strategyMoneyLimit } from "../lib/strategy-decision";
   import { strategyDecisionCopy } from "../lib/strategy-decision-copy";
 
   document.querySelectorAll<HTMLElement>("[data-strategy-model]").forEach((root) => {
@@ -248,6 +254,34 @@ const copy = lang === "ru" ? {
         root.querySelectorAll<HTMLElement>("[data-decision-output]").forEach((output) => { output.textContent = outputValues[output.dataset.decisionOutput ?? ""] ?? "-"; });
         const unit = root.dataset.periodUnit ?? "";
         const perUnit = root.dataset.gameId === "total-war" ? (isRu ? "ход" : "turn") : (isRu ? "месяц" : "month");
+        const threshold = calculated.incomeThreshold;
+        const thresholdText = root.querySelector<HTMLElement>("[data-decision-income-threshold]")!;
+        const thresholdButton = root.querySelector<HTMLButtonElement>("[data-decision-income-apply]")!;
+        thresholdButton.hidden = true;
+        delete thresholdButton.dataset.income;
+        if (!threshold) thresholdText.textContent = decision.incomeThresholdImmediate;
+        else if (threshold.incomeToApply === null) thresholdText.textContent = threshold.minimumIncome < -strategyMoneyLimit
+          ? decision.incomeThresholdBelowRange : decision.incomeThresholdRange;
+        else {
+          const neededIncome = threshold.incomeToApply;
+          const change = neededIncome - value("incomePerPeriod");
+          // Lower tolerance is rounded down; required additional income is rounded up.
+          // Normalize only sub-nanocent representation noise, e.g. 22 - 5.17.
+          const scaled = Math.abs(change) * 100;
+          const cents = Math.abs(scaled - Math.round(scaled)) <= 1e-9 ? Math.round(scaled) : scaled;
+          const distance = (change > 0 ? Math.ceil(cents) : Math.floor(cents)) / 100;
+          const changeText = change > 0
+            ? (isRu ? `Нужно прибавить к доходу не менее ${cash(distance)} / ${perUnit}.` : `Income needs to rise by at least ${cash(distance)} / ${perUnit}.`)
+            : distance > 0
+              ? (isRu ? `Доход может снизиться на ${cash(distance)} / ${perUnit}.` : `Income can fall by ${cash(distance)} / ${perUnit}.`)
+              : (isRu ? "Запаса на снижение дохода почти нет." : "There is almost no room for income to fall.");
+          thresholdText.textContent = isRu
+            ? `${changeText} Для этой проверки укажи доход не ниже ${cash(neededIncome)} / ${perUnit}. Границу задаёт период ${threshold.limitingPeriod}.`
+            : `${changeText} For this check, use income of at least ${cash(neededIncome)} / ${perUnit}. Period ${threshold.limitingPeriod} sets the boundary.`;
+          thresholdButton.textContent = isRu ? `Проверить доход ${cash(neededIncome)}` : `Check income of ${cash(neededIncome)}`;
+          thresholdButton.dataset.income = String(neededIncome);
+          thresholdButton.hidden = neededIncome === value("incomePerPeriod");
+        }
         root.querySelector<HTMLElement>("[data-decision-answer]")!.textContent = cap === null
           ? (isRu ? `Даже без нового регулярного расхода этот платёж и текущие обязательства затрагивают резерв. Чтобы начать сейчас с указанным расходом, нужно ещё ${extraCash} в начальной казне либо пересмотреть платёж и обязательства.` : `Even with no added recurring outflow, this payment and existing commitments breach the reserve. Acting now with the entered costs needs ${extraCash} more initial cash, or a change to the payment and commitments.`)
           : (isRu ? `Чтобы начать сейчас и сохранить резерв на всём горизонте, новый регулярный расход должен быть не выше ${capText} / ${perUnit}.${calculated.now.firstBreachPeriod !== null ? ` При указанном расходе не хватает ${extraCash} начальной казны.` : ""}` : `To act now and preserve the reserve throughout the horizon, added recurring outflow must stay at or below ${capText} / ${perUnit}.${calculated.now.firstBreachPeriod !== null ? ` The entered outflow needs ${extraCash} more initial cash.` : ""}`);
@@ -326,6 +360,15 @@ const copy = lang === "ru" ? {
     };
 
     inputs.forEach((input) => input.addEventListener("input", render));
+    root.querySelector<HTMLButtonElement>("[data-decision-income-apply]")?.addEventListener("click", (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      const income = inputs.find((input) => input.dataset.modelInput === "incomePerPeriod");
+      if (button.hidden || !button.dataset.income || !income) return;
+      income.value = button.dataset.income;
+      income.dispatchEvent(new Event("input", { bubbles: true }));
+      income.dispatchEvent(new Event("change", { bubbles: true }));
+      income.focus();
+    });
     reset.addEventListener("click", () => {
       inputs.forEach((input) => { input.value = baselines.get(input.dataset.modelInput ?? "") ?? "0"; });
       render();

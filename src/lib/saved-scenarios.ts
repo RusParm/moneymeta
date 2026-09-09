@@ -2,6 +2,7 @@ import { getScenarioTool, localizeScenarioPath, type ScenarioLocale } from "../d
 
 export const savedScenariosKey = "money-meta:saved-scenarios:v1";
 export const savedScenarioLimit = 50;
+export const savedScenarioStorageLimit = 900_000;
 export interface SavedScenario {
   id: string;
   toolKey: string;
@@ -15,10 +16,13 @@ export interface SavedScenario {
   engineVersion: string;
   note: string;
   reviewed: boolean;
+  // Optional historical display labels. Earlier v1 records remain readable.
+  inputs?: Array<{ key: string; label: string; value: string }>;
+  decision?: string;
 }
 export type ScenarioStorage = Pick<Storage, "getItem" | "setItem">;
 export type SavedRead = { ok: true; records: SavedScenario[] } | { ok: false; error: "unavailable" | "corrupt" | "unsupported" };
-export type SavedWrite = { ok: true; records: SavedScenario[]; removed?: SavedScenario } | { ok: false; error: "unavailable" | "corrupt" | "unsupported" | "limit" | "invalid" | "missing" };
+export type SavedWrite = { ok: true; records: SavedScenario[]; removed?: SavedScenario } | { ok: false; error: "unavailable" | "corrupt" | "unsupported" | "limit" | "capacity" | "invalid" | "missing" };
 const isObject = (value: unknown): value is Record<string, unknown> => Boolean(value && typeof value === "object" && !Array.isArray(value));
 const isText = (value: unknown, maximum: number, nonempty = false): value is string => typeof value === "string" && value.length <= maximum && (!nonempty || value.trim().length > 0);
 const date = (value: unknown): value is string => isText(value, 30, true) && Number.isFinite(Date.parse(value));
@@ -31,6 +35,14 @@ export function isSavedScenario(value: unknown): value is SavedScenario {
   if (!isText(value.context, 240) || !isText(value.engineVersion, 40, true) || !isObject(value.values)) return false;
   const fields = Object.entries(value.values);
   if (!fields.length || fields.length > 40 || !fields.every(([key, val]) => /^[a-zA-Z][a-zA-Z0-9-]{0,63}$/.test(key) && !["constructor", "prototype"].includes(key) && isText(val, 160))) return false;
+  if (value.decision !== undefined && !isText(value.decision, 360, true)) return false;
+  if (value.inputs !== undefined) {
+    if (!Array.isArray(value.inputs) || value.inputs.length > 40) return false;
+    const values = value.values;
+    if (!value.inputs.every((row) => isObject(row) && typeof row.key === "string" && Object.hasOwn(values, row.key)
+      && isText(row.label, 120, true) && isText(row.value, 160))) return false;
+    if (new Set(value.inputs.map((row) => row.key)).size !== value.inputs.length) return false;
+  }
   return Array.isArray(value.summary) && value.summary.length > 0 && value.summary.length <= 4
     && value.summary.every((row) => isObject(row) && isText(row.label, 120, true) && isText(row.value, 160, true));
 }
@@ -39,7 +51,7 @@ export function readSavedScenarios(storage: ScenarioStorage): SavedRead {
   let raw: string | null;
   try { raw = storage.getItem(savedScenariosKey); } catch { return { ok: false, error: "unavailable" }; }
   if (raw === null) return { ok: true, records: [] };
-  if (raw.length > 900_000) return { ok: false, error: "corrupt" };
+  if (raw.length > savedScenarioStorageLimit) return { ok: false, error: "corrupt" };
   try {
     const parsed: unknown = JSON.parse(raw);
     if (!isObject(parsed)) return { ok: false, error: "corrupt" };
@@ -52,7 +64,12 @@ export function readSavedScenarios(storage: ScenarioStorage): SavedRead {
 }
 
 function write(storage: ScenarioStorage, records: SavedScenario[]): SavedWrite {
-  try { storage.setItem(savedScenariosKey, JSON.stringify({ schemaVersion: 1, records })); }
+  try {
+    const raw = JSON.stringify({ schemaVersion: 1, records });
+    // A successful write must remain readable by the same bounded store.
+    if (raw.length > savedScenarioStorageLimit) return { ok: false, error: "capacity" };
+    storage.setItem(savedScenariosKey, raw);
+  }
   catch { return { ok: false, error: "unavailable" }; }
   return { ok: true, records };
 }

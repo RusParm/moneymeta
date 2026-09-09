@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addSavedScenario, deleteSavedScenario, editSavedScenario, readSavedScenarios, savedScenarioHref, savedScenarioIdFromHash, savedScenarioLimit, savedScenariosKey, type SavedScenario, type ScenarioStorage } from "../src/lib/saved-scenarios";
+import { addSavedScenario, deleteSavedScenario, editSavedScenario, readSavedScenarios, savedScenarioHref, savedScenarioIdFromHash, savedScenarioLimit, savedScenarioStorageLimit, savedScenariosKey, type SavedScenario, type ScenarioStorage } from "../src/lib/saved-scenarios";
 import { scenarioTools } from "../src/data/scenario-tools";
 
 const entry = (index = 1): SavedScenario => ({
@@ -75,6 +75,43 @@ describe("Named calculation storage", () => {
   it("does not resurrect a calculation removed in another tab through a note update", () => {
     const { storage } = memory(); addSavedScenario(storage, entry()); deleteSavedScenario(storage, entry().id);
     expect(editSavedScenario(storage, entry().id, { name: "Название", note: "Поздняя заметка", reviewed: true })).toEqual({ ok: false, error: "missing" });
+  });
+  it("preserves optional historical labels and the decision while editing a note alongside older records", () => {
+    const old = entry();
+    const labelled = { ...entry(2), inputs: [{ key: "farm-units", label: "Товар за час", value: "100" }], decision: "Доход после продажи меньше стоимости выставленного товара." };
+    const { storage } = memory();
+    expect(addSavedScenario(storage, old).ok).toBe(true);
+    expect(addSavedScenario(storage, labelled).ok).toBe(true);
+    const changed = editSavedScenario(storage, labelled.id, { name: labelled.name, note: "Продал половину", reviewed: true });
+    expect(changed.ok && changed.records[0]).toMatchObject({ inputs: labelled.inputs, decision: labelled.decision, summary: labelled.summary });
+    expect(changed.ok && changed.records[1]).toEqual(old);
+  });
+  it("rejects invented, duplicate or oversized input labels without changing existing data", () => {
+    const { storage, raw } = memory(); addSavedScenario(storage, entry()); const initial = raw();
+    for (const inputs of [
+      [{ key: "unknown", label: "Missing input", value: "10" }],
+      [{ key: "farm-units", label: "Units", value: "100" }, { key: "farm-units", label: "Again", value: "100" }],
+      [{ key: "farm-units", label: "x".repeat(121), value: "100" }]
+    ]) expect(addSavedScenario(storage, { ...entry(2), inputs }).ok).toBe(false);
+    expect(addSavedScenario(storage, { ...entry(2), decision: "x".repeat(361) }).ok).toBe(false);
+    expect(raw()).toBe(initial);
+  });
+  it("never writes a collection larger than its own read limit", () => {
+    const { storage, raw } = memory();
+    const values = Object.fromEntries(Array.from({ length: 40 }, (_, i) => [`field${i}`, "1".repeat(160)]));
+    const inputs = Object.entries(values).map(([key, value]) => ({ key, label: "l".repeat(120), value }));
+    let capacityReached = false;
+    for (let i = 1; i <= savedScenarioLimit; i++) {
+      const before = raw();
+      const result = addSavedScenario(storage, { ...entry(i), values, inputs, decision: "d".repeat(360) });
+      if (!result.ok) {
+        expect(result.error).toBe("capacity"); expect(raw()).toBe(before); capacityReached = true; break;
+      }
+      expect(raw()!.length).toBeLessThanOrEqual(savedScenarioStorageLimit);
+      expect(readSavedScenarios(storage).ok).toBe(true);
+    }
+    expect(capacityReached).toBe(true);
+    expect(readSavedScenarios(storage).ok).toBe(true);
   });
 });
 

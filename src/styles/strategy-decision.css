@@ -6,6 +6,13 @@
 .strategy-decision-changes .field:last-child { grid-column: 1 / -1; }
 .strategy-decision-invalid { padding: 12px; border: 1px solid #e8bd70; border-radius: 8px; color: #e8bd70; }
 .strategy-decision-answer { margin-bottom: 12px; font-size: 14px; line-height: 1.65; }
+.strategy-decision-income-threshold { margin: 16px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; overflow-wrap: anywhere; }
+.strategy-decision-income-threshold h4 { margin: 0 0 8px; font-size: 16px; }
+.strategy-decision-income-threshold p { margin: 8px 0; font-size: 14px; line-height: 1.6; }
+.strategy-decision-income-threshold .button { max-width: 100%; height: auto; white-space: normal; margin: 6px 0; text-align: left; }
+.strategy-decision-income-threshold details { margin-top: 8px; color: var(--muted); font-size: 13px; }
+.strategy-decision-income-threshold summary { cursor: pointer; }
+.strategy-decision-income-threshold button[hidden] { display: none !important; }
 .strategy-decision-table-wrap { max-width: 100%; overflow-x: auto; }
 .strategy-decision-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.5; }
 .strategy-decision-table caption { padding: 12px 0 8px; text-align: left; font-weight: 650; }
