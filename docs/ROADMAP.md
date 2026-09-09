@@ -1,5 +1,17 @@
 # Money Meta roadmap
 
+## Current increment: v1.33 one replay decision
+
+Published baseline: v1.32, PR #22, main `4fed3e614c8f28c1801b8a724e11493b0eaf4ab1`. The owner will bring new games for player validation; implementation continues using the already reviewed Slardar example.
+
+1. Turn one eligible episode into conditional entry alternatives, their trade-offs and a next-match task, using only existing reviewed BKB/Blink mechanics.
+2. Ask for three explicit replay observations. Keep unknown answers unknown and never infer a fight or readiness from economic data.
+3. Place the working decision before expandable purchase evidence. Reset observations when the match context changes; copy only on deliberate action.
+4. Verify actual Slardar interaction, unsupported/historical cases, reset behavior and RU/EN before preview handoff. Existing hubs remain subject to full-site reliability gates.
+5. Next player evidence: collect the question before analysis and check whether the player can explain a changed decision. Multi-match follow-up should build on a useful single-match decision. Continue the game-specific tasks in `PLAYER_DECISION_CONTEXT.md` without adding unsupported mechanics or new games.
+
+See `DOTA_REPLAY_DECISION.md`. Earlier headings below preserve release history.
+
 ## Current increment: v1.32 decisions in the player's context
 
 Published baseline: v1.31, PR #21, main `8926ebcf77481bb8930c65558b0be37057777a01`. The September 9 benchmark discussion prioritizes the player's actual situation, a useful alternative and a later check of the result. All six live economies remain in scope.

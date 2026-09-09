@@ -2,7 +2,7 @@
 
 Money Meta превращает внутриигровые экономики в понятные решения: что купить следующим, как быстро окупится актив и какой результат можно получить при ограниченном времени.
 
-Опубликована версия `v1.31`. В разработке `v1.32`; состояние проверок и публикации находится в `docs/CURRENT_STATUS.md`. Платформа работает на русском и английском языках и поддерживает шесть игровых экономик: GTA Online, Dota 2, World of Warcraft Retail, Total War: Warhammer III, Crusader Kings III и Civilization VII.
+Опубликована версия `v1.32`. В разработке `v1.33`; состояние проверок и публикации находится в `docs/CURRENT_STATUS.md`. Платформа работает на русском и английском языках и поддерживает шесть игровых экономик: GTA Online, Dota 2, World of Warcraft Retail, Total War: Warhammer III, Crusader Kings III и Civilization VII.
 
 ## Что уже работает
 
@@ -66,3 +66,4 @@ npm run audit:site
 - `docs/DECISIONS.md` — архитектурные решения.
 - `docs/CURRENT_STATUS.md` — актуальное состояние работ.
 - `docs/PLAYER_DECISION_CONTEXT.md` — объём и условия проверки v1.32.
+- `docs/DOTA_REPLAY_DECISION.md` — варианты действий и наблюдения игрока в v1.33.

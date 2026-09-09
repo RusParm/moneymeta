@@ -1,5 +1,16 @@
 # Current status
 
+## v1.33 candidate: one replay decision
+
+- Published baseline: v1.32, PR #22, main `4fed3e614c8f28c1801b8a724e11493b0eaf4ab1`, production `dpl_Ebn3SmD2tdzQrYiMxYsxv9Kr6TED`. The production tree matched the reviewed preview, main-commit CI passed and the main-domain Slardar, GTA and WoW checks passed after explicit owner approval.
+- Current work turns an eligible Dota episode into two conditional entry choices and one next-match task. The player supplies three observations from a chosen moment in the replay; a purchase or economic gap cannot supply them.
+- First scope: the selected hero's nearby BKB purchase against reviewed immunity-piercing control, or a nearby base Blink purchase. Reuses existing versioned mechanics. No inferred fight, cooldown, best move, causal mistake or team-strength probability.
+- Supporting purchase evidence is expandable when a decision is available. Unsupported and final-only cases retain their previous replay task. No new provider fields, storage, telemetry or account integration. All six live hubs remain maintained.
+- Local verification: 391 tests in 36 files passed; Astro check of 268 files has zero diagnostics and builds 589 pages; 26,080 internal links checked without errors. Independent review found no remaining model, state or integration blocker. The copied-note qualification was subsequently covered by the 15 focused decision tests and a final build.
+- Scope and acceptance: `DOTA_REPLAY_DECISION.md`. A remote preview, browser acceptance and exact-commit CI have not run for v1.33. Automatic approval review rejected the source-tree upload to public `RusParm/moneymeta`, including after read-only checks confirmed the repository belongs to the existing deployed project. It requires explicit owner authorization for this public source upload. Local work is ready; no v1.33 PR or deployment has been created. Production remains v1.32.
+
+Earlier candidate headings preserve implementation history; release evidence is recorded in the corresponding PR.
+
 ## v1.32 candidate: the player's decision context
 
 - Published baseline: v1.31, PR #21, main `8926ebcf77481bb8930c65558b0be37057777a01`, production `dpl_FcbEiUunX4c9wRApW3hJQG2WzdEi`. Its reviewed preview tree matched production; exact-commit CI and main-domain browser checks passed. PR #21 contains the release evidence.

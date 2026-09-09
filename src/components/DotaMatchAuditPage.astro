@@ -18,6 +18,7 @@ import SiteFooter from "./SiteFooter.astro";
 import "../styles/dota-items.css";
 import "../styles/dota-match-audit.css";
 import "../styles/dota-draft-review.css";
+import "../styles/dota-replay-decision.css";
 
 interface Props { lang: DotaItemsLocale; }
 const { lang } = Astro.props;
@@ -619,7 +620,12 @@ const payload = JSON.stringify({
                 <div><h5>{copy.focusFacts}</h5><dl data-focus-facts></dl><details class="match-focus-other" data-focus-other hidden><summary>{copy.focusOtherPurchases}</summary><div data-focus-purchases></div></details></div>
                 <div class="match-focus-question"><h5>{copy.focusQuestion}</h5><p data-focus-question></p><ol data-economic-replay-checks></ol><button class="mini-action" type="button" data-copy-focus>{copy.focusCopy}</button><p data-focus-copy-status role="status" aria-live="polite"></p></div>
               </div>
-              <div class="match-episode-context" data-episode-context hidden></div>
+              <div class="match-replay-decision" data-replay-decision hidden></div>
+              <button class="mini-action match-decision-applicability" type="button" data-toggle-replay-decision hidden>{lang === "ru" ? "В эпизоде не было такого входа" : "There was no such entry in this episode"}</button>
+              <details class="match-episode-evidence" data-episode-evidence hidden>
+                <summary>{lang === "ru" ? "Покупки обеих команд и условия составов" : "Both teams' purchases and lineup conditions"}</summary>
+                <div class="match-episode-context" data-episode-context hidden></div>
+              </details>
             </section>
             <details class="match-economic-explanation"><summary>{copy.priceTitle}</summary>
               <article class="match-economic-price">
@@ -633,7 +639,7 @@ const payload = JSON.stringify({
             <p class="match-economic-threshold" data-economic-boundary></p>
           </section>
 
-          <section class="match-audit-next" aria-labelledby="match-next-title">
+          <section class="match-audit-next" aria-labelledby="match-next-title" data-replay-next-fallback>
             <div><span>{copy.nextKicker}</span><h3 id="match-next-title">{copy.nextTitle}</h3></div>
             <blockquote data-next-rule></blockquote>
             <div><button type="button" class="button primary" data-copy-rule>{copy.copyRule}</button><a class="button ghost" data-plan-link href={getDotaItemPlannerPath(lang)}>{copy.plan} →</a></div>
@@ -725,6 +731,8 @@ const payload = JSON.stringify({
   import { renderDotaDraftReview } from "../lib/dota-draft-review-ui";
   import { buildDotaEpisodeContext, selectDotaEpisodeOtherPurchases } from "../lib/dota-episode-context";
   import { buildDotaEpisodeNote, renderDotaEpisodeContext } from "../lib/dota-episode-context-ui";
+  import { buildDotaReplayDecision } from "../lib/dota-replay-decision";
+  import { renderDotaReplayDecision } from "../lib/dota-replay-decision-ui";
 
   const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
   if (root) {
@@ -732,6 +740,7 @@ const payload = JSON.stringify({
     const data = JSON.parse(root.querySelector("[data-match-audit-data]")?.textContent ?? "{}");
     const copy: Record<string, string> = data.copy;
     let currentFocusNote = "";
+    let currentDecisionNote = "";
     const lang: "ru" | "en" = data.lang;
     const items: DotaItemRecord[] = data.items;
     const matchItems: DotaMatchItemReference[] = data.matchItems;
@@ -1116,6 +1125,15 @@ const payload = JSON.stringify({
         const row = make("div"); row.append(make("dt", "", label), make("dd", "", amount)); return row;
       }));
       const episodeContext = buildDotaEpisodeContext(draft, review);
+      const decision = buildDotaReplayDecision(episodeContext, audit.player.heroId);
+      const episodeEvidence = root.querySelector<HTMLDetailsElement>("[data-episode-evidence]")!;
+      episodeEvidence.hidden = !episodeContext;
+      episodeEvidence.open = Boolean(episodeContext) && !decision;
+      root.querySelector<HTMLElement>("[data-replay-next-fallback]")!.hidden = Boolean(decision);
+      const decisionToggle = root.querySelector<HTMLButtonElement>("[data-toggle-replay-decision]")!;
+      decisionToggle.hidden = !decision;
+      decisionToggle.dataset.dismissed = "false";
+      decisionToggle.textContent = lang === "ru" ? "В эпизоде не было такого входа" : "There was no such entry in this episode";
       renderDotaEpisodeContext(root.querySelector<HTMLElement>("[data-episode-context]")!, episodeContext, lang, (id) => heroFor(id).name, () => {
         setResultTab("draft");
         root.querySelector<HTMLButtonElement>('[data-result-tab="draft"]')!.focus();
@@ -1146,6 +1164,22 @@ const payload = JSON.stringify({
       root.querySelector<HTMLButtonElement>("[data-copy-focus]")!.disabled = !currentFocusNote;
       root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = "";
       root.querySelector<HTMLElement>("[data-economic-boundary]")!.textContent = `${copy.thresholdNote}${economy.counterpart ? "" : ` ${copy.noOpponentAutopsy}`}`;
+      currentDecisionNote = "";
+      const decisionHeading = currentMatch && review
+        ? `Money Meta · ${currentMatch.matchId} · ${heroFor(audit.player.heroId).name} · ${windowLabel(review)}` : "Money Meta";
+      renderDotaReplayDecision(root.querySelector<HTMLElement>("[data-replay-decision]")!, decision, {
+        lang,
+        heroName: (id) => heroFor(id).name,
+        openDraft: () => {
+          setResultTab("draft");
+          root.querySelector<HTMLButtonElement>('[data-result-tab="draft"]')!.focus();
+        },
+        copyText: (note) => copyText(`${decisionHeading}\n\n${note}`),
+        onNoteChange: (note) => {
+          currentDecisionNote = note;
+          root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = "";
+        },
+      });
     };
 
     const svgNode = <K extends keyof SVGElementTagNameMap>(tag: K, attributes: Record<string, string>) => {
@@ -1498,6 +1532,8 @@ const payload = JSON.stringify({
       result.hidden = true;
       currentMatch = null;
       currentSlot = null;
+      currentDecisionNote = "";
+      root.querySelector<HTMLElement>("[data-replay-decision]")!.replaceChildren();
       setStep(1);
       setStatus(copy.loading!, "loading");
       const controller = new AbortController();
@@ -1544,8 +1580,23 @@ const payload = JSON.stringify({
     });
     root.querySelector<HTMLButtonElement>("[data-copy-focus]")!.addEventListener("click", async () => {
       if (!currentFocusNote) return;
-      const copied = await copyText(currentFocusNote);
+      const copied = await copyText([currentFocusNote, currentDecisionNote].filter(Boolean).join("\n\n"));
       root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = copied ? copy.focusCopied! : copy.copyFailed!;
+    });
+    root.querySelector<HTMLButtonElement>("[data-toggle-replay-decision]")!.addEventListener("click", (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      if (button.dataset.dismissed === "true") {
+        renderAudit();
+        root.querySelector<HTMLSelectElement>("[data-replay-decision] select")?.focus();
+        return;
+      }
+      currentDecisionNote = "";
+      root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = "";
+      root.querySelector<HTMLElement>("[data-replay-decision]")!.hidden = true;
+      root.querySelector<HTMLElement>("[data-replay-next-fallback]")!.hidden = false;
+      root.querySelector<HTMLDetailsElement>("[data-episode-evidence]")!.open = true;
+      button.dataset.dismissed = "true";
+      button.textContent = lang === "ru" ? "Вернуться к разбору входа" : "Return to the entry review";
     });
     root.querySelector<HTMLButtonElement>("[data-match-share]")!.addEventListener("click", async () => {
       if (!currentMatch || currentSlot === null) return;
