@@ -32,7 +32,7 @@ const matchPath = `${ru ? "" : "/en"}/dota-2/matches/audit/`;
       <p class="example-next" data-example-next>{result.nextAction}</p>
     </div>
     <p id={`${id}-error`} class="example-error" data-example-error role="status" hidden>{ru ? `Введи число от ${config.min} до ${config.max}${config.step === "any" ? "" : ", без дробной части"}.` : `Enter a ${config.step === "any" ? "number" : "whole number"} from ${config.min} to ${config.max}.`}</p>
-    <a class="button example-action" data-example-handoff href={result.href}>{ru ? "Подставить свои вводные" : "Use my own figures"}<span aria-hidden="true">↗</span></a>
+    <a class="button example-action" data-example-handoff href={result.href}>{gameId === "gta" ? (ru ? "Составить свой план на сеанс" : "Build my session plan") : (ru ? "Подставить свои вводные" : "Use my own figures")}<span aria-hidden="true">↗</span></a>
     <details class="example-assumptions">
       <summary>{ru ? "Из чего получился ответ" : "How this answer was calculated"}</summary>
       <p>{config.boundary[lang]}</p>
@@ -42,9 +42,18 @@ const matchPath = `${ru ? "" : "/en"}/dota-2/matches/audit/`;
     <noscript><p class="example-noscript">{ru ? "Показан исходный пример. Для изменения вводных открой полный расчёт с включённым JavaScript." : "The original example is shown. To change inputs, open the full tool with JavaScript enabled."}</p></noscript>
   </> : <>
     <div class="example-heading">
-      <span class="example-kicker">{ru ? "Эпизод из реального матча" : "An episode from a real match"}</span>
-      <h3 id={`${id}-title`}>{ru ? "С какого момента начать пересмотр матча?" : "Where should I start reviewing the match?"}</h3>
+      <span class="example-kicker">{ru ? "Разбор твоего матча" : "Your match review"}</span>
+      <h3 id={`${id}-title`}>{ru ? "Что стоит пересмотреть после игры?" : "What should I review after the game?"}</h3>
     </div>
+    <p class="example-context">{ru ? "Загрузи матч и выбери своего героя. Проверь экономику, условия для обоих пиков и вопросы для просмотра реплея." : "Load a match and choose your hero. Review the economy, both drafts' conditions and questions to check in the replay."}</p>
+    <form action={matchPath} method="get" class="example-own-match" data-example-match-form>
+      <label for={`${id}-match`}>{ru ? "Match ID или ссылка на твой матч" : "Your Match ID or match URL"}</label>
+      <div><input id={`${id}-match`} name="match" type="text" required autocomplete="off" placeholder={ru ? "Match ID или ссылка" : "Match ID or URL"} aria-describedby={`${id}-match-hint`} /><button type="submit" class="button">{ru ? "Разобрать" : "Review"}</button></div>
+      <input type="hidden" name="autoload" value="1" />
+      <p id={`${id}-match-hint`}>{ru ? "ID есть на итоговом экране матча. Нажатие отправит публичный ID в OpenDota. Хронология есть не у всех матчей; без неё выводы опираются на итоговые данные." : "Find the ID on the post-match screen. Clicking sends the public ID to OpenDota. Not every match has a timeline; without one, the review uses final data."}</p>
+    </form>
+    <details class="example-public-match">
+      <summary>{ru ? "Посмотреть пример: с какого эпизода начать" : "See an example: where to start reviewing"}</summary>
     <div class="example-result" data-state="caution">
       <p class="example-dota-window">{homeDotaEvidence.startMinute}-{homeDotaEvidence.endMinute} {ru ? "минуты" : "minutes"}</p>
       <dl>
@@ -61,13 +70,8 @@ const matchPath = `${ru ? "" : "/en"}/dota-2/matches/audit/`;
       <input type="hidden" name="autoload" value="1" />
       <button type="submit" class="button example-action">{ru ? "Открыть разбор этого матча" : "Open this match review"}<span aria-hidden="true">↗</span></button>
     </form>
-    <form action={matchPath} method="get" class="example-own-match" data-example-match-form>
-      <label for={`${id}-match`}>{ru ? "Свой матч: Match ID или ссылка" : "Your match: Match ID or URL"}</label>
-      <div><input id={`${id}-match`} name="match" type="text" required autocomplete="off" placeholder={ru ? "Match ID или ссылка" : "Match ID or URL"} aria-describedby={`${id}-match-hint`} /><button type="submit" class="button ghost">{ru ? "Разобрать" : "Review"}</button></div>
-      <input type="hidden" name="autoload" value="1" />
-      <p id={`${id}-match-hint`}>{ru ? "ID есть на итоговом экране матча. Нажатие отправит публичный ID в OpenDota. Наличие хронологии зависит от доступных данных." : "Find the ID on the post-match screen. Clicking sends the public ID to OpenDota. Timeline availability depends on the data."}</p>
-    </form>
-    <details class="example-assumptions"><summary>{ru ? "Источник примера" : "Example source"}</summary><p>{ru ? "OpenDota, публичный матч" : "OpenDota, public match"} {homeDotaEvidence.matchId}, {homeDotaEvidence.hero}. {ru ? "Проверено" : "Checked"} {homeDotaEvidence.checkedAt}. {ru ? "Показан прирост накопленного золота за интервал. Это не общая оценка игрока и не объяснение исхода матча." : "This shows the change in accumulated gold during the interval. It is not a player grade or an explanation of the match outcome."}</p></details>
+    <p class="example-source">{ru ? "OpenDota, публичный матч" : "OpenDota, public match"} {homeDotaEvidence.matchId}, {homeDotaEvidence.hero}. {ru ? "Проверено" : "Checked"} {homeDotaEvidence.checkedAt}. {ru ? "Показан прирост накопленного золота за интервал. Это не общая оценка игрока и не объяснение исхода матча. Кнопка отправит ID примера в OpenDota." : "This shows the change in accumulated gold during the interval. It is not a player grade or an explanation of the match outcome. The button sends the example ID to OpenDota."}</p>
+    </details>
   </>}
 </article>
 
@@ -140,9 +144,13 @@ const matchPath = `${ru ? "" : "/en"}/dota-2/matches/audit/`;
   .example-assumptions dd { margin: 0; white-space: nowrap; font-size: .85rem; }
   .example-dota-window { margin: 0 0 12px; color: #e0dfd4; font-size: .82rem; }
   .example-demo-form { margin: 0; }
-  .example-own-match { margin-top: 18px; padding-top: 16px; border-top: 1px solid #344140; display: grid; gap: 8px; }
+  .example-own-match { margin: 0; display: grid; gap: 8px; }
   .example-own-match > div { display: flex; gap: 8px; }
-  .example-own-match button { flex-shrink: 0; border: 1px solid #647972; border-radius: 8px; padding: 10px 14px; color: #e9f1ed; background: transparent; cursor: pointer; font-size: .86rem; }
+  .example-own-match button { flex-shrink: 0; border: 1px solid #b7f1d1; border-radius: 8px; padding: 10px 14px; color: #0a251b; background: #b7f1d1; cursor: pointer; font-size: .86rem; }
+  .example-public-match { margin-top: 18px; padding-top: 14px; border-top: 1px solid #344140; }
+  .example-public-match > summary { cursor: pointer; color: #c6d7ce; font-size: .85rem; line-height: 1.5; padding: 4px 0; }
+  .example-public-match[open] > summary { margin-bottom: 12px; }
+  .example-source { color: #abbab6; font-size: .8rem; line-height: 1.5; margin: 12px 0 0; }
   .example-noscript { font-size: .8rem; color: #b7c5c1; }
   @media (max-width: 400px) { .example-input { grid-template-columns: minmax(0, 1fr) 85px; gap: 8px; } .example-result { padding: 13px; } .example-result dl { gap: 12px; } .example-result dd { font-size: 1.08rem; } }
 </style>

@@ -1,6 +1,8 @@
 import { homeDecisionExamples, type HomeExampleGame } from "../data/home-decision-examples";
 import { getScenarioTool, localizeScenarioPath, type ScenarioLocale } from "../data/scenario-tools";
-import { calculateRunway } from "./runway";
+import { gtaSessionExample } from "../data/gta-session-example";
+import { gtaSessionCopy } from "../data/gta-session-copy";
+import { calculateGtaSession } from "./gta-session";
 import { calculateCraftingCashFlow } from "./wow-economy";
 import { calculateReserveMetrics } from "./strategy-economy";
 import { calculateCivilizationComparison } from "./civ-comparison";
@@ -24,7 +26,7 @@ export function homeExampleContext(game: HomeExampleGame, lang: ScenarioLocale):
   const f = (key: string) => new Intl.NumberFormat(ru ? "ru-RU" : "en-US").format(values[key]!);
   const label = ru ? "Условный пример: " : "Illustrative case: ";
   const cases: Record<HomeExampleGame, string> = {
-    gta: ru ? `на счёте ${f("current")}, покупка за ${f("target")}, запас ${f("reserve")} GTA$. Чистый доход ${f("rate")} GTA$ в неделю.` : `${f("current")} in cash, a ${f("target")} purchase, a ${f("reserve")} GTA$ reserve. Net income of ${f("rate")} GTA$ per week.`,
+    gta: ru ? `готовый товар принесёт GTA$ ${f("s0-cash")} за ${f("s0-duration")} минут, один раз. Миссия: GTA$ ${f("s1-cash")} за ${f("s1-duration")} минут, до ${f("s1-runs")} заходов. Дополнительно ${f("s0-entry")} минут на вход в продажу и ${f("s1-entry")} на вход в миссии.` : `ready stock brings GTA$ ${f("s0-cash")} in ${f("s0-duration")} minutes, once. A mission brings GTA$ ${f("s1-cash")} in ${f("s1-duration")} minutes, up to ${f("s1-runs")} runs. Add ${f("s0-entry")} minutes to enter the sale and ${f("s1-entry")} to enter missions.`,
     wow: ru ? `${f("craft-count")} крафтов по ${f("craft-output")} предметов. Материалы ${f("craft-materials")} за крафт; цена ${f("craft-price")} золота за предмет, комиссия ${f("craft-cut")}%.` : `${f("craft-count")} crafts of ${f("craft-output")} items each. Materials cost ${f("craft-materials")} per craft; price ${f("craft-price")} gold per item, with a ${f("craft-cut")}% cut.`,
     "total-war": ru ? `казна ${f("treasury")}, найм ${f("oneOffCost")}, запас ${f("reserve")}. Каждый ход: доход ${f("incomePerPeriod")}, содержание ${f("currentOutflow")} + ${f("newOutflow")} золота.` : `${f("treasury")} treasury, ${f("oneOffCost")} recruitment, ${f("reserve")} reserve. Per turn: ${f("incomePerPeriod")} income, ${f("currentOutflow")} + ${f("newOutflow")} gold upkeep.`,
     ck3: ru ? `казна ${f("treasury")}, разовые затраты ${f("oneOffCost")}, запас ${f("reserve")}. Доход ${f("incomePerPeriod")} и мирные расходы ${f("currentOutflow")} золота в месяц; война на ${f("horizonPeriods")} месяца.` : `${f("treasury")} treasury, ${f("oneOffCost")} one-off costs, ${f("reserve")} reserve. ${f("incomePerPeriod")} income and ${f("currentOutflow")} peacetime costs monthly; a ${f("horizonPeriods")}-month war.`,
@@ -52,15 +54,24 @@ export function calculateHomeDecisionExample(game: HomeExampleGame, raw: string 
   const metric = (label: string, number: number, display: string): HomeExampleMetric => ({ label, value: number, display });
   const base = { valid: true as const, values, href };
   if (game === "gta") {
-    const result = calculateRunway({ current: values.current!, target: values.target!, reserve: values.reserve!, rate: values.rate!, horizon: value });
-    const enough = result.slack >= 0;
-    return { ...base, state: enough ? "positive" : "caution", metrics: [
-      metric(ru ? "На счёте к сроку" : "Cash at the deadline", result.projected, `GTA$ ${f(result.projected)}`),
-      metric(ru ? "После покупки и резерва" : "After purchase and reserve", result.slack, `GTA$ ${signed(result.slack)}`)
-    ], consequence: enough
-      ? (ru ? `Покупка укладывается в срок. Запас GTA$ ${f(values.reserve!)} сохранится.` : `The purchase fits the deadline. The GTA$ ${f(values.reserve!)} reserve stays intact.`)
-      : (ru ? `До покупки с запасом не хватает GTA$ ${f(-result.slack)}. Нужен чистый доход GTA$ ${f(Math.ceil(result.requiredRate))} в неделю.` : `You are GTA$ ${f(-result.slack)} short of buying and keeping the reserve. You need GTA$ ${f(Math.ceil(result.requiredRate))} net per week.`),
-      nextAction: ru ? `При доходе из примера цель достижима за ${f(result.periods, 2)} недели. Проверь свой заработок и срок.` : `At the example's earning rate, the goal takes ${f(result.periods, 2)} weeks. Check your own income and deadline.` };
+    const result = calculateGtaSession({ minutesAvailable: value,
+      sources: gtaSessionExample.sources.slice(0, values.sources).map((source, i) => ({ ...source,
+        cashPerRun: values[`s${i}-cash`]!, minutesPerRun: values[`s${i}-duration`]!,
+        entryMinutes: values[`s${i}-entry`]!, maxRuns: values[`s${i}-runs`]!
+      })) });
+    if (!result) return { valid: false };
+    const blocks = result.best.blocks.map((block) =>
+      `${gtaSessionCopy[lang].kinds[gtaSessionExample.sources[block.sourceIndex]!.kind]} × ${block.runs}`
+    ).join(" + ");
+    return { ...base, state: result.status === "no-positive-fit" ? "caution" : "positive", metrics: [
+      metric(ru ? "Максимум поступлений в примере" : "Highest cash receipts in this case", result.best.cash, `GTA$ ${f(result.best.cash)}`),
+      metric(ru ? "Если выбрать одно занятие" : "If you choose one activity", result.solo.cash, `GTA$ ${f(result.solo.cash)}`)
+    ], consequence: result.status === "no-positive-fit"
+      ? (ru ? "За это время ни один полный заход с дорогой не помещается. Незавершённые заходы не приносят расчётной выплаты." : "No complete run including travel fits this session. Unfinished runs add no modeled receipts.")
+      : `${blocks}. ` + (ru ? `Занято ${f(result.best.usedMinutes)} минут, свободно ${f(result.best.unusedMinutes)}.` : `Uses ${f(result.best.usedMinutes)} minutes, leaves ${f(result.best.unusedMinutes)} free.`),
+      nextAction: result.gainOverSolo > 0
+        ? (ru ? `Сочетание даёт на GTA$ ${f(result.gainOverSolo)} больше одного занятия. В полном плане проверь готовность товара, свои выплаты и время.` : `The mix brings GTA$ ${f(result.gainOverSolo)} more than a single activity. Check your stock readiness, receipts and durations in the full plan.`)
+        : (ru ? "В полном плане укажи доступные тебе занятия. Свободные минуты не превращаются в дополнительную выплату." : "Enter the activities you can actually run in the full plan. Spare minutes do not become extra receipts.") };
   }
   if (game === "wow") {
     const result = calculateCraftingCashFlow({ materialCostPerCraft: values["craft-materials"]!, outputUnits: values["craft-output"]!, salePricePerUnit: values["craft-price"]!, crafts: values["craft-count"]!, sellThroughPercent: value, auctionHouseCutPercent: values["craft-cut"]!, depositPerListing: values["craft-deposit"]! });

@@ -101,7 +101,7 @@ const copy = lang === "ru" ? {
   slowSignalTitle: "Самый медленный видимый отрезок закончился к",
   slowSignalText: "Проверь карту, смерти и вынужденные действия внутри этого окна. Низкий темп сам по себе не доказывает ошибку: полезная драка или поддержка команды могли быть правильной конверсией.",
   reviewSignalTitle: "Факты собраны. Теперь найди одно решение.",
-  reviewSignalText: "Сравни момент крупной покупки с ближайшей целью команды. Этот экран видит экономику, но не знает драфт, голосовую связь и состояние карты.",
+  reviewSignalText: "Сравни момент крупной покупки с ближайшей целью команды и условиями составов. Голосовая связь, обзор карты и готовность способностей здесь не восстановлены.",
   compareLabel: "С кем сравниваем?",
   compareAuto: "Автоматически по позиции",
   compareHelp: "Если позиция не определена или выбрана неверно, укажи соперника сам. Выбери героя с сопоставимой ролью.",
@@ -118,9 +118,8 @@ const copy = lang === "ru" ? {
   focusNoFlag: "эпизод не выделен",
   focusBroad: "Данные позволяют сравнить всю фазу, но не выделить надёжный трёхминутный эпизод.",
   focusMissing: "Для эпизода нужны поминутные данные и сопоставимый разрыв. Выбери соперника или проверь доступную хронологию.",
-  focusPurchases: "Покупки в эпизоде",
-  focusNoPurchases: "В журнале нет крупных завершённых покупок в этом эпизоде. Это не означает, что герой ничего не покупал.",
   focusFacts: "Что видно в данных",
+  focusOtherPurchases: "Другие крупные покупки твоего героя в эпизоде",
   focusQuestion: "Что проверить в повторе",
   focusFarmQuestion: "Сравни доступные волны и лагеря. Выясни, почему добиваний меньше: смерть, перемещение или полезное действие для команды?",
   focusGoldQuestion: "Сравни источники золота у обоих героев. Добивания не объясняют весь разрыв: проверь драки, цели и размены.",
@@ -326,7 +325,7 @@ const copy = lang === "ru" ? {
   slowSignalTitle: "The slowest visible segment ended at",
   slowSignalText: "Check the map, deaths and forced actions inside this window. Low pace alone does not prove a mistake: a useful fight or team support may have been the right conversion.",
   reviewSignalTitle: "The facts are assembled. Find one decision.",
-  reviewSignalText: "Compare a major purchase with the team's nearest objective. This screen sees economy, but it does not know the draft, voice comms or map state.",
+  reviewSignalText: "Compare a major purchase with the team's nearest objective and lineup conditions. Voice comms, map vision and ability readiness are not reconstructed here.",
   compareLabel: "Compare against",
   compareAuto: "Automatic by position",
   compareHelp: "If the position is missing or incorrect, choose an opponent yourself. Pick a hero with a comparable role.",
@@ -343,9 +342,8 @@ const copy = lang === "ru" ? {
   focusNoFlag: "no episode flagged",
   focusBroad: "The samples support the whole phase, but not a reliable three-minute episode.",
   focusMissing: "An episode needs minute-by-minute samples and a comparable gap. Choose an opponent or inspect the available timeline.",
-  focusPurchases: "Purchases in this episode",
-  focusNoPurchases: "No major completed purchases appear in this interval's log. This does not mean the hero bought nothing.",
   focusFacts: "Observed in the data",
+  focusOtherPurchases: "Your hero's other major purchases inside the episode",
   focusQuestion: "Check in the replay",
   focusFarmQuestion: "Compare available waves and camps. Were the fewer last hits caused by a death, movement or a useful team action?",
   focusGoldQuestion: "Compare both heroes' gold sources. Last hits do not explain the entire gap: inspect fights, objectives and trades.",
@@ -618,9 +616,10 @@ const payload = JSON.stringify({
               <header><div><span class="section-kicker">{copy.replayKicker}</span><h4 id="match-focus-title">{copy.focusTitle}</h4></div><strong data-economic-replay-window></strong></header>
               <p data-focus-explanation></p>
               <div class="match-focus-columns">
-                <div><h5>{copy.focusFacts}</h5><dl data-focus-facts></dl><h5>{copy.focusPurchases}</h5><div data-focus-purchases></div></div>
+                <div><h5>{copy.focusFacts}</h5><dl data-focus-facts></dl><details class="match-focus-other" data-focus-other hidden><summary>{copy.focusOtherPurchases}</summary><div data-focus-purchases></div></details></div>
                 <div class="match-focus-question"><h5>{copy.focusQuestion}</h5><p data-focus-question></p><ol data-economic-replay-checks></ol><button class="mini-action" type="button" data-copy-focus>{copy.focusCopy}</button><p data-focus-copy-status role="status" aria-live="polite"></p></div>
               </div>
+              <div class="match-episode-context" data-episode-context hidden></div>
             </section>
             <details class="match-economic-explanation"><summary>{copy.priceTitle}</summary>
               <article class="match-economic-price">
@@ -722,8 +721,10 @@ const payload = JSON.stringify({
   import { buildDotaFinalReview } from "../lib/dota-match-summary";
   import { dotaReviewMessage, renderDotaFinalReview } from "../lib/dota-match-review-ui";
   import { canReplaceDotaMatch, DotaMatchRecovery, type DotaRecoveryState } from "../lib/dota-match-recovery";
-  import { buildDotaDraftReview } from "../lib/dota-draft";
+  import { buildDotaDraftReview, type DotaDraftReview } from "../lib/dota-draft";
   import { renderDotaDraftReview } from "../lib/dota-draft-review-ui";
+  import { buildDotaEpisodeContext, selectDotaEpisodeOtherPurchases } from "../lib/dota-episode-context";
+  import { buildDotaEpisodeNote, renderDotaEpisodeContext } from "../lib/dota-episode-context-ui";
 
   const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
   if (root) {
@@ -963,14 +964,14 @@ const payload = JSON.stringify({
         text.textContent = copy.dataPartial!;
         const purchase = audit.majorPurchases[0];
         currentRule = purchase
-          ? (lang === "ru" ? `Открой ${purchase.name} на ${number.format(purchase.minute)} мин. Проверь, какую цель команды помогла забрать покупка и что произошло в следующие три минуты.`
-            : `Inspect ${purchase.name} at ${number.format(purchase.minute)} min. Check which team objective it helped secure and what happened in the next three minutes.`)
+          ? (lang === "ru" ? `Открой ${purchase.name} на ${number.format(purchase.minute)} мин. Проверь, был ли предмет доставлен и применён, а затем посмотри на действия команды в следующие три минуты.`
+            : `Inspect ${purchase.name} at ${number.format(purchase.minute)} min. Check whether the item was delivered and used, then review the team's actions over the next three minutes.`)
           : copy.reviewSignalText!;
       }
       root.querySelector<HTMLElement>("[data-next-rule]")!.textContent = currentRule;
     };
 
-    const renderEconomicAutopsy = (audit: DotaMatchAudit) => {
+    const renderEconomicAutopsy = (audit: DotaMatchAudit, draft: DotaDraftReview) => {
       const economy = audit.economy;
       root.querySelector<HTMLElement>("[data-economic-autopsy]")!.hidden = economy.windows.length === 0;
       const confidence = root.querySelector<HTMLElement>("[data-economic-confidence]")!;
@@ -1114,14 +1115,21 @@ const payload = JSON.stringify({
       factsRoot.replaceChildren(...facts.map(([label, amount]) => {
         const row = make("div"); row.append(make("dt", "", label), make("dd", "", amount)); return row;
       }));
-      const purchaseRoot = root.querySelector<HTMLElement>("[data-focus-purchases]")!;
-      const nearby = review ? audit.majorPurchases.filter((purchase) => purchase.minute >= review.startMinute && purchase.minute <= review.endMinute) : [];
-      purchaseRoot.replaceChildren(...(nearby.length ? nearby.map((purchase) => {
+      const episodeContext = buildDotaEpisodeContext(draft, review);
+      renderDotaEpisodeContext(root.querySelector<HTMLElement>("[data-episode-context]")!, episodeContext, lang, (id) => heroFor(id).name, () => {
+        setResultTab("draft");
+        root.querySelector<HTMLButtonElement>('[data-result-tab="draft"]')!.focus();
+      });
+      const otherPurchases = selectDotaEpisodeOtherPurchases(episodeContext, audit.player.heroId, audit.majorPurchases);
+      const otherPurchaseDetails = root.querySelector<HTMLDetailsElement>("[data-focus-other]")!;
+      otherPurchaseDetails.hidden = otherPurchases.length === 0;
+      otherPurchaseDetails.open = false;
+      root.querySelector<HTMLElement>("[data-focus-purchases]")!.replaceChildren(...otherPurchases.map((purchase) => {
         const link = make("a", "match-focus-purchase");
         link.href = itemPaths[purchase.key] ?? data.plannerPath;
         link.append(media("match-focus-item-image", purchase.name, purchase.image), make("span", "", `${purchase.name} · ${number.format(purchase.minute)} ${copy.minuteShort}`));
         return link;
-      }) : [make("p", "", review ? copy.focusNoPurchases : copy.focusMissing)]));
+      }));
       const question = !review ? copy.focusMissing! : critical?.kind === "team" ? copy.focusTeamQuestion!
         : focus?.playerLastHits != null && focus.counterpartLastHits != null && focus.playerLastHits < focus.counterpartLastHits
           ? copy.focusFarmQuestion! : copy.focusGoldQuestion!;
@@ -1132,6 +1140,9 @@ const payload = JSON.stringify({
       root.querySelector<HTMLElement>("[data-economic-replay-checks]")!.replaceChildren(...(review ? checks.map((check) => make("li", "", check)) : []));
       currentFocusNote = currentMatch && review
         ? `Money Meta · ${currentMatch.matchId} · ${heroFor(audit.player.heroId).name} · ${windowLabel(review)}\n${economy.counterpart ? `${heroFor(economy.counterpart.heroId).name} · ${economy.comparisonBasis === "manual" ? copy.compareManual : copy.comparePosition}` : copy.noDirectOpponent}\n${facts.map(([label, amount]) => `${label}: ${amount}`).join("\n")}\n${question}` : "";
+      const contextNote = buildDotaEpisodeNote(episodeContext, lang, (id) => heroFor(id).name);
+      if (currentFocusNote && contextNote) currentFocusNote += `\n\n${contextNote}`;
+      if (currentFocusNote && otherPurchases.length) currentFocusNote += `\n${copy.focusOtherPurchases}: ${otherPurchases.map((purchase) => `${purchase.name} · ${number.format(purchase.minute)} ${copy.minuteShort}`).join(", ")}`;
       root.querySelector<HTMLButtonElement>("[data-copy-focus]")!.disabled = !currentFocusNote;
       root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = "";
       root.querySelector<HTMLElement>("[data-economic-boundary]")!.textContent = `${copy.thresholdNote}${economy.counterpart ? "" : ` ${copy.noOpponentAutopsy}`}`;
@@ -1291,13 +1302,13 @@ const payload = JSON.stringify({
       selectedImage.hidden = !hero.image;
       renderSignal(audit);
       renderDotaFinalReview(root, buildDotaFinalReview(currentMatch, audit.player, roleControl.value === "unknown" ? null : audit.role, audit.economy.counterpart), lang, (id) => heroFor(id).name, audit.economy.windows.length === 0);
-      renderEconomicAutopsy(audit);
+      const draft = buildDotaDraftReview(currentMatch, audit.player);
+      renderEconomicAutopsy(audit, draft);
       renderStats(audit);
       renderInventory(audit);
       renderChart(audit);
       renderCheckpoints(audit);
       renderPurchases(audit);
-      const draft = buildDotaDraftReview(currentMatch, audit.player);
       renderDotaDraftReview(root.querySelector<HTMLElement>("[data-draft-review]")!, draft, lang, heroFor);
       const draftSummary = root.querySelector<HTMLElement>("[data-draft-summary]")!;
       draftSummary.hidden = draft.status !== "ready" && draft.status !== "partial";

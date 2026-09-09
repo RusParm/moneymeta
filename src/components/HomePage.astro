@@ -52,9 +52,9 @@ const copy = lang === "ru" ? {
   description: "Выбери ситуацию в одной из шести живых игровых экономик или открой предрелизное досье Fable. Подставь свои цифры и проверь следующий ход.",
   kicker: "MONEY META · ЭКОНОМИКА ИГР",
   heading: "На что потратить золото и время в игре?",
-  lede: "Выбери игру и посмотри готовый пример: сколько денег останется, хватит ли времени или какой эпизод матча стоит пересмотреть. Затем проверь свою ситуацию.",
+  lede: "Разбери свой матч или сравни варианты для следующей игры: сколько денег останется, что поместится в сеанс и когда изменится решение.",
   chooseGame: "Выбери игру",
-  chooseHint: "Готовый пример → твои вводные → решение",
+  chooseHint: "Начни со своей ситуации",
   openHub: "Открыть весь раздел",
   checked: "проверено",
   fetched: "получено",
@@ -69,7 +69,7 @@ const copy = lang === "ru" ? {
   updatesText: "Рядом с каждым выводом видна версия игры и дата проверки.",
   statusKicker: "АКТУАЛЬНОСТЬ",
   open: "Открыть",
-  guides: "Разборы для следующей сессии",
+  guides: "Дальше по этой игре",
   allGuides: "Все разборы",
   watch: "GTA VI и Fable: факты до релиза",
   watchText: "Два досье собирают только подтверждённые сведения и план измерений. Выдуманных доходов и фальшивых расчётов здесь нет.",
@@ -83,9 +83,9 @@ const copy = lang === "ru" ? {
   description: "Choose a situation in one of six live game economies or open the pre-release Fable dossier. Use your own numbers and test the next move.",
   kicker: "MONEY META · GAME ECONOMIES",
   heading: "Where should your gold and gaming time go?",
-  lede: "Choose a game and see a worked answer: cash left over, time to a goal or a match episode worth reviewing. Then check your own situation.",
+  lede: "Review your match or compare options for your next game: cash left over, what fits into a session and when a decision changes.",
   chooseGame: "Choose your game",
-  chooseHint: "Worked example → your inputs → decision",
+  chooseHint: "Start with your own situation",
   openHub: "Explore the full hub",
   checked: "checked",
   fetched: "fetched",
@@ -100,7 +100,7 @@ const copy = lang === "ru" ? {
   updatesText: "Every conclusion shows the game version and its review date.",
   statusKicker: "STATUS",
   open: "Open",
-  guides: "Analysis for your next session",
+  guides: "More for this game",
   allGuides: "All analyses",
   watch: "GTA VI and Fable: facts before launch",
   watchText: "Both dossiers collect confirmed information and a measurement plan. There are no invented earnings or fake calculations.",
@@ -219,7 +219,11 @@ const snapshotPolicy = {
   checkedAt: dotaItemsSnapshot.fetchedAt,
   maxAgeHours: DOTA_SNAPSHOT_MAX_AGE_HOURS
 };
-const featuredInsights = insights.filter((insight) => insight.featuredInHub).slice(0, 3);
+const gameInsights = liveGames.map((game) => ({
+  game,
+  articles: insights.filter((insight) => insight.game === (game.id === "total-war" ? "totalwar" : game.id))
+    .sort((a, b) => Number(Boolean(b.featuredInHub)) - Number(Boolean(a.featuredInHub))).slice(0, 3)
+}));
 ---
 
 <BaseLayout
@@ -299,7 +303,7 @@ const featuredInsights = insights.filter((insight) => insight.featuredInHub).sli
               </article>
             ))}
           </div>
-          <noscript><style is:inline>.mm-home [data-home-game-panel][hidden] { display: block !important; }</style></noscript>
+          <noscript><style is:inline>.mm-home [data-home-game-panel][hidden], .mm-home [data-home-guide-group][hidden] { display: block !important; }</style></noscript>
         </div>
       </section>
 
@@ -342,15 +346,27 @@ const featuredInsights = insights.filter((insight) => insight.featuredInHub).sli
             <h2 id="guides-title">{copy.guides}</h2>
             <a href={`${prefix}/insights/`}>{copy.allGuides} →</a>
           </div>
-          <div class="mm-home-guide-list">
-            {featuredInsights.map((insight) => (
+          {gameInsights.map(({ game, articles }) => <div class="mm-home-guide-list" data-home-guide-group data-game-id={game.id} hidden={game.id !== activeGameId}>
+            {articles.map((insight) => (
               <a href={`${prefix}/insights/${insight.slug}/`}>
                 <span>{insightGameLabels[insight.game]} · {insight.content[lang].readTime}</span>
                 <strong>{insight.content[lang].title}</strong>
                 <b aria-hidden="true">↗</b>
               </a>
             ))}
-          </div>
+            {game.id === "civ7" && <>
+              <a href={getFrontierPath("civ7", lang, "economy")}>
+                <span>Civilization VII</span>
+                <strong>{lang === "ru" ? "Как связаны ресурсы и развитие поселения" : "How resources shape settlement development"}</strong>
+                <b aria-hidden="true">↗</b>
+              </a>
+              <a href={getFrontierPath("civ7", lang, "tools")}>
+                <span>Civilization VII</span>
+                <strong>{lang === "ru" ? "Сравнить две постройки к выбранному ходу" : "Compare two builds by a chosen turn"}</strong>
+                <b aria-hidden="true">↗</b>
+              </a>
+            </>}
+          </div>)}
         </section>
 
         <aside class="mm-home-watch">

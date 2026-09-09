@@ -5,7 +5,8 @@ import { addWowBatchForecast, closeWowBatchForecast, readWowBatchJournal, remove
 export const wowBatchFieldRoles = {
   materialCostPerCraft: "craft-materials", outputUnits: "craft-output", salePricePerUnit: "craft-price",
   auctionHouseCutPercent: "craft-cut", depositPerListing: "craft-deposit", sellThroughPercent: "craft-sellthrough",
-  crafts: "craft-count", walletGold: "craft-wallet", reserveGold: "craft-reserve", observedSoldUnits: "craft-sales-cap"
+  crafts: "craft-count", walletGold: "craft-wallet", reserveGold: "craft-reserve", observedSoldUnits: "craft-sales-cap",
+  existingStockUnits: "craft-existing-stock"
 } as const;
 
 export function readWowBatchInput(root: HTMLElement): WowBatchInput | null {
@@ -40,12 +41,17 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
 
   function updateChanged() {
     const current = readWowBatchInput(root);
-    q("[data-batch-changed]").hidden = !selected || (current !== null && JSON.stringify(current) === JSON.stringify(selected.forecast));
+    q("[data-batch-changed]").hidden = !selected || (current !== null
+      && [...Object.keys(wowBatchFieldRoles), "salesMode"].every((key) => {
+        const field = key as keyof WowBatchInput;
+        return current[field] === (selected!.forecast[field] ?? (field === "existingStockUnits" ? 0 : undefined));
+      }));
   }
 
   function renderPlan() {
     const observed = q<HTMLSelectElement>("[data-role='craft-sales-mode']").value === "observed";
     q("[data-batch-cap-field]").hidden = !observed;
+    q("[data-batch-stock-field]").hidden = !observed;
     q<HTMLInputElement>("[data-role='craft-sellthrough']").closest<HTMLElement>(".field")!.hidden = observed;
     // An unused hidden field must not trap the new mode in an invalid state.
     // No active sales assumption is changed by this neutral placeholder.
@@ -54,14 +60,35 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
       unused.value = "0";
       unused.dispatchEvent(new Event("input", { bubbles: true }));
     }
+    const stock = q<HTMLInputElement>("[data-role='craft-existing-stock']");
+    if (!observed && (!stock.value.trim() || !stock.validity.valid || !Number.isFinite(Number(stock.value)))) {
+      stock.value = "0";
+      stock.dispatchEvent(new Event("input", { bubbles: true }));
+    }
     const input = readWowBatchInput(root);
     const plan = input ? calculateWowBatchPlan(input) : null;
     q<HTMLButtonElement>("[data-batch-save]").disabled = !plan?.fits;
     const resize = q<HTMLButtonElement>("[data-batch-use-size]");
     resize.hidden = !plan || plan.fits || plan.feasibleCrafts === 0;
     resize.disabled = !plan || plan.fits || plan.feasibleCrafts === 0;
+    q("[data-batch-allocation]").hidden = !plan?.salesAllocation;
+    const salesResize = q<HTMLButtonElement>("[data-batch-use-sales-size]");
+    salesResize.hidden = !input || !plan?.salesFitCrafts || plan.salesFitCrafts >= input.crafts;
+    salesResize.disabled = salesResize.hidden;
     updateChanged();
     if (!input || !plan) return;
+    if (plan.salesAllocation) {
+      const allocation = plan.salesAllocation;
+      q("[data-batch-total-cap]").textContent = format.format(allocation.totalSalesCap);
+      q("[data-batch-old-allocation]").textContent = format.format(allocation.existingStockSales);
+      q("[data-batch-new-allocation]").textContent = format.format(allocation.newSalesCap);
+      q("[data-batch-stock-decision]").textContent = allocation.newSalesCap === 0 ? c.noNewSales : ru
+        ? `Из имеющихся ${format.format(allocation.existingStockUnits)} ед. запасу отведено ${format.format(allocation.existingStockSales)} продаж. Новой партии остаётся не больше ${format.format(allocation.newSalesCap)} продаж за цикл.`
+        : `Of ${format.format(allocation.existingStockUnits)} existing units, ${format.format(allocation.existingStockSales)} sales are allocated to stock. The new batch has at most ${format.format(allocation.newSalesCap)} sales left in the cycle.`;
+      q("[data-batch-stock-size]").textContent = ru
+        ? `При выходе ${format.format(input.outputUnits)} ед. без нового остатка помещается до ${format.format(allocation.maxNewCraftsWithoutRemainder)} изготовлений. С учётом бюджета и задуманного размера: ${format.format(plan.salesFitCrafts!)}. Выгодность зависит от цены и затрат.`
+        : `At ${format.format(input.outputUnits)} units per craft, up to ${format.format(allocation.maxNewCraftsWithoutRemainder)} whole crafts fit without new stock left over. After cash and requested size: ${format.format(plan.salesFitCrafts!)}. Profitability depends on price and costs.`;
+    }
     q("[data-batch-plan-decision]").textContent = plan.reserveAlreadyShort ? c.noCash : plan.feasibleCrafts === 0 ? c.noCraft : plan.fits ? c.fits : c.tooLarge;
     q("[data-batch-max]").textContent = plan.affordableCrafts === null ? c.unlimited
       : plan.affordableLimitReached ? ru
@@ -86,6 +113,7 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
     stale = false;
     clearActual();
     q<HTMLInputElement>("[data-batch-next-wallet]").value = "";
+    q<HTMLInputElement>("[data-batch-next-stock]").value = "";
     q("[data-batch-remove-confirm]").hidden = true;
     q("[data-batch-record]").hidden = !selected;
     if (!selected) return;
@@ -94,6 +122,9 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
     q("[data-batch-original]").textContent = ru
       ? `${selected.name} · ${stamp} · Число изготовлений: ${format.format(selected.forecast.crafts)}; выход: ${format.format(plan.requested.units)} ед.; продажи: ${format.format(plan.requested.soldUnits)} ед.; материалы: ${gold(plan.requested.materialOutlay)} и залог: ${gold(plan.requested.depositOutlay)}; изменение золота: ${gold(plan.requested.cashChange)}; кошелёк до партии: ${gold(selected.forecast.walletGold)}`
       : `${selected.name} · ${stamp}. ${format.format(selected.forecast.crafts)} crafts, ${format.format(plan.requested.units)} units; sales ${format.format(plan.requested.soldUnits)} units; materials ${gold(plan.requested.materialOutlay)} and deposit ${gold(plan.requested.depositOutlay)}; cash change ${gold(plan.requested.cashChange)}; initial wallet ${gold(selected.forecast.walletGold)}.`;
+    if (plan.salesAllocation) q("[data-batch-original]").textContent += ru
+      ? ` Общий предел продаж: ${format.format(plan.salesAllocation.totalSalesCap)} ед.; прежний запас: ${format.format(plan.salesAllocation.existingStockUnits)} ед.; предел для новой партии: ${format.format(plan.salesAllocation.newSalesCap)} ед. Суммы относятся только к новой партии.`
+      : ` Total sales cap: ${format.format(plan.salesAllocation.totalSalesCap)} units; existing stock: ${format.format(plan.salesAllocation.existingStockUnits)} units; new batch cap: ${format.format(plan.salesAllocation.newSalesCap)} units. Amounts belong only to the new batch.`;
     q("[data-batch-actual-form]").hidden = selected.actual !== null;
     q("[data-batch-actual-result]").hidden = selected.actual === null;
     q<HTMLButtonElement>("[data-batch-close]").disabled = selected.actual !== null;
@@ -131,6 +162,14 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
     count.value = String(plan.feasibleCrafts);
     count.dispatchEvent(new Event("input", { bubbles: true }));
   });
+  q<HTMLButtonElement>("[data-batch-use-sales-size]").addEventListener("click", () => {
+    const input = readWowBatchInput(root);
+    const plan = input ? calculateWowBatchPlan(input) : null;
+    if (!plan?.salesFitCrafts) return;
+    const count = q<HTMLInputElement>("[data-role='craft-count']");
+    count.value = String(plan.salesFitCrafts);
+    count.dispatchEvent(new Event("input", { bubbles: true }));
+  });
   q<HTMLButtonElement>("[data-batch-save]").addEventListener("click", () => {
     const input = readWowBatchInput(root);
     const name = q<HTMLInputElement>("[data-batch-name]").value.trim();
@@ -161,7 +200,9 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
     if (!record || wowBatchRecordToken(record) !== expected) { say(c.stale); return; }
     const wallet = q<HTMLInputElement>("[data-batch-next-wallet]");
     if (!wallet.value.trim() || !wallet.validity.valid || !Number.isFinite(Number(wallet.value))) { say(c.nextWalletHint); wallet.focus(); return; }
-    const next = nextWowBatchAssumptions(selected.forecast, selected.actual, Number(wallet.value));
+    const stock = q<HTMLInputElement>("[data-batch-next-stock]");
+    if (!stock.value.trim() || !stock.validity.valid || !Number.isFinite(Number(stock.value))) { say(c.nextStockHint); stock.focus(); return; }
+    const next = nextWowBatchAssumptions(selected.forecast, selected.actual, Number(wallet.value), Number(stock.value));
     if (!next) return;
     const seeded = { ...selected.forecast, ...next };
     for (const [key, role] of Object.entries(wowBatchFieldRoles)) q<HTMLInputElement>(`[data-role='${role}']`).value = String(seeded[key as keyof typeof wowBatchFieldRoles]);

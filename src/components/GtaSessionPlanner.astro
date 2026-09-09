@@ -1,18 +1,14 @@
 ---
 import ScenarioActions from "./ScenarioActions.astro";
 import { gtaSessionCopy } from "../data/gta-session-copy";
-import { calculateGtaSession, GTA_SESSION_KINDS, type GtaSessionSource } from "../lib/gta-session";
+import { gtaSessionExample } from "../data/gta-session-example";
+import { calculateGtaSession, GTA_SESSION_KINDS } from "../lib/gta-session";
 import "../styles/gta-session.css";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const c = gtaSessionCopy[lang];
-const sources: GtaSessionSource[] = [
-  { kind: "ready-sale", available: true, cashPerRun: 200000, minutesPerRun: 35, entryMinutes: 5, maxRuns: 1 },
-  { kind: "mission", available: true, cashPerRun: 140000, minutesPerRun: 25, entryMinutes: 5, maxRuns: 4 },
-  { kind: "contract", available: false, cashPerRun: 0, minutesPerRun: 30, entryMinutes: 5, maxRuns: 1 },
-  { kind: "other", available: false, cashPerRun: 0, minutesPerRun: 30, entryMinutes: 5, maxRuns: 1 }
-];
-const initial = calculateGtaSession({ minutesAvailable: 75, sources: sources.slice(0, 2) })!;
+const { sources, minutes, sourceCount } = gtaSessionExample;
+const initial = calculateGtaSession({ minutesAvailable: minutes, sources: sources.slice(0, sourceCount) })!;
 const money = (n: number) => `GTA$${new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US").format(n)}`;
 ---
 
@@ -21,11 +17,11 @@ const money = (n: number) => `GTA$${new Intl.NumberFormat(lang === "ru" ? "ru-RU
   <p class="gta-session-example">{c.example}</p>
   <form class="gta-session-form">
     <div class="gta-session-controls">
-      <div class="field"><label for="gta-session-minutes">{c.minutes}</label><input id="gta-session-minutes" data-role="minutes" type="number" min="0" max="240" step="1" value="75" /></div>
-      <div class="field"><label for="gta-session-count">{c.sourceCount}</label><select id="gta-session-count" data-role="sources">{[1, 2, 3, 4].map((n) => <option value={n} selected={n === 2}>{n}</option>)}</select></div>
+      <div class="field"><label for="gta-session-minutes">{c.minutes}</label><input id="gta-session-minutes" data-role="minutes" type="number" min="0" max="240" step="1" value={minutes} /></div>
+      <div class="field"><label for="gta-session-count">{c.sourceCount}</label><select id="gta-session-count" data-role="sources">{[1, 2, 3, 4].map((n) => <option value={n} selected={n === sourceCount}>{n}</option>)}</select></div>
     </div>
     <div class="gta-session-sources">
-      {sources.map((source, i) => <fieldset class="gta-session-source" data-session-source={i} hidden={i >= 2}>
+      {sources.map((source, i) => <fieldset class="gta-session-source" data-session-source={i} hidden={i >= sourceCount}>
         <legend>{c.source} {i + 1}</legend>
         <div class="gta-session-source-fields">
           <div class="field gta-session-wide"><label for={`gta-session-${i}-kind`}>{c.kind}</label><select id={`gta-session-${i}-kind`} data-role={`s${i}-kind`}>{GTA_SESSION_KINDS.map((kind) => <option value={kind} selected={source.kind === kind}>{c.kinds[kind]}</option>)}</select></div>

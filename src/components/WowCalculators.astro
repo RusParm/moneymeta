@@ -200,6 +200,7 @@ const copy = lang === "ru" ? {
       <article class="card result-panel wow-result-panel craft-result" aria-live="polite">
         <span class="result-label">{batch.result}</span><div class="result-name" data-role="craft-decision">-</div>
         <div data-craft-valid-result>
+          <WowBatchPlanner lang={lang} section="allocation" />
           <div class="result-metrics">
             <div class="result-metric"><span>{batch.cash}</span><strong data-role="craft-cash">-</strong></div>
             <div class="result-metric"><span>{batch.profit}</span><strong data-role="craft-batch">-</strong></div>
@@ -291,7 +292,7 @@ const copy = lang === "ru" ? {
   import { calculateCraftingCashFlow, sellThroughFromObservation, calculateFarmMetrics, calculateWorkOrderMetrics } from "../lib/wow-economy";
   import { wowBatchCopy } from "../data/wow-batch-copy";
   import { readWowBatchInput } from "../lib/wow-batch-client";
-  import { effectiveWowCraftInput } from "../lib/wow-batch-planner";
+  import { effectiveWowCraftInput, calculateWowBatchStressCases } from "../lib/wow-batch-planner";
 
   document.querySelectorAll<HTMLElement>("[data-wow-calculators]").forEach((root) => {
     if (root.dataset.calculatorsReady === "true") return;
@@ -325,7 +326,8 @@ const copy = lang === "ru" ? {
       if (!batchInput) { target("craft-decision").textContent = batch.empty; return; }
       const input = effectiveWowCraftInput(batchInput);
       const metrics = calculateCraftingCashFlow(input);
-      target("craft-decision").textContent = metrics.state === "cash-tied" ? batch.tied : metrics.state === "loss" ? batch.loss : metrics.state === "empty" ? batch.empty : batch.recovered;
+      const stockBlocksSales = batchInput.salesMode === "observed" && (batchInput.existingStockUnits ?? 0) > 0 && batchInput.existingStockUnits! >= batchInput.observedSoldUnits;
+      target("craft-decision").textContent = stockBlocksSales ? batch.stockBlocked : metrics.state === "cash-tied" ? batch.tied : metrics.state === "loss" ? batch.loss : metrics.state === "empty" ? batch.empty : batch.recovered;
       target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "cash-recovered" ? "positive" : metrics.state === "cash-tied" ? "caution" : "negative";
       target("craft-cash").textContent = gold(metrics.cashChange);
       target("craft-cash").className = metrics.cashChange < 0 ? "magenta" : "teal";
@@ -340,12 +342,13 @@ const copy = lang === "ru" ? {
           : `At this price, sell at least ${number.format(metrics.recoveryUnits)} of ${number.format(metrics.units)} units. Your scenario sells ${number.format(metrics.soldUnits)} units.`
         : lang === "ru" ? "Даже продажа всей партии по этой цене не вернёт затраты." : "Even selling the whole batch at this price will not recover the costs.";
       root.querySelector("[data-craft-recovery]")!.textContent = recovery + (price ? (lang === "ru" ? ` При заданном числе продаж цена возврата затрат: ${price} зол. за ед.` : ` At your planned unit sales, the cash-recovery price is ${price} g per unit.`) : "");
-      root.querySelector("[data-craft-action]")!.textContent = metrics.state === "cash-tied"
+      root.querySelector("[data-craft-action]")!.textContent = stockBlocksSales ? batch.stockAction : metrics.state === "cash-tied"
         ? lang === "ru" ? "Если золото понадобится уже после этого цикла, не увеличивай партию до проверки фактических продаж." : "If you need the gold after this cycle, verify actual sales before increasing the batch."
         : metrics.state === "loss"
           ? lang === "ru" ? "Сначала перепроверь цену и затраты. При неизменных условиях большая партия увеличит убыток." : "Recheck price and costs first. A larger batch increases the loss under the same assumptions."
           : lang === "ru" ? "Сохрани расчёт и после цикла сравни продажи с планом. Увеличение партии само по себе не увеличивает спрос." : "Save the calculation and compare sales after the cycle. A larger batch does not create more demand.";
-      const cases = { current: metrics, lowerPrice: calculateCraftingCashFlow({ ...input, salePricePerUnit: input.salePricePerUnit * 0.9 }), fewerSales: calculateCraftingCashFlow({ ...input, sellThroughPercent: Math.max(0, input.sellThroughPercent - 20) }) };
+      const cases = { current: metrics, ...calculateWowBatchStressCases(batchInput) };
+      root.querySelector("[data-craft-case='fewerSales'] th")!.textContent = batchInput.salesMode === "observed" ? batch.fewerTotalSales : batch.fewerSales;
       for (const [key, check] of Object.entries(cases)) {
         const row = root.querySelector(`[data-craft-case='${key}']`)!;
         row.querySelector("[data-case-profit]")!.textContent = gold(check.profit);
@@ -379,7 +382,7 @@ const copy = lang === "ru" ? {
       target("order-safety").textContent = `${metrics.marginOfSafetyPercent.toFixed(1)}%`;
     }
 
-    const craftRoles = ["craft-materials", "craft-output", "craft-price", "craft-cut", "craft-deposit", "craft-sellthrough", "craft-count", "craft-wallet", "craft-reserve", "craft-sales-cap"];
+    const craftRoles = ["craft-materials", "craft-output", "craft-price", "craft-cut", "craft-deposit", "craft-sellthrough", "craft-count", "craft-wallet", "craft-reserve", "craft-sales-cap", "craft-existing-stock"];
     const farmRoles = ["farm-units", "farm-price", "farm-sellthrough", "farm-cut", "farm-expenses", "farm-relisting", "farm-session", "farm-target"];
     const orderRoles = ["order-commission", "order-materials", "order-recraft", "order-minutes", "order-target-gph", "order-count"];
     craftRoles.forEach((role) => input(role).addEventListener("input", renderCrafting));

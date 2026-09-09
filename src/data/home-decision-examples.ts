@@ -1,5 +1,7 @@
 import type { ScenarioGame, ScenarioLocale } from "./scenario-tools";
 import { civilizationComparisonExample as civExample } from "./civ-comparison";
+import { gtaSessionExample } from "./gta-session-example";
+import { GTA_SESSION_MAX_MINUTES } from "../lib/gta-session";
 
 export type HomeExampleGame = Exclude<ScenarioGame, "dota">;
 type Copy = Record<ScenarioLocale, string>;
@@ -23,23 +25,36 @@ interface Example {
 // Full-model field names are deliberate: handoff must restore the entire case.
 export const homeDecisionExamples: Record<HomeExampleGame, Example> = {
   gta: {
-    toolKey: "gta-goal-runway",
-    question: both("Успею накопить на покупку, сохранив запас денег?", "Can I afford the purchase on time and keep a cash reserve?"),
-    inputKey: "horizon", inputLabel: both("Через сколько недель хочу купить", "Weeks until I want to buy"),
-    inputHint: both("Поставь свой срок. Доход в примере условный; в полном расчёте замени его своим чистым заработком за неделю.", "Set your deadline. This example assumes a weekly income; replace it with your own net earnings in the full tool."),
-    min: 1, max: 104, step: 1,
+    toolKey: "gta-session",
+    question: both("Что успеть за сегодняшний сеанс?", "What fits into today's session?"),
+    inputKey: "minutes", inputLabel: both("Сколько минут есть на игру", "Minutes available to play"),
+    inputHint: both("Попробуй 60 и 75 минут: при этих вводных меняется выбор занятий. Свои выплаты и время можно указать в полном расчёте.", "Try 60 and 75 minutes: these assumptions change which activities fit. Enter your own receipts and durations in the full planner."),
+    min: 0, max: GTA_SESSION_MAX_MINUTES, step: 1,
     fields: [
-      { key: "current", value: 1_250_000, label: both("На счёте, GTA$", "Cash now, GTA$") },
-      { key: "target", value: 4_000_000, label: both("Цена покупки, GTA$", "Purchase price, GTA$") },
-      { key: "reserve", value: 250_000, label: both("Оставить после покупки, GTA$", "Keep after buying, GTA$") },
-      { key: "rate", value: 650_000, label: both("Условный чистый доход в неделю, GTA$", "Assumed net weekly income, GTA$") },
-      { key: "horizon", value: 4, label: both("Срок, недель", "Deadline, weeks") }
+      { key: "minutes", value: gtaSessionExample.minutes, label: both("Время на игру, минут", "Session time, minutes") },
+      { key: "sources", value: gtaSessionExample.sourceCount, label: both("Доступных занятий", "Available activities") },
+      ...gtaSessionExample.sources.slice(0, gtaSessionExample.sourceCount).flatMap((source, i) => {
+        const name = i === 0 ? both("Продажа готового товара", "Ready-stock sale") : both("Миссия", "Mission");
+        return [
+          { key: `s${i}-cash`, value: source.cashPerRun, label: both(`${name.ru}: поступление, GTA$`, `${name.en}: cash receipt, GTA$`) },
+          { key: `s${i}-duration`, value: source.minutesPerRun, label: both(`${name.ru}: один заход, минут`, `${name.en}: one run, minutes`) },
+          { key: `s${i}-entry`, value: source.entryMinutes, label: both(`${name.ru}: дорога и вход, минут`, `${name.en}: travel and entry, minutes`) },
+          { key: `s${i}-runs`, value: source.maxRuns, label: both(`${name.ru}: доступно заходов`, `${name.en}: available runs`) }
+        ];
+      })
     ],
-    boundary: both("Это пример с постоянным доходом. Он не учитывает бонусы недели и не обещает такой заработок.", "This example assumes constant income. It does not include weekly bonuses or promise this earning rate.")
+    fixedParameters: Object.fromEntries(gtaSessionExample.sources.flatMap((source, i) => [
+      [`s${i}-kind`, source.kind], [`s${i}-available`, source.available ? "yes" : "no"],
+      ...(i < gtaSessionExample.sourceCount ? [] : [
+        [`s${i}-cash`, String(source.cashPerRun)], [`s${i}-duration`, String(source.minutesPerRun)],
+        [`s${i}-entry`, String(source.entryMinutes)], [`s${i}-runs`, String(source.maxRuns)]
+      ])
+    ])),
+    boundary: both("Условные выплаты, не данные конкретных миссий. Товар уже готов и продаётся один раз; миссия доступна до четырёх раз. Считаются только завершённые заходы, дорога и вход один раз для каждого занятия. Поступления от старого запаса не равны прибыли. Производство, ожидание и бонусы недели не моделируются.", "Illustrative receipts, not payouts for named missions. Stock is already ready and sells once; the mission is available up to four times. Only complete runs count, with travel and entry charged once per activity. Selling existing stock is not the same as profit. Production, waiting and weekly bonuses are not modeled.")
   },
   wow: {
     toolKey: "wow-crafting",
-    fixedParameters: { "craft-sales-mode": "percent", "craft-wallet": "25000", "craft-reserve": "5000", "craft-sales-cap": "70" },
+    fixedParameters: { "craft-sales-mode": "percent", "craft-wallet": "25000", "craft-reserve": "5000", "craft-sales-cap": "70", "craft-existing-stock": "0" },
     question: both("Сколько золота вернётся от продажи партии?", "How much gold comes back from selling this batch?"),
     inputKey: "craft-sellthrough", inputLabel: both("Продано из партии, %", "Share of the batch sold, %"),
     inputHint: both("Возьми долю продаж завершённой партии из почты или журнала аукциона. Для будущей партии это только предположение.", "Use a completed batch's sales from your mail or auction log. For the next batch, this is only an assumption."),

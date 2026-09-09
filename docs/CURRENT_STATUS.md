@@ -1,5 +1,13 @@
 # Current status
 
+## v1.32 candidate: the player's decision context
+
+- Published baseline: v1.31, PR #21, main `8926ebcf77481bb8930c65558b0be37057777a01`, production `dpl_FcbEiUunX4c9wRApW3hJQG2WzdEi`. Its reviewed preview tree matched production; exact-commit CI and main-domain browser checks passed. PR #21 contains the release evidence.
+- Current work: own-match entry before the optional Dota example, GTA session planning at the entrance, both-team purchase context around a detected Dota episode and existing-stock constraints for WoW new-batch planning.
+- No new provider integration, current-price refresh, power probability, automated multi-match coaching or retention improvement is claimed.
+- Local verification passed: 376 tests in 35 files; Astro check/build with zero diagnostics and 589 pages; 26,080 internal links with no errors. Independent review covered model handoffs, historical state, sales allocation and bounded episode evidence. It found and resolved the loss of the selected hero's non-curated major purchases; those remain available with icons, links and copied-note evidence.
+- Scope and acceptance: `PLAYER_DECISION_CONTEXT.md`. Preview/browser and CI evidence will be recorded in the release PR. Publication requires approval of the reviewed release. Local browser access is blocked in the cloud browser, so the remote preview is the browser acceptance surface.
+
 ## v1.31 candidate: compare alternatives and test their limits
 
 - Published baseline: v1.30, PR #20, main `23e46cb76a0b783b0fcb197991dc007f96eac216`; production `dpl_22BneynhxZeghthWnxtzj6bY2az6`. Main-domain Slardar review and exact-commit CI passed after explicit publication approval.
