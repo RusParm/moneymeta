@@ -127,6 +127,17 @@ describe("saved scenario result contracts", () => {
     root.register("p", el("p", "Do not capture every paragraph"));
     expect(snapshot(root, "ck3-war-chest").decision).toBe("Отложи найм. Проверка на 8 ходов. Резерв сохранится");
   });
+
+  it.each([
+    ["Одного занятия достаточно", "Одного занятия достаточно."],
+    ["Одного занятия достаточно.", "Одного занятия достаточно."],
+    ["Одного занятия достаточно?", "Одного занятия достаточно?"]
+  ])("separates saved decision fragments after %s", (heading, sentence) => {
+    const root = el("section");
+    root.register("[data-session-decision]", el("h4", heading));
+    root.register("[data-session-reason]", el("p", "Сочетание не увеличивает поступление."));
+    expect(snapshot(root, "gta-session").decision).toBe(`${sentence} Сочетание не увеличивает поступление.`);
+  });
 });
 
 describe("saved input labels", () => {

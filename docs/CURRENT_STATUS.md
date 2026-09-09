@@ -7,8 +7,8 @@
 - Adds a GTA session allocation using personally observed, available complete runs and block-entry time; it does not simulate production or official payouts.
 - Adds income-drop limits to Total War/CK3 and completion-delay limits to Civilization comparisons without new required inputs.
 - Makes the analysis library searchable and shorter; removes unsupported numerical strategy grades and inheritance-calculation promises.
-- Local validation passed: 349 tests in 34 files, Astro check of 260 files with zero diagnostics, 589 built pages and 26,052 internal links with no link errors. Independent review found no remaining model, storage or restore blockers.
-- Preview/browser verification and remote CI are still pending. On September 9 the user explicitly authorized uploading v1.31 source to the existing public `RusParm/moneymeta` repository to create a PR and preview. This resolves the prior upload approval block; production approval remains a separate release gate.
+- Local validation passed after the browser-discovered saved-text punctuation fix: 352 tests in 34 files, Astro check of 260 files with zero diagnostics, 589 built pages and 26,052 internal links with no link errors. Independent review found no remaining model, storage or restore blockers.
+- PR #21 and the Vercel preview were created after the user's explicit September 9 authorization to upload v1.31 source to public `RusParm/moneymeta`. Initial preview browser acceptance verified GTA 75/60/29-minute boundaries, historical comparison and restore, RU/EN continuity, TW/CK3 income buttons, Civilization delay, Midas/WoW primary saved results and library search/filter/loading. The Product quality workflow passed on the initial preview commit. Final commit and browser evidence are tracked in PR #21. Production approval remains a separate release gate.
 - See `PLATFORM_DECISIONS.md` for scope and acceptance. Exact final preview/browser and CI results will be recorded in the release PR. Production approval applies to the reviewed release.
 
 ## v1.30 candidate: draft opportunities and observed purchases

@@ -86,6 +86,9 @@ export function captureScenarioSnapshot(root: HTMLElement, key: string, lang: Sc
     const node = root.querySelector(selector);
     return available(node) ? clean(node.textContent, 360) : "";
   }).filter(hasValue);
-  const decision = clean([...new Set(decisionParts)].join(" "), 360);
+  const uniqueDecisionParts = [...new Set(decisionParts)];
+  const decision = clean(uniqueDecisionParts.map((part, index) =>
+    index < uniqueDecisionParts.length - 1 && !/[.!?…:;]["'»”’\])]*$/.test(part) ? `${part}.` : part
+  ).join(" "), 360);
   return { summary, inputs, ...(decision ? { decision } : {}) };
 }
