@@ -34,6 +34,15 @@ export interface CivilizationComparisonResult {
   productionCostDifference: number;
   crossover: { from: CivilizationChoice; to: CivilizationChoice; equalTurn: number; firstLeadTurn: number } | null;
   crossoverUnavailable: boolean;
+  /** Delay only the current cumulative-yield leader; all other inputs stay fixed. */
+  completionSlack: {
+    choice: CivilizationChoice;
+    latestCompletionTurn: number;
+    extraTurns: number;
+    outputAtBoundary: number;
+    otherOutput: number;
+    next: { completionTurn: number; output: number; leader: CivilizationChoice | "tie" } | null;
+  } | null;
   checkpoints: { turn: number; a: number; b: number }[];
 }
 
@@ -69,6 +78,32 @@ export function calculateCivilizationComparison(input: CivilizationComparisonInp
   const b = resultFor(input.b);
   a.yieldToTieOther = a.activeTurns > 0 ? b.totalYield / a.activeTurns : null;
   b.yieldToTieOther = b.activeTurns > 0 ? a.totalYield / b.activeTurns : null;
+  const leader = near(a.totalYield, b.totalYield) ? "tie" : a.totalYield > b.totalYield ? "a" : "b";
+  let completionSlack: CivilizationComparisonResult["completionSlack"] = null;
+  if (leader !== "tie") {
+    const other: CivilizationChoice = leader === "a" ? "b" : "a";
+    const otherOutput = other === "a" ? a.totalYield : b.totalYield;
+    let latestCompletionTurn = input[leader].buildTurns;
+    let outputAtBoundary = leader === "a" ? a.totalYield : b.totalYield;
+    let next: NonNullable<CivilizationComparisonResult["completionSlack"]>["next"] = null;
+    // Whole-turn search shares the result's tolerance and supported completion range.
+    // Equality ends the strict lead; it is never described as the other choice winning.
+    for (let completionTurn = latestCompletionTurn + 1; completionTurn <= 200; completionTurn += 1) {
+      const output = outputAt({ ...input[leader], buildTurns: completionTurn }, input.horizonTurns);
+      const tied = near(output, otherOutput);
+      if (tied || output < otherOutput) {
+        next = { completionTurn, output, leader: tied ? "tie" : other };
+        break;
+      }
+      latestCompletionTurn = completionTurn;
+      outputAtBoundary = output;
+    }
+    completionSlack = {
+      choice: leader, latestCompletionTurn,
+      extraTurns: latestCompletionTurn - input[leader].buildTurns,
+      outputAtBoundary, otherOutput, next
+    };
+  }
 
   let crossover: CivilizationComparisonResult["crossover"] = null;
   let crossoverUnavailable = false;
@@ -97,11 +132,12 @@ export function calculateCivilizationComparison(input: CivilizationComparisonInp
     horizonTurns: input.horizonTurns,
     a,
     b,
-    leader: near(a.totalYield, b.totalYield) ? "tie" : a.totalYield > b.totalYield ? "a" : "b",
+    leader,
     yieldDifference: a.totalYield - b.totalYield,
     productionCostDifference: input.a.productionCost - input.b.productionCost,
     crossover,
     crossoverUnavailable,
+    completionSlack,
     checkpoints
   };
 }

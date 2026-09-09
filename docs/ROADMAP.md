@@ -1,5 +1,17 @@
 # Money Meta roadmap
 
+## Current increment: v1.31 alternatives across the platform
+
+v1.30 is published in PR #20, main `23e46cb76a0b783b0fcb197991dc007f96eac216`. The owner asks to keep improving the full platform, with player value before monetization.
+
+1. Compare two saved variants of one task with readable changed inputs and meaningful historical results across all six games.
+2. Plan a GTA session from available whole runs, observed receipts and time constraints. Compare the combination with a single activity without inventing passive production.
+3. Expose the income or completion-delay boundary that changes a campaign decision, using the current inputs.
+4. Shorten analysis discovery and remove unsupported exact-looking editorial scores.
+5. Verify whether a player can explain why a changed assumption changes the decision; then observe reuse after play. Keep the deeper Dota replay-to-next-match and WoW existing-stock decisions as subsequent bounded work.
+
+See `PLATFORM_DECISIONS.md`. Earlier current/candidate headings below preserve implementation history.
+
 ## Current increment: v1.30 draft context inside match review
 
 The owner approved a first explainable comparison of opposing lineups, followed later by a validated statistical estimate. Add reviewed hero interactions, both teams' purchase chronology and explicit conditions inside the existing Dota audit. An economic episode remains an observation, not a player-error verdict.

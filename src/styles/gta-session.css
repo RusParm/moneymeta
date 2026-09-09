@@ -1,0 +1,41 @@
+.gta-session { min-width: 0; }
+.gta-session .gta-inline-head { margin-bottom: 1rem; }
+.gta-session-example { margin: 0 0 1rem; color: var(--muted); font-size: .88rem; line-height: 1.55; }
+.gta-session-controls, .gta-session-source-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.gta-session-controls { max-width: 640px; margin-bottom: 1rem; }
+.gta-session-sources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.gta-session-source { min-width: 0; margin: 0; padding: 1rem; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.025); }
+.gta-session-source legend { padding: 0 .4rem; color: var(--teal); font-size: .87rem; font-weight: 700; }
+.gta-session .field { min-width: 0; }
+.gta-session .field label { font-size: .82rem; line-height: 1.45; }
+.gta-session .field input, .gta-session .field select { width: 100%; min-width: 0; font-size: .9rem; }
+.gta-session-wide { grid-column: 1 / -1; }
+.gta-session-help { margin: 1rem 0; color: var(--muted); font-size: .86rem; line-height: 1.6; }
+.gta-session-help summary { width: fit-content; cursor: pointer; color: var(--text); font-weight: 600; padding: .35rem 0; }
+.gta-session-help p { max-width: 90ch; margin: .6rem 0; }
+.gta-session-result { margin-top: 1rem; padding: 1.25rem; }
+.gta-session-result .result-name { font-size: 1.3rem; line-height: 1.3; }
+.gta-session-result .result-reason { max-width: 90ch; }
+.gta-session-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.gta-session-metrics .result-metric { min-width: 0; }
+.gta-session-metrics strong { overflow-wrap: anywhere; font-size: 1.35rem; }
+.gta-session h5 { font-size: .94rem; margin: 1.1rem 0 .35rem; }
+.gta-session-blocks > p, .gta-session-alternative p { margin: .35rem 0; font-size: .85rem; line-height: 1.5; }
+.gta-session-blocks ol { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; padding: 0; margin: .75rem 0 0; }
+.gta-session-blocks li { min-width: 0; display: flex; flex-direction: column; gap: .4rem; padding: .8rem; border: 1px solid var(--line); border-radius: 10px; }
+.gta-session-blocks li strong { font-size: .88rem; overflow-wrap: anywhere; }
+.gta-session-blocks li span { font-size: .88rem; }
+.gta-session-blocks li small { color: var(--muted); font-size: .77rem; }
+.gta-session-alternative { margin-top: 1rem; padding-top: .2rem; border-top: 1px solid var(--line); }
+.gta-session-boundary { margin: 1rem 0 0; font-size: .82rem; color: var(--muted); line-height: 1.6; }
+.gta-session-error { padding: .8rem; border: 1px solid var(--coral); border-radius: 8px; color: var(--coral); }
+.gta-session [hidden] { display: none !important; }
+@media (max-width: 760px) {
+  .gta-session-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .gta-session-sources, .gta-session-blocks ol { grid-template-columns: minmax(0, 1fr); }
+  .gta-session-source { padding: .85rem; }
+  .gta-session-result { padding: 1rem; }
+  .gta-session-controls { gap: .75rem; }
+}

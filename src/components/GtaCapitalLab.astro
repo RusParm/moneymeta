@@ -1,14 +1,15 @@
 ---
 import { gtaBusinesses } from "../data/gta-businesses";
 import ScenarioActions from "./ScenarioActions.astro";
+import GtaSessionPlanner from "./GtaSessionPlanner.astro";
 
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const copy = lang === "ru" ? {
-  kicker: "Три модели капитала",
+  kicker: "Четыре решения для твоей игры",
   title: "Не уходи из хаба, чтобы проверить главный вопрос",
-  text: "Три модели помогают оценить покупку, срок накопления и набор бизнесов. Все рабочие значения видны и редактируются прямо здесь.",
-  status: "Рабочая оценка · проверено 2026-07-01",
+  text: "Сравни занятия на ближайший сеанс, проверь покупку, срок накопления или набор бизнесов. Все рабочие значения видны и редактируются прямо здесь.",
+  status: "Личные вводные и рабочие оценки",
   model1: "Модель 01 · покупка",
   mark1: "ДОХ",
   roiTitle: "Доходность бизнеса: во что превращается покупка",
@@ -58,10 +59,10 @@ const copy = lang === "ru" ? {
   reset: "Вернуть исходные значения",
   note: "Часы производства не равны времени ручной игры. Месячный результат является рабочей оценкой без простоев, ограничений доставки и риска незавершённой продажи."
 } : {
-  kicker: "Capital Lab · three live decisions",
+  kicker: "Four decisions for your game",
   title: "Do not leave the hub to test the main question",
-  text: "Three models cover the purchase, capital goal and portfolio. Every value is estimated, visible and editable here.",
-  status: "Estimated · editable · checked 2026-07-01",
+  text: "Compare activities for your next session, an acquisition, a savings goal or a business portfolio. All working inputs are visible and editable here.",
+  status: "Player inputs and working estimates",
   model1: "Model 01 · acquisition",
   mark1: "ROI",
   roiTitle: "Business ROI: what the purchase becomes",
@@ -118,6 +119,8 @@ const copy = lang === "ru" ? {
     <div><span class="section-kicker">{copy.kicker}</span><h2 id="gta-capital-lab-title">{copy.title}</h2><p class="section-copy">{copy.text}</p></div>
     <span class="pill teal">{copy.status}</span>
   </div>
+
+  <GtaSessionPlanner lang={lang} />
 
   <section id="business-roi" class="gta-inline-model" data-gta-roi data-scenario-root data-scenario-key="gta-inline-roi">
     <div class="gta-inline-head"><div class="gta-business-mark">{copy.mark1}</div><div><span class="section-kicker">{copy.model1}</span><h3>{copy.roiTitle}</h3><p>{copy.roiText}</p></div></div>

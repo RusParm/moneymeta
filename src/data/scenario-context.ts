@@ -15,6 +15,11 @@ export function scenarioContexts(lang: ScenarioLocale): Record<string, string> {
       const checkedAt = gtaBusinesses[0]!.provenance.checkedAt;
       label = `${lang === "ru" ? "Оценки бизнесов" : "Business estimates"} · ${checkedAt}`;
     }
+    if (tool.key === "gta-session") {
+      label = lang === "ru"
+        ? "Личные наблюдения · последовательные полные циклы · модель 1"
+        : "Personal observations · sequential complete runs · model 1";
+    }
     if (tool.key === "dota-compare" || tool.key === "dota-item-plan") {
       label = `${dotaItemsSnapshot.patch.label} · ${dotaItemsSnapshot.fetchedAt.slice(0, 10)}`;
     }

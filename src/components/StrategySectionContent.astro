@@ -46,9 +46,9 @@ const copy = lang === "ru" ? {
   decision: "Что делать иначе",
   lensesKicker: "Решения по фазам",
   lensesTitle: "Лучший ход меняется вместе с целью",
-  lensesText: "Открой нужную цель. Внутри видны вопрос, рабочая формула, три условных варианта и причина, почему ответ переворачивается.",
+  lensesText: "Выбери свою ситуацию и сопоставь три варианта с состоянием кампании. Здесь показаны условия применения; баллы силы или вероятности успеха не рассчитываются.",
   openLens: "Развернуть сравнение",
-  formula: "Рабочая формула",
+  criteria: "Что сопоставить",
   note: "Почему меняется лидер",
   guideKicker: "Короткие памятки",
   guideTitle: "Шесть операционных заметок рядом с полными гайдами",
@@ -80,9 +80,9 @@ const copy = lang === "ru" ? {
   decision: "What changes now",
   lensesKicker: "Decisions by phase",
   lensesTitle: "The best move changes with the objective",
-  lensesText: "Open the relevant objective. Each lens exposes the question, working formula, three conditional choices and the reason the answer flips.",
+  lensesText: "Choose your situation and compare three options against your campaign. These are conditions for use; no power scores or success probabilities are calculated.",
   openLens: "Expand comparison",
-  formula: "Working formula",
+  criteria: "What to compare",
   note: "Why the leader changes",
   guideKicker: "Operational briefs",
   guideTitle: "Six narrow notes beside the full guides",
@@ -171,11 +171,11 @@ const copy = lang === "ru" ? {
           <details open={index === 0}>
             <summary><span>0{index + 1}</span><strong>{lens.label[lang]}</strong><small>{copy.openLens}</small></summary>
             <div class="strategy-lens-body">
-              <header><div><span>{lens.label[lang]}</span><h3>{lens.question[lang]}</h3></div><code><small>{copy.formula}</small>{lens.formula[lang]}</code></header>
+              <header><div><span>{lens.label[lang]}</span><h3>{lens.question[lang]}</h3></div><p class="strategy-lens-criteria"><small>{copy.criteria}</small>{lens.criteria[lang]}</p></header>
               <div class="conditional-rank-grid">
                 {lens.cards.map((card, cardIndex) => (
-                  <article class={`conditional-rank-card strategy-rank-card rank-${cardIndex + 1}`}>
-                    <div class="conditional-rank-top"><span>0{cardIndex + 1}</span><div><StrategyMark mark={card.mark} lang={lang} /><span class={`pill ${cardIndex === 0 ? "strategy-pill" : "muted"}`}>{card.grade} · {card.fit}</span></div></div>
+                  <article class="conditional-rank-card strategy-rank-card">
+                    <div class="conditional-rank-top"><span>{lang === "ru" ? "Вариант" : "Option"} {cardIndex + 1}</span><div><StrategyMark mark={card.mark} lang={lang} /></div></div>
                     <h3>{card.title[lang]}</h3><p>{card.text[lang]}</p>
                     <div class="conditional-metrics">{card.metrics.map((metric) => <span><small>{metric.label[lang]}</small><strong>{metric.value[lang]}</strong></span>)}</div>
                   </article>

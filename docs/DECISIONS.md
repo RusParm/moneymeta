@@ -1,5 +1,15 @@
 # Decision log
 
+## 2026-09-08: expose alternatives and the conditions that change them
+
+The full-platform increment compares a player's own saved variants of the same task, not scores across unrelated games or units. Results stay historical and keep their original language; changed input labels improve review without inferring numerical deltas from formatted text. Schema-1 extensions are optional, and writes must respect the same aggregate size bound as reads.
+
+GTA session allocation uses only available complete runs, user-observed receipts and sequential block time. A ready stock sale is one-off. The result never turns old inventory into repeatable hourly profit or pretends to know cooldown and production schedules.
+
+Campaign sensitivity changes one existing assumption at a time. Future income cannot fix an immediate outlay breach, and a lead in one Civilization resource cannot price all other trade-offs. Readable conditions replace static strategy grades and unimplemented weighting formulas. Search and saved-comparison state introduce no new data collection.
+
+See `PLATFORM_DECISIONS.md` for the concrete examples and release gates.
+
 ## 2026-09-08: interpret economy in the context of both drafts
 
 The owner described competent execution against a stronger opposing phase and requested draft comparison. The first release supplies reviewed mechanical opportunities and threats with named evidence, then separately displays both teams' actual strategic purchases. The result never proves draft quality retrospectively.

@@ -48,7 +48,7 @@ const copy = lang === "ru" ? {
   freshnessStale: `С последней проверки прошло ${data.staleAfterDays} дней. Материалы остаются историческим контекстом до повторной сверки источников.`,
   lensKicker: "Решения зависят от цели",
   lensTitle: data.id === "ck3" ? "Лучший ход меняется вместе с правлением" : "Лучший ход меняется вместе с фазой кампании",
-  lensText: "Переключай цель и смотри, почему лучший вариант меняется. Здесь нет одной стратегии, которая подходит любой кампании.",
+  lensText: "Выбери свою ситуацию и сравни условия для каждого действия. Порядок карточек не является оценкой силы.",
   question: "Вопрос",
   why: "Почему так",
   deckKicker: "Готовые сценарии · начни со своего вопроса",
@@ -97,7 +97,7 @@ const copy = lang === "ru" ? {
   freshnessStale: `${data.staleAfterDays} days have passed since the last review. Cards remain historical context until the sources are checked again.`,
   lensKicker: "Decision lenses · no universal tier list",
   lensTitle: data.id === "ck3" ? "The best move changes with the reign" : "The best move changes with the campaign phase",
-  lensText: "Switch the objective and see why the leader changes. This is a decision order, not one strategy promised to every player.",
+  lensText: "Choose your situation and compare the conditions for each action. Card order is not a measure of strength.",
   question: "Question",
   why: "Why this result",
   deckKicker: "Decision deck · prepared questions",
@@ -304,11 +304,11 @@ const proofValue = (value: string) => lang === "ru" && value === "Q4" ? "IV кв
           </div>
           {data.lenses.map((lens, lensIndex) => (
             <div class="ranking-panel" hidden={lensIndex !== 0} data-lens-panel={lens.id}>
-              <div class="ranking-question"><div><span>{copy.question}</span><h3>{lens.question[lang]}</h3></div><code>{lens.formula[lang]}</code></div>
+              <div class="ranking-question"><div><span>{copy.question}</span><h3>{lens.question[lang]}</h3></div><p class="strategy-lens-criteria"><small>{lang === "ru" ? "Что сопоставить" : "What to compare"}</small>{lens.criteria[lang]}</p></div>
               <div class="conditional-rank-grid">
                 {lens.cards.map((card, index) => (
-                  <article class={`conditional-rank-card strategy-rank-card rank-${index + 1}`}>
-                    <div class="conditional-rank-top"><span>0{index + 1}</span><div><StrategyMark mark={card.mark} lang={lang} /><span class={`pill ${index === 0 ? "strategy-pill" : "muted"}`}>{card.grade} · {card.fit}</span></div></div>
+                  <article class="conditional-rank-card strategy-rank-card">
+                    <div class="conditional-rank-top"><span>{lang === "ru" ? "Вариант" : "Option"} {index + 1}</span><div><StrategyMark mark={card.mark} lang={lang} /></div></div>
                     <h3>{card.title[lang]}</h3><p>{card.text[lang]}</p>
                     <div class="conditional-metrics">{card.metrics.map((metric) => <span><small>{metric.label[lang]}</small><strong>{metric.value[lang]}</strong></span>)}</div>
                   </article>

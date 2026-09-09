@@ -44,6 +44,13 @@ const display = presentCivilizationComparison(defaults, initial, lang);
       </dl>
       <p data-comparison-tradeoff>{display.tradeoff}</p>
       <p class="civ-comparison-condition" data-comparison-condition>{display.condition}</p>
+      <section class="civ-comparison-delay" aria-label={copy.delayTitle}>
+        <h5>{copy.delayTitle}</h5>
+        <p data-comparison-delay-condition>{display.delayCondition}</p>
+        <p data-comparison-delay-next hidden={!display.delayNext}>{display.delayNext}</p>
+        <button class="button ghost" type="button" data-comparison-delay-apply hidden={!display.delayButton} disabled>{display.delayButton}</button>
+        <details><summary>{lang === "ru" ? "Что меняется в проверке" : "What changes in this check"}</summary><p>{copy.delayHelp}</p></details>
+      </section>
       <section class="civ-comparison-production" data-comparison-production hidden={defaults.unit !== "production"} aria-label={copy.paybackTitle}>
         <h5>{copy.paybackTitle}</h5><p>{copy.paybackNote}</p>
         <dl>
@@ -96,6 +103,19 @@ const display = presentCivilizationComparison(defaults, initial, lang);
       setText("[data-comparison-cost-b]", display.number(value.b.productionCost));
       setText("[data-comparison-tradeoff]", display.tradeoff);
       setText("[data-comparison-condition]", display.condition);
+      setText("[data-comparison-delay-condition]", display.delayCondition);
+      setText("[data-comparison-delay-next]", display.delayNext);
+      root.querySelector<HTMLElement>("[data-comparison-delay-next]")!.hidden = !display.delayNext;
+      const delayButton = root.querySelector<HTMLButtonElement>("[data-comparison-delay-apply]")!;
+      delayButton.disabled = false;
+      delayButton.textContent = display.delayButton;
+      delayButton.hidden = !value.completionSlack?.next;
+      delete delayButton.dataset.choice;
+      delete delayButton.dataset.turns;
+      if (value.completionSlack?.next) {
+        delayButton.dataset.choice = value.completionSlack.choice;
+        delayButton.dataset.turns = String(value.completionSlack.next.completionTurn);
+      }
       setText("[data-comparison-crossover]", display.crossover);
       root.querySelector<HTMLElement>("[data-comparison-production]")!.hidden = value.unit !== "production";
       for (const key of ["a", "b"] as const) {
@@ -119,6 +139,15 @@ const display = presentCivilizationComparison(defaults, initial, lang);
     form.addEventListener("input", render);
     form.addEventListener("change", render);
     form.addEventListener("submit", (event) => event.preventDefault());
+    root.querySelector<HTMLButtonElement>("[data-comparison-delay-apply]")!.addEventListener("click", (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      if (button.hidden || !button.dataset.choice || !button.dataset.turns) return;
+      const control = form.querySelector<HTMLInputElement>(`[name="comparisonTurns${button.dataset.choice.toUpperCase()}"]`)!;
+      control.value = button.dataset.turns;
+      control.dispatchEvent(new Event("input", { bubbles: true }));
+      control.dispatchEvent(new Event("change", { bubbles: true }));
+      control.focus();
+    });
     render();
   });
 </script>

@@ -19,6 +19,13 @@
 .civ-comparison-result dd { font-size: 16px; }
 .civ-comparison-result .civ-comparison-condition { padding-left: 12px; border-left: 2px solid var(--frontier-accent); color: #e8e5ee; }
 .civ-comparison-production h5 { margin: 18px 0 8px; font-size: 17px; }
+.civ-comparison-delay { margin: 16px 0; padding: 14px; border: 1px solid #383740; border-radius: 12px; overflow-wrap: anywhere; }
+.civ-comparison-delay h5 { margin: 0 0 8px; font-size: 17px; }
+.civ-comparison-delay p { margin: 8px 0; }
+.civ-comparison-delay .button { max-width: 100%; height: auto; white-space: normal; text-align: left; margin: 6px 0; }
+.civ-comparison-delay details { margin-top: 8px; color: #b2afba; font-size: 13px; }
+.civ-comparison-delay summary { cursor: pointer; }
+.civ-comparison-delay [hidden] { display: none !important; }
 .civ-comparison-path { margin: 18px 0; padding-top: 14px; border-top: 1px solid #383740; }
 .civ-comparison-path summary { cursor: pointer; color: #e8e5ee; font-size: 14px; font-weight: 700; line-height: 1.5; }
 .civ-comparison-path table { width: 100%; border-collapse: collapse; font-size: 13px; }

@@ -23,6 +23,7 @@ export const scenarioTools: ScenarioTool[] = [
   tool("gta-next-move", "gta", "calculators/business-roi", "next-move", "Следующая покупка", "Next purchase"),
   tool("gta-business", "gta", "calculators/business-roi", "model-lab", "Окупаемость бизнеса", "Business payback"),
   tool("gta-portfolio", "gta", "calculators/business-roi", "portfolio", "Набор бизнесов", "Business portfolio"),
+  tool("gta-session", "gta", "tools", "session-plan", "План на сеанс", "Session plan"),
   tool("gta-inline-roi", "gta", "tools", "business-roi", "Доход и окупаемость бизнеса", "Business income and payback"),
   tool("gta-hours-goal", "gta", "tools", "hours-to-goal", "Время до покупки", "Time to purchase"),
   tool("gta-inline-portfolio", "gta", "tools", "portfolio-allocation", "Распределение бюджета", "Budget allocation"),

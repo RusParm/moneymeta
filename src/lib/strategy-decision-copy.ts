@@ -41,6 +41,19 @@ export function strategyDecisionCopy(lang: "ru" | "en", game: string, model: str
     maxAdded: turn
       ? (ru ? "Допустимое новое содержание / ход" : "Affordable added upkeep / turn")
       : (ru ? "Допустимый новый расход / мес." : "Affordable added outflow / month"),
+    incomeThresholdTitle: ru ? "Доход для старта сейчас" : "Income needed to act now",
+    incomeThresholdHelp: ru
+      ? "Меняем только доход с первого периода. Введённое будущее изменение дохода, сроки и все расходы сохраняются. Это условие бюджета при старте сейчас."
+      : "Only income from the first period changes. Your entered future income change, timing and all costs stay in place. This is a budget condition for acting now.",
+    incomeThresholdImmediate: ru
+      ? "Резерв затронут уже при разовом платеже. Более высокий будущий доход не исправит этот момент: сначала нужен запас в начальной казне или меньший платёж."
+      : "The upfront payment already breaches the reserve. Higher future income cannot fix that checkpoint: first increase initial cash or reduce the payment.",
+    incomeThresholdRange: ru
+      ? "Нужный доход выходит за доступный диапазон ввода. Проверь платёж, расходы и начальную казну."
+      : "The required income is outside the supported input range. Review the payment, costs and initial cash.",
+    incomeThresholdBelowRange: ru
+      ? "При остальных введённых условиях резерв сохраняется во всём доступном диапазоне дохода. Расчётный порог ниже минимального значения поля."
+      : "Under the other entered assumptions, the reserve is preserved throughout the supported income range. The calculated threshold is below the field's minimum.",
     none: ru ? "Нет в выбранном горизонте" : "None within this horizon",
     immediate: ru ? "Сразу при платеже" : "Immediately on payment",
     impossible: ru ? "Не хватает даже при 0" : "Shortfall even at 0",

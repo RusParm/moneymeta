@@ -43,6 +43,8 @@ The Dota match audit is the first explicit provider-backed replay loop. A player
 
 ## Local data boundary
 
+Players can compare two named saved variants of the same tool, including their historical results and changed inputs. Display labels and the decision summary remain on the device. Comparing does not recalculate an old result or create a cross-game score. The GTA session allocator separately optimizes user-observed available complete runs; campaign sensitivity shows when an existing income or completion-time assumption changes the conclusion. See `PLATFORM_DECISIONS.md`.
+
 The Dota audit also compares reviewed capabilities of both lineups and places their strategic purchases on one timeline. These are conditional mechanical interpretations, independent of the match winner and farm outcome. Missing profiles and incompatible historical versions stay explicit. A calibrated probability or fixed power curve is not part of the first draft-context release; see `DOTA_DRAFT_CONTEXT.md`.
 
 The browser may read only a file explicitly selected by the player. A remote provider request requires a separate, visible player action and sends only the minimum public identifier required for that task. Scenario persistence stays on the device unless the player deliberately exports a shareable URL or file. A future local companion must be open, read-only, loopback-only and restricted to an explicit path allowlist. Money Meta does not inspect process memory, inject into game clients, scan folders in the background or request game credentials.

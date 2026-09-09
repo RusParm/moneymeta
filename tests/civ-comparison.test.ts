@@ -100,4 +100,52 @@ describe("Civilization same-resource alternatives", () => {
     expect(nearEqual.crossoverUnavailable).toBe(true);
     expect(nearEqual.checkpoints.every((row) => Number.isFinite(row.turn) && Number.isFinite(row.a) && Number.isFinite(row.b))).toBe(true);
   });
+
+  it("finds the last whole completion turn preserving the current leader and the first step beyond it", () => {
+    const slack = calculateCivilizationComparison(sample)!.completionSlack!;
+    expect(slack).toEqual({ choice: "b", latestCompletionTurn: 9, extraTurns: 2,
+      outputAtBoundary: 88, otherOutput: 85, next: { completionTurn: 10, output: 80, leader: "a" } });
+    expect(calculateCivilizationComparison({ ...sample, b: { ...sample.b, buildTurns: slack.latestCompletionTurn } })!.leader).toBe("b");
+    expect(calculateCivilizationComparison({ ...sample, b: { ...sample.b, buildTurns: slack.next!.completionTurn } })!.leader).toBe("a");
+  });
+
+  it("keeps the completion-delay condition symmetric between choices", () => {
+    const value = calculateCivilizationComparison({ ...sample, a: sample.b, b: sample.a })!.completionSlack!;
+    expect(value.choice).toBe("a");
+    expect(value.extraTurns).toBe(2);
+    expect(value.next).toEqual({ completionTurn: 10, output: 80, leader: "b" });
+  });
+
+  it("distinguishes losing a strict lead to a tie from the other choice taking the lead", () => {
+    const input = { ...sample, horizonTurns: 10,
+      a: { ...sample.a, buildTurns: 2, yieldPerTurn: 5 },
+      b: { ...sample.b, buildTurns: 5, yieldPerTurn: 10 } };
+    const slack = calculateCivilizationComparison(input)!.completionSlack!;
+    expect(slack.extraTurns).toBe(0);
+    expect(slack.next).toEqual({ completionTurn: 6, output: 40, leader: "tie" });
+    expect(calculateCivilizationComparison({ ...input, b: { ...input.b, buildTurns: 6 } })!.leader).toBe("tie");
+  });
+
+  it("does not invent a leader's delay allowance when output is tied or has not started", () => {
+    expect(calculateCivilizationComparison({ ...sample, b: sample.a })!.completionSlack).toBeNull();
+    expect(calculateCivilizationComparison({ ...sample, horizonTurns: 2 })!.completionSlack).toBeNull();
+    const value = calculateCivilizationComparison({ ...sample, a: { ...sample.a, yieldPerTurn: 0 } })!.completionSlack!;
+    expect(value.latestCompletionTurn).toBe(19);
+    expect(value.next).toEqual({ completionTurn: 20, output: 0, leader: "tie" });
+  });
+
+  it("stops at the supported completion range without claiming an unbounded delay allowance", () => {
+    const value = calculateCivilizationComparison({ ...sample, horizonTurns: 500,
+      a: { ...sample.a, yieldPerTurn: 1 }, b: { ...sample.b, yieldPerTurn: 100 } })!.completionSlack!;
+    expect(value.latestCompletionTurn).toBe(200);
+    expect(value.extraTurns).toBe(193);
+    expect(value.next).toBeNull();
+  });
+
+  it("keeps delay thresholds about cumulative yield even when production costs differ", () => {
+    const production = calculateCivilizationComparison({ ...sample, unit: "production" })!;
+    expect(production.completionSlack).toEqual(calculateCivilizationComparison(sample)!.completionSlack);
+    expect(production.a.netProduction).toBeGreaterThan(production.b.netProduction!);
+    expect(production.completionSlack!.choice).toBe("b");
+  });
 });

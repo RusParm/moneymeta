@@ -29,6 +29,15 @@ export interface ReserveDecision {
   extraTreasuryNeeded: number;
   delayPeriods: number;
   incomeChangePeriod: number;
+  /** Income changes from period 1; the separately entered future change stays in place.
+   * null means the immediate payment already breaches the reserve. */
+  incomeThreshold: {
+    minimumIncome: number;
+    adjustment: number;
+    limitingPeriod: number;
+    /** Rounded upward and checked against every cash checkpoint; null if outside input limits. */
+    incomeToApply: number | null;
+  } | null;
 }
 
 const below = (cash: number, reserve: number) => cash < reserve - 1e-8;
@@ -72,11 +81,45 @@ export function calculateReserveDecision(input: ReserveDecisionScenario): Reserv
     firstBreachPeriod: points.find((point) => below(point[choice], input.reserve))?.period ?? null
   });
   const nowSummary = summarize("now");
+  let incomeThreshold: ReserveDecision["incomeThreshold"] = null;
+  if (!below(points[0]!.now, input.reserve)) {
+    let adjustment = Number.NEGATIVE_INFINITY;
+    let limitingPeriod = 1;
+    for (const point of points.slice(1)) {
+      const bound = (input.reserve - point.now) / point.period;
+      if (bound > adjustment) {
+        adjustment = bound;
+        limitingPeriod = point.period;
+      }
+    }
+    const minimumIncome = input.incomePerPeriod + adjustment;
+    // Ceiling protects the reserve. Check the rounded value using the same cash order,
+    // including the future income change, before offering it as an editable scenario.
+    let incomeToApply: number | null = Math.ceil(minimumIncome * 100) / 100;
+    if (Object.is(incomeToApply, -0)) incomeToApply = 0;
+    const preservesReserve = (income: number) => {
+      let cash = input.treasury - input.oneOffCost;
+      for (let period = 1; period <= periods; period += 1) {
+        cash += income + (changePeriod > 0 && period >= changePeriod ? change : 0)
+          - input.currentOutflow - input.newOutflow;
+        if (below(cash, input.reserve)) return false;
+      }
+      return true;
+    };
+    // A cent normally suffices; a few steps also cover floating-point accumulation
+    // near the supported money limit without advertising an unsafe boundary.
+    for (let correction = 0; correction < 4 && !preservesReserve(incomeToApply); correction += 1) {
+      incomeToApply = Math.ceil((incomeToApply + 0.01) * 100) / 100;
+    }
+    if (Math.abs(incomeToApply) > strategyMoneyLimit || !preservesReserve(incomeToApply)) incomeToApply = null;
+    incomeThreshold = { minimumIncome, adjustment, limitingPeriod, incomeToApply };
+  }
   return {
     now: nowSummary, later: summarize("later"), keep: summarize("keep"), points,
     maxAddedOutflow: affordable,
     extraTreasuryNeeded: Math.max(0, input.reserve - nowSummary.lowestCash),
     delayPeriods: delay,
-    incomeChangePeriod: changePeriod
+    incomeChangePeriod: changePeriod,
+    incomeThreshold
   };
 }
