@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { homeDecisionExamples, type HomeExampleGame } from "../src/data/home-decision-examples";
 import { getScenarioTool } from "../src/data/scenario-tools";
-import { goalPlanners } from "../src/data/goal-planners";
+import { calculateGtaSession, type GtaSessionInput, type GtaSessionKind } from "../src/lib/gta-session";
 import { totalWarHub, crusaderKingsHub } from "../src/data/strategy-hubs";
 import { calculateHomeDecisionExample, homeExampleDefault } from "../src/lib/home-decision-examples";
 import { calculateReserveMetrics } from "../src/lib/strategy-economy";
@@ -27,9 +27,22 @@ describe("consequential homepage examples", () => {
     expect(result("wow", 100).metrics[1].value).toBe(4875);
     expect(result("wow", 0).metrics[1].value).toBe(-16740);
   });
-  it("keeps a GTA reserve in both the shortfall and the affordable case", () => {
-    expect(result("gta", 4).metrics.map((metric) => metric.value)).toEqual([3850000, -400000]);
-    expect(result("gta", 5).metrics.map((metric) => metric.value)).toEqual([4500000, 250000]);
+  it("changes the GTA activity choice when a whole sale and mission fit", () => {
+    expect(result("gta", 60).metrics.map((metric) => metric.value)).toEqual([280000, 280000]);
+    expect(result("gta", 60).consequence).toContain("× 2");
+    expect(result("gta", 69).metrics[0].value).toBe(280000);
+    expect(result("gta", 70).metrics[0].value).toBe(340000);
+    const longer = result("gta", 75);
+    expect(longer.metrics.map((metric) => metric.value)).toEqual([340000, 280000]);
+    expect(longer.consequence).toContain("Uses 70 minutes, leaves 5 free");
+    expect(longer.nextAction).toContain("60,000 more");
+  });
+  it("does not pay for incomplete GTA runs or repeat the ready stock", () => {
+    expect(result("gta", 29).metrics.map((metric) => metric.value)).toEqual([0, 0]);
+    expect(result("gta", 29).state).toBe("caution");
+    expect(result("gta", 30).metrics[0].value).toBe(140000);
+    expect(result("gta", 240).metrics.map((metric) => metric.value)).toEqual([760000, 560000]);
+    expect(result("gta", 240).consequence).toContain("leaves 95 free");
   });
   it("changes the army decision when the campaign crosses the reserve boundary", () => {
     expect(result("total-war", 8).metrics.map((metric) => metric.value)).toEqual([1900, -1100]);
@@ -90,12 +103,40 @@ describe("exact full-model handoff", () => {
   });
   it("field names stay aligned with the actual target controls, not just the example config", () => {
     const configured = (game: HomeExampleGame) => homeDecisionExamples[game].fields.map((field) => field.key).sort();
-    expect(configured("gta")).toEqual(goalPlanners.gta.fields.map((field) => field.role).sort());
     expect(configured("total-war")).toEqual(totalWarHub.models.find((model) => model.id === "war-reserve")!.inputs.map((field) => field.key).sort());
     expect(configured("ck3")).toEqual(crusaderKingsHub.models.find((model) => model.id === "war-chest")!.inputs.map((field) => field.key).sort());
     const controls = (path: string, pattern: RegExp) => [...(targetSources[path] ?? "").matchAll(pattern)].map((match) => match[1]!).sort();
     expect(configured("wow")).toEqual(controls("../src/components/WowCalculators.astro", /<input[^>]*data-role="(craft-[^"]+)"/g));
     const wowExtras = Object.keys(homeDecisionExamples.wow.fixedParameters ?? {}).sort();
     expect(wowExtras).toEqual(controls("../src/components/WowBatchPlanner.astro", /<(?:input|select)[^>]*data-role="(craft-[^"]+)"/g));
+  });
+  it("restores the GTA target field contract and reproduces the displayed result in either language", () => {
+    for (const lang of ["ru", "en"] as const) for (const minutes of [0, 29, 30, 60, 69, 70, 75, 240]) {
+      const calculated = calculateHomeDecisionExample("gta", minutes, lang);
+      if (!calculated.valid) throw new Error("Expected a valid session");
+      const params = new URL(calculated.href, "https://themoneymeta.com").searchParams;
+      const field = (name: string) => params.get(`gta-session.${name}`)!;
+      // These are the receiving planner's controls, including disabled sources.
+      const expected = ["minutes", "sources", ...[0, 1, 2, 3].flatMap((i) =>
+        ["kind", "available", "cash", "duration", "entry", "runs"].map((key) => `s${i}-${key}`))];
+      expect([...params.keys()].sort()).toEqual(expected.map((key) => `gta-session.${key}`).sort());
+      expect(field("sources")).toBe("2");
+      expect(field("s0-kind")).toBe("ready-sale");
+      expect(field("s0-runs")).toBe("1");
+      expect(field("s1-runs")).toBe("4");
+      expect(field("s2-available")).toBe("no");
+      expect(field("s3-available")).toBe("no");
+      const restored: GtaSessionInput = {
+        minutesAvailable: Number(field("minutes")),
+        sources: Array.from({ length: Number(field("sources")) }, (_, i) => ({
+          kind: field(`s${i}-kind`) as GtaSessionKind, available: field(`s${i}-available`) === "yes",
+          cashPerRun: Number(field(`s${i}-cash`)), minutesPerRun: Number(field(`s${i}-duration`)),
+          entryMinutes: Number(field(`s${i}-entry`)), maxRuns: Number(field(`s${i}-runs`))
+        }))
+      };
+      const full = calculateGtaSession(restored)!;
+      expect(full).not.toBeNull();
+      expect([full.best.cash, full.solo.cash]).toEqual(calculated.metrics.map((metric) => metric.value));
+    }
   });
 });

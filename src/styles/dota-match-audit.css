@@ -1937,6 +1937,26 @@
 .match-focus-purchase { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 12px; align-items: center; margin-top: 8px; padding: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: 8px; color: white; font-size: .875rem; }
 .match-focus-purchase span:last-child { min-width: 0; overflow-wrap: anywhere; }
 .match-focus-item-image { width: 48px; height: 36px; }
+.match-focus-other { margin-top: 16px; }
+.match-focus-other summary { cursor: pointer; color: var(--audit-amber); font-size: .875rem; line-height: 1.5; }
+.match-episode-context { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.12); }
+.match-episode-context > h5 { margin: 0 0 12px; color: white; font-size: 1.125rem; line-height: 1.4; }
+.dota-match-audit .match-episode-context p { margin: 10px 0; font-size: .875rem; line-height: 1.6; overflow-wrap: anywhere; }
+.match-episode-note, .match-episode-empty { color: var(--muted); }
+.match-episode-status { padding: 12px; border-left: 2px solid var(--audit-amber); background: #1c1720; }
+.match-episode-teams { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+.match-episode-team { min-width: 0; padding: 16px; border: 1px solid rgba(255,255,255,.12); border-radius: 10px; background: #14111a; }
+.match-episode-team h6 { margin: 0; font-size: 1rem; line-height: 1.4; color: white; }
+.match-episode-period { color: var(--audit-amber); }
+.match-episode-purchases { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.match-episode-purchase { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; align-items: baseline; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08); }
+.match-episode-time { font: 500 .75rem/1.5 "JetBrains Mono", monospace; color: var(--audit-amber); }
+.match-episode-purchase > strong { min-width: 0; color: white; font-size: .875rem; line-height: 1.5; overflow-wrap: anywhere; }
+.match-episode-purchase > p { grid-column: 1 / -1; }
+.match-episode-team details { margin-top: 12px; }
+.match-episode-team summary { cursor: pointer; font-size: .875rem; line-height: 1.5; color: var(--audit-amber); overflow-wrap: anywhere; }
+.match-episode-condition > strong { display: block; margin-top: 12px; font-size: .875rem; line-height: 1.5; overflow-wrap: anywhere; }
+.match-episode-context > button { max-width: 100%; text-align: left; white-space: normal; }
 .dota-match-audit .match-economic-table-wrap :is(th, td) { font-size: .875rem; line-height: 1.5; }
 .dota-match-audit .match-economic-table-wrap th { text-transform: none; }
 .dota-match-audit .match-audit-next { margin-top: 24px; padding: 22px; }
@@ -1945,7 +1965,7 @@
 .dota-match-audit .match-audit-method { margin-top: 32px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,.12); }
 .dota-match-audit .match-audit-method-grid p { font-size: 1rem; line-height: 1.6; }
 @media (max-width: 850px) {
-  .dota-match-audit .match-audit-form, .dota-match-audit .match-audit-result-head, .match-focus-columns { grid-template-columns: minmax(0, 1fr); }
+  .dota-match-audit .match-audit-form, .dota-match-audit .match-audit-result-head, .match-focus-columns, .match-episode-teams { grid-template-columns: minmax(0, 1fr); }
   .dota-match-audit .match-audit-demo { min-height: 0; }
   .match-comparison-control { grid-template-columns: minmax(0, 1fr); }
   .dota-match-audit .match-economic-autopsy-head { grid-template-columns: minmax(0, 1fr); }
@@ -1963,7 +1983,7 @@
   .match-result-tabs button { padding: 10px 14px; }
 }
 
-.match-replay-focus[data-available="false"] .match-focus-columns { display: none; }
+.match-replay-focus[data-available="false"] :is(.match-focus-columns, .match-episode-context) { display: none; }
 .match-audit-chart-wrap .chart-focus-band { fill: rgba(241, 184, 75, .13); stroke: var(--audit-amber); stroke-dasharray: 5 4; stroke-width: 1; }
 
 .dota-match-audit :is(.match-final-review, .match-recovery) {

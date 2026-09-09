@@ -5,6 +5,8 @@ export interface WowBatchInput extends CraftingInput {
   reserveGold: number;
   salesMode: "percent" | "observed";
   observedSoldUnits: number;
+  /** Legacy records omit this field. Only the absolute-sales mode uses it. */
+  existingStockUnits?: number;
 }
 
 const amount = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1e12;
@@ -18,17 +20,30 @@ export function validWowBatchInput(value: unknown): value is WowBatchInput {
     && amount(x.auctionHouseCutPercent) && x.auctionHouseCutPercent <= 100
     && amount(x.sellThroughPercent) && x.sellThroughPercent <= 100
     && (x.salesMode === "percent" || x.salesMode === "observed") && count(x.observedSoldUnits)
+    && (x.existingStockUnits === undefined || count(x.existingStockUnits))
     && (x.materialCostPerCraft + x.depositPerListing) * x.crafts <= 1e12
     && x.salePricePerUnit * x.outputUnits * x.crafts <= 1e12;
 }
 
-/** A completed trial constrains absolute unit sales for this comparable cycle.
- * Enlarging the new batch never multiplies observed demand.
+/** Reserve the entered sales count for existing stock first. This is an explicit
+ * planning convention, not a prediction of which listing the market buys first.
+ * Old stock has no assumed cost basis, proceeds or deposit expense in this model.
  */
+export function wowBatchSalesAllocation(input: WowBatchInput) {
+  if (input.salesMode !== "observed") return null;
+  const existingStockUnits = input.existingStockUnits ?? 0;
+  const existingStockSales = Math.min(existingStockUnits, input.observedSoldUnits);
+  const newSalesCap = Math.max(0, input.observedSoldUnits - existingStockUnits);
+  return { totalSalesCap: input.observedSoldUnits, existingStockUnits, existingStockSales, newSalesCap,
+    maxNewCraftsWithoutRemainder: Math.floor(newSalesCap / input.outputUnits) };
+}
+
+/** Enlarging a batch never multiplies the conditional sales count. */
 export function effectiveWowCraftInput(input: WowBatchInput, crafts = input.crafts): CraftingInput {
   const units = crafts * input.outputUnits;
+  const allocation = wowBatchSalesAllocation(input);
   return { ...input, crafts, sellThroughPercent: input.salesMode === "observed"
-    ? units > 0 ? Math.min(units, input.observedSoldUnits) / units * 100 : 0
+    ? units > 0 ? Math.min(units, allocation!.newSalesCap) / units * 100 : 0
     : input.sellThroughPercent };
 }
 
@@ -49,13 +64,25 @@ export function calculateWowBatchPlan(input: WowBatchInput) {
   const feasibleCrafts = reserveAlreadyShort ? 0 : Math.min(input.crafts, affordableCrafts ?? input.crafts);
   const requested = calculateCraftingCashFlow(effectiveWowCraftInput(input));
   const feasible = calculateCraftingCashFlow(effectiveWowCraftInput(input, feasibleCrafts));
+  const salesAllocation = wowBatchSalesAllocation(input);
+  const salesFitCrafts = salesAllocation ? Math.min(feasibleCrafts, salesAllocation.maxNewCraftsWithoutRemainder) : null;
   return {
-    budgetGold, affordableCrafts, affordableLimitReached, feasibleCrafts, reserveAlreadyShort, requested, feasible,
+    budgetGold, affordableCrafts, affordableLimitReached, feasibleCrafts, reserveAlreadyShort, requested, feasible, salesAllocation, salesFitCrafts,
     requestedCashAfterCraft: input.walletGold - requested.upfrontGold,
     feasibleCashAfterCraft: input.walletGold - feasible.upfrontGold,
     requestedEndCash: input.walletGold + requested.cashChange,
     feasibleEndCash: input.walletGold + feasible.cashChange,
     fits: !reserveAlreadyShort && feasibleCrafts === input.crafts
+  };
+}
+
+/** The count-mode stress reduces the TOTAL scenario cap before allocating stock. */
+export function calculateWowBatchStressCases(input: WowBatchInput) {
+  return {
+    lowerPrice: calculateCraftingCashFlow(effectiveWowCraftInput({ ...input, salePricePerUnit: input.salePricePerUnit * 0.9 })),
+    fewerSales: calculateCraftingCashFlow(effectiveWowCraftInput(input.salesMode === "observed"
+      ? { ...input, observedSoldUnits: Math.floor(input.observedSoldUnits * 0.8) }
+      : { ...input, sellThroughPercent: Math.max(0, input.sellThroughPercent - 20) }))
   };
 }
 
@@ -81,11 +108,12 @@ export function calculateWowBatchActual(input: WowBatchInput, actual: WowBatchAc
     soldDifference: actual.soldUnits - plan.requested.soldUnits };
 }
 
-/** A fresh wallet input is required: an isolated batch result is not the player's
- * current balance after unrelated income and spending.
+/** Fresh wallet and stock inputs are required: one batch does not establish the
+ * player's current balance or inventory. Its sales are only a conditional cap.
  */
-export function nextWowBatchAssumptions(input: WowBatchInput, actual: WowBatchActual, currentWalletGold: number) {
+export function nextWowBatchAssumptions(input: WowBatchInput, actual: WowBatchActual, currentWalletGold: number, currentExistingStockUnits: number) {
   const result = calculateWowBatchActual(input, actual);
-  if (!result || !amount(currentWalletGold)) return null;
-  return { walletGold: currentWalletGold, salesMode: "observed" as const, observedSoldUnits: actual.soldUnits };
+  if (!result || !amount(currentWalletGold) || !count(currentExistingStockUnits)) return null;
+  return { walletGold: currentWalletGold, existingStockUnits: currentExistingStockUnits,
+    salesMode: "observed" as const, observedSoldUnits: actual.soldUnits };
 }

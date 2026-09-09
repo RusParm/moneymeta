@@ -11,6 +11,13 @@
 .craft-result .result-metric { min-width: 0; }
 .craft-result .result-metric span { font-size: 13px; line-height: 1.4; }
 .craft-result .result-metric strong { font-size: clamp(20px, 2.3vw, 30px); overflow-wrap: anywhere; }
+.craft-stock-allocation { margin: 18px 0 22px; padding: 16px; border: 1px solid rgba(120,191,255,.28); border-radius: 12px; background: rgba(120,191,255,.06); }
+.craft-stock-allocation h4 { margin: 0 0 12px; font-size: 17px; line-height: 1.4; }
+.craft-stock-allocation p { font-size: 14px; line-height: 1.55; }
+.craft-stock-allocation button { min-height: 44px; white-space: normal; }
+.craft-stock-numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.craft-stock-numbers dt { font-size: 12px; line-height: 1.4; color: rgba(255,255,255,.72); }
+.craft-stock-numbers dd { margin: 6px 0 0; font-size: 24px; font-weight: 700; overflow-wrap: anywhere; }
 .craft-next { margin-top: 20px; padding: 16px; border-left: 3px solid #78bfff; background: rgba(120,191,255,.06); }
 .craft-next > strong { font-size: 15px; }
 .craft-next p { margin: 8px 0 0; font-size: 15px; line-height: 1.6; }
@@ -39,11 +46,13 @@
 .craft-journal [data-batch-changed] { padding: 12px; border-left: 3px solid #ecc879; background: rgba(236,200,121,.06); }
 .craft-journal [data-batch-actual-form], .craft-journal [data-batch-actual-result] { margin: 20px 0; }
 .craft-journal [data-batch-journal-status] { min-height: 1.5em; }
-.craft-journal [hidden], [data-batch-cap-field][hidden], [data-role="craft-form"] .field[hidden], [data-batch-use-size][hidden] { display: none !important; }
+.craft-journal [hidden], [data-batch-cap-field][hidden], [data-role="craft-form"] .field[hidden], [data-batch-use-size][hidden], [data-batch-allocation][hidden], [data-batch-use-sales-size][hidden] { display: none !important; }
 .craft-journal summary:focus-visible { outline: 2px solid #78bfff; outline-offset: 4px; }
 @media (max-width: 600px) {
   .craft-journal { padding: 16px; }
   .craft-journal .form-grid { grid-template-columns: 1fr; }
   .craft-journal .craft-accounting > div { flex-wrap: wrap; gap: 6px 16px; }
   .craft-journal .craft-accounting dd { white-space: normal; overflow-wrap: anywhere; }
+  .craft-stock-numbers { gap: 8px; }
+  .craft-stock-numbers dd { font-size: 21px; }
 }

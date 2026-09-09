@@ -1,5 +1,17 @@
 # Money Meta roadmap
 
+## Current increment: v1.32 decisions in the player's context
+
+Published baseline: v1.31, PR #21, main `8926ebcf77481bb8930c65558b0be37057777a01`. The September 9 benchmark discussion prioritizes the player's actual situation, a useful alternative and a later check of the result. All six live economies remain in scope.
+
+1. Put the player's Match ID before the optional Dota demonstration and expose the existing GTA session decision at the entrance, with exact model handoffs.
+2. Join the detected Dota replay episode to both teams' logged strategic purchases, separating the preceding three minutes from the episode itself. Preserve version and coverage limits; a purchase does not establish delivery, use or causal advantage.
+3. Include confirmed existing same-item stock in WoW absolute-sales scenarios. Allocate the conditional sales count to old stock first and show what remains for new crafts, without inventing old-stock cost or sale proceeds.
+4. Verify actual interactions, legacy saved-plan defaults, historical batch results and RU/EN continuity before release.
+5. Next evidence: review real player situations and observe whether the answer changes a decision. Dota's personal multi-match follow-up, GTA parallel production and deeper campaign state require separate bounded implementations. Civilization VI demand must be validated separately from the live Civilization VII rules.
+
+See `PLAYER_DECISION_CONTEXT.md`. Earlier current/candidate headings below preserve implementation history.
+
 ## Current increment: v1.31 alternatives across the platform
 
 v1.30 is published in PR #20, main `23e46cb76a0b783b0fcb197991dc007f96eac216`. The owner asks to keep improving the full platform, with player value before monetization.

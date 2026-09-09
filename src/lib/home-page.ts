@@ -79,6 +79,9 @@ export function initializeHome() {
       candidate.tabIndex = candidate === tab ? 0 : -1;
     });
     panels.forEach((panel) => { panel.hidden = panel.dataset.gameId !== tab.dataset.gameId; });
+    home!.querySelectorAll<HTMLElement>("[data-home-guide-group]").forEach((group) => {
+      group.hidden = group.dataset.gameId !== tab.dataset.gameId;
+    });
     home!.style.setProperty("--home-accent", tab.dataset.accent ?? "#39e3c6");
     home!.style.setProperty("--home-accent-rgb", tab.dataset.accentRgb ?? "57, 227, 198");
     syncLanguage();

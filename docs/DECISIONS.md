@@ -1,5 +1,15 @@
 # Decision log
 
+## 2026-09-09: reduce the distance between a player's situation and a useful check
+
+The benchmark discussion identifies manual context collection and interpretation as the next product constraint. The first implementation reuses validated models and existing sanitized observations: a direct own-match entry, an exact GTA session example, both-team purchase context at a Dota replay episode and confirmed old stock in a WoW sales-count scenario.
+
+Dota selects purchases during the observed economic window and in the preceding three minutes. Earlier observations stay labelled earlier purchases, never current inventory or readiness. Existing version-gated mechanic questions can guide replay inspection; coincident purchases do not explain a gold change or prove an execution error. No detected window means no invented contextual episode.
+
+WoW treats the entered absolute sales count as a conditional total for the same item and quality. Existing stock consumes that assumed capacity first; the remaining count constrains the new batch. All new-batch cash, cost and profit figures retain their original scope. A prior isolated batch outcome cannot establish current total inventory or future demand, so reuse needs fresh player confirmation.
+
+Technical acceptance remains separate from player validation. All six live hubs stay maintained. The owner's Civilization VI experience informs discovery but cannot be processed with Civilization VII mechanics. Multi-match follow-up, parallel GTA production, imports and market feeds remain explicit subsequent work.
+
 ## 2026-09-08: expose alternatives and the conditions that change them
 
 The full-platform increment compares a player's own saved variants of the same task, not scores across unrelated games or units. Results stay historical and keep their original language; changed input labels improve review without inferring numerical deltas from formatted text. Schema-1 extensions are optional, and writes must respect the same aggregate size bound as reads.

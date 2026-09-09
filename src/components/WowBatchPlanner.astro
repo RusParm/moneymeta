@@ -1,6 +1,6 @@
 ---
 import { wowBatchPlannerCopy } from "../data/wow-batch-planner-copy";
-interface Props { lang: "ru" | "en"; section: "inputs" | "result" | "journal"; }
+interface Props { lang: "ru" | "en"; section: "inputs" | "allocation" | "result" | "journal"; }
 const { lang, section } = Astro.props;
 const c = wowBatchPlannerCopy[lang];
 ---
@@ -11,7 +11,19 @@ const c = wowBatchPlannerCopy[lang];
     <div class="field"><label for="craft-reserve">{c.reserve}</label><input id="craft-reserve" data-role="craft-reserve" type="number" min="0" max="1000000000000" step="any" value="5000" /></div>
     <div class="field craft-wide"><label for="craft-sales-mode">{c.mode}</label><select id="craft-sales-mode" data-role="craft-sales-mode"><option value="percent" selected>{c.percent}</option><option value="observed">{c.observed}</option></select></div>
     <div class="field craft-wide" data-batch-cap-field hidden><label for="craft-sales-cap">{c.cap}</label><input id="craft-sales-cap" data-role="craft-sales-cap" type="number" min="0" max="1000000" step="1" value="70" aria-describedby="craft-cap-hint" /><small id="craft-cap-hint">{c.capHint}</small></div>
+    <div class="field craft-wide" data-batch-stock-field hidden><label for="craft-existing-stock">{c.stock}</label><input id="craft-existing-stock" data-role="craft-existing-stock" type="number" min="0" max="1000000" step="1" value="0" aria-describedby="craft-stock-hint" /><small id="craft-stock-hint">{c.stockHint}</small></div>
   </div>
+</div>}
+{section === "allocation" && <div class="craft-stock-allocation" data-batch-allocation hidden>
+  <h4>{c.allocation}</h4>
+  <dl class="craft-stock-numbers">
+    <div><dt>{c.totalCap}</dt><dd data-batch-total-cap>-</dd></div>
+    <div><dt>{c.oldAllocation}</dt><dd data-batch-old-allocation>-</dd></div>
+    <div><dt>{c.newAllocation}</dt><dd data-batch-new-allocation>-</dd></div>
+  </dl>
+  <p data-batch-stock-decision></p><p data-batch-stock-size></p>
+  <button type="button" class="mini-action" data-batch-use-sales-size hidden disabled>{c.useSalesSize}</button>
+  <p class="craft-boundary">{c.stockScope}</p>
 </div>}
 {section === "result" && <div class="craft-budget-result" data-batch-plan-result>
   <h4>{c.result}</h4><p data-batch-plan-decision></p><p data-batch-max></p>
@@ -40,7 +52,9 @@ const c = wowBatchPlannerCopy[lang];
     <div data-batch-actual-result hidden>
       <p data-batch-recorded></p>
       <dl class="craft-accounting"><div><dt>{c.actualCash}</dt><dd data-batch-actual-cash>-</dd></div><div><dt>{c.actualStock}</dt><dd data-batch-actual-stock>-</dd></div><div><dt>{c.difference}</dt><dd data-batch-actual-difference>-</dd></div></dl>
-      <p>{c.nextNote}</p><div class="field"><label for="wow-batch-next-wallet">{c.nextWallet}</label><input id="wow-batch-next-wallet" data-batch-next-wallet type="number" min="0" max="1000000000000" step="any" aria-describedby="wow-batch-next-wallet-hint" /><small id="wow-batch-next-wallet-hint">{c.nextWalletHint}</small></div><button type="button" class="mini-action" data-batch-next disabled>{c.next}</button>
+      <p>{c.nextNote}</p><div class="field"><label for="wow-batch-next-wallet">{c.nextWallet}</label><input id="wow-batch-next-wallet" data-batch-next-wallet type="number" min="0" max="1000000000000" step="any" aria-describedby="wow-batch-next-wallet-hint" /><small id="wow-batch-next-wallet-hint">{c.nextWalletHint}</small></div>
+      <div class="field"><label for="wow-batch-next-stock">{c.nextStock}</label><input id="wow-batch-next-stock" data-batch-next-stock type="number" min="0" max="1000000" step="1" aria-describedby="wow-batch-next-stock-hint" /><small id="wow-batch-next-stock-hint">{c.nextStockHint}</small></div>
+      <button type="button" class="mini-action" data-batch-next disabled>{c.next}</button>
     </div>
     <button type="button" class="mini-action" data-batch-remove disabled>{c.remove}</button>
     <div data-batch-remove-confirm hidden><button type="button" class="mini-action" data-batch-confirm-remove>{c.confirmRemove}</button><button type="button" class="mini-action" data-batch-cancel-remove>{c.cancel}</button></div>

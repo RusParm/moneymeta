@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { craftingBaseline } from "../src/data/wow-economy";
-import { calculateWowBatchActual, calculateWowBatchPlan, nextWowBatchAssumptions, type WowBatchInput } from "../src/lib/wow-batch-planner";
+import { calculateWowBatchActual, calculateWowBatchPlan, calculateWowBatchStressCases, nextWowBatchAssumptions, type WowBatchInput } from "../src/lib/wow-batch-planner";
 import { addWowBatchForecast, closeWowBatchForecast, readWowBatchJournal, removeWowBatchRecord, wowBatchRecordToken, WOW_BATCH_STORE_KEY, type WowBatchRecord } from "../src/lib/wow-batch-journal";
 import { wowBatchPlannerCopy } from "../src/data/wow-batch-planner-copy";
 
@@ -81,6 +81,59 @@ describe("WoW affordable batch with a protected cash reserve", () => {
     expect(plan.affordableLimitReached).toBe(true);
     expect(plan.fits).toBe(true);
   });
+  it("preserves legacy and percentage calculations with neutral stock", () => {
+    expect(calculateWowBatchPlan({ ...input, existingStockUnits: 0 })).toEqual(calculateWowBatchPlan(input));
+    expect(calculateWowBatchPlan({ ...input, existingStockUnits: 100 })).toEqual(calculateWowBatchPlan(input));
+    const counted = { ...input, salesMode: "observed" as const };
+    expect(calculateWowBatchPlan({ ...counted, existingStockUnits: 0 })).toEqual(calculateWowBatchPlan(counted));
+  });
+  it("allocates a shared sales count to stock before new crafts without charging for old stock", () => {
+    const base = calculateWowBatchPlan({ ...input, salesMode: "observed" })!;
+    const plan = calculateWowBatchPlan({ ...input, salesMode: "observed", existingStockUnits: 34 })!;
+    expect(plan.salesAllocation).toEqual({ totalSalesCap: 70, existingStockUnits: 34, existingStockSales: 34, newSalesCap: 36, maxNewCraftsWithoutRemainder: 7 });
+    expect(plan.salesFitCrafts).toBe(7);
+    expect(plan.requested.soldUnits).toBeCloseTo(36);
+    expect(plan.requested.inventoryCost).toBeCloseTo(64 * 165);
+    expect(plan.requested.saleProceeds).toBeCloseTo(36 * 225 * .95);
+    expect(plan.requested.upfrontGold).toBe(base.requested.upfrontGold);
+    expect(plan.requestedCashAfterCraft).toBe(base.requestedCashAfterCraft);
+    const resized = calculateWowBatchPlan({ ...input, salesMode: "observed", existingStockUnits: 34, crafts: plan.salesFitCrafts! })!;
+    expect(resized.requested.units).toBe(35);
+    expect(resized.requested.soldUnits).toBe(35);
+    expect(resized.requested.inventoryCost).toBe(0);
+  });
+  it("leaves no new sales when old stock meets or exceeds the conditional count", () => {
+    for (const existingStockUnits of [70, 100, 1e6]) {
+      const plan = calculateWowBatchPlan({ ...input, salesMode: "observed", existingStockUnits })!;
+      expect(plan.salesAllocation!.existingStockSales).toBe(70);
+      expect(plan.salesAllocation!.newSalesCap).toBe(0);
+      expect(plan.salesFitCrafts).toBe(0);
+      expect(plan.requested.soldUnits).toBe(0);
+      expect(plan.requested.saleProceeds).toBe(0);
+      expect(plan.requested.cashChange).toBe(-16_740);
+      expect(plan.requested.inventoryCost).toBe(16_500);
+    }
+  });
+  it("rounds the stock-aware batch down to whole crafts and still respects available cash", () => {
+    expect(calculateWowBatchPlan({ ...input, salesMode: "observed", existingStockUnits: 66 })!.salesFitCrafts).toBe(0);
+    const poor = calculateWowBatchPlan({ ...input, salesMode: "observed", existingStockUnits: 34, walletGold: 8000 })!;
+    expect(poor.salesFitCrafts).toBe(3);
+    const resized = calculateWowBatchPlan({ ...input, salesMode: "observed", existingStockUnits: 34, walletGold: 8000, crafts: 3 })!;
+    expect(resized.requested.soldUnits).toBe(15);
+    expect(resized.requestedCashAfterCraft).toBeGreaterThanOrEqual(input.reserveGold);
+  });
+  it("reduces the total count before subtracting stock in the sales stress", () => {
+    const cases = calculateWowBatchStressCases({ ...input, salesMode: "observed", existingStockUnits: 34 });
+    expect(cases.fewerSales.soldUnits).toBeCloseTo(22);
+    expect(cases.lowerPrice.soldUnits).toBeCloseTo(36);
+    expect(calculateWowBatchStressCases({ ...input, salesMode: "observed", existingStockUnits: 60 }).fewerSales.soldUnits).toBe(0);
+    expect(calculateWowBatchStressCases(input).fewerSales.soldUnits).toBeCloseTo(50);
+  });
+  it("rejects unsafe existing-stock counts without accepting null as legacy zero", () => {
+    for (const existingStockUnits of [-1, .5, NaN, Infinity, 1_000_001, null]) {
+      expect(calculateWowBatchPlan({ ...input, existingStockUnits } as WowBatchInput)).toBeNull();
+    }
+  });
 });
 
 describe("WoW actual outcome and deliberate next batch", () => {
@@ -99,14 +152,24 @@ describe("WoW actual outcome and deliberate next batch", () => {
     expect(calculateWowBatchActual(input, { soldUnits: 0, netSaleProceeds: 0, lostDeposits: 240 })!.profit).toBe(-240);
   });
   it("requires a fresh current wallet and seeds an absolute cap, never stock as cash", () => {
-    const next = nextWowBatchAssumptions(input, actual, 12_345)!;
-    expect(next).toEqual({ walletGold: 12_345, salesMode: "observed", observedSoldUnits: 60 });
+    const next = nextWowBatchAssumptions(input, actual, 12_345, 40)!;
+    expect(next).toEqual({ walletGold: 12_345, existingStockUnits: 40, salesMode: "observed", observedSoldUnits: 60 });
     const nextPlan = calculateWowBatchPlan({ ...input, ...next, crafts: 100 })!;
-    expect(nextPlan.requested.soldUnits).toBe(60);
+    expect(nextPlan.requested.soldUnits).toBeCloseTo(20);
     expect(nextPlan.feasibleCrafts).toBe(8);
-    expect(nextWowBatchAssumptions(input, actual, NaN)).toBeNull();
-    expect(nextWowBatchAssumptions(input, actual, -1)).toBeNull();
-    expect(nextWowBatchAssumptions(input, actual, 0)?.walletGold).toBe(0);
+    expect(nextWowBatchAssumptions(input, actual, NaN, 0)).toBeNull();
+    expect(nextWowBatchAssumptions(input, actual, -1, 0)).toBeNull();
+    expect(nextWowBatchAssumptions(input, actual, 0, 0)?.walletGold).toBe(0);
+    for (const stock of [-1, NaN, .5, undefined]) expect(nextWowBatchAssumptions(input, actual, 0, stock as number)).toBeNull();
+  });
+  it("keeps mixed-stock actuals scoped to the locked new batch", () => {
+    const mixed = { ...input, salesMode: "observed" as const, existingStockUnits: 34 };
+    const result = calculateWowBatchActual(mixed, actual)!;
+    expect(result.cashChange).toBe(-3996);
+    expect(result.inventoryUnits).toBe(40);
+    expect(result.inventoryCost).toBe(6600);
+    expect(calculateWowBatchActual(mixed, { ...actual, soldUnits: 120 })).toBeNull();
+    expect(nextWowBatchAssumptions(mixed, actual, 12_345, 74)!.existingStockUnits).toBe(74);
   });
 });
 
@@ -162,5 +225,18 @@ describe("WoW immutable local batch history", () => {
   });
   it("keeps full RU and EN copy parity", () => {
     expect(Object.keys(wowBatchPlannerCopy.ru).sort()).toEqual(Object.keys(wowBatchPlannerCopy.en).sort());
+  });
+  it("reads historical stock-free records unchanged and locks the new stock assumption", () => {
+    const store = memory();
+    const legacy = record();
+    const mixed = { ...record(2), forecast: { ...input, salesMode: "observed" as const, existingStockUnits: 34 } };
+    expect(addWowBatchForecast(store, legacy).ok).toBe(true);
+    expect(addWowBatchForecast(store, mixed).ok).toBe(true);
+    mixed.forecast.existingStockUnits = 100;
+    const loaded = readWowBatchJournal(store);
+    if (!loaded.ok) throw new Error("expected stored records");
+    expect(loaded.records[1]).toEqual(legacy);
+    expect(loaded.records[0]!.forecast.existingStockUnits).toBe(34);
+    expect(calculateWowBatchPlan(loaded.records[0]!.forecast)!.requested.soldUnits).toBeCloseTo(36);
   });
 });

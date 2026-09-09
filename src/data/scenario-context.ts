@@ -23,6 +23,11 @@ export function scenarioContexts(lang: ScenarioLocale): Record<string, string> {
     if (tool.key === "dota-compare" || tool.key === "dota-item-plan") {
       label = `${dotaItemsSnapshot.patch.label} · ${dotaItemsSnapshot.fetchedAt.slice(0, 10)}`;
     }
+    if (tool.key === "wow-crafting") {
+      label = lang === "ru"
+        ? "Личные вводные · запас и новая партия · модель 2"
+        : "Personal inputs · existing stock and new batch · model 2";
+    }
     return [tool.key, label];
   }));
 }
