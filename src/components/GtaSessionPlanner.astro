@@ -2,13 +2,14 @@
 import ScenarioActions from "./ScenarioActions.astro";
 import { gtaSessionCopy } from "../data/gta-session-copy";
 import { gtaSessionExample } from "../data/gta-session-example";
-import { calculateGtaSession, GTA_SESSION_KINDS } from "../lib/gta-session";
+import { calculateGtaSession, calculateGtaSessionTimeTradeoffs, GTA_SESSION_KINDS } from "../lib/gta-session";
 import "../styles/gta-session.css";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
 const c = gtaSessionCopy[lang];
 const { sources, minutes, sourceCount } = gtaSessionExample;
 const initial = calculateGtaSession({ minutesAvailable: minutes, sources: sources.slice(0, sourceCount) })!;
+const initialTime = calculateGtaSessionTimeTradeoffs({ minutesAvailable: minutes, sources: sources.slice(0, sourceCount) })!;
 const money = (n: number) => `GTA$${new Intl.NumberFormat(lang === "ru" ? "ru-RU" : "en-US").format(n)}`;
 ---
 
@@ -49,6 +50,23 @@ const money = (n: number) => `GTA$${new Intl.NumberFormat(lang === "ru" ? "ru-RU
       <ol data-session-blocks>{initial.best.blocks.map((block) => <li><strong>{block.sourceIndex + 1}. {c.kinds[sources[block.sourceIndex]!.kind]} × {block.runs}</strong><span>{block.totalMinutes} {c.min} · {money(block.cash)}</span><small>{c.entryNote}: {block.entryMinutes} {c.min}</small></li>)}</ol>
     </div>
     <div class="gta-session-alternative"><h5>{c.soloTitle}</h5><p data-session-solo>{c.kinds.mission} × 2 · 55 {c.min} · {money(initial.solo.cash)}</p><p class="dim">{c.rest}</p></div>
+    <section class="gta-session-time" aria-label={c.timeTitle}>
+      <h5>{c.timeTitle}</h5>
+      <div class="gta-session-time-options">
+        <div>
+          <h6>{c.shorterTitle}</h6>
+          <p data-session-shorter>{initialTime.freeMinutes > 0 ? c.shorterText(initialTime.finishAt, money(initialTime.cash), initialTime.freeMinutes) : c.noShorter}</p>
+          <button type="button" data-session-adjust="shorter" hidden={initialTime.freeMinutes === 0}>{c.timeAction(initialTime.finishAt)}</button>
+        </div>
+        <div>
+          <h6>{c.nextTitle}</h6>
+          <p data-session-next>{initialTime.next ? c.nextText(initialTime.next.minutes, initialTime.next.extraMinutes, money(initialTime.next.plan.cash), money(initialTime.next.extraCash)) : c.noNext}</p>
+          <p data-session-next-blocks hidden={!initialTime.next}>{c.nextBlocks}: {initialTime.next?.plan.blocks.map((block) => `${block.sourceIndex + 1}. ${c.kinds[sources[block.sourceIndex]!.kind]} × ${block.runs}`).join("; ")}</p>
+          <button type="button" data-session-adjust="longer" hidden={!initialTime.next}>{initialTime.next ? c.timeAction(initialTime.next.minutes) : ""}</button>
+        </div>
+      </div>
+      <p class="gta-session-boundary">{c.timeBoundary}</p>
+    </section>
     <p class="gta-session-boundary">{c.boundary}</p>
   </article>
   <ScenarioActions lang={lang} />

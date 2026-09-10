@@ -1,5 +1,5 @@
 import { gtaSessionCopy } from "../data/gta-session-copy";
-import { calculateGtaSession, type GtaSessionInput, type GtaSessionKind, type GtaSessionSource } from "./gta-session";
+import { calculateGtaSession, calculateGtaSessionTimeTradeoffs, type GtaSessionInput, type GtaSessionKind, type GtaSessionSource } from "./gta-session";
 
 type Control = HTMLInputElement | HTMLSelectElement;
 export function initializeGtaSession(root: HTMLElement) {
@@ -70,9 +70,33 @@ export function initializeGtaSession(root: HTMLElement) {
     query("[data-session-solo]").textContent = solo
       ? `${sourceName(input.sources[solo.sourceIndex]!, solo.sourceIndex)} × ${solo.runs} · ${solo.totalMinutes} ${c.min} · ${money(solo.cash)}`
       : c.soloNone;
+    const time = calculateGtaSessionTimeTradeoffs(input)!;
+    query("[data-session-shorter]").textContent = time.freeMinutes > 0
+      ? c.shorterText(time.finishAt, money(time.cash), time.freeMinutes) : c.noShorter;
+    const shorter = query<HTMLButtonElement>("[data-session-adjust='shorter']");
+    shorter.hidden = time.freeMinutes === 0;
+    shorter.dataset.minutes = String(time.finishAt);
+    shorter.textContent = c.timeAction(time.finishAt);
+    query("[data-session-next]").textContent = time.next
+      ? c.nextText(time.next.minutes, time.next.extraMinutes, money(time.next.plan.cash), money(time.next.extraCash)) : c.noNext;
+    const nextBlocks = query("[data-session-next-blocks]");
+    nextBlocks.hidden = !time.next;
+    nextBlocks.textContent = time.next ? `${c.nextBlocks}: ${time.next.plan.blocks.map(block => `${sourceName(input.sources[block.sourceIndex]!, block.sourceIndex)} × ${block.runs}`).join("; ")}` : "";
+    const longer = query<HTMLButtonElement>("[data-session-adjust='longer']");
+    longer.hidden = !time.next;
+    longer.dataset.minutes = time.next ? String(time.next.minutes) : "";
+    longer.textContent = time.next ? c.timeAction(time.next.minutes) : "";
   }
   const queryAllSources = () => [...root.querySelectorAll<HTMLElement>("[data-session-source]")];
   root.querySelector("form")!.addEventListener("submit", (event) => event.preventDefault());
+  root.querySelectorAll<HTMLButtonElement>("[data-session-adjust]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (button.hidden || root.dataset.scenarioValid !== "true" || !button.dataset.minutes) return;
+      field("minutes").value = button.dataset.minutes;
+      field("minutes").dispatchEvent(new Event("input", { bubbles: true }));
+      field("minutes").focus();
+    });
+  });
   // Capture updates dependent fields before the shared scenario listeners save
   // the edited control, so changing type/count cannot save an intermediate state.
   root.addEventListener("input", (event) => { if ((event.target as HTMLElement).hasAttribute("data-role")) render(); }, true);

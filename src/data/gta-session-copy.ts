@@ -18,6 +18,13 @@ export const gtaSessionCopy = {
     blocks: "Из чего состоит сеанс", orderNote: "Это состав плана, не оптимальный маршрут по карте.", block: "Блок", count: "Заходов", time: "Время с переходом", money: "GTA$ на руки",
     soloTitle: "Если заниматься только чем-то одним", soloNone: "Нет подходящего одиночного занятия", rest: "Ничего не начинать: 0 GTA$, всё время свободно.",
     assumptions: "Откуда брать вводные", invalid: "Проверь вводные: нужны целые числа в указанных пределах. Для готового запаса допустима только одна продажа.",
+    timeTitle: "Где время меняет план", shorterTitle: "Закончить раньше", nextTitle: "Если времени больше",
+    shorterText: (minutes: number, cash: string, free: number) => `${cash} можно получить за ${minutes} мин. Ещё ${free} мин не увеличивают поступление при этих вводных.`,
+    noShorter: "Чтобы получить эту сумму, нужно всё указанное время.",
+    nextText: (minutes: number, extra: number, cash: string, gain: string) => `Ближайший более доходный набор помещается в ${minutes} мин: ${cash}. Это ещё ${extra} мин к твоему лимиту и ${gain} сверх текущего плана.`,
+    noNext: "В пределах 240 мин большего поступления нет при текущем доступе и лимитах повторов.",
+    nextBlocks: "Полный состав другого плана", timeAction: (minutes: number) => `Пересчитать на ${minutes} мин`,
+    timeBoundary: "Это сравнение целых заходов при тех же выплатах и доступе. Другой план может заменить текущие занятия. Реши сам, подходит ли тебе такое время.",
     boundary: "Свободное время не получает условный доход. Продажа ранее накопленного запаса не задаёт постоянный GTA$/ч. При изменении доступа, выплаты или длительности пересчитай план.",
     min: "мин", entryNote: "в том числе переход", js: "Для изменения расчёта включи JavaScript. Ниже показан только условный пример."
   },
@@ -40,6 +47,13 @@ export const gtaSessionCopy = {
     blocks: "Your session's activities", orderNote: "This is a combination, not an optimized route across the map.", block: "Block", count: "Runs", time: "Time including switch", money: "Cash received",
     soloTitle: "If you repeat just one activity", soloNone: "No single activity fits", rest: "Start nothing: GTA$0, all your time stays free.",
     assumptions: "Where the inputs come from", invalid: "Check the inputs: use whole numbers within the displayed limits. Existing stock allows at most one sale.",
+    timeTitle: "When time changes the plan", shorterTitle: "Finish earlier", nextTitle: "If you have more time",
+    shorterText: (minutes: number, cash: string, free: number) => `${cash} takes ${minutes} min. The remaining ${free} min do not increase cash under these assumptions.`,
+    noShorter: "Receiving this amount needs the entire time budget.",
+    nextText: (minutes: number, extra: number, cash: string, gain: string) => `The earliest higher-cash combination fits in ${minutes} min: ${cash}. That is ${extra} min beyond your budget and ${gain} above the current plan.`,
+    noNext: "No higher cash total fits within 240 min with the current access and run limits.",
+    nextBlocks: "Complete alternative combination", timeAction: (minutes: number) => `Recalculate for ${minutes} min`,
+    timeBoundary: "This compares complete runs with unchanged payouts and access. The alternative may replace current activities. Choose whether that time fits your session.",
     boundary: "Unused time receives no assumed income. Selling accumulated stock does not establish a sustainable GTA$/h rate. Recalculate if access, payouts or duration change.",
     min: "min", entryNote: "including switching", js: "Enable JavaScript to change the calculation. Only an illustrative example is shown below."
   }

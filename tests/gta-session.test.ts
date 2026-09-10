@@ -1,9 +1,78 @@
 import { describe, expect, it } from "vitest";
-import { calculateGtaSession, validGtaSessionInput, type GtaSessionInput, type GtaSessionSource } from "../src/lib/gta-session";
+import { calculateGtaSession, calculateGtaSessionTimeTradeoffs, validGtaSessionInput, type GtaSessionInput, type GtaSessionSource } from "../src/lib/gta-session";
 
 const sale: GtaSessionSource = { kind: "ready-sale", available: true, cashPerRun: 200000, minutesPerRun: 35, entryMinutes: 5, maxRuns: 1 };
 const mission: GtaSessionSource = { kind: "mission", available: true, cashPerRun: 140000, minutesPerRun: 25, entryMinutes: 5, maxRuns: 4 };
 const plan = (minutesAvailable: number, sources = [sale, mission]) => calculateGtaSession({ minutesAvailable, sources })!;
+
+describe("GTA session time choices", () => {
+  it("finds the first higher-cash combination, including replacement of activities", () => {
+    const result = calculateGtaSessionTimeTradeoffs({ minutesAvailable: 60, sources: [sale, mission] })!;
+    expect(result).toMatchObject({ finishAt: 55, freeMinutes: 5, cash: 280000,
+      next: { minutes: 70, extraMinutes: 10, extraCash: 60000, plan: { counts: [1, 1], cash: 340000, unusedMinutes: 0 } } });
+    expect(plan(69).best.cash).toBe(280000);
+    expect(plan(54).best.cash).toBeLessThan(result.cash);
+  });
+
+  it("does not interpolate cash while the next complete run is unfinished", () => {
+    expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: 29, sources: [mission] })).toMatchObject({
+      finishAt: 0, freeMinutes: 29, cash: 0, next: { minutes: 30, extraMinutes: 1, extraCash: 140000 },
+    });
+    expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: 75, sources: [sale, mission] })).toMatchObject({
+      finishAt: 70, freeMinutes: 5, next: { minutes: 80, extraMinutes: 5, extraCash: 80000, plan: { counts: [0, 3] } },
+    });
+  });
+
+  it("respects one stock sale, availability, repeat limits and the 240-minute bound", () => {
+    for (const sources of [[sale], [{ ...mission, maxRuns: 2 }], [{ ...mission, available: false }], [{ ...mission, cashPerRun: -1 }]]) {
+      expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: 100, sources })?.next).toBeNull();
+    }
+    expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: 239, sources: [{ ...mission, minutesPerRun: 240, entryMinutes: 0, maxRuns: 1 }] })?.next?.minutes).toBe(240);
+    expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: 239, sources: [{ ...mission, minutesPerRun: 240, entryMinutes: 1, maxRuns: 1 }] })?.next).toBeNull();
+    expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: 240, sources: [sale, mission] })?.next).toBeNull();
+    expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: NaN, sources: [mission] })).toBeNull();
+    expect(calculateGtaSessionTimeTradeoffs({ minutesAvailable: 60, sources: [{ ...sale, maxRuns: 2 }] })).toBeNull();
+  });
+
+  it("keeps both thresholds independent of source ordering", () => {
+    const a = calculateGtaSessionTimeTradeoffs({ minutesAvailable: 60, sources: [sale, mission] })!;
+    const b = calculateGtaSessionTimeTradeoffs({ minutesAvailable: 60, sources: [mission, sale] })!;
+    expect([b.finishAt, b.cash, b.next?.minutes, b.next?.extraCash]).toEqual([a.finishAt, a.cash, a.next?.minutes, a.next?.extraCash]);
+    expect(b.next?.plan.counts).toEqual([...a.next!.plan.counts].reverse());
+  });
+
+  it("matches an independent enumeration of all permitted combinations", () => {
+    let seed = 917;
+    const next = (limit: number) => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed % limit; };
+    for (let trial = 0; trial < 40; trial += 1) {
+      const input: GtaSessionInput = { minutesAvailable: next(100), sources: Array.from({ length: 1 + next(4) }, () => ({
+        kind: "mission", available: next(4) !== 0, cashPerRun: next(100) - 10, minutesPerRun: 1 + next(45), entryMinutes: next(10), maxRuns: next(4),
+      })) };
+      const combinations: Array<{ cash: number; minutes: number }> = [];
+      const enumerate = (index: number, cash: number, minutes: number) => {
+        if (minutes > 240) return;
+        if (index === input.sources.length) { combinations.push({ cash, minutes }); return; }
+        const source = input.sources[index]!;
+        for (let runs = 0; runs <= (source.available ? source.maxRuns : 0); runs += 1) {
+          enumerate(index + 1, cash + runs * source.cashPerRun, minutes + (runs ? source.entryMinutes + runs * source.minutesPerRun : 0));
+        }
+      };
+      enumerate(0, 0, 0);
+      const cash = Math.max(...combinations.filter(c => c.minutes <= input.minutesAvailable).map(c => c.cash));
+      const finishAt = Math.min(...combinations.filter(c => c.cash === cash && c.minutes <= input.minutesAvailable).map(c => c.minutes));
+      const higher = combinations.filter(c => c.cash > cash);
+      const boundary = Math.min(...higher.map(c => c.minutes));
+      const result = calculateGtaSessionTimeTradeoffs(input)!;
+      expect([result.cash, result.finishAt, result.freeMinutes]).toEqual([cash, finishAt, input.minutesAvailable - finishAt]);
+      if (!higher.length) expect(result.next).toBeNull();
+      else {
+        const nextCash = Math.max(...higher.filter(c => c.minutes === boundary).map(c => c.cash));
+        expect(result.next).toMatchObject({ minutes: boundary, extraMinutes: boundary - input.minutesAvailable,
+          extraCash: nextCash - cash, plan: { cash: nextCash, usedMinutes: boundary, unusedMinutes: 0 } });
+      }
+    }
+  });
+});
 
 describe("GTA complete-cycle session selection", () => {
   it("changes the decision when a ready sale and a mission fit together", () => {

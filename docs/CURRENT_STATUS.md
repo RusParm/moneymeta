@@ -1,5 +1,12 @@
 # Current status
 
+## v1.35 candidate: when session time changes the GTA decision
+
+- v1.34 was published through PR #24 after the owner's September 10 approval. Its source tree `4c99c88cce4c8a315fe6e37c5e043d93f2836139` matches the reviewed preview. Production confirmation is recorded in that PR.
+- The existing GTA session planner now compares ending earlier with the same cash against the earliest longer session that permits a strictly higher cash total. Both alternatives reuse the observed payouts, access, switching times, whole runs and repeat limits. The complete alternative combination is displayed because it may replace the original activities.
+- One explicit action changes only the time budget and recalculates the existing plan. There are no new inputs, pages, provider calls or saved-record schema changes. The search remains bounded to 240 minutes and never extends an expired weekly bonus.
+- Local validation: 419 tests in 37 files passed, including independent enumeration of time thresholds; Astro check/build and link audit passed. Final preview and release evidence will be recorded in the release PR. No current weekly-payout refresh or measured player-value claim is made.
+
 ## v1.34 candidate: return to a replay task
 
 - Published baseline: v1.33, PR #23, main `0b897988a7927455f64f3cbff5a7f6025c96b742`, production `dpl_GRD4JZJmm1nArSAAkHtkqxAJtp3A`. Explicit production approval was received on September 10. The source tree matches the reviewed preview; main Product quality run `34447602554` passed. Main-domain Slardar load, conditional task, copying and reset passed with no application-origin console errors observed.
