@@ -1,5 +1,17 @@
 # Money Meta roadmap
 
+## Current increment: v1.34 replay task to next play
+
+Published baseline: v1.33, PR #23, main `0b897988a7927455f64f3cbff5a7f6025c96b742`.
+
+1. Save the displayed next-match task explicitly, keeping the original replay observations and source context intact.
+2. Return from the Dota homepage panel or audit without loading the match again. Put task history on a focused RU/EN page.
+3. Record whether the player made the check, missed it, or had no comparable situation. Do not equate this self-report with skill improvement or match outcome.
+4. Carry a completed task into another attempt deliberately. Keep records bounded, stale writes safe and notes off URLs and telemetry.
+5. Use the owner's next real matches to assess whether the check was useful and how the next decision changes. This is product validation; passing storage tests alone cannot establish retention.
+
+See `DOTA_REPLAY_TASK_JOURNAL.md`. Continue game-specific depth across all six hubs after this bounded Dota increment.
+
 ## Current increment: v1.33 one replay decision
 
 Published baseline: v1.32, PR #22, main `4fed3e614c8f28c1801b8a724e11493b0eaf4ab1`. The owner will bring new games for player validation; implementation continues using the already reviewed Slardar example.

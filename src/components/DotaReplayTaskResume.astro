@@ -1,0 +1,22 @@
+---
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+---
+<aside class="dota-task-resume" data-dota-task-resume data-lang={lang} hidden aria-label={lang === "ru" ? "Вернуться к задаче после матча" : "Return to your match task"}>
+  <strong>{lang === "ru" ? "В прошлый раз ты решил…" : "Last time you decided…"}</strong>
+  <p data-task-resume-text></p>
+  <small data-task-resume-context></small>
+  <a data-task-resume-link href={`${lang === "ru" ? "" : "/en"}/dota-2/tasks/`}>{lang === "ru" ? "Мои задачи →" : "My tasks →"}</a>
+</aside>
+<style>
+  .dota-task-resume { position: relative; display: grid; gap: 8px; min-width: 0; padding: 18px 20px; margin: 18px 0; border: 1px solid rgba(241,184,75,.24); border-radius: 12px; background: #17131c; color: #fff; }
+  .dota-task-resume[hidden] { display: none; }
+  .dota-task-resume p { margin: 0; max-width: 85ch; color: #ddd5e2; line-height: 1.6; font-size: .9rem; overflow-wrap: anywhere; }
+  .dota-task-resume small { color: #b5acbc; line-height: 1.5; }
+  .dota-task-resume a { color: #f1b84b; min-height: 36px; display: flex; align-items: center; width: fit-content; text-decoration: underline; text-underline-offset: 3px; }
+  .dota-task-resume a:focus-visible { outline: 2px solid #f1b84b; outline-offset: 3px; }
+</style>
+<script>
+  import { initializeDotaReplayTaskResumes } from "../lib/dota-replay-task-resume";
+  initializeDotaReplayTaskResumes();
+</script>

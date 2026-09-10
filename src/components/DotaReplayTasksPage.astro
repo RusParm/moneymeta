@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import BrandHeader from "./BrandHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+import { getDotaReplayJournalCopy } from "../data/dota-replay-journal-copy";
+import "../styles/dota-replay-journal.css";
+
+interface Props { lang: "ru" | "en"; }
+const { lang } = Astro.props;
+const copy = getDotaReplayJournalCopy(lang);
+const base = lang === "ru" ? "/dota-2/" : "/en/dota-2/";
+---
+<BaseLayout title={`${copy.title} | Money Meta`} description={copy.description} lang={lang} canonicalPath={`${base}tasks/`} alternatePath={lang === "ru" ? "/en/dota-2/tasks/" : "/dota-2/tasks/"} noindex>
+  <main class="page replay-journal-page" data-replay-journal data-lang={lang}>
+    <div class="shell">
+      <BrandHeader lang={lang} ruPath="/dota-2/tasks/" enPath="/en/dota-2/tasks/" backPath={base} backLabel={copy.hub} />
+      <header class="replay-journal-intro">
+        <p class="section-kicker">{copy.kicker}</p>
+        <h1>{copy.title}</h1>
+        <p>{copy.intro}</p>
+        <p class="replay-journal-device">{copy.device}</p>
+        <a class="replay-journal-action" href={`${base}matches/audit/`}>{copy.audit}</a>
+      </header>
+      <div class="replay-journal-toolbar">
+        <p data-journal-count></p>
+        <button type="button" data-journal-refresh>{copy.refresh}</button>
+      </div>
+      <p class="replay-journal-message" data-journal-message role="status" aria-live="polite" tabindex="-1">{copy.loading}</p>
+      <p class="replay-journal-boundary" data-journal-full hidden>{copy.full}</p>
+      <section class="replay-journal-empty" data-journal-empty hidden>
+        <h2>{copy.emptyTitle}</h2><p>{copy.empty}</p>
+        <a class="replay-journal-action" href={`${base}matches/audit/`}>{copy.audit}</a>
+      </section>
+      <section data-journal-open-section hidden aria-labelledby="replay-journal-open-title">
+        <h2 id="replay-journal-open-title">{copy.open}</h2>
+        <p class="replay-journal-note" data-journal-no-open hidden>{copy.noOpen}</p>
+        <div class="replay-journal-list" data-journal-open></div>
+      </section>
+      <details class="replay-journal-history" data-journal-history hidden>
+        <summary data-journal-history-label>{copy.history}</summary>
+        <div class="replay-journal-list" data-journal-closed></div>
+      </details>
+      <noscript><p>{copy.noScript}</p></noscript>
+      <SiteFooter lang={lang} />
+    </div>
+  </main>
+</BaseLayout>
+<script>
+  import { initializeDotaReplayJournalPage } from "../lib/dota-replay-journal-ui";
+  initializeDotaReplayJournalPage();
+</script>

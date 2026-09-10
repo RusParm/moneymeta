@@ -20,6 +20,7 @@ const description = ru ? "Сохранённые планы, вводные и �
         <h1>{title}</h1>
         <p>{ru ? "Сравни два варианта одной задачи и проверь, чем отличаются вводные. После игры вернись и запиши, что получилось." : "Compare two variants of the same task and check which inputs changed. Return after playing to note what happened."}</p>
         <p class="saved-device-note">{ru ? "Список хранится в этом браузере. На другом устройстве он будет пуст." : "This list stays in this browser. It will be empty on another device."}</p>
+        <p><a href={`${ru ? "" : "/en"}/dota-2/tasks/`}>{ru ? "Задачи после матчей Dota 2 →" : "Post-match Dota 2 tasks →"}</a></p>
       </header>
       <div class="saved-filters">
         <label>{ru ? "Игра" : "Game"}<select data-saved-game><option value="">{ru ? "Все игры" : "All games"}</option>{Object.entries(scenarioGames).map(([id, game]) => <option value={id}>{game.name}</option>)}</select></label>

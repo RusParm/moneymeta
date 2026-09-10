@@ -2026,3 +2026,5 @@
   .dota-match-audit :is(.match-final-review, .match-recovery) { padding: 16px; }
   .match-recovery-actions .button { flex: 1 1 100%; }
 }
+.match-task-route { margin: 14px 0; }
+.match-task-route a { color: #f1b84b; text-decoration: underline; text-underline-offset: 3px; }

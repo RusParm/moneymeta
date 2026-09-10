@@ -1,13 +1,19 @@
 # Current status
 
-## v1.33 candidate: one replay decision
+## v1.34 candidate: return to a replay task
 
-- Published baseline: v1.32, PR #22, main `4fed3e614c8f28c1801b8a724e11493b0eaf4ab1`, production `dpl_Ebn3SmD2tdzQrYiMxYsxv9Kr6TED`. The production tree matched the reviewed preview, main-commit CI passed and the main-domain Slardar, GTA and WoW checks passed after explicit owner approval.
-- Current work turns an eligible Dota episode into two conditional entry choices and one next-match task. The player supplies three observations from a chosen moment in the replay; a purchase or economic gap cannot supply them.
-- First scope: the selected hero's nearby BKB purchase against reviewed immunity-piercing control, or a nearby base Blink purchase. Reuses existing versioned mechanics. No inferred fight, cooldown, best move, causal mistake or team-strength probability.
-- Supporting purchase evidence is expandable when a decision is available. Unsupported and final-only cases retain their previous replay task. No new provider fields, storage, telemetry or account integration. All six live hubs remain maintained.
-- Local verification: 391 tests in 36 files passed; Astro check of 268 files has zero diagnostics and builds 589 pages; 26,080 internal links checked without errors. Independent review found no remaining model, state or integration blocker. The copied-note qualification was subsequently covered by the 15 focused decision tests and a final build.
-- Scope and acceptance: `DOTA_REPLAY_DECISION.md`. A remote preview, browser acceptance and exact-commit CI have not run for v1.33. Automatic approval review rejected the source-tree upload to public `RusParm/moneymeta`, including after read-only checks confirmed the repository belongs to the existing deployed project. It requires explicit owner authorization for this public source upload. Local work is ready; no v1.33 PR or deployment has been created. Production remains v1.32.
+- Published baseline: v1.33, PR #23, main `0b897988a7927455f64f3cbff5a7f6025c96b742`, production `dpl_GRD4JZJmm1nArSAAkHtkqxAJtp3A`. Explicit production approval was received on September 10. The source tree matches the reviewed preview; main Product quality run `34447602554` passed. Main-domain Slardar load, conditional task, copying and reset passed with no application-origin console errors observed.
+- Current work adds a deliberate browser-local copy of one meaningful next-match task, a dedicated RU/EN journal, return links and an after-play self-report. Source observations remain historical and are never restored as answers for a different moment or match.
+- The journal holds at most eight records without silent eviction. Original task snapshots and closed outcomes are immutable. Repeating creates a new attempt. Unknown observations remain unknown; a pending `verify` focus is not a selected task.
+- No provider response, timeline, inventory, account identity or chat is stored. No automatic match requests, analytics events, performance grades or cross-match statistical claims are added.
+- Local verification passed: 414 tests in 37 files, Astro check of 278 files without errors/warnings/hints, 591 built pages, and 26,144 internal links without errors. Independent review found and resolved the invalid `verify` snapshot and historical-language accessibility gaps. Remote preview/browser acceptance remains pending; evidence will be recorded in the release PR. See `DOTA_REPLAY_TASK_JOURNAL.md`. All six live hubs remain maintained.
+
+## v1.33 published: one replay decision
+
+- Added conditional entry choices and a next-match task using the selected hero's nearby BKB against reviewed immunity-piercing control, or base Blink.
+- Player observations are separate from purchase evidence and gold changes. No inferred fight, cooldown, causal error or draft-strength probability.
+- Local and preview gates passed: 391 tests in 36 files; Astro check of 268 files without diagnostics; 589 pages; 26,080 internal links without errors. RU/EN Slardar and Rubick paths, copy, fallback, dismissal and context resets passed in the reviewed preview.
+- Published on September 10 through PR #23. The earlier public-source upload rejection was resolved by explicit owner authorization before upload. Source, preview, CI and production evidence are recorded in PR #23.
 
 Earlier candidate headings preserve implementation history; release evidence is recorded in the corresponding PR.
 

@@ -14,6 +14,7 @@ import BrandHeader from "./BrandHeader.astro";
 import DotaItemNav from "./DotaItemNav.astro";
 import DotaItemsStatus from "./DotaItemsStatus.astro";
 import DotaMatchFinalReview from "./DotaMatchFinalReview.astro";
+import DotaReplayTaskResume from "./DotaReplayTaskResume.astro";
 import SiteFooter from "./SiteFooter.astro";
 import "../styles/dota-items.css";
 import "../styles/dota-match-audit.css";
@@ -507,6 +508,8 @@ const payload = JSON.stringify({
       </header>
 
       <DotaItemNav lang={lang} active="audit" />
+      <p class="match-task-route"><a href={`${lang === "ru" ? "" : "/en"}/dota-2/tasks/`}>{lang === "ru" ? "Мои задачи после матчей →" : "My post-match tasks →"}</a></p>
+      <DotaReplayTaskResume lang={lang} />
 
       <section id="match-audit-console" class="match-audit-console" aria-labelledby="match-audit-input-title">
         <nav class="match-audit-steps" aria-label={lang === "ru" ? "Шаги разбора" : "Audit steps"}>
@@ -733,6 +736,7 @@ const payload = JSON.stringify({
   import { buildDotaEpisodeNote, renderDotaEpisodeContext } from "../lib/dota-episode-context-ui";
   import { buildDotaReplayDecision } from "../lib/dota-replay-decision";
   import { renderDotaReplayDecision } from "../lib/dota-replay-decision-ui";
+  import { saveDotaReplayTask } from "../lib/dota-replay-task-save";
 
   const root = document.querySelector<HTMLElement>("[data-dota-match-audit]");
   if (root) {
@@ -1175,6 +1179,12 @@ const payload = JSON.stringify({
           root.querySelector<HTMLButtonElement>('[data-result-tab="draft"]')!.focus();
         },
         copyText: (note) => copyText(`${decisionHeading}\n\n${note}`),
+        saveTask: (selectedDecision, observations) => saveDotaReplayTask({
+          matchId: currentMatch!.matchId, playerSlot: audit.player.playerSlot,
+          role: roleControl.value === "core" || roleControl.value === "support" ? roleControl.value : undefined,
+          opponentSlot: parseDotaPlayerSlot(opponentControl.value) ?? undefined,
+          decision: selectedDecision, observations, lang, heroName: (id) => heroFor(id).name,
+        }),
         onNoteChange: (note) => {
           currentDecisionNote = note;
           root.querySelector<HTMLElement>("[data-focus-copy-status]")!.textContent = "";
