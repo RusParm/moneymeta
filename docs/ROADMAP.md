@@ -1,5 +1,11 @@
 # Money Meta roadmap
 
+## Current increment: v1.35 time choices inside the GTA session planner
+
+Keep the six-game depth priority. After the Dota task journal, deepen an existing GTA decision: can the player stop earlier for the same cash, and where does the next complete-run combination change the result? Show the actual alternative activities, preserve run limits and let the player deliberately change only the time budget. This does not establish current event payouts or model overlapping production.
+
+Player validation remains the next evidence gate: does the time comparison change the player's choice, and do the observed full-run times still hold in a real session?
+
 ## Current increment: v1.34 replay task to next play
 
 Published baseline: v1.33, PR #23, main `0b897988a7927455f64f3cbff5a7f6025c96b742`.

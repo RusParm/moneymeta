@@ -73,9 +73,7 @@ function betterOption(candidate: GtaSessionOption, current: GtaSessionOption) {
       && candidate.blocks.length < current.blocks.length)));
 }
 
-export function calculateGtaSession(input: GtaSessionInput): GtaSessionResult | null {
-  if (!validGtaSessionInput(input)) return null;
-  const horizon = input.minutesAvailable;
+function feasibleStates(input: GtaSessionInput, horizon: number): Array<State | undefined> {
   let states: Array<State | undefined> = Array.from({ length: horizon + 1 });
   states[0] = { cash: 0, counts: [], blocks: 0 };
   for (const source of input.sources) {
@@ -96,6 +94,13 @@ export function calculateGtaSession(input: GtaSessionInput): GtaSessionResult | 
     }
     states = next;
   }
+  return states;
+}
+
+export function calculateGtaSession(input: GtaSessionInput): GtaSessionResult | null {
+  if (!validGtaSessionInput(input)) return null;
+  const horizon = input.minutesAvailable;
+  const states = feasibleStates(input, horizon);
   const empty = option(input, input.sources.map(() => 0));
   let best = empty;
   for (const state of states) {
@@ -112,4 +117,33 @@ export function calculateGtaSession(input: GtaSessionInput): GtaSessionResult | 
   });
   return { best, solo, gainOverSolo: best.cash - solo.cash,
     status: best.blocks.length > 1 ? "mixed" : best.blocks.length === 1 ? "single" : "no-positive-fit" };
+}
+
+export interface GtaSessionTimeTradeoffs {
+  finishAt: number;
+  freeMinutes: number;
+  cash: number;
+  next: { minutes: number; extraMinutes: number; extraCash: number; plan: GtaSessionOption } | null;
+}
+
+/** The earliest strictly higher cash total, with the same availability and run limits.
+ * The new combination may replace the original activities; it is not an extra run
+ * appended to them. No cash is interpolated between complete-run boundaries.
+ */
+export function calculateGtaSessionTimeTradeoffs(input: GtaSessionInput): GtaSessionTimeTradeoffs | null {
+  const current = calculateGtaSession(input);
+  if (!current) return null;
+  const result: GtaSessionTimeTradeoffs = {
+    finishAt: current.best.usedMinutes, freeMinutes: current.best.unusedMinutes, cash: current.best.cash, next: null,
+  };
+  if (input.minutesAvailable === GTA_SESSION_MAX_MINUTES) return result;
+  const states = feasibleStates(input, GTA_SESSION_MAX_MINUTES);
+  for (let minutes = input.minutesAvailable + 1; minutes <= GTA_SESSION_MAX_MINUTES; minutes += 1) {
+    const state = states[minutes];
+    if (!state || state.cash <= current.best.cash) continue;
+    result.next = { minutes, extraMinutes: minutes - input.minutesAvailable, extraCash: state.cash - current.best.cash,
+      plan: option({ ...input, minutesAvailable: minutes }, state.counts) };
+    break;
+  }
+  return result;
 }

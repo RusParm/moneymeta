@@ -27,6 +27,15 @@
 .gta-session-blocks li span { font-size: .88rem; }
 .gta-session-blocks li small { color: var(--muted); font-size: .77rem; }
 .gta-session-alternative { margin-top: 1rem; padding-top: .2rem; border-top: 1px solid var(--line); }
+.gta-session-time { margin-top: 1rem; border-top: 1px solid var(--line); }
+.gta-session-time-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: .75rem; }
+.gta-session-time-options > div { min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: 10px; background: rgba(255,255,255,.025); }
+.gta-session-time h6 { margin: 0 0 .5rem; color: var(--teal); font-size: 1rem; }
+.gta-session-time-options p { font-size: 1rem; line-height: 1.6; overflow-wrap: anywhere; margin: .5rem 0; }
+.gta-session-time-options [data-session-next-blocks] { color: var(--muted); font-size: .875rem; }
+.gta-session-time button { width: 100%; min-height: 44px; margin-top: .5rem; padding: .6rem .8rem; color: var(--text); background: transparent; border: 1px solid var(--teal); border-radius: 8px; font: inherit; font-size: .875rem; cursor: pointer; }
+.gta-session-time button:hover { background: rgba(31,201,171,.08); }
+.gta-session-time button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 .gta-session-boundary { margin: 1rem 0 0; font-size: .82rem; color: var(--muted); line-height: 1.6; }
 .gta-session-error { padding: .8rem; border: 1px solid var(--coral); border-radius: 8px; color: var(--coral); }
 .gta-session [hidden] { display: none !important; }
@@ -34,7 +43,7 @@
   .gta-session-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
-  .gta-session-sources, .gta-session-blocks ol { grid-template-columns: minmax(0, 1fr); }
+  .gta-session-sources, .gta-session-blocks ol, .gta-session-time-options { grid-template-columns: minmax(0, 1fr); }
   .gta-session-source { padding: .85rem; }
   .gta-session-result { padding: 1rem; }
   .gta-session-controls { gap: .75rem; }

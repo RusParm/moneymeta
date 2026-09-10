@@ -1,5 +1,11 @@
 # Decision log
 
+## 2026-09-10: compare complete-run time thresholds in GTA
+
+After the owner requested v1.34 publication and continued improvement, the next bounded increment deepens the existing GTA session model. The current optimum already prefers less time at equal cash. Expose that earliest finish and search the same feasible combinations for the first strictly higher cash amount up to 240 minutes. Do not prorate income into spare minutes, append an imaginary extra run, repeat existing stock, change access or infer future availability.
+
+The longer option displays its entire combination and extra time measured from the player's current budget. An explicit button changes only that budget. Keep both languages, existing URLs and saved-scenario compatibility. These are conditional planning choices, not a reason to keep playing or a claim about current weekly bonuses.
+
 ## 2026-09-10: a chosen replay task can survive the next match
 
 The owner approved v1.33 production and continued development. v1.34 deliberately extends the previous page-memory-only task boundary with an explicit local save. Only a selected snapshot enters an eight-record browser journal; the provider response, full timelines and identities remain excluded. Opening a task performs no provider request.
