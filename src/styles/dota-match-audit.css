@@ -1940,6 +1940,11 @@
 .match-focus-other { margin-top: 16px; }
 .match-focus-other summary { cursor: pointer; color: var(--audit-amber); font-size: .875rem; line-height: 1.5; }
 .match-episode-context { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.12); }
+.match-episode-evidence { margin-top: 20px; min-width: 0; }
+.match-decision-applicability { margin-top: 12px; max-width: 100%; white-space: normal; text-align: left; }
+.match-episode-evidence > summary { cursor: pointer; padding: 12px 0; color: var(--audit-amber); font-weight: 700; overflow-wrap: anywhere; }
+.match-episode-evidence > summary:focus-visible { outline: 2px solid var(--audit-amber); outline-offset: 4px; }
+.match-episode-evidence > .match-episode-context { margin-top: 0; padding-top: 8px; border-top: 0; }
 .match-episode-context > h5 { margin: 0 0 12px; color: white; font-size: 1.125rem; line-height: 1.4; }
 .dota-match-audit .match-episode-context p { margin: 10px 0; font-size: .875rem; line-height: 1.6; overflow-wrap: anywhere; }
 .match-episode-note, .match-episode-empty { color: var(--muted); }

@@ -1,5 +1,15 @@
 # Decision log
 
+## 2026-09-09: player-confirmed circumstances change replay alternatives
+
+v1.32 was published after explicit owner approval through PR #22. The next implementation tests the missing step between replay context and a decision: a compact card for a selected hero's nearby BKB or Blink purchase, with three unknown-by-default observations supplied by the player from one actual entry in the episode.
+
+The model returns conditional alternatives and the cost of each, not a ranked best move. A positive resource check cannot establish that a fight is safe; an unknown response cannot count as a missing threat. The BKB check only covers the explicitly named reviewed disables. These user observations are distinct from provider facts and never explain the earlier gold gap automatically.
+
+Keep this first card in page memory, copy it only deliberately and reset it when the loaded match, hero or comparison is rendered again. No note enters a share URL, storage or analytics. A copied plan states the assumptions and scope. Unsupported cases retain the existing replay question.
+
+All six hubs remain in scope. New match examples are product evidence, not a prerequisite for implementing the bounded next increment. See `DOTA_REPLAY_DECISION.md`.
+
 ## 2026-09-09: reduce the distance between a player's situation and a useful check
 
 The benchmark discussion identifies manual context collection and interpretation as the next product constraint. The first implementation reuses validated models and existing sanitized observations: a direct own-match entry, an exact GTA session example, both-team purchase context at a Dota replay episode and confirmed old stock in a WoW sales-count scenario.
