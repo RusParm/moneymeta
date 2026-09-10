@@ -4,6 +4,7 @@ import type { ImageMetadata } from "astro";
 import ck3World from "../assets/game-worlds/ck3-economy-world.webp";
 import civilizationWorld from "../assets/game-worlds/civilization-economy-world.webp";
 import dotaWorld from "../assets/game-worlds/dota-economy-world.webp";
+import DotaReplayTaskResume from "./DotaReplayTaskResume.astro";
 import fableWorld from "../assets/game-worlds/fable-economy-world.webp";
 import gtaWorld from "../assets/game-worlds/gta-economy-world.webp";
 import totalWarWorld from "../assets/game-worlds/total-war-economy-world.webp";
@@ -298,6 +299,7 @@ const gameInsights = liveGames.map((game) => ({
                     <div data-home-resume-list></div>
                     <small>{lang === "ru" ? "Сопоставь продажи с исходным планом и подготовь следующую партию." : "Compare sales with the original plan and prepare your next batch."}</small>
                   </aside>}
+                  {game.id === "dota" && <DotaReplayTaskResume lang={lang} />}
                   <HomeDecisionExample gameId={game.id as ScenarioGame} lang={lang} />
                 </div>
               </article>

@@ -24,6 +24,8 @@ The card sits before the existing purchase evidence, which expands on demand for
 
 ## State and copying
 
+The bullets below document the v1.33 release. The optional v1.34 local task snapshot extension is specified in `DOTA_REPLAY_TASK_JOURNAL.md`; live form answers still reset and the provider response is never stored.
+
 - Observations live only in the currently rendered page. Re-rendering for a hero, opponent, role, enriched match or new match clears them; merely switching result tabs does not.
 - A reload or language navigation does not persist the observations. The interface explains how to copy the plan first.
 - Copy includes the case, source purchase, player observations, alternatives, task and uncertainty. Existing replay-note copying also includes the current decision. It never copies stale answers from another case.

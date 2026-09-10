@@ -5,6 +5,7 @@ import {
   initialDotaReplayDecisionObservations,
   type DotaReplayDecision,
   type DotaReplayDecisionObservationKey,
+  type DotaReplayDecisionObservations,
 } from "./dota-replay-decision";
 
 type Language = "ru" | "en";
@@ -15,6 +16,7 @@ export interface DotaReplayDecisionRenderOptions {
   openDraft: () => void;
   copyText: (text: string) => Promise<boolean>;
   onNoteChange: (note: string, nextMatchTask?: string) => void;
+  saveTask?: (decision: DotaReplayDecision, observations: DotaReplayDecisionObservations) => { ok: boolean; message: string; href?: string };
 }
 
 let renderSequence = 0;
@@ -188,6 +190,20 @@ export function renderDotaReplayDecision(
   actions.append(copyButton, resetButton, copyStatus);
   root.append(actions);
 
+  const saveArea = make("div", undefined, "match-decision-save");
+  const saveButton = make("button", ru ? "Сохранить задачу на следующую игру" : "Save task for the next match", "mini-action");
+  saveButton.type = "button";
+  const saveHelp = make("p", undefined, "match-decision-note");
+  saveHelp.id = `${prefix}-save-help`;
+  saveButton.setAttribute("aria-describedby", saveHelp.id);
+  const saveStatus = make("p", undefined, "match-decision-copy-status");
+  saveStatus.setAttribute("role", "status");
+  saveStatus.setAttribute("aria-live", "polite");
+  const savedLink = make("a", ru ? "Открыть мои задачи →" : "Open my tasks →");
+  savedLink.hidden = true;
+  saveArea.append(saveButton, saveHelp, saveStatus, savedLink);
+  if (options.saveTask) root.append(saveArea);
+
   function renderResults(): void {
     if (!decision) return;
     observationRevision += 1;
@@ -212,8 +228,25 @@ export function renderDotaReplayDecision(
       .filter((limit) => limit !== copy.observationScope && limit !== copy.boundary)
       .map((limit) => make("li", limit)));
     copyStatus.textContent = "";
+    saveStatus.textContent = "";
+    savedLink.hidden = true;
+    saveButton.disabled = evaluation.taskFocus === "verify";
+    saveHelp.textContent = evaluation.taskFocus === "verify"
+      ? (ru ? "Пока задача не выбрана. Проверь обстоятельства в реплее; неизвестные ответы можно оставить непроверенными." : "No task has been selected yet. Check the replay circumstances; unknown answers can stay unchecked.")
+      : (ru ? "По кнопке задача, ответы и контекст эпизода сохранятся только в этом браузере. После игры вернись и отметь, удалось ли выполнить проверку. Полный ответ матча не сохраняется." : "This button saves the task, answers and episode context only in this browser. Return after play to record whether you made the check. The full match response is not saved.");
     options.onNoteChange(buildDotaReplayDecisionNote(decision, observations, lang, heroName), evaluation.nextMatchTask);
   }
+
+  saveButton.addEventListener("click", () => {
+    if (saveButton.disabled || !options.saveTask) return;
+    const saved = options.saveTask(decision, { ...observations });
+    saveStatus.textContent = saved.message;
+    saveButton.disabled = saved.ok;
+    if (saved.href) {
+      savedLink.href = saved.href;
+      savedLink.hidden = false;
+    }
+  });
 
   resetButton.addEventListener("click", () => {
     Object.assign(observations, initialDotaReplayDecisionObservations());

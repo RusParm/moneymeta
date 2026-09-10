@@ -75,6 +75,10 @@
 .match-replay-decision button { max-width: 100%; min-height: 44px; white-space: normal; text-align: left; }
 .dota-match-audit .match-replay-decision .match-decision-copy-status { margin: 0; font-size: .8125rem; }
 .match-replay-decision :is(select, button, summary, a):focus-visible { outline: 2px solid var(--audit-amber, #f1b84b); outline-offset: 3px; }
+.match-decision-save { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--decision-border); }
+.match-decision-save a { display: inline-block; margin-top: 8px; color: var(--audit-blue, #71a8da); text-decoration: underline; }
+.match-decision-save a[hidden] { display: none; }
+.match-decision-save button:disabled { opacity: .6; cursor: default; }
 
 @media (max-width: 760px) {
   .match-decision-fields { grid-template-columns: minmax(0, 1fr); gap: 12px; }

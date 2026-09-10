@@ -1,5 +1,15 @@
 # Decision log
 
+## 2026-09-10: a chosen replay task can survive the next match
+
+The owner approved v1.33 production and continued development. v1.34 deliberately extends the previous page-memory-only task boundary with an explicit local save. Only a selected snapshot enters an eight-record browser journal; the provider response, full timelines and identities remain excluded. Opening a task performs no provider request.
+
+A meaningful task may retain unverified observations when a known obstacle already selects the check. A `verify` focus remains unfinished replay work and cannot become a saved next-match prescription. Unknown answers must never be coerced into confirmations to unlock saving.
+
+The original task, original language and evidence remain historical. A later self-report closes that attempt without rewriting it. Checked, missed and no-comparable-situation are distinct observations, not success rates or explanations for wins. A repeat creates a new attempt and explicitly requires checking the new game's circumstances; past observations never pre-fill a new audit.
+
+Use a dedicated journal rather than forcing replay records into calculator scenarios. No silent eviction or overwrite after corrupt, unsupported, stale or denied-storage reads. All six live hubs remain in scope; player evidence is required before claiming recurring value.
+
 ## 2026-09-09: player-confirmed circumstances change replay alternatives
 
 v1.32 was published after explicit owner approval through PR #22. The next implementation tests the missing step between replay context and a decision: a compact card for a selected hero's nearby BKB or Blink purchase, with three unknown-by-default observations supplied by the player from one actual entry in the episode.
