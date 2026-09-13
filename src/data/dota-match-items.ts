@@ -10,7 +10,7 @@ export interface DotaMatchItemReference {
 export const dotaMatchItemSnapshot = {
   provider: "odota/dotaconstants",
   sourceUrl: "https://github.com/odota/dotaconstants/blob/master/build/items.json",
-  checkedAt: "2026-09-03"
+  checkedAt: "2026-09-13"
 } as const;
 
 /** Full non-recipe item ID map used only to resolve final match inventory. */
@@ -425,4 +425,3 @@ export const dotaMatchItems = [
   {"id":4301,"key":"ofrenda_shovel","name":"Scrying Shovel","image":"https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/ofrenda_shovel.png?t=1593393829403","cost":0,"tier":null},
   {"id":4302,"key":"ofrenda_pledge","name":"Forebearer's Fortune","image":"https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/ofrenda_pledge.png?t=1593393829403","cost":0,"tier":null},
 ] satisfies readonly DotaMatchItemReference[];
-
