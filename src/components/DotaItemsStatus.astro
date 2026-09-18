@@ -30,16 +30,16 @@ const copy = lang === "ru" ? {
 
 <aside class:list={["dota-items-status", { "is-compact": compact }]} aria-label={copy.label}>
   <div class="dota-items-status-signal"><strong>{copy.label}</strong></div>
-  <p>{lang === "ru" ? `Цены и изменения предметов: ${dotaItemPatch.patch}, проверено ${dotaItemPatch.checkedAt}. Тайминги ниже взяты из прежней выборки ${dotaItemsSnapshot.patch.label}.` : `Prices and item changes: ${dotaItemPatch.patch}, checked ${dotaItemPatch.checkedAt}. Timings below come from the older ${dotaItemsSnapshot.patch.label} cohort.`} <a href={dotaItemPatch.sourceUrl} target="_blank" rel="noopener noreferrer">Valve ↗</a></p>
   <dl>
     <div><dt>{dotaItemsSnapshot.patch.label}</dt><dd>{lang === "ru" ? "патч среза" : "snapshot patch"}</dd></div>
     <div><dt>{dotaItemsSnapshot.cohort.matches}</dt><dd>{copy.matches}</dd></div>
     <div><dt>{dotaItemsSnapshot.cohort.roleCoveragePct}%</dt><dd>{copy.coverage}</dd></div>
   </dl>
-  {!compact && <p>{copy.note}</p>}
   <div class="dota-items-status-links">
     <FreshnessIndicator lang={lang} policy={{ checkedAt: dotaItemsSnapshot.fetchedAt, maxAgeHours: DOTA_SNAPSHOT_MAX_AGE_HOURS }} current={copy.current} stale={copy.stale} dateLabel={copy.checked} />
     <span>{copy.lastMatch}: <time datetime={dotaItemsSnapshot.cohort.lastMatchAt}>{new Intl.DateTimeFormat(lang === "ru" ? "ru-RU" : "en-GB", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" }).format(new Date(dotaItemsSnapshot.cohort.lastMatchAt))}</time></span>
     <a href={`${getDotaItemsPath(lang)}#methodology`}>{copy.method} →</a>
   </div>
+  <p>{lang === "ru" ? `Цены и изменения предметов: ${dotaItemPatch.patch}, проверено ${dotaItemPatch.checkedAt}. Тайминги ниже взяты из прежней выборки ${dotaItemsSnapshot.patch.label}.` : `Prices and item changes: ${dotaItemPatch.patch}, checked ${dotaItemPatch.checkedAt}. Timings below come from the older ${dotaItemsSnapshot.patch.label} cohort.`} <a href={dotaItemPatch.sourceUrl} target="_blank" rel="noopener noreferrer">Valve ↗</a></p>
+  {!compact && <p>{copy.note}</p>}
 </aside>
