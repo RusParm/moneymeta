@@ -1,4 +1,4 @@
-import { dotaDraftHeroProfiles, dotaDraftProfileSnapshot, type DotaDraftHeroProfile, type DotaDraftTrait } from "../data/dota-draft-profiles";
+import { dotaDraftHeroProfiles, dotaDraftCurrentProfileSnapshot, getDotaDraftProfileReview, type DotaDraftHeroProfile, type DotaDraftTrait } from "../data/dota-draft-profiles";
 import { dotaDraftRules, dotaDraftAxes } from "../data/dota-draft-rules";
 import { dotaDraftPurchaseContexts, dotaDraftPurchaseThreatContexts } from "../data/dota-draft-purchases";
 import type { DotaMatch, DotaMatchPlayer } from "./dota-match";
@@ -170,18 +170,18 @@ export function buildDotaDraftReview(match: DotaMatch, player: DotaMatchPlayer):
   const ownProfiles = own.flatMap((id) => profiles.has(id) ? [profiles.get(id)!] : []);
   const enemyProfiles = enemy.flatMap((id) => profiles.has(id) ? [profiles.get(id)!] : []);
   const valid = validLineup(match, player);
-  const patchMatches = match.patchId === dotaDraftProfileSnapshot.patchId && match.startTime !== null
-    && Number.isFinite(match.startTime) && match.startTime >= Date.parse(dotaDraftProfileSnapshot.supportedSince) / 1000
-    && match.startTime < Date.parse(dotaDraftProfileSnapshot.supportedBefore) / 1000;
+  const matchedReview = getDotaDraftProfileReview(match.patchId, match.startTime);
+  const profileReview = matchedReview ?? dotaDraftCurrentProfileSnapshot;
+  const patchMatches = matchedReview !== undefined;
   const covered = ownProfiles.length + enemyProfiles.length;
   const review: DotaDraftReview = {
     status: !valid ? "unavailable" : !patchMatches ? "patch-mismatch" : covered === 10 ? "ready" : covered > 0 ? "partial" : "unavailable",
     coverage: { own: ownProfiles.length, enemy: enemyProfiles.length, total: covered },
     ownHeroIds: own, enemyHeroIds: enemy,
     uncoveredHeroIds: unique([...own, ...enemy].filter((id) => !profiles.has(id))),
-    patchFamily: dotaDraftProfileSnapshot.patchLabel, checkedAt: dotaDraftProfileSnapshot.checkedAt,
+    patchFamily: profileReview.patchLabel, checkedAt: profileReview.checkedAt,
     axes: [], opportunities: [], threats: [], purchases: [], purchaseLogHeroCount: 0,
-    sourceUrls: [...dotaDraftProfileSnapshot.sourceUrls]
+    sourceUrls: [...profileReview.sourceUrls]
   };
   if (!valid) return review;
   review.purchases = purchaseEvents(match, player, patchMatches);

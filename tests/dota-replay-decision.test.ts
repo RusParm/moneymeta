@@ -52,6 +52,20 @@ describe("Bounded replay decision evidence", () => {
     expect(buildDotaReplayDecision(contextFor(match), 28)).toBeNull();
   });
 
+  it("carries the selected 7.41f review into the decision and rejects mixed provenance", () => {
+    const match = matchFixture();
+    match.startTime = Date.parse("2026-09-18T00:00:00Z") / 1000;
+    const context = contextFor(match);
+    const decision = buildDotaReplayDecision(context, 28)!;
+    expect(decision.patchFamily).toBe("7.41f");
+    expect(decision.checkedAt).toBe("2026-09-18");
+    expect(decision.sourceUrls).toContain("https://www.dota2.com/patches/7.41f");
+    expect(decision.threats.map((threat) => threat.ability)).toContain("Duel");
+    expect(buildDotaReplayDecision({ ...context, checkedAt: "2026-09-08" }, 28)).toBeNull();
+    match.startTime = Date.parse("2026-09-15T12:00:00Z") / 1000;
+    expect(buildDotaReplayDecision(contextFor(match), 28)).toBeNull();
+  });
+
   it("rejects future purchases even if incorrectly placed in the passed episode context", () => {
     const context = contextFor();
     context.own.before = [];

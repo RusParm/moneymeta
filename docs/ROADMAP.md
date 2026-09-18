@@ -1,6 +1,6 @@
 # Immediate follow-up after the September data review
 
-Review Dota 7.41f hero profiles and collect a separately labeled, quality-gated cohort before restoring current-match draft claims. Then observe the three existing decisions with actual player inputs; do not treat synthetic acceptance tests as evidence of player value.
+The qualitative Dota 7.41f profile review is complete through September 18, independently of statistical benchmarks. Keep the reviewed interval current after checking Valve notes. Collect a separately labeled, quality-gated professional cohort before restoring current-match timing comparisons. Observe the three existing decisions with actual player inputs; do not treat synthetic acceptance tests as evidence of player value.
 
 # Next product evidence · 2026-09-18
 

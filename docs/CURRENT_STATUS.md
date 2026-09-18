@@ -1,3 +1,7 @@
+# Decision validation · 2026-09-18
+
+Preview candidate: dated Dota 7.41f qualitative reviews preserve historical 7.41e provenance; future/unreviewed dates remain gated. WoW now leads with funding constraints before hypothetical profit. GTA one-hour flow reviewed without formula changes. See `DECISION_VALIDATION_2026_09_18.md` and release PR for acceptance. Current professional Dota cohort remains uncollected; real player outcome validation is outstanding.
+
 # Game-data candidate · 2026-09-18
 
 Dota 7.41f item deltas, GTA September 17-23 Gunrunning and WoW September hotfix context are prepared in RU/EN. The old Dota cohort stays historical; post-patch draft claims are gated. GTA one-time rewards require eligibility, and drafts are bound to the week. See GAME_DATA_2026_09_18.md. This increment follows PR #26; production is unchanged.

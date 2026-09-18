@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { dotaDraftHeroProfiles, dotaDraftProfileSnapshot } from "../src/data/dota-draft-profiles";
+import { dotaDraftHeroProfiles, dotaDraftProfileSnapshot, dotaDraftCurrentProfileSnapshot } from "../src/data/dota-draft-profiles";
 import { dotaDraftPurchaseContexts } from "../src/data/dota-draft-purchases";
 import { dotaDraftAxes, dotaDraftRules } from "../src/data/dota-draft-rules";
 import { dotaHeroes } from "../src/data/dota-heroes";
@@ -251,13 +251,31 @@ describe("Dota draft context", () => {
     }
   });
 
+  it("selects the reviewed minor patch without relabeling historical evidence", () => {
+    const historical = matchFixture();
+    selected(historical).purchases = [{ key: "black_king_bar", time: 1800 }];
+    const old = review(historical);
+    const current = review({ ...historical, startTime: Date.parse("2026-09-18T18:00:00Z") / 1000 });
+    expect(current.status).toBe("ready");
+    expect(current.patchFamily).toBe("7.41f");
+    expect(current.checkedAt).toBe(dotaDraftCurrentProfileSnapshot.checkedAt);
+    expect(current.sourceUrls).toContain("https://www.dota2.com/patches/7.41f");
+    expect(current.opportunities).toEqual(old.opportunities);
+    expect(current.purchases[0]!.context).toEqual(old.purchases[0]!.context);
+    expect(old.patchFamily).toBe("7.41e");
+    expect(old.checkedAt).toBe("2026-09-08");
+    expect(old.sourceUrls).not.toContain("https://www.dota2.com/patches/7.41f");
+    expect(review({ ...historical, startTime: Date.parse("2026-09-16") / 1000 }).status).toBe("ready");
+    expect(review({ ...historical, startTime: Date.parse("2026-09-15T23:59:59Z") / 1000 }).status).toBe("patch-mismatch");
+  });
+
   it("requires a known start time within the reviewed minor patch even when the patch family matches", () => {
     const match = matchFixture();
     selected(match).purchases = [{ key: "black_king_bar", time: 1800 }];
     const current = review(match);
     const supportedSince = Date.parse(dotaDraftProfileSnapshot.supportedSince) / 1000;
     expect(review({ ...match, startTime: supportedSince }).status).toBe("ready");
-    for (const startTime of [Date.parse(dotaDraftProfileSnapshot.supportedBefore) / 1000, Date.parse("2026-09-18") / 1000, supportedSince - 1, 0, null, undefined, Number.NaN, Number.POSITIVE_INFINITY]) {
+    for (const startTime of [Date.parse(dotaDraftProfileSnapshot.supportedBefore) / 1000, Date.parse("2026-09-19") / 1000, supportedSince - 1, 0, null, undefined, Number.NaN, Number.POSITIVE_INFINITY]) {
       const result = review({ ...match, startTime } as unknown as DotaMatch);
       expect(result.status).toBe("patch-mismatch");
       expectNoClaims(result);

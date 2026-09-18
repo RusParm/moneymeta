@@ -1,3 +1,7 @@
+# 2026-09-18: Match evidence selects its review; funding comes first
+
+A qualitative mechanic review can be extended independently from professional timing statistics. Keep historical patch/date provenance and reject unreviewed dates. For WoW, an unaffordable or reserve-breaching batch must lead with that constraint even when conditional sold-share profit is positive. Preserve the underlying hypothetical comparison and explicit resize action.
+
 # 2026-09-18: Separate current rules from historical evidence
 
 Patch notes may update current item values but cannot refresh old match statistics or certify player-input margins. Close a reviewed minor-patch interval at the next release day. One-time GTA cash must require explicit eligibility and cannot leak between weekly drafts. Preserve historical results.
