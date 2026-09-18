@@ -1,4 +1,5 @@
 ---
+import { dotaItemPatch } from "../data/dota-item-patch";
 import { DOTA_SNAPSHOT_MAX_AGE_HOURS, dotaItemsSnapshot, getDotaItemsPath, type DotaItemsLocale } from "../data/dota-items";
 import FreshnessIndicator from "./FreshnessIndicator.astro";
 
@@ -29,6 +30,7 @@ const copy = lang === "ru" ? {
 
 <aside class:list={["dota-items-status", { "is-compact": compact }]} aria-label={copy.label}>
   <div class="dota-items-status-signal"><strong>{copy.label}</strong></div>
+  <p>{lang === "ru" ? `Цены и изменения предметов: ${dotaItemPatch.patch}, проверено ${dotaItemPatch.checkedAt}. Тайминги ниже взяты из прежней выборки ${dotaItemsSnapshot.patch.label}.` : `Prices and item changes: ${dotaItemPatch.patch}, checked ${dotaItemPatch.checkedAt}. Timings below come from the older ${dotaItemsSnapshot.patch.label} cohort.`} <a href={dotaItemPatch.sourceUrl} target="_blank" rel="noopener noreferrer">Valve ↗</a></p>
   <dl>
     <div><dt>{dotaItemsSnapshot.patch.label}</dt><dd>{lang === "ru" ? "патч среза" : "snapshot patch"}</dd></div>
     <div><dt>{dotaItemsSnapshot.cohort.matches}</dt><dd>{copy.matches}</dd></div>

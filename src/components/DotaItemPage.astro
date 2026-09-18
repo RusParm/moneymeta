@@ -1,4 +1,5 @@
 ---
+import { dotaItemPatch } from "../data/dota-item-patch";
 import {
   dotaItems,
   dotaItemsByKey,
@@ -48,7 +49,7 @@ const copy = lang === "ru" ? {
   back: "← К атласу предметов",
   title: `${item.name}: цена и тайминги в Dota 2 7.41e | Money Meta`,
   description: `${item.name} в Dota 2: стоимость, компоненты, прозрачная оценка характеристик и профессиональные тайминги для коров и поддержки в патче 7.41e.`,
-  kicker: `Dota 2 · предмет · ${dotaItemsSnapshot.patch.label}`,
+  kicker: `Dota 2 · предмет · ${dotaItemPatch.patch}`,
   cost: "стоимость",
   build: item.components.length ? "дерево компонентов" : "покупается напрямую",
   benchmark: reliableRoles.length ? `${reliableRoles.length} ролевых ориентира` : "нет надёжного тайминга",
@@ -110,7 +111,7 @@ const copy = lang === "ru" ? {
   back: "← Back to item atlas",
   title: `${item.name}: Dota 2 7.41e cost and timings | Money Meta`,
   description: `${item.name} in Dota 2: cost, components, transparent stat pricing and professional core and support timings in Patch 7.41e.`,
-  kicker: `Dota 2 · item · ${dotaItemsSnapshot.patch.label}`,
+  kicker: `Dota 2 · item · ${dotaItemPatch.patch}`,
   cost: "cost",
   build: item.components.length ? "component tree" : "direct purchase",
   benchmark: reliableRoles.length ? `${reliableRoles.length} role benchmarks` : "no reliable timing",

@@ -89,7 +89,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     lede: t("Money Meta связывает твой банк, время на игру и цель с конкретным следующим ходом. Не листай одну бесконечную страницу: выбери задачу и открой нужный слой.", "Money Meta connects your bank, play time and objective to one concrete next move. Pick the decision and open the relevant layer instead of scrolling one endless page."),
     valueTitle: t("Не список выплат, а система принятия решений", "Not a payout list. A decision system."),
     valueText: t("Мы отделяем валовую продажу от чистого потока, производственное время от ручной нагрузки и временный бонус от постоянной экономики.", "We separate headline sale value from net flow, production time from active friction and a temporary bonus from the permanent economy."),
-    version: t("Business Rivalries · до 9 сентября", "Business Rivalries · through September 9"),
+    version: t("Business Rivalries · до 23 сентября", "Business Rivalries · through September 23"),
     checkedAt: weeklyMeta.checkedAt,
     sourceLabel: t("Rockstar Newswire", "Rockstar Newswire"),
     sourceUrl: weeklyMeta.sourceUrl,
@@ -109,7 +109,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     media: [{
       src: "https://media-rockstargames-com.akamaized.net/tina-uploads/posts/ak43aoa18a19o2/21bf2060f235313475f05e33bc1c48cee883f07c.jpg",
       alt: t("Официальный постер GTA Online Business Rivalries с четырьмя владельцами бизнесов", "Official GTA Online Business Rivalries poster with four business owners"),
-      caption: t("Официальный постер Rockstar для Business Rivalries. Текущий недельный слой отделяет бонусы с 3 по 9 сентября от следующих этапов месячного события.", "Rockstar's official Business Rivalries poster. The live weekly layer separates the September 3 to 9 bonuses from the later stages of the month-long event."),
+      caption: t("Официальный постер Rockstar для Business Rivalries. Текущий недельный слой отделяет бонусы с 17 по 23 сентября от следующих этапов месячного события.", "Rockstar's official Business Rivalries poster. The live weekly layer separates the September 17 to 23 bonuses from the later stages of the month-long event."),
       sourceLabel: "Rockstar Games",
       sourceUrl: weeklyMeta.sourceUrl,
       position: "50% 45%"
@@ -122,9 +122,9 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     name: "Dota 2",
     shortName: "Dota",
     publisher: "Valve",
-    title: t("Экономика Dota 2: тайминги, роли и золото в патче 7.41e | Money Meta", "Dota 2 economy: timings, roles and gold in Patch 7.41e | Money Meta"),
+    title: t("Экономика Dota 2: тайминги, роли и золото в патче 7.41f | Money Meta", "Dota 2 economy: timings, roles and gold in Patch 7.41f | Money Meta"),
     description: t("Портал решений по экономике матча Dota 2: карта золота, пути по ролям, контекст патча, гайды и расчёты Midas и выкупа.", "A Dota 2 match-economy portal with gold flow, role paths, patch context, guides and Midas and buyback tools."),
-    eyebrow: t("Dota 2 · экономика матча · патч 7.41e", "Dota 2 · match economy · Patch 7.41e"),
+    eyebrow: t("Dota 2 · экономика матча · патч 7.41f", "Dota 2 · match economy · Patch 7.41f"),
     heading: t("Предмет ценен не ценой. Ценен моментом, который он выигрывает.", "An item is not valuable for its price. It is valuable for the timing it wins."),
     lede: t("Свяжи фарм, роль, ближайшую цель и цену смерти. Каждый раздел отвечает на отдельный вопрос, а официальные иконки Valve помогают считывать сценарий ещё до текста.", "Connect farm, role, the next objective and death cost. Every page answers one decision, while official Valve imagery makes the scenario legible before the copy."),
     valueTitle: t("Экономика матча как цепочка конверсий", "Match economy as a chain of conversions"),
@@ -142,7 +142,7 @@ export const hubPortals: Record<HubPortalId, HubPortalConfig> = {
     sections: [
       section("economy", "01", "QB", t("Экономика", "Economy"), t("Золото по минутам и конверсия в карту", "Gold by minute and conversion into map control"), t("Линия, пропускная способность фарма, распределение золота, цели, смерть и повторный цикл.", "Lane income, farm throughput, gold allocation, objectives, death and the next loop."), t("Увидишь, где стоимость героя перестаёт работать", "See where net worth stops working"), t("Как золото должно превратиться в преимущество?", "How should gold become an advantage?")),
       section("player-paths", "02", "DK", t("Маршруты", "Player paths"), t("Решения по роли и стадии матча", "Decisions by role and match stage"), t("Керри, инициатор и поддержка получают разный порядок проверок перед покупкой.", "Carry, initiator and support use a different order of checks before buying."), t("Сопоставишь покупку со своей задачей", "Match the purchase to your job"), t("Как моя роль создаёт ценность в ближайшие пять минут?", "How does my role create value in the next five minutes?")),
-      section("meta", "03", "7.41e", t("Мета", "Meta"), t("Что патч меняет в решениях, а не в списках", "What the patch changes in decisions, not lists"), t("Три проверенных изменения, их экономический смысл и граница между фактом патча и нашей интерпретацией.", "Three verified changes, their economic meaning and a clear boundary between patch fact and interpretation."), t("Поймёшь, какой старый шаблон нужно перепроверить", "Know which old habit needs retesting"), t("Как 7.41e меняет мой следующий выбор?", "How does 7.41e change my next choice?")),
+      section("meta", "03", "7.41f", t("Мета", "Meta"), t("Что патч меняет в решениях, а не в списках", "What the patch changes in decisions, not lists"), t("Три проверенных изменения, их экономический смысл и граница между фактом патча и нашей интерпретацией.", "Three verified changes, their economic meaning and a clear boundary between patch fact and interpretation."), t("Поймёшь, какой старый шаблон нужно перепроверить", "Know which old habit needs retesting"), t("Как 7.41f меняет мой следующий выбор?", "How does 7.41f change my next choice?")),
       section("guides", "04", "CM", t("Гайды", "Guides"), t("Разборы реплея и протоколы решений", "Replay reviews and decision protocols"), t("От первого двадцатиминутного отчёта до резерва на выкуп перед Рошаном.", "From a first-20-minute ledger to buyback reserve before Roshan."), t("Получишь конкретные отметки для следующего реплея", "Get concrete checkpoints for the next replay"), t("Что именно искать в повторе, кроме KDA?", "What should I inspect in a replay beyond KDA?")),
       section("tools", "05", "ITM", t("Инструменты", "Tools"), t("Очередь предметов, Midas и выкуп", "Item queue, Midas and buyback"), t("План из двух-пяти предметов с профессиональными ориентирами, окупаемость ускорения и запас на второй шанс с вводными конкретного матча.", "A two-to-five item plan with professional benchmarks, acceleration payback and second-life liquidity using match-specific inputs."), t("Увидишь минуту покупки и цену порядка до того, как окно закроется", "See the completion minute and order cost before the window closes"), t("Какой порядок предметов успевает к цели и сохраняет обязательный запас?", "Which item order reaches the objective and preserves the required reserve?"))
     ],

@@ -1,3 +1,7 @@
+# Immediate follow-up after the September data review
+
+Review Dota 7.41f hero profiles and collect a separately labeled, quality-gated cohort before restoring current-match draft claims. Then observe the three existing decisions with actual player inputs; do not treat synthetic acceptance tests as evidence of player value.
+
 # Next product evidence · 2026-09-18
 
 Complete the saved-plan recheck flow, then refresh verified game datasets independently. Validate the existing flagship tasks with observed players before adding more pages: a Dota replay decision, a GTA session choice and a WoW batch size. Record the initial question, time to a useful answer, the decision changed and whether the player returns after play. No retention or demand claim follows from technical tests.

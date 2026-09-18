@@ -1,3 +1,4 @@
+import { dotaItemPatch } from "./dota-item-patch";
 // Build-time metadata. Do not import the full game datasets into the browser.
 import { version } from "../../package.json";
 import { getHubFreshnessPolicy, hubPortals } from "./hub-portals";
@@ -21,7 +22,7 @@ export function scenarioContexts(lang: ScenarioLocale): Record<string, string> {
         : "Personal observations · sequential complete runs · model 1";
     }
     if (tool.key === "dota-compare" || tool.key === "dota-item-plan") {
-      label = `${dotaItemsSnapshot.patch.label} · ${dotaItemsSnapshot.fetchedAt.slice(0, 10)}`;
+      label = `${dotaItemPatch.patch} · ${dotaItemPatch.checkedAt} · OpenDota ${dotaItemsSnapshot.patch.label} · ${dotaItemsSnapshot.fetchedAt.slice(0, 10)}`;
     }
     if (tool.key === "wow-crafting") {
       label = lang === "ru"

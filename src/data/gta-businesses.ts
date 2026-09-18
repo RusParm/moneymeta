@@ -1,7 +1,7 @@
 export type Locale = "ru" | "en";
 export type VerificationStatus = "verified" | "estimated" | "community-reported";
 export type DecisionPriority = "fast-payback" | "max-income" | "low-friction";
-export type WeeklyAccessRequirement = "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse";
+export type WeeklyAccessRequirement = "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse" | "bunker" | "enhanced";
 
 export interface DataProvenance {
   checkedAt: string;
@@ -181,87 +181,114 @@ export interface WeeklyMetaSnapshot {
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  id: "2026-09-03-business-rivalries-executive",
-  startsAt: "2026-09-03",
-  checkedAt: "2026-09-04",
-  validThrough: "2026-09-09",
-  status: "verified",
-  sourceUrl: "https://www.rockstargames.com/newswire/article/ak43aoa18a19o2/compete-across-entrepreneurial-endeavors-in-the-gta-online-business-ri",
-  sourceLabel: "Rockstar Newswire · Business Rivalries",
-  items: {
-    ru: [
-      "С 3 по 9 сентября: продай Special Cargo на GTA$1,000,000, чтобы получить ещё GTA$1,000,000 и Yeti x LS Customs Tracksuit.",
-      "Special Vehicle Work приносит 4X GTA$/RP, Community Mission Series приносит 3X, а Export Mixed Goods и Madrazo Hits приносят 2X.",
-      "Сотрудники складов добывают Special Cargo вдвое быстрее, а офис Arcadius Business Center можно забрать бесплатно до 9 сентября.",
-      "Одно выполненное Weekly Challenge с 3 по 23 сентября даёт право забрать Penaud La Coureuse и бесплатное HSW-улучшение с 24 по 30 сентября на поддерживаемых платформах."
+  "id": "2026-09-17-business-rivalries-gunrunning",
+  "startsAt": "2026-09-17",
+  "checkedAt": "2026-09-18",
+  "validThrough": "2026-09-23",
+  "status": "verified",
+  "sourceUrl": "https://www.rockstargames.com/newswire/article/ak43aoa18a19o2/compete-across-entrepreneurial-endeavors-in-the-gta-online-business-ri",
+  "sourceLabel": "Rockstar Newswire · Business Rivalries",
+  "items": {
+    "ru": [
+      "17-23 сентября: исследовательские миссии бункера дают 2X GTA$/RP и прогресса исследований. Ammu-Nation Contracts и Safeguard Deliveries также дают 2X GTA$/RP.",
+      "За три Bunker Research Missions положены разовые GTA$1,000,000 и Camo Ammu-Nation Sweatsuit. Не включай уже полученную награду в будущий доход.",
+      "Бесплатен только Grapeseed Bunker до 23 сентября. Улучшения, снабжение и время запуска остаются расходами.",
+      "Одно Weekly Challenge с 3 по 23 сентября открывает получение Penaud La Coureuse 24-30 сентября; бесплатное HSW-улучшение доступно на PS5, Xbox Series X|S и PC Enhanced."
     ],
-    en: [
-      "September 3 to 9: sell GTA$1,000,000 worth of Special Cargo to receive another GTA$1,000,000 and the Yeti x LS Customs Tracksuit.",
-      "Special Vehicle Work pays 4X GTA$/RP, the Community Mission Series pays 3X, and Export Mixed Goods and Madrazo Hits pay 2X.",
-      "Warehouse staff source Special Cargo at double speed, while the Arcadius Business Center Office is free to claim through September 9.",
-      "Completing one Weekly Challenge from September 3 to 23 qualifies you to claim a Penaud La Coureuse and complimentary HSW upgrade September 24 to 30 on supported platforms."
+    "en": [
+      "September 17-23: Bunker Research Missions pay 2X GTA$/RP and Research Progress. Ammu-Nation Contracts and Safeguard Deliveries also pay 2X GTA$/RP.",
+      "Three Bunker Research Missions award a one-time GTA$1,000,000 and Camo Ammu-Nation Sweatsuit. Exclude a reward already earned from future income.",
+      "Only Grapeseed Bunker is free through September 23. Upgrades, supplies and setup time still cost you.",
+      "One Weekly Challenge September 3-23 qualifies for a Penaud La Coureuse claim September 24-30; the free HSW upgrade is available on PS5, Xbox Series X|S and PC Enhanced."
     ]
   },
-  opportunities: [
+  "opportunities": [
     {
-      id: "special-vehicle-work",
-      status: "verified",
-      title: { ru: "Special Vehicle Work", en: "Special Vehicle Work" },
-      summary: {
-        ru: "Задания со специальной техникой приносят 4X GTA$ и RP с 3 по 9 сентября.",
-        en: "Special Vehicle Work pays 4X GTA$ and RP from September 3 through 9."
+      "id": "bunker-research",
+      "status": "verified",
+      "title": {
+        "ru": "Bunker Research Missions",
+        "en": "Bunker Research Missions"
       },
-      decision: {
-        ru: "Считай маршрут только при уже открытом доступе: нужен Executive Office и четыре выполненных задания по доставке Vehicle Cargo. Стоимость инфраструктуры в короткий расчёт не входит.",
-        en: "Model this route only with access already unlocked: it requires an Executive Office and four completed Vehicle Cargo source missions. The short-window calculation excludes infrastructure cost."
+      "summary": {
+        "ru": "2X выплат и прогресса исследований; за три миссии предусмотрен разовый миллион.",
+        "en": "2X payouts and Research Progress, with a one-time million for three missions."
       },
-      signal: { ru: "4X · до 9 сент.", en: "4X · through Sep 9" },
-      multiplier: 4,
-      requiredAsset: "special-vehicle-work"
+      "decision": {
+        "ru": "Нужен доступ к миссиям Agent 14. Включай миллион только до выполнения недельного задания; расчёт требует все три миссии в новом плане. Замерь полный цикл с ожиданием.",
+        "en": "Requires access to Agent 14 missions. Include the million only before completing the challenge; this model requires all three missions in the new plan. Measure a full cycle including waits."
+      },
+      "signal": {
+        "ru": "2X · разовый миллион",
+        "en": "2X · one-time million"
+      },
+      "multiplier": 2,
+      "fixedReward": 1000000,
+      "requiredRunsForReward": 3,
+      "requiredAsset": "bunker"
     },
     {
-      id: "community-mission-series",
-      status: "verified",
-      title: { ru: "Community Mission Series", en: "Community Mission Series" },
-      summary: {
-        ru: "Избранные миссии сообщества приносят 3X GTA$ и RP; стартовая подборка действует с 3 по 9 сентября.",
-        en: "Featured Community Missions pay 3X GTA$ and RP, with the opening selection live September 3 to 9."
+      "id": "ammu-nation-contract",
+      "status": "verified",
+      "title": {
+        "ru": "Ammu-Nation Contract",
+        "en": "Ammu-Nation Contract"
       },
-      decision: {
-        ru: "Это открытый маршрут без покупки бизнеса. Проверь один полный заход и сравни его фактический темп со своей обычной сессией.",
-        en: "This route needs no business purchase. Measure one complete run and compare its realized rate with your normal session."
+      "summary": {
+        "ru": "Доставка излишков оружия из бункера даёт двойную выплату до 23 сентября.",
+        "en": "Surplus weapon deliveries from your bunker pay double through September 23."
       },
-      signal: { ru: "3X · без покупки", en: "3X · no purchase" },
-      multiplier: 3
+      "decision": {
+        "ru": "Нужен доступный Duneloader в бункере. Учитывай ожидание следующей доставки; обычные продажи продукции бункера не получают этот множитель.",
+        "en": "Requires the bunker Duneloader to be available. Include the wait for the next delivery; this multiplier does not apply to regular bunker product sales."
+      },
+      "signal": {
+        "ru": "2X · нужен бункер",
+        "en": "2X · bunker required"
+      },
+      "multiplier": 2,
+      "requiredAsset": "bunker"
     },
     {
-      id: "export-mixed-goods",
-      status: "verified",
-      title: { ru: "Export Mixed Goods", en: "Export Mixed Goods" },
-      summary: {
-        ru: "Экспорт смешанных товаров приносит двойную награду с 3 по 9 сентября.",
-        en: "Export Mixed Goods deliveries pay double rewards from September 3 through 9."
+      "id": "community-mission-series",
+      "status": "verified",
+      "title": {
+        "ru": "Community Mission Series",
+        "en": "Community Mission Series"
       },
-      decision: {
-        ru: "Используй маршрут только при уже купленных Executive Office и складе Special Cargo. Бесплатный офис снижает порог входа, но стоимость склада всё равно не входит в недельную модель.",
-        en: "Use this route only with an Executive Office and Special Cargo Warehouse already available. The free office lowers entry cost, but warehouse acquisition still sits outside the weekly model."
+      "summary": {
+        "ru": "Избранные миссии дают 3X GTA$/RP до 23 сентября на PS5, Xbox Series X|S и PC Enhanced.",
+        "en": "Featured missions pay 3X GTA$/RP through September 23 on PS5, Xbox Series X|S and PC Enhanced."
       },
-      signal: { ru: "2X · офис и склад", en: "2X · office and warehouse" },
-      multiplier: 2,
-      requiredAsset: "special-cargo-warehouse"
+      "decision": {
+        "ru": "Проверь платформу и выбранную миссию в меню Community Series. Покупка бизнеса не требуется.",
+        "en": "Check your platform and the featured mission in Community Series. No business purchase is required."
+      },
+      "signal": {
+        "ru": "3X · Enhanced",
+        "en": "3X · Enhanced"
+      },
+      "multiplier": 3,
+      "requiredAsset": "enhanced"
     }
   ],
-  closedWindows: [
+  "closedWindows": [
     {
-      id: "2026-08-27-random-transform",
-      startsAt: "2026-08-27",
-      endedAt: "2026-09-02",
-      title: { ru: "Неделя Random Transform Races закрыта", en: "The Random Transform Races week has closed" },
-      summary: {
-        ru: "Окно с 3X Random Transform Races, 2X Drift Races и 2X Auto Shop Robbery Contracts закончилось 2 сентября и больше не участвует в расчёте.",
-        en: "The 3X Random Transform Races, 2X Drift Races and 2X Auto Shop Robbery Contracts window ended September 2 and no longer enters the calculation."
+      "id": "2026-09-10-business-rivalries-bikers",
+      "startsAt": "2026-09-10",
+      "endedAt": "2026-09-16",
+      "title": {
+        "ru": "Неделя байкеров завершена",
+        "en": "Biker week ended"
       },
-      signal: { ru: "Архив · 27 авг. - 2 сент.", en: "Archive · Aug 27 to Sep 2" }
+      "summary": {
+        "ru": "Бонусы MC, Street Dealer Sales, Bike Service и бесплатный Grapeseed Clubhouse завершились 16 сентября. Более раннее окно Executive также закрыто.",
+        "en": "MC, Street Dealer Sales, Bike Service bonuses and the free Grapeseed Clubhouse ended September 16. The earlier Executive window has also closed."
+      },
+      "signal": {
+        "ru": "Архив · 10-16 сент.",
+        "en": "Archive · Sep 10-16"
+      }
     }
   ]
 };

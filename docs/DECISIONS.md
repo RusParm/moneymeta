@@ -1,3 +1,7 @@
+# 2026-09-18: Separate current rules from historical evidence
+
+Patch notes may update current item values but cannot refresh old match statistics or certify player-input margins. Close a reviewed minor-patch interval at the next release day. One-time GTA cash must require explicit eligibility and cannot leak between weekly drafts. Preserve historical results.
+
 # Saved-plan review · 2026-09-18
 
 Make returning to a saved decision actionable: explain which inputs need checking, identify elapsed source-review deadlines even without a deploy, and retain the historical result for comparison. Reuse existing game review policies; business estimates use a 30-day editorial review window, independent of GTA weekly-event expiry. A site-version difference is not proof that a formula changed. No automatic patch-impact inference, formula update or player-input certification is claimed.

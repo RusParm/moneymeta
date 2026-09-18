@@ -221,11 +221,14 @@ export const wowPlayerPaths: WowPlayerPath[] = [
 
 export const wowPulse = {
   release: "Curse of Ula’tek",
-  checkedAt: "2026-08-18",
+  checkedAt: "2026-09-18",
   staleAfterDays: 30,
-  sourceUrl: "https://worldofwarcraft.blizzard.com/en-us/news/24288418/quality-of-life-improvements-coming-in-curse-of-ulatek",
+  sourceUrl: "https://news.blizzard.com/en-us/article/24296142/hotfixes-september-17-2026",
   status: "verified" as const,
   changes: [
+{"signal": {"ru": "15 сентября · Sparks", "en": "September 15 · Sparks"}, "title": {"ru": "Недостающие Sparks возвращают при входе", "en": "Missing Sparks are being restored on login"}, "summary": {"ru": "Blizzard сообщила о выдаче недостающих Spark of Tides игрокам, у которых Spark Dust больше, чем Sparks в сумках и экипировке.", "en": "Blizzard says missing Spark of Tides are being delivered on login to players whose Spark Dust exceeds their Sparks in bags and gear."}, "decision": {"ru": "Базовый лимит Tidal Spark Dust повышен до 3 в августе. Перед заказом войди в игру и проверь фактический запас. Это исправление выдачи, а не снятие лимитов.", "en": "The base Tidal Spark Dust cap rose to 3 in August. Log in and check your actual stock before ordering. This fixes delivery; it does not remove limits."}, "mark": wowMarks.orders, "sourceUrl": "https://news.blizzard.com/en-us/article/24296142/hotfixes-september-17-2026"},
+{"signal": {"ru": "30 минут вместо 45", "en": "30 minutes, previously 45"}, "title": {"ru": "Curse Surges сменяются чаще", "en": "Curse Surges rotate more often"}, "summary": {"ru": "С 15 сентября интервал ротации Curse Surges сокращён до 30 минут.", "en": "The September 15 hotfix reduces the Curse Surge rotation interval to 30 minutes."}, "decision": {"ru": "Перестрой расписание сессии. Более частая ротация сама по себе не доказывает рост золота в час.", "en": "Adjust your session schedule. Faster rotation alone does not prove higher gold per hour."}, "mark": wowMarks.gather, "sourceUrl": "https://news.blizzard.com/en-us/article/24296142/hotfixes-september-17-2026"},
+{"signal": {"ru": "500 монет · на персонажа", "en": "500 coins · per character"}, "title": {"ru": "Ежедневная награда доступна каждому подходящему персонажу", "en": "Each eligible character can earn the daily reward"}, "summary": {"ru": "С 9 сентября каждый персонаж с рангом 6 Preyhunter’s Journey может получать 500 Corrosive Coin в день за победу над Ral’kala.", "en": "Since September 9, each character at Preyhunter’s Journey rank 6 can receive 500 Corrosive Coin daily for defeating Ral’kala."}, "decision": {"ru": "Учитывай доступ каждого персонажа отдельно. Не записывай монеты как золото или прибыль аукциона.", "en": "Check eligibility separately for each character. Do not treat these coins as gold or auction profit."}, "mark": wowMarks.capital, "sourceUrl": "https://news.blizzard.com/en-us/article/24296142/hotfixes-september-17-2026"},
     {
       signal: { ru: "1 сброс на профессию", en: "1 reset / profession" },
       title: { ru: "Знания профессии можно перераспределить", en: "Profession Knowledge can be reallocated" },

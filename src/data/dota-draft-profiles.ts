@@ -1,3 +1,4 @@
+import { dotaItemPatch } from "./dota-item-patch";
 /**
  * Reviewed capabilities, not power ratings or an exhaustive ability catalogue.
  * Classifying a described mechanic as a draft trait is an editorial inference.
@@ -46,6 +47,7 @@ export const dotaDraftProfileSnapshot = {
   // Valve dates the release July 30 without a precise hour. Start at the next
   // full UTC day so matches from that ambiguous release day are not overclaimed.
   supportedSince: "2026-07-31T00:00:00.000Z",
+  supportedBefore: dotaItemPatch.startedAt,
   methodVersion: "draft-context-v1",
   sourceUrls: [abilitySourceUrl, "https://www.dota2.com/patches/7.41e", "https://www.dota2.com/newsentry/678505520073540065"]
 } as const;

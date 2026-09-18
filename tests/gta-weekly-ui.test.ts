@@ -18,7 +18,7 @@ describe("GTA weekly planner UI contract", () => {
   });
 
   it("keeps scenario and weekly-return state local", () => {
-    expect(component).toContain('const storageKey = "money-meta:gta-weekly:v1"');
+    expect(component).toContain('const storageKey = `money-meta:gta-weekly:v1:${weeklyMeta.id}`');
     expect(component).toContain('const seenKey = "money-meta:gta-weekly:last-seen"');
     expect(component).toContain('const journalStorageKey = "money-meta:gta-weekly:journal:v1"');
     expect(component).toContain("localStorage.setItem(seenKey, snapshotId)");
