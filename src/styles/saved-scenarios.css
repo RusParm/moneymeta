@@ -84,3 +84,11 @@
   .saved-comparison-results { grid-template-columns: 1fr; }
 }
 @media (max-width: 440px) { .saved-result, .saved-game-links { grid-template-columns: 1fr; } .saved-card-actions > * { flex: 1 1 auto; } .saved-comparison { padding: 14px; } .saved-comparison-result { padding: 14px; } .saved-comparison-result .saved-result { gap: 12px; } .saved-input-comparison th, .saved-input-comparison td { padding: 9px; } }
+
+.scenario-review { width: 100%; min-width: 0; margin: 16px 0; padding: 14px 16px; border: 1px solid #756044; border-radius: 10px; background: #211c1a; color: #f1d19c; font-size: .875rem; line-height: 1.6; overflow-wrap: anywhere; }
+.scenario-review summary { cursor: pointer; min-height: 28px; font-weight: 650; }
+.scenario-review p { margin: 10px 0; font-size: .875rem; line-height: 1.6; }
+.scenario-review ul { padding-left: 20px; margin: 12px 0; }
+.scenario-review li + li { margin-top: 8px; }
+.scenario-review a { display: inline-block; min-height: 44px; padding: 10px 0; color: #b8f6df; }
+.scenario-review summary:focus-visible { outline: 2px solid #b8f6df; outline-offset: 4px; }

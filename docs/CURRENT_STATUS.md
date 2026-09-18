@@ -1,3 +1,7 @@
+# Saved-plan review candidate · 2026-09-18
+
+Adds a source-review filter and concrete bilingual input checks to saved plans and restored calculators across six games. Overdue bundled data remains overdue after a copy or after-play note. Source expiry is a review deadline, not evidence of a specific patch change; personal-input GTA session and WoW craft models carry no game-news freshness certification. No patch prices, live market feeds or weekly payouts are refreshed by this increment. Local and preview acceptance are tracked in the release PR.
+
 # Current status
 
 ## v1.35 candidate: when session time changes the GTA decision

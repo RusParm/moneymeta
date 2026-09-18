@@ -1,9 +1,9 @@
 // Build-time metadata. Do not import the full game datasets into the browser.
 import { version } from "../../package.json";
-import { hubPortals } from "./hub-portals";
+import { getHubFreshnessPolicy, hubPortals } from "./hub-portals";
 import { civilizationHub } from "./frontier-hubs";
 import { gtaBusinesses } from "./gta-businesses";
-import { dotaItemsSnapshot } from "./dota-items";
+import { DOTA_SNAPSHOT_MAX_AGE_HOURS, dotaItemsSnapshot } from "./dota-items";
 import { scenarioTools, type ScenarioLocale } from "./scenario-tools";
 
 export const scenarioEngineVersion = version;
@@ -29,5 +29,23 @@ export function scenarioContexts(lang: ScenarioLocale): Record<string, string> {
         : "Personal inputs · existing stock and new batch · model 2";
     }
     return [tool.key, label];
+  }));
+}
+
+// These policies identify a due source review, not a confirmed balance change.
+export function scenarioReviewSources(): Record<string, import("../lib/scenario-review").ScenarioReviewSource> {
+  return Object.fromEntries(scenarioTools.flatMap((tool) => {
+    // Personal-input models cannot be certified by a game-news date.
+    if (tool.key === "gta-session" || tool.key === "wow-crafting") return [];
+    const path = tool.game === "dota" && ["dota-compare", "dota-item-plan"].includes(tool.key)
+      ? "/dota-2/items/" : tool.path;
+    const policy = tool.game === "dota" && ["dota-compare", "dota-item-plan"].includes(tool.key)
+      ? { checkedAt: dotaItemsSnapshot.fetchedAt, maxAgeHours: DOTA_SNAPSHOT_MAX_AGE_HOURS }
+      : tool.game === "gta"
+        ? { checkedAt: gtaBusinesses[0]!.provenance.checkedAt, staleAfterDays: 30 }
+        : tool.game === "civ7"
+          ? { checkedAt: civilizationHub.checkedAt, staleAfterDays: civilizationHub.staleAfterDays }
+          : getHubFreshnessPolicy(tool.game);
+    return [[tool.key, { policy, path }]];
   }));
 }
