@@ -175,6 +175,7 @@ export default {
       });
       const responseDurationMs = Date.now() - startedAt;
       if (upstream.status === 404) return json({ code: "not_found" }, 404);
+      if (upstream.status === 401 || upstream.status === 403) return json({ code: "provider_restricted" }, 403);
       if (upstream.status === 429) {
         console.warn("[dota-match-relay] provider rate limit", { durationMs: responseDurationMs });
         return json({ code: "rate_limited" }, 429);

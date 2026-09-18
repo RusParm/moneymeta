@@ -245,8 +245,14 @@ const copy = lang === "ru" ? {
   invalid: "Не удалось распознать Match ID. Вставь только число или обычную ссылку на страницу матча.",
   notFound: "OpenDota не нашёл этот публичный матч. Проверь ID и видимость истории матчей.",
   rateLimited: "Лимит OpenDota для этого подключения исчерпан. Подожди немного и повтори запрос.",
-  timeout: "OpenDota не успел ответить. Ничего не сохранено: подожди минуту и повтори запрос.",
-  failed: "Не удалось получить матч. Проверь ID или повтори запрос позже.",
+  timeout: "OpenDota не успел ответить. Повтори загрузку немного позже.",
+  providerUnavailable: "OpenDota временно не отдаёт данные. Это не означает, что ID неверный. Повтори загрузку позже.",
+  providerRestricted: "OpenDota ограничил доступ к данным. Проверь доступность матча на странице провайдера.",
+  stopLoading: "Отменить загрузку",
+  loadStopped: "Загрузка отменена. Можно повторить запрос или выбрать другой матч.",
+  staleResponse: "Новый ответ содержит меньше данных. Предыдущий разбор оставлен без изменений.",
+  savedTasks: "Открыть сохранённые задачи",
+  failed: "Не удалось связаться с сервисом разбора. Повтори загрузку позже.",
   malformed: "Провайдер вернул неполный или неожиданный ответ. Money Meta остановил разбор вместо догадки.",
   mismatch: "ID в ответе не совпал с запросом. Разбор остановлен.",
   choose: "Выбери героя, чтобы открыть разбор.",
@@ -469,8 +475,14 @@ const copy = lang === "ru" ? {
   invalid: "The Match ID was not recognized. Paste only the number or a normal match page link.",
   notFound: "OpenDota could not find this public match. Check the ID and match-history visibility.",
   rateLimited: "The OpenDota limit for this connection has been reached. Wait briefly and try again.",
-  timeout: "OpenDota did not answer in time. Nothing was stored; wait a minute and retry.",
-  failed: "The match could not be retrieved. Check the ID or retry later.",
+  timeout: "OpenDota did not answer in time. Try loading again later.",
+  providerUnavailable: "OpenDota is temporarily unable to return data. This does not mean the Match ID is wrong. Try loading again later.",
+  providerRestricted: "OpenDota restricted access to the data. Check the match on the provider’s page.",
+  stopLoading: "Cancel loading",
+  loadStopped: "Loading cancelled. You can retry or choose another match.",
+  staleResponse: "The new response contains less data. The previous review has been kept unchanged.",
+  savedTasks: "Open saved tasks",
+  failed: "The review service could not be reached. Try loading again later.",
   malformed: "The provider returned an incomplete or unexpected response. Money Meta stopped instead of guessing.",
   mismatch: "The response Match ID did not match the request. The audit stopped.",
   choose: "Choose a hero to open the audit.",
@@ -542,6 +554,12 @@ const payload = JSON.stringify({
         </div>
 
         <div class="match-audit-status" data-match-status role="status" aria-live="polite" hidden></div>
+
+        <div class="match-recovery-actions" data-load-actions hidden>
+          <button type="button" class="mini-action" data-cancel-load hidden>{copy.stopLoading}</button>
+          <a class="mini-action" data-load-provider href={dotaMatchAuditConfig.publicMatchBase} target="_blank" rel="noopener noreferrer" hidden>{copy.openProvider} ↗</a>
+          <a class="mini-action" data-load-tasks href={`${lang === "ru" ? "" : "/en"}/dota-2/tasks/`} hidden>{copy.savedTasks}</a>
+        </div>
 
         <section class="match-audit-selection" data-match-selection hidden aria-labelledby="match-player-title">
           <header>
@@ -730,6 +748,7 @@ const payload = JSON.stringify({
   import type { DotaItemRecord } from "../lib/dota-items";
   import { buildDotaFinalReview } from "../lib/dota-match-summary";
   import { dotaReviewMessage, renderDotaFinalReview } from "../lib/dota-match-review-ui";
+  import { DotaMatchLoader, dotaResponseFailure } from "../lib/dota-match-loading";
   import { canReplaceDotaMatch, DotaMatchRecovery, type DotaRecoveryState } from "../lib/dota-match-recovery";
   import { buildDotaDraftReview, type DotaDraftReview } from "../lib/dota-draft";
   import { renderDotaDraftReview } from "../lib/dota-draft-review-ui";
@@ -1467,10 +1486,7 @@ const payload = JSON.stringify({
           headers: { Accept: "application/json", "Content-Type": "application/json", ...header },
           body: JSON.stringify(body), signal: controller.signal
         });
-        if (response.status === 404) throw new Error("not-found");
-        if (response.status === 429) throw new Error("rate-limit");
-        if (response.status === 504) throw new Error("timeout");
-        if (!response.ok) throw new Error("request-failed");
+        if (!response.ok) throw new Error(await dotaResponseFailure(response));
         return await response.json();
       } catch (error) {
         if (controller.signal.aborted) throw new Error("timeout");
@@ -1516,9 +1532,9 @@ const payload = JSON.stringify({
     });
     function updateRecoveryControls() {
       const complete = currentMatch?.players.length === 10 && currentMatch.players.every(hasDotaMatchTimeline);
-      recoveryPanel.hidden = !currentMatch || Boolean(complete && !recoveryStatus.textContent);
-      requestReplay.disabled = !currentMatch || recovery.busy || Boolean(complete) || recovery.wasRequested(currentMatch.matchId);
-      refreshReplay.disabled = !currentMatch || recovery.busy;
+      recoveryPanel.hidden = matchLoader.busy || !currentMatch || Boolean(complete && !recoveryStatus.textContent);
+      requestReplay.disabled = matchLoader.busy || !currentMatch || recovery.busy || Boolean(complete) || recovery.wasRequested(currentMatch.matchId);
+      refreshReplay.disabled = matchLoader.busy || !currentMatch || recovery.busy;
       stopReplay.hidden = !recovery.busy;
       if (currentMatch) auditRoot.querySelector<HTMLAnchorElement>("[data-recovery-provider]")!.href = `${data.config.publicMatchBase}/${currentMatch.matchId}`;
     }
@@ -1527,50 +1543,66 @@ const payload = JSON.stringify({
     stopReplay.addEventListener("click", () => recovery.cancel());
     window.addEventListener("pagehide", () => recovery.cancel(false), { once: true });
 
+    const loadActions = root.querySelector<HTMLElement>("[data-load-actions]")!;
+    const cancelLoad = root.querySelector<HTMLButtonElement>("[data-cancel-load]")!;
+    const loadProvider = root.querySelector<HTMLAnchorElement>("[data-load-provider]")!;
+    const loadTasks = root.querySelector<HTMLAnchorElement>("[data-load-tasks]")!;
+    const matchLoader = new DotaMatchLoader<DotaMatch>({
+      read: readMatch,
+      apply: (match) => {
+        if (currentMatch?.matchId === match.matchId && !canReplaceDotaMatch(currentMatch, match)) throw new Error("stale");
+        currentDecisionNote = "";
+        currentFocusNote = "";
+        root.querySelector<HTMLElement>("[data-replay-decision]")!.replaceChildren();
+        renderMatch(match);
+      },
+      state: (state, matchId, error) => {
+        const busy = state === "loading";
+        submit.disabled = busy;
+        demo.disabled = busy;
+        input.readOnly = busy;
+        loadActions.hidden = state === "ready";
+        cancelLoad.hidden = !busy;
+        loadProvider.hidden = busy;
+        loadTasks.hidden = busy;
+        loadProvider.href = `${data.config.publicMatchBase}/${matchId}`;
+        loadProvider.textContent = `${copy.openProvider} · ${matchId} ↗`;
+        const retained = currentMatch && state !== "ready"
+          ? lang === "ru" ? ` Ниже остаётся разбор матча ${currentMatch.matchId}; его данные и твои ответы не изменены.`
+            : ` The review of match ${currentMatch.matchId} remains below; its data and your answers are unchanged.`
+          : "";
+        if (busy) {
+          recovery.cancel(false);
+          recoveryStatus.textContent = "";
+          if (!currentMatch) setStep(1);
+          setStatus(`${copy.loading} (${matchId})${retained}`, "loading");
+        } else if (state === "ready") {
+          setStatus("", "success");
+        } else if (state === "stopped") {
+          setStatus(`${copy.loadStopped}${retained}`, "success");
+        } else {
+          const reason = error instanceof Error ? error.message : "request-failed";
+          const labels: Record<string, string> = {
+            "not-found": copy.notFound!, "rate-limit": copy.rateLimited!, timeout: copy.timeout!,
+            "provider-unavailable": copy.providerUnavailable!, "provider-restricted": copy.providerRestricted!,
+            malformed: copy.malformed!, mismatch: copy.mismatch!, stale: copy.staleResponse!
+          };
+          setStatus(`${lang === "ru" ? "Матч" : "Match"} ${matchId}: ${labels[reason] ?? copy.failed}${retained}`);
+        }
+        updateRecoveryControls();
+      }
+    });
+    cancelLoad.addEventListener("click", () => { matchLoader.cancel(); submit.focus(); });
+    window.addEventListener("pagehide", () => matchLoader.cancel(false), { once: true });
     const loadMatch = async () => {
+      if (matchLoader.busy) return;
       const matchId = parseDotaMatchId(input.value);
       if (!matchId) {
         setStatus(copy.invalid!);
         input.focus();
         return;
       }
-      submit.disabled = true;
-      demo.disabled = true;
-      recovery.cancel(false);
-      recoveryPanel.hidden = true;
-      recoveryStatus.textContent = "";
-      selection.hidden = true;
-      result.hidden = true;
-      currentMatch = null;
-      currentSlot = null;
-      currentDecisionNote = "";
-      root.querySelector<HTMLElement>("[data-replay-decision]")!.replaceChildren();
-      setStep(1);
-      setStatus(copy.loading!, "loading");
-      const controller = new AbortController();
-      try {
-        const match = await readMatch(matchId, controller.signal);
-        setStatus("", "success");
-        renderMatch(match);
-      } catch (error) {
-        const reason = error instanceof Error ? error.message : "request-failed";
-        const aborted = controller.signal.aborted || (error instanceof DOMException && error.name === "AbortError");
-        const message = reason === "not-found"
-          ? copy.notFound!
-          : reason === "rate-limit"
-            ? copy.rateLimited!
-            : reason === "malformed"
-              ? copy.malformed!
-              : reason === "mismatch"
-                ? copy.mismatch!
-                : reason === "timeout" || aborted
-                  ? copy.timeout!
-                  : copy.failed!;
-        setStatus(message);
-      } finally {
-        submit.disabled = false;
-        demo.disabled = false;
-      }
+      await matchLoader.run(matchId);
     };
 
     form.addEventListener("submit", (event) => {
