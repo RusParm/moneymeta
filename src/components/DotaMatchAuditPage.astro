@@ -1593,7 +1593,8 @@ const payload = JSON.stringify({
       }
     });
     cancelLoad.addEventListener("click", () => { matchLoader.cancel(); submit.focus(); });
-    window.addEventListener("pagehide", () => matchLoader.cancel(false), { once: true });
+    // Restore controls before a possible back-forward cache freeze.
+    window.addEventListener("pagehide", () => matchLoader.cancel());
     const loadMatch = async () => {
       if (matchLoader.busy) return;
       const matchId = parseDotaMatchId(input.value);
