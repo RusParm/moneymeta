@@ -83,8 +83,8 @@ describe("GTA weekly plan", () => {
 
   it("applies the Drift challenge reward only at three completed runs", () => {
     const drift = { id: "drift", multiplier: 2, fixedReward: 100_000, requiredRunsForReward: 3 };
-    const twoRuns = calculateGtaWeeklyPlan({ ...base, route: drift, hoursAvailable: 0.7, minutesPerRun: 15, switchMinutes: 10 });
-    const threeRuns = calculateGtaWeeklyPlan({ ...base, route: drift, hoursAvailable: 1, minutesPerRun: 15, switchMinutes: 10 });
+    const twoRuns = calculateGtaWeeklyPlan({ ...base, route: drift, rewardEligible: true, hoursAvailable: 0.7, minutesPerRun: 15, switchMinutes: 10 });
+    const threeRuns = calculateGtaWeeklyPlan({ ...base, route: drift, rewardEligible: true, hoursAvailable: 1, minutesPerRun: 15, switchMinutes: 10 });
     expect(twoRuns.runs).toBe(2);
     expect(twoRuns.fixedReward).toBe(0);
     expect(threeRuns.runs).toBe(3);

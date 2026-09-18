@@ -4,6 +4,8 @@ export const dotaItemsConfig = Object.freeze({
   patch: "7.41e",
   patchFamily: "7.41",
   patchStartedAt: "2026-07-30T00:00:00.000Z",
+  // Freeze the archived minor-patch cohort before the 7.41f release day.
+  patchEndedAt: "2026-09-15T00:00:00.000Z",
   patchSourceUrl: "https://www.dota2.com/patches/7.41e",
   minimumSample: 200,
   minimumClassifiedPlayersPerMatch: 8,

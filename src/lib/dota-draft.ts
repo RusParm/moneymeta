@@ -171,7 +171,8 @@ export function buildDotaDraftReview(match: DotaMatch, player: DotaMatchPlayer):
   const enemyProfiles = enemy.flatMap((id) => profiles.has(id) ? [profiles.get(id)!] : []);
   const valid = validLineup(match, player);
   const patchMatches = match.patchId === dotaDraftProfileSnapshot.patchId && match.startTime !== null
-    && Number.isFinite(match.startTime) && match.startTime >= Date.parse(dotaDraftProfileSnapshot.supportedSince) / 1000;
+    && Number.isFinite(match.startTime) && match.startTime >= Date.parse(dotaDraftProfileSnapshot.supportedSince) / 1000
+    && match.startTime < Date.parse(dotaDraftProfileSnapshot.supportedBefore) / 1000;
   const covered = ownProfiles.length + enemyProfiles.length;
   const review: DotaDraftReview = {
     status: !valid ? "unavailable" : !patchMatches ? "patch-mismatch" : covered === 10 ? "ready" : covered > 0 ? "partial" : "unavailable",

@@ -257,7 +257,7 @@ describe("Dota draft context", () => {
     const current = review(match);
     const supportedSince = Date.parse(dotaDraftProfileSnapshot.supportedSince) / 1000;
     expect(review({ ...match, startTime: supportedSince }).status).toBe("ready");
-    for (const startTime of [supportedSince - 1, 0, null, undefined, Number.NaN, Number.POSITIVE_INFINITY]) {
+    for (const startTime of [Date.parse(dotaDraftProfileSnapshot.supportedBefore) / 1000, Date.parse("2026-09-18") / 1000, supportedSince - 1, 0, null, undefined, Number.NaN, Number.POSITIVE_INFINITY]) {
       const result = review({ ...match, startTime } as unknown as DotaMatch);
       expect(result.status).toBe("patch-mismatch");
       expectNoClaims(result);

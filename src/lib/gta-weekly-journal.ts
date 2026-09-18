@@ -24,6 +24,7 @@ export interface GtaWeeklyJournalEntry {
     confidencePercent: number;
     minimumLiftPercent: number;
     ownsRequiredAsset: boolean;
+    rewardEligible?: boolean;
   };
   projection: {
     runs: number;
@@ -87,6 +88,7 @@ const sanitizeEntry = (value: unknown): GtaWeeklyJournalEntry | null => {
     inputs.confidencePercent > 100 ||
     !finiteAtLeast(inputs.minimumLiftPercent, 0) ||
     typeof inputs.ownsRequiredAsset !== "boolean" ||
+    (inputs.rewardEligible !== undefined && typeof inputs.rewardEligible !== "boolean") ||
     !finiteAtLeast(projection.runs, 1) ||
     !finiteAtLeast(projection.expectedRouteCash, 0) ||
     !finiteAtLeast(projection.routineAlternative, 0) ||
@@ -127,7 +129,8 @@ const sanitizeEntry = (value: unknown): GtaWeeklyJournalEntry | null => {
       switchMinutes: inputs.switchMinutes,
       confidencePercent: inputs.confidencePercent,
       minimumLiftPercent: inputs.minimumLiftPercent,
-      ownsRequiredAsset: inputs.ownsRequiredAsset
+      ownsRequiredAsset: inputs.ownsRequiredAsset,
+      ...(inputs.rewardEligible === undefined ? {} : { rewardEligible: inputs.rewardEligible })
     },
     projection: {
       runs: Math.floor(projection.runs),

@@ -1,4 +1,5 @@
 ---
+import { dotaItemPatch } from "../data/dota-item-patch";
 import {
   dotaItems,
   dotaItemsSnapshot,
@@ -36,8 +37,8 @@ const qualityLabel: Record<string, Record<DotaItemsLocale, string>> = {
 const copy = lang === "ru" ? {
   back: "← Портал Dota 2",
   title: "Предметы Dota 2: цена, тайминги и смысл покупки | Money Meta",
-  description: "Атлас предметов Dota 2 для патча 7.41e: стоимость, компоненты, проверяемая оценка характеристик и профессиональные тайминги по ролям.",
-  kicker: "Dota 2 · атлас предметов · 7.41e",
+  description: "Атлас Dota 2: цены и изменения предметов 7.41f, компоненты и исторические профессиональные тайминги 7.41e.",
+  kicker: "Dota 2 · атлас предметов · цены 7.41f",
   heading: "Не спрашивай, хороший ли предмет. Спроси, что он должен успеть изменить.",
   lede: "Атлас соединяет цену и дерево сборки с реальными первыми покупками в профессиональных матчах. Медиана не диктует сборку. Она показывает, насколько твой план отличается от наблюдаемого окна для этой роли.",
   primary: "Найти предмет",
@@ -83,7 +84,7 @@ const copy = lang === "ru" ? {
   methodTitle: "Ориентир, а не готовый билд.",
   methodIntro: "Каждый тайминг является первой покупкой предмета одним игроком. Повторные покупки не увеличивают выборку.",
   rules: [
-    ["PATCH", "Только текущий патч", "Семейство 7.41 ограничено официальным временем выхода 7.41e. Старые матчи не смешиваются с текущим окном."],
+    ["PATCH", "Историческая выборка 7.41e", "Сохранённые матчи относятся к 7.41e. Матчи начиная с 15 сентября исключаются из её обновлений; актуальные цены предметов проверены отдельно."],
     ["ROLE", "Роли проверены до выборки", "Матч входит в ролевые тайминги, только если OpenDota знает роль минимум 8 из 10 игроков. Коры объединяют fantasy_role 1, 3 и 4; поддержка использует роль 2."],
     ["N≥200", "Слабая выборка скрыта", "Квартиль, медиана и частота не показываются для роли, если предмет купили меньше 200 раз."],
     ["PRICE", "Цена не равна ценности", "Оценка характеристик учитывает только явные параметры с чистым базовым компонентом. Активные и пассивные эффекты остаются отдельно."]
@@ -93,8 +94,8 @@ const copy = lang === "ru" ? {
 } : {
   back: "← Dota 2 portal",
   title: "Dota 2 items: cost, timings and purchase purpose | Money Meta",
-  description: "A Patch 7.41e Dota 2 item atlas with costs, components, auditable stat pricing and professional role timings.",
-  kicker: "Dota 2 · item atlas · 7.41e",
+  description: "Dota 2 items: 7.41f prices and item changes, component trees and historical 7.41e professional timings.",
+  kicker: "Dota 2 · item atlas · 7.41f prices",
   heading: "Do not ask whether an item is good. Ask what it must change in time.",
   lede: "The atlas connects cost and build structure with observed first purchases in professional matches. The median does not prescribe a build. It shows how your plan differs from the observed window for that role.",
   primary: "Find an item",
@@ -140,7 +141,7 @@ const copy = lang === "ru" ? {
   methodTitle: "A benchmark, not a prescribed build.",
   methodIntro: "Every timing is one player's first purchase of the item. Repeat purchases do not inflate the sample.",
   rules: [
-    ["PATCH", "Current patch only", "Patch family 7.41 is bounded by the official 7.41e release timestamp. Older matches do not enter the window."],
+    ["PATCH", "Historical 7.41e cohort", "Saved matches belong to 7.41e. Matches from September 15 onward are excluded from its refreshes; current item prices are reviewed separately."],
     ["ROLE", "Roles checked before sampling", "A match enters role timings only when OpenDota knows at least 8 of 10 player roles. Cores combine fantasy_role 1, 3 and 4; supports use role 2."],
     ["N≥200", "Weak samples stay hidden", "Quartiles, median and rate do not appear for a role until the item has at least 200 purchases."],
     ["PRICE", "Cost is not value", "Stat pricing includes only explicit attributes with a clean base component. Active and passive effects remain separate."]
@@ -167,7 +168,7 @@ const timingCard = (item: typeof dotaItems[number], role: DotaItemRole) => {
     name: copy.title,
     description: copy.description,
     inLanguage: lang,
-    dateModified: dotaItemsSnapshot.fetchedAt,
+    dateModified: dotaItemPatch.checkedAt,
     about: { "@type": "VideoGame", name: "Dota 2", publisher: "Valve" },
     mainEntity: { "@type": "ItemList", numberOfItems: dotaItems.length, itemListElement: dotaItems.map((item, index) => ({ "@type": "ListItem", position: index + 1, name: item.name, url: new URL(getDotaItemPath(item, lang), Astro.site).href })) }
   }}

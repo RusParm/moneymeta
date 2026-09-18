@@ -14,7 +14,7 @@ export interface GtaWeeklyRouteFacts {
   multiplier: number;
   fixedReward?: number;
   requiredRunsForReward?: number;
-  requiredAsset?: "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse";
+  requiredAsset?: "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse" | "bunker" | "enhanced";
 }
 
 export interface GtaWeeklyPlanInput {
@@ -28,6 +28,8 @@ export interface GtaWeeklyPlanInput {
   confidencePercent: number;
   minimumLiftPercent: number;
   ownsRequiredAsset: boolean;
+  // Explicit opt-in: an earned weekly reward cannot fund another session.
+  rewardEligible?: boolean;
   asOf?: Date;
 }
 
@@ -96,7 +98,7 @@ export function calculateGtaWeeklyPlan(input: GtaWeeklyPlanInput): GtaWeeklyPlan
   const variableCash = basePayoutPerRun * multiplier * runs;
   const rewardThreshold = finiteFloor(input.route.requiredRunsForReward ?? 0);
   const offeredReward = finiteFloor(input.route.fixedReward ?? 0);
-  const fixedReward = offeredReward > 0 && (rewardThreshold === 0 || runs >= rewardThreshold) ? offeredReward : 0;
+  const fixedReward = input.rewardEligible === true && offeredReward > 0 && (rewardThreshold === 0 || runs >= rewardThreshold) ? offeredReward : 0;
   const rawRouteCash = variableCash + fixedReward;
   const expectedRouteCash = rawRouteCash * confidence;
   const routineAlternative = routineHourly * hoursAvailable;

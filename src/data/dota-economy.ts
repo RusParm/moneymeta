@@ -7,20 +7,22 @@ export interface EconomySource {
 }
 
 export const dotaPatchContext = {
-  patch: "7.41e",
-  checkedAt: "2026-08-19",
+  patch: "7.41f",
+  checkedAt: "2026-09-18",
   status: "mixed" as const,
   note: {
     ru: "Контекст патча и формула выкупа подтверждены официальными примечаниями Valve. Текущие характеристики Hand of Midas дополнительно сверены с данными игрового сообщества. Все исходные значения можно изменить в калькуляторе.",
     en: "Patch context and the buyback formula are confirmed by Valve's official notes. Current Midas stats are additionally community-cross-checked; every numeric default remains editable."
   },
   sources: [
+    { label: { ru: "Valve · выпуск 7.41f", en: "Valve · 7.41f release" }, url: "https://www.dota2.com/newsentry/677383425371407609", note: { ru: "15 сентября: исправлена выдача бонусного золота Big Game Hunter.", en: "September 15: Big Game Hunter bonus-gold delivery fixed." } },
+    { label: { ru: "Valve · патч 7.41f", en: "Valve · Patch 7.41f" }, url: "https://www.dota2.com/patches/7.41f", note: { ru: "Изменены цены предметов, урон иллюзий Manta и золото Track. Формулы Midas и выкупа в этом патче не менялись.", en: "Item prices, Manta illusion damage and Track gold changed. This patch does not change the Midas or buyback formulas." } },
     {
       label: { ru: "Valve · патч 7.41e", en: "Valve · Patch 7.41e" },
       url: "https://www.dota2.com/patches/7.41e",
       note: {
-        ru: "Актуальный патч: прибавка Hand of Midas к скорости атаки увеличена с 35 до 40.",
-        en: "Current patch context; Hand of Midas attack speed increased from 35 to 40."
+        ru: "Предыдущий патч: прибавка Hand of Midas к скорости атаки увеличена с 35 до 40.",
+        en: "Previous patch context; Hand of Midas attack speed increased from 35 to 40."
       }
     },
     {

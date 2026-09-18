@@ -260,37 +260,11 @@ export const dotaPlayerPaths: DotaPlayerPath[] = [
 ];
 
 export const dotaPulse = {
-  patch: currentPatch,
-  checkedAt: "2026-08-18",
-  staleAfterDays: 45,
-  sourceUrl: `https://www.dota2.com/patches/${currentPatch}`,
-  status: "verified" as const,
-  changes: [
-    {
-      signal: { ru: "+40 к скорости атаки", en: "+40 attack speed" },
-      title: { ru: "Midas получил больше силы сейчас", en: "Midas gained more power now" },
-      summary: { ru: `В ${currentPatch} бонус к скорости атаки увеличен с 35 до 40. Денежная часть Transmute в описании патча не менялась.`, en: `Patch ${currentPatch} increased the attack-speed bonus from 35 to 40. The notes do not change Transmute's cash component.` },
-      decision: { ru: "Не сдвигай денежную окупаемость раньше автоматически. Добавляй другую ценность, только если +40 к скорости атаки действительно меняют героя или ближайший тайминг.", en: "Do not move cash break-even earlier automatically. Add extra value only when +40 AS changes the hero or the next timing." },
-      media: dotaMedia.handOfMidas,
-      sourceUrl: `https://www.dota2.com/patches/${currentPatch}`
-    },
-    {
-      signal: { ru: "набор Madstone", en: "Madstone bundle" },
-      title: { ru: "Transmute нейтрального крипа даёт дополнительную возможность", en: "Neutral Transmute carries a non-cash option" },
-      summary: { ru: "При использовании Midas на нейтральном крипе срабатывает система Madstone. Это отдельная польза, а не бесплатное золото.", en: "Current Midas interacts with the Madstone system when used on a neutral creep. That is separate utility, not free gold." },
-      decision: { ru: "Оцени Madstone отдельно в поле дополнительной ценности. Не смешивай его с гарантированными 160 золотом.", en: "Price Madstone separately in sensitivity; do not mix it into the guaranteed 160 gold." },
-      media: dotaMedia.maelstrom,
-      sourceUrl: "https://www.dota2.com/patches/7.38"
-    },
-    {
-      signal: { ru: "200 + стоимость / 13", en: "200 + NW / 13" },
-      title: { ru: "Исходная формула выкупа исправлена", en: "Buyback baseline corrected" },
-      summary: { ru: "Money Meta теперь использует формулу, опубликованную после 7.29. Старая базовая стоимость 100 занижала нужный запас на 100 золота.", en: "Money Meta now uses the formula documented after 7.29. The old 100 base cost understated the reserve by 100 gold." },
-      decision: { ru: "Пересчитай поздние сценарии: старая модель могла скрывать небольшой дефицит золота на выкуп.", en: "Recalculate late-game scenarios: the old model could hide a small buyback deficit." },
-      media: dotaMedia.tp,
-      sourceUrl: "https://www.dota2.com/patches/7.29"
-    }
-  ]
+  patch: currentPatch, checkedAt: "2026-09-18", staleAfterDays: 14,
+  sourceUrl: `https://www.dota2.com/patches/${currentPatch}`, status: "verified" as const,
+  changes: [{"signal": {"ru": "Цены 7.41f", "en": "7.41f prices"}, "title": {"ru": "Пересчитай ближайшую покупку", "en": "Recalculate your next purchase"}, "summary": {"ru": "Dragon Lance стоит 2000, Hurricane Pike 4550, Octarine Core 5100, Daedalus 5200, Heart 5300, Halberd 3300. Hydra’s Breath остаётся по 5900.", "en": "Dragon Lance costs 2000, Hurricane Pike 4550, Octarine Core 5100, Daedalus 5200, Heart 5300 and Halberd 3300. Hydra’s Breath stays at 5900."}, "decision": {"ru": "Обнови оставшуюся стоимость сборки. Профессиональные тайминги на сайте пока относятся к 7.41e.", "en": "Recalculate remaining build cost. The site’s professional timings still describe 7.41e."}, "media": dotaMedia.forceStaff, "sourceUrl": `https://www.dota2.com/patches/${currentPatch}`},
+{"signal": {"ru": "Manta: 28% → 25%", "en": "Manta: 28% → 25%"}, "title": {"ru": "Иллюзии дальнего боя наносят меньше урона", "en": "Ranged illusions deal less damage"}, "summary": {"ru": "Manta ослаблена для дальнего боя; вампиризм Mask of Madness и Satanic также снижен.", "en": "Manta’s ranged illusions are weaker; Mask of Madness and Satanic also lose lifesteal."}, "decision": {"ru": "Повтори замер скорости фарма и выживаемости. Не переноси старый прирост золота в минуту в новую сборку автоматически.", "en": "Remeasure farm speed and sustain before reusing an old GPM gain."}, "media": dotaMedia.battleFury, "sourceUrl": `https://www.dota2.com/patches/${currentPatch}`},
+{"signal": {"ru": "Track: меньше золота", "en": "Track: less gold"}, "title": {"ru": "Убийства под Track приносят меньше", "en": "Track kills yield less"}, "summary": {"ru": "Исправлена выдача бонуса Big Game Hunter. Личный бонус Track: 80/160/240; союзникам: 40/80/120. Ghost Walk с Shard у Invoker больше не наносит урон не-героям.", "en": "Big Game Hunter bonus delivery was fixed. Track pays 80/160/240 to its owner and 40/80/120 to allies. Invoker’s Shard Ghost Walk no longer damages non-heroes."}, "decision": {"ru": "Пересмотри ожидаемый доход от драк и фарма. Сами формулы планировщика не компенсируют потерю этого дохода.", "en": "Revise expected fight and farming income; the planner cannot compensate for that lost income by itself."}, "media": dotaMedia.handOfMidas, "sourceUrl": `https://www.dota2.com/patches/${currentPatch}`}]
 };
 
 export interface DotaRoleLens {

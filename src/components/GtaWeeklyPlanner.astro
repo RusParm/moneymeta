@@ -25,7 +25,9 @@ const copy = lang === "ru" ? {
   accessLabels: {
     "auto-shop": "Нужен уже купленный Auto Shop",
     "special-vehicle-work": "Нужны Office + доступ к Special Vehicle Work",
-    "special-cargo-warehouse": "Нужны Office + склад Special Cargo"
+    "special-cargo-warehouse": "Нужны Office + склад Special Cargo",
+    "bunker": "Нужен бункер и доступ к миссии",
+    "enhanced": "Нужна PS5, Xbox Series X|S или PC Enhanced"
   } satisfies Record<WeeklyAccessRequirement, string>,
   inputKicker: "02 / Добавь свой замер",
   inputTitle: "Твоя сессия, не чужая таблица",
@@ -50,6 +52,8 @@ const copy = lang === "ru" ? {
   runs: "Полных заходов",
   breakEven: "Нужная базовая выплата",
   reward: "Разовая награда",
+  rewardEligible: "Недельное задание ещё не выполнено; считаю все три миссии заново",
+  rewardHelp: "Миллион учитывается один раз и только если в план помещаются три полных цикла. Предыдущий прогресс не засчитывается. Уже полученную награду не включай.",
   share: "Скопировать мой план",
   savePlan: "Сохранить план недели",
   saved: "Вводные сохраняются только в этом браузере.",
@@ -95,7 +99,9 @@ const copy = lang === "ru" ? {
   accessLabels: {
     "auto-shop": "Requires an Auto Shop you already own",
     "special-vehicle-work": "Requires an Office + Special Vehicle Work access",
-    "special-cargo-warehouse": "Requires an Office + Special Cargo Warehouse"
+    "special-cargo-warehouse": "Requires an Office + Special Cargo Warehouse",
+    "bunker": "Requires a bunker and mission access",
+    "enhanced": "Requires PS5, Xbox Series X|S or PC Enhanced"
   } satisfies Record<WeeklyAccessRequirement, string>,
   inputKicker: "02 / Add your sample",
   inputTitle: "Your session, not somebody else's table",
@@ -120,6 +126,8 @@ const copy = lang === "ru" ? {
   runs: "Complete runs",
   breakEven: "Required base payout",
   reward: "One-time reward",
+  rewardEligible: "I have not completed this weekly challenge; plan all three missions",
+  rewardHelp: "The million counts once, only if three complete cycles fit. Previous progress is not counted. Exclude a reward already earned.",
   share: "Copy my plan",
   savePlan: "Save this week's plan",
   saved: "Inputs stay only in this browser.",
@@ -241,6 +249,10 @@ const archive = weeklyMeta.closedWindows[0]!;
         <label class="gta-weekly-ownership" data-ownership hidden>
           <input name="owns" type="checkbox" />
           <span><strong>{copy.owns}</strong><small>{copy.ownershipNote}</small></span>
+        </label>
+        <label class="gta-weekly-ownership" data-reward-eligibility hidden>
+          <input name="rewardEligible" type="checkbox" />
+          <span><strong>{copy.rewardEligible}</strong><small>{copy.rewardHelp}</small></span>
         </label>
       </div>
     </form>
@@ -406,7 +418,7 @@ const archive = weeklyMeta.closedWindows[0]!;
         actual: "Факт",
         perHour: "/ч",
         minuteShort: "мин",
-        rewardLocked: "не достигнут порог",
+        rewardLocked: "не включена: проверь право и число миссий",
         noReward: "нет",
         required: "за заход до бонуса",
         proof: "Официальны только множитель, награда и срок. Выплата, время, темп и надёжность взяты из твоих полей. RP и удовольствие модель не оценивает."
@@ -454,7 +466,7 @@ const archive = weeklyMeta.closedWindows[0]!;
         actual: "Actual",
         perHour: "/h",
         minuteShort: "min",
-        rewardLocked: "threshold not reached",
+        rewardLocked: "excluded: check eligibility and mission count",
         noReward: "none",
         required: "per run before bonus",
         proof: "Only the multiplier, reward and window are official. Payout, time, rate and confidence come from your fields. The model does not value RP or fun."
@@ -474,7 +486,7 @@ const archive = weeklyMeta.closedWindows[0]!;
       if (!form || !resultRoot || !routeButtons.length) return;
       const controls = [...form.querySelectorAll<WeeklyControl>("input")];
       const byName = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
-      const storageKey = "money-meta:gta-weekly:v1";
+      const storageKey = `money-meta:gta-weekly:v1:${weeklyMeta.id}`;
       const seenKey = "money-meta:gta-weekly:last-seen";
       const journalStorageKey = "money-meta:gta-weekly:journal:v1";
       const snapshotId = root.dataset.snapshotId ?? weeklyMeta.id;
@@ -520,6 +532,7 @@ const archive = weeklyMeta.closedWindows[0]!;
       };
 
       const state = () => ({
+        week: snapshotId,
         route: activeRouteId,
         hours: byName("hours").value,
         routine: byName("routine").value,
@@ -528,7 +541,8 @@ const archive = weeklyMeta.closedWindows[0]!;
         switch: byName("switch").value,
         confidence: byName("confidence").value,
         lift: byName("lift").value,
-        owns: byName("owns").checked ? "1" : "0"
+        owns: byName("owns").checked ? "1" : "0",
+        rewardEligible: byName("rewardEligible").checked ? "1" : "0"
       });
 
       const save = () => {
@@ -648,7 +662,8 @@ const archive = weeklyMeta.closedWindows[0]!;
           switchMinutes: value("switch"),
           confidencePercent: value("confidence"),
           minimumLiftPercent: value("lift"),
-          ownsRequiredAsset: byName("owns").checked
+          ownsRequiredAsset: byName("owns").checked,
+          rewardEligible: byName("rewardEligible").checked
         });
         currentPlan = plan;
         const message = statuses[plan.status];
@@ -703,6 +718,9 @@ const archive = weeklyMeta.closedWindows[0]!;
         });
         const ownership = root.querySelector<HTMLElement>("[data-ownership]");
         if (ownership) ownership.hidden = !route().requiredAsset;
+        const rewardEligibility = root.querySelector<HTMLElement>("[data-reward-eligibility]");
+        if (rewardEligibility) rewardEligibility.hidden = !route().fixedReward;
+        if (changedRoute && !preserveAccess) byName("rewardEligible").checked = false;
         draw();
         save();
       };
@@ -731,7 +749,8 @@ const archive = weeklyMeta.closedWindows[0]!;
         const parsed: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "{}");
         if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) stored = parsed as Record<string, string>;
       } catch { /* Ignore unavailable or corrupt local state. */ }
-      const restored = Object.keys(fromUrl).length ? fromUrl : stored;
+      const candidate = Object.keys(fromUrl).length ? fromUrl : stored;
+      const restored = candidate.week === snapshotId && weeklyMeta.opportunities.some((item) => item.id === candidate.route) ? candidate : {};
       controls.forEach((control) => {
         const restoredValue = restored[control.name];
         if (typeof restoredValue !== "string") return;
@@ -780,7 +799,8 @@ const archive = weeklyMeta.closedWindows[0]!;
             switchMinutes: value("switch"),
             confidencePercent: value("confidence"),
             minimumLiftPercent: value("lift"),
-            ownsRequiredAsset: byName("owns").checked
+            ownsRequiredAsset: byName("owns").checked,
+          rewardEligible: byName("rewardEligible").checked
           },
           projection: journalProjectionFromPlan(currentPlan)
         };

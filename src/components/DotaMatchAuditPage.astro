@@ -1,4 +1,5 @@
 ---
+import { dotaItemPatch } from "../data/dota-item-patch";
 import { dotaHeroes, dotaHeroSnapshot } from "../data/dota-heroes";
 import { dotaMatchAuditConfig, getDotaMatchAuditPath } from "../data/dota-match";
 import { dotaMatchItems, dotaMatchItemSnapshot } from "../data/dota-match-items";
@@ -64,7 +65,7 @@ const copy = lang === "ru" ? {
   roaming: "роуминг",
   fullTimeline: "Хронология разобрана",
   finalOnly: "Только финальный срез",
-  patchCurrent: `Текущий патч ${dotaItemsSnapshot.patch.label}`,
+  patchCurrent: `Патч выборки ${dotaItemsSnapshot.patch.label}`,
   patchArchive: "Другой патч · профсравнение отключено",
   duration: "Длительность",
   played: "Начало матча",
@@ -214,10 +215,10 @@ const copy = lang === "ru" ? {
   intervalCs: "добиваний на отрезке",
   totalGold: "всего золота",
   purchases: "Покупки по времени",
-  purchasesText: "Этот блок строится только из журнала покупок реплея. Компоненты и мелкие расходники скрыты, а крупные предметы текущего патча сравниваются с профессиональной выборкой.",
+  purchasesText: "Этот блок строится только из журнала покупок реплея. Компоненты и мелкие расходники скрыты, а покупки в пределах версии выборки сравниваются с профессиональными таймингами.",
   boughtAt: "куплен на",
   minuteShort: "мин",
-  cost: "цена",
+  cost: "цена в текущем каталоге",
   proMedian: "профмедиана",
   sample: "покупок",
   noBenchmark: "Надёжного сравнения для этой роли и версии нет",
@@ -288,7 +289,7 @@ const copy = lang === "ru" ? {
   roaming: "roaming",
   fullTimeline: "Parsed timeline",
   finalOnly: "Final stats only",
-  patchCurrent: `Current Patch ${dotaItemsSnapshot.patch.label}`,
+  patchCurrent: `Cohort patch ${dotaItemsSnapshot.patch.label}`,
   patchArchive: "Different patch · pro comparison off",
   duration: "Duration",
   played: "Match start",
@@ -438,10 +439,10 @@ const copy = lang === "ru" ? {
   intervalCs: "last hits in segment",
   totalGold: "total gold",
   purchases: "Timed purchases",
-  purchasesText: "This block comes only from the replay purchase log. Components and small consumables are hidden, while major current-patch items can be compared with the professional cohort.",
+  purchasesText: "This block comes only from the replay purchase log. Components and small consumables are hidden, while purchases within the cohort patch interval can be compared with professional timings.",
   boughtAt: "bought at",
   minuteShort: "min",
-  cost: "cost",
+  cost: "current catalog cost",
   proMedian: "pro median",
   sample: "purchases",
   noBenchmark: "No reliable comparison for this role and version",
@@ -479,7 +480,7 @@ const payload = JSON.stringify({
   lang,
   copy,
   config: dotaMatchAuditConfig,
-  patch: { id: dotaMatchAuditConfig.currentPatchId, label: dotaItemsSnapshot.patch.label, minimumSample: dotaItemsSnapshot.methodology.minimumSample },
+  patch: { benchmarkBefore: dotaItemPatch.startedAt, id: dotaMatchAuditConfig.currentPatchId, label: dotaItemsSnapshot.patch.label, minimumSample: dotaItemsSnapshot.methodology.minimumSample },
   heroes: dotaHeroes,
   matchItems: dotaMatchItems,
   items: dotaItems.map((item) => ({
@@ -850,7 +851,7 @@ const payload = JSON.stringify({
       root.querySelector<HTMLAnchorElement>("[data-provider-link]")!.href = `${data.config.publicMatchBase}/${match.matchId}`;
       const hasAnyTimeline = match.players.some(hasDotaMatchTimeline);
       const badge = root.querySelector<HTMLElement>("[data-match-badge]")!;
-      badge.textContent = `${hasAnyTimeline ? copy.fullTimeline : copy.finalOnly} · ${match.patchId === data.patch.id ? copy.patchCurrent : copy.patchArchive}`;
+      badge.textContent = `${hasAnyTimeline ? copy.fullTimeline : copy.finalOnly} · ${match.patchId === data.patch.id && match.startTime < Date.parse(data.patch.benchmarkBefore) / 1000 ? copy.patchCurrent : copy.patchArchive}`;
       badge.dataset.state = hasAnyTimeline ? "parsed" : "final";
       const radiant = root.querySelector<HTMLElement>('[data-team="radiant"]')!;
       const dire = root.querySelector<HTMLElement>('[data-team="dire"]')!;
@@ -1332,7 +1333,7 @@ const payload = JSON.stringify({
     const renderAudit = () => {
       if (!currentMatch || currentSlot === null) return;
       const role = roleControl.value === "support" ? "support" : "core";
-      const audit = buildDotaMatchAudit(currentMatch, currentSlot, items, role, data.patch.id, data.patch.minimumSample, parseDotaPlayerSlot(opponentControl.value), roleControl.value !== "unknown");
+      const audit = buildDotaMatchAudit(currentMatch, currentSlot, items, role, data.patch.id, data.patch.minimumSample, parseDotaPlayerSlot(opponentControl.value), roleControl.value !== "unknown" && currentMatch.startTime < Date.parse(data.patch.benchmarkBefore) / 1000);
       if (!audit) return;
       const hero = heroFor(audit.player.heroId);
       root.querySelector<HTMLElement>("[data-selected-name]")!.textContent = hero.name;
