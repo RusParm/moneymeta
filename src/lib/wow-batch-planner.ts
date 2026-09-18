@@ -72,6 +72,8 @@ export function calculateWowBatchPlan(input: WowBatchInput) {
     feasibleCashAfterCraft: input.walletGold - feasible.upfrontGold,
     requestedEndCash: input.walletGold + requested.cashChange,
     feasibleEndCash: input.walletGold + feasible.cashChange,
+    fundingState: requested.upfrontGold > input.walletGold ? "insufficient-cash" as const
+      : reserveAlreadyShort || feasibleCrafts < input.crafts ? "reserve-breach" as const : "funded" as const,
     fits: !reserveAlreadyShort && feasibleCrafts === input.crafts
   };
 }

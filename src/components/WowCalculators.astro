@@ -292,7 +292,7 @@ const copy = lang === "ru" ? {
   import { calculateCraftingCashFlow, sellThroughFromObservation, calculateFarmMetrics, calculateWorkOrderMetrics } from "../lib/wow-economy";
   import { wowBatchCopy } from "../data/wow-batch-copy";
   import { readWowBatchInput } from "../lib/wow-batch-client";
-  import { effectiveWowCraftInput, calculateWowBatchStressCases } from "../lib/wow-batch-planner";
+  import { effectiveWowCraftInput, calculateWowBatchStressCases, calculateWowBatchPlan } from "../lib/wow-batch-planner";
 
   document.querySelectorAll<HTMLElement>("[data-wow-calculators]").forEach((root) => {
     if (root.dataset.calculatorsReady === "true") return;
@@ -326,9 +326,10 @@ const copy = lang === "ru" ? {
       if (!batchInput) { target("craft-decision").textContent = batch.empty; return; }
       const input = effectiveWowCraftInput(batchInput);
       const metrics = calculateCraftingCashFlow(input);
+      const funding = calculateWowBatchPlan(batchInput)!.fundingState;
       const stockBlocksSales = batchInput.salesMode === "observed" && (batchInput.existingStockUnits ?? 0) > 0 && batchInput.existingStockUnits! >= batchInput.observedSoldUnits;
-      target("craft-decision").textContent = stockBlocksSales ? batch.stockBlocked : metrics.state === "cash-tied" ? batch.tied : metrics.state === "loss" ? batch.loss : metrics.state === "empty" ? batch.empty : batch.recovered;
-      target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = metrics.state === "cash-recovered" ? "positive" : metrics.state === "cash-tied" ? "caution" : "negative";
+      target("craft-decision").textContent = funding === "insufficient-cash" ? batch.insufficientCash : funding === "reserve-breach" ? batch.reserveBreach : stockBlocksSales ? batch.stockBlocked : metrics.state === "cash-tied" ? batch.tied : metrics.state === "loss" ? batch.loss : metrics.state === "empty" ? batch.empty : batch.recovered;
+      target("craft-decision").closest<HTMLElement>(".result-panel")!.dataset.state = funding !== "funded" || stockBlocksSales ? "negative" : metrics.state === "cash-recovered" ? "positive" : metrics.state === "cash-tied" ? "caution" : "negative";
       target("craft-cash").textContent = gold(metrics.cashChange);
       target("craft-cash").className = metrics.cashChange < 0 ? "magenta" : "teal";
       target("craft-batch").textContent = gold(metrics.profit);
@@ -342,7 +343,7 @@ const copy = lang === "ru" ? {
           : `At this price, sell at least ${number.format(metrics.recoveryUnits)} of ${number.format(metrics.units)} units. Your scenario sells ${number.format(metrics.soldUnits)} units.`
         : lang === "ru" ? "Даже продажа всей партии по этой цене не вернёт затраты." : "Even selling the whole batch at this price will not recover the costs.";
       root.querySelector("[data-craft-recovery]")!.textContent = recovery + (price ? (lang === "ru" ? ` При заданном числе продаж цена возврата затрат: ${price} зол. за ед.` : ` At your planned unit sales, the cash-recovery price is ${price} g per unit.`) : "");
-      root.querySelector("[data-craft-action]")!.textContent = stockBlocksSales ? batch.stockAction : metrics.state === "cash-tied"
+      root.querySelector("[data-craft-action]")!.textContent = funding !== "funded" ? batch.fundingAction : stockBlocksSales ? batch.stockAction : metrics.state === "cash-tied"
         ? lang === "ru" ? "Если золото понадобится уже после этого цикла, не увеличивай партию до проверки фактических продаж." : "If you need the gold after this cycle, verify actual sales before increasing the batch."
         : metrics.state === "loss"
           ? lang === "ru" ? "Сначала перепроверь цену и затраты. При неизменных условиях большая партия увеличит убыток." : "Recheck price and costs first. A larger batch increases the loss under the same assumptions."

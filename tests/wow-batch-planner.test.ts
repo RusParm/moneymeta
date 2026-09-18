@@ -31,6 +31,17 @@ describe("WoW affordable batch with a protected cash reserve", () => {
     expect(plan.feasibleCashAfterCraft).toBe(5815);
     expect(10_000 - 6 * 837).toBeLessThan(input.reserveGold);
   });
+  it("distinguishes missing upfront cash from spending the protected reserve", () => {
+    const profitable = { ...input, crafts: 20, sellThroughPercent: 100 };
+    expect(calculateWowBatchPlan({ ...profitable, walletGold: 10_000 })!.fundingState).toBe("insufficient-cash");
+    expect(calculateWowBatchPlan({ ...profitable, walletGold: 20_000 })!.fundingState).toBe("reserve-breach");
+    expect(calculateWowBatchPlan({ ...profitable, walletGold: 21_740 })!.fundingState).toBe("funded");
+    expect(calculateWowBatchPlan({ ...profitable, walletGold: 21_739.99 })!.fundingState).toBe("reserve-breach");
+    const stock = { ...input, walletGold: 10_000, salesMode: "observed" as const, observedSoldUnits: 70, existingStockUnits: 60 };
+    const resized = calculateWowBatchPlan({ ...stock, crafts: calculateWowBatchPlan(stock)!.salesFitCrafts! })!;
+    expect(resized.fundingState).toBe("funded");
+    expect(resized.requested.cashChange).toBe(487.5);
+  });
   it("fits the exact reserve boundary and rejects one copper less", () => {
     const plan = calculateWowBatchPlan({ ...input, walletGold: 21_740 })!;
     expect(plan.feasibleCrafts).toBe(20);
