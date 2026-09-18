@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import BrandHeader from "./BrandHeader.astro";
 import SiteFooter from "./SiteFooter.astro";
 import { getSavedScenariosPath, scenarioGames, localizeScenarioPath } from "../data/scenario-tools";
-import { scenarioContexts, scenarioEngineVersion } from "../data/scenario-context";
+import { scenarioContexts, scenarioEngineVersion, scenarioReviewSources } from "../data/scenario-context";
 import "../styles/saved-scenarios.css";
 interface Props { lang: "ru" | "en"; }
 const { lang } = Astro.props;
@@ -12,7 +12,7 @@ const title = ru ? "Мои расчёты" : "My calculations";
 const description = ru ? "Сохранённые планы, вводные и результаты игровых расчётов на этом устройстве." : "Saved game plans, inputs and calculation results on this device.";
 ---
 <BaseLayout title={`${title} | Money Meta`} description={description} lang={lang} canonicalPath={getSavedScenariosPath(lang)} alternatePath={getSavedScenariosPath(ru ? "en" : "ru")} noindex>
-  <main class="page saved-page" data-saved-page data-engine={scenarioEngineVersion} data-contexts={JSON.stringify({ ru: scenarioContexts("ru"), en: scenarioContexts("en") })}>
+  <main class="page saved-page" data-saved-page data-review-sources={JSON.stringify(scenarioReviewSources())} data-engine={scenarioEngineVersion} data-contexts={JSON.stringify({ ru: scenarioContexts("ru"), en: scenarioContexts("en") })}>
     <div class="shell">
       <BrandHeader lang={lang} ruPath="/saved/" enPath="/en/saved/" />
       <header class="saved-page-intro">
@@ -25,6 +25,7 @@ const description = ru ? "Сохранённые планы, вводные и �
       <div class="saved-filters">
         <label>{ru ? "Игра" : "Game"}<select data-saved-game><option value="">{ru ? "Все игры" : "All games"}</option>{Object.entries(scenarioGames).map(([id, game]) => <option value={id}>{game.name}</option>)}</select></label>
         <label>{ru ? "Показать" : "Show"}<select data-saved-state><option value="planned">{ru ? "На следующую сессию" : "For the next session"}</option><option value="reviewed">{ru ? "Уже проверено в игре" : "Reviewed after playing"}</option><option value="all">{ru ? "Все расчёты" : "All calculations"}</option></select></label>
+        <label>{ru ? "Сверка данных" : "Data review"}<select data-saved-review><option value="all">{ru ? "Все планы" : "All plans"}</option><option value="due">{ru ? "Нужна сверка" : "Review due"}</option></select></label>
         <p data-saved-count aria-live="polite"></p>
       </div>
       <p class="saved-message" data-saved-message role="status" tabindex="-1"></p>

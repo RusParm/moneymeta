@@ -1,3 +1,7 @@
+# Next product evidence · 2026-09-18
+
+Complete the saved-plan recheck flow, then refresh verified game datasets independently. Validate the existing flagship tasks with observed players before adding more pages: a Dota replay decision, a GTA session choice and a WoW batch size. Record the initial question, time to a useful answer, the decision changed and whether the player returns after play. No retention or demand claim follows from technical tests.
+
 # Money Meta roadmap
 
 ## Current increment: v1.35 time choices inside the GTA session planner

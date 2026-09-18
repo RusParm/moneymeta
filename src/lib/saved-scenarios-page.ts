@@ -1,3 +1,5 @@
+import { reviewScenario, type ScenarioReviewSource } from "./scenario-review";
+import { scenarioReviewView } from "./scenario-review-view";
 import { getScenarioTool, scenarioGames, type ScenarioLocale } from "../data/scenario-tools";
 import { addSavedScenario, deleteSavedScenario, editSavedScenario, readSavedScenarios, savedScenarioHref, savedScenariosKey, type SavedScenario, type ScenarioStorage } from "./saved-scenarios";
 import { compareSavedScenarios, type ComparedScenarioInput } from "./saved-scenario-comparison";
@@ -14,6 +16,9 @@ export function initializeSavedScenariosPage() {
   const lang: ScenarioLocale = document.documentElement.lang === "ru" ? "ru" : "en";
   const ru = lang === "ru";
   const contexts = JSON.parse(root.dataset.contexts ?? "{}") as Record<ScenarioLocale, Record<string, string>>;
+  const reviewFilter = root.querySelector<HTMLSelectElement>("[data-saved-review]")!;
+  const reviewCurrent = { engine: root.dataset.engine ?? "", contexts, sources: JSON.parse(root.dataset.reviewSources ?? "{}") as Record<string, ScenarioReviewSource> };
+  const assess = (record: SavedScenario) => reviewScenario(record, reviewCurrent, lang);
   const list = root.querySelector<HTMLElement>("[data-saved-list]")!;
   const message = root.querySelector<HTMLElement>("[data-saved-message]")!;
   const game = root.querySelector<HTMLSelectElement>("[data-saved-game]")!;
@@ -35,6 +40,8 @@ export function initializeSavedScenariosPage() {
   if ([...game.options].some((option) => option.value === params.get("game"))) game.value = params.get("game")!;
   if ([...state.options].some((option) => option.value === params.get("state"))) state.value = params.get("state")!;
 
+  if (params.get("review") === "due") reviewFilter.value = "due";
+
   function historicalResult(record: SavedScenario) {
     const box = element("article", "", "saved-comparison-result");
     box.append(element("h3", record.name));
@@ -47,6 +54,7 @@ export function initializeSavedScenariosPage() {
     box.append(results);
     if (record.lang !== lang) box.append(element("p", ru ? "Подписи сохранены на английском." : "Labels were saved in Russian.", "saved-context"));
     box.append(element("p", `${ru ? "Версия" : "Version"}: ${record.engineVersion}${record.context ? ` · ${record.context}` : ""}`, "saved-context"));
+    box.append(scenarioReviewView(assess(record), lang));
     const open = element("a", ru ? "Открыть расчёт" : "Open calculation", "saved-resume"); open.href = savedScenarioHref(record, lang)!;
     const actions = element("div", "", "saved-card-actions"); actions.append(open); box.append(actions);
     return box;
@@ -130,9 +138,7 @@ export function initializeSavedScenariosPage() {
     article.append(result);
     if (record.lang !== lang) article.append(element("p", ru ? "Подписи результата сохранены на английском." : "Result labels were saved in Russian.", "saved-context"));
     if (record.context) article.append(element("p", `${ru ? "Контекст при сохранении" : "Context when saved"}: ${record.context}`, "saved-context"));
-    if (record.engineVersion !== root!.dataset.engine || record.context !== contexts[record.lang]?.[record.toolKey]) {
-      article.append(element("p", ru ? "Модель или её данные обновились. Открой расчёт и проверь новый результат перед решением." : "The model or its data has changed. Reopen the calculation and check the new result before deciding.", "saved-version-change"));
-    }
+    article.append(scenarioReviewView(assess(record), lang));
     if (record.note) {
       const note = element("div", "", "saved-outcome");
       note.append(element("strong", ru ? "После игры" : "After playing"), element("p", record.note)); article.append(note);
@@ -182,7 +188,8 @@ export function initializeSavedScenariosPage() {
     if (!result.ok) { error(); empty.hidden = true; more.hidden = true; comparison.hidden = true; return; }
     renderComparison(result.records);
     const records = result.records.filter((record) => (!game.value || getScenarioTool(record.toolKey)?.game === game.value)
-      && (state.value === "all" || record.reviewed === (state.value === "reviewed"))).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+      && (state.value === "all" || record.reviewed === (state.value === "reviewed"))
+      && (reviewFilter.value !== "due" || assess(record).needsReview)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
     list.replaceChildren(...records.slice(0, shown).map(card));
     root!.querySelector<HTMLElement>("[data-saved-count]")!.textContent = `${Math.min(shown, records.length)} / ${records.length} · ${ru ? "всего сохранено" : "total saved"}: ${result.records.length} / 50`;
     empty.hidden = records.length > 0; more.hidden = records.length <= shown; clear.hidden = result.records.length === 0;
@@ -193,10 +200,11 @@ export function initializeSavedScenariosPage() {
     const url = new URL(window.location.href);
     game.value ? url.searchParams.set("game", game.value) : url.searchParams.delete("game");
     state.value === "planned" ? url.searchParams.delete("state") : url.searchParams.set("state", state.value);
+    reviewFilter.value === "due" ? url.searchParams.set("review", "due") : url.searchParams.delete("review");
     history.replaceState({}, "", url); render();
   };
-  game.addEventListener("change", filter); state.addEventListener("change", filter);
-  clear.addEventListener("click", () => { game.value = ""; state.value = "all"; filter(); });
+  game.addEventListener("change", filter); state.addEventListener("change", filter); reviewFilter.addEventListener("change", filter);
+  clear.addEventListener("click", () => { game.value = ""; state.value = "all"; reviewFilter.value = "all"; filter(); });
   more.addEventListener("click", () => { shown += 12; render(); });
   partner.addEventListener("change", () => {
     comparisonIds = partner.value ? [comparisonIds[0]!, partner.value] : [comparisonIds[0]!];

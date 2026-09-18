@@ -1,5 +1,5 @@
 ---
-import { scenarioContexts, scenarioEngineVersion } from "../data/scenario-context";
+import { scenarioContexts, scenarioEngineVersion, scenarioReviewSources } from "../data/scenario-context";
 import { getSavedScenariosPath, scenarioTools } from "../data/scenario-tools";
 import "../styles/saved-scenarios.css";
 interface Props { lang: "ru" | "en"; }
@@ -7,12 +7,16 @@ const { lang } = Astro.props;
 const allContexts = scenarioContexts(lang);
 const path = Astro.url.pathname.replace(/^\/en\//, "/");
 const contexts = JSON.stringify(Object.fromEntries(scenarioTools.filter((tool) => tool.path === path).map((tool) => [tool.key, allContexts[tool.key]])));
+const routeTools = scenarioTools.filter((tool) => tool.path === path);
+const routeContexts = Object.fromEntries((["ru", "en"] as const).map((locale) => [locale, Object.fromEntries(routeTools.map((tool) => [tool.key, scenarioContexts(locale)[tool.key]]))]));
+const allSources = scenarioReviewSources();
+const reviewSources = Object.fromEntries(routeTools.filter((tool) => allSources[tool.key]).map((tool) => [tool.key, allSources[tool.key]]));
 const copy = lang === "ru"
   ? { share: "Поделиться сценарием", reset: "Сбросить", copied: "Ссылка скопирована", saved: "Параметры сохраняются локально", unavailable: "Хранилище недоступно. Сохрани ссылку на сценарий.", manual: "Ссылку можно скопировать вручную" }
   : { share: "Share scenario", reset: "Reset", copied: "Link copied", saved: "Inputs save locally", unavailable: "Local storage unavailable. Save a scenario link instead.", manual: "You can copy the link manually" };
 ---
 
-<div class="scenario-actions" data-scenario-actions data-storage-unavailable={copy.unavailable} data-manual-copy={copy.manual} data-contexts={contexts} data-engine={scenarioEngineVersion}>
+<div class="scenario-actions" data-scenario-actions data-review-contexts={JSON.stringify(routeContexts)} data-review-sources={JSON.stringify(reviewSources)} data-storage-unavailable={copy.unavailable} data-manual-copy={copy.manual} data-contexts={contexts} data-engine={scenarioEngineVersion}>
   <button class="mini-action save-calculation" type="button" data-open-save aria-expanded="false" hidden>{lang === "ru" ? "Сохранить расчёт" : "Save calculation"}</button>
   <button class="mini-action" type="button" data-share-scenario data-copied-label={copy.copied}>↗ {copy.share}</button>
   <button class="mini-action" type="button" data-reset-scenario>↺ {copy.reset}</button>

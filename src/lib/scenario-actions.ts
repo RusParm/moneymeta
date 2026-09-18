@@ -1,3 +1,5 @@
+import { reviewScenario } from "./scenario-review";
+import { scenarioReviewView } from "./scenario-review-view";
 import { getScenarioTool, type ScenarioLocale } from "../data/scenario-tools";
 import { captureScenarioSnapshot } from "./scenario-snapshot";
 import { addSavedScenario, readSavedScenarios, savedScenarioIdFromHash, type SavedScenario, type ScenarioStorage } from "./saved-scenarios";
@@ -77,6 +79,12 @@ export function initializeScenarioActions() {
       const complete = apply(requested.values);
       say(complete ? (ru ? `Открыт «${requested.name}». Изменения можно сохранить копией.` : `Opened “${requested.name}”. Save changes as a new copy.`)
         : (ru ? "Часть полей изменилась с момента сохранения. Проверь вводные перед новым решением." : "Some fields have changed since saving. Review the inputs before deciding."));
+      const review = reviewScenario(requested, {
+        engine: actions.dataset.engine ?? "",
+        contexts: JSON.parse(actions.dataset.reviewContexts ?? "{}"),
+        sources: JSON.parse(actions.dataset.reviewSources ?? "{}")
+      }, lang);
+      actions.before(scenarioReviewView(review, lang));
       root.tabIndex = -1;
       root.focus({ preventScroll: true });
       root.scrollIntoView({ block: "start" });

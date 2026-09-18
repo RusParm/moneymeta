@@ -1,3 +1,7 @@
+# Saved-plan review · 2026-09-18
+
+Make returning to a saved decision actionable: explain which inputs need checking, identify elapsed source-review deadlines even without a deploy, and retain the historical result for comparison. Reuse existing game review policies; business estimates use a 30-day editorial review window, independent of GTA weekly-event expiry. A site-version difference is not proof that a formula changed. No automatic patch-impact inference, formula update or player-input certification is claimed.
+
 # Decision log
 
 ## 2026-09-10: compare complete-run time thresholds in GTA
