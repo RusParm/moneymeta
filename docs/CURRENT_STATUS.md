@@ -1,3 +1,7 @@
+# Dota loading reliability · 2026-09-18
+
+Preview candidate preserves the current review during failed/cancelled new loads, ignores stale responses, and distinguishes provider outages from missing matches. Saved-task and provider links remain explicit user actions. See `DOTA_RESILIENT_LOADING.md` and the release PR for verification. No provider cache or automatic parsing added.
+
 # Decision validation · 2026-09-18
 
 Preview candidate: dated Dota 7.41f qualitative reviews preserve historical 7.41e provenance; future/unreviewed dates remain gated. WoW now leads with funding constraints before hypothetical profit. GTA one-hour flow reviewed without formula changes. See `DECISION_VALIDATION_2026_09_18.md` and release PR for acceptance. Current professional Dota cohort remains uncollected; real player outcome validation is outstanding.

@@ -1,3 +1,7 @@
+# 2026-09-18: Preserve work until a replacement is ready
+
+Loading a match must not destroy a usable analysis before the new read succeeds. Keep the visible previous Match ID and observations on failures or cancellation; guard against late responses. Provider unavailability must not be described as an invalid player input.
+
 # 2026-09-18: Match evidence selects its review; funding comes first
 
 A qualitative mechanic review can be extended independently from professional timing statistics. Keep historical patch/date provenance and reject unreviewed dates. For WoW, an unaffordable or reserve-breaching batch must lead with that constraint even when conditional sold-share profit is positive. Preserve the underlying hypothetical comparison and explicit resize action.
