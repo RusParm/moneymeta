@@ -1,3 +1,4 @@
+import { dotaItemPatch } from "./dota-item-patch";
 /**
  * Reviewed capabilities, not power ratings or an exhaustive ability catalogue.
  * Classifying a described mechanic as a draft trait is an editorial inference.
@@ -46,9 +47,48 @@ export const dotaDraftProfileSnapshot = {
   // Valve dates the release July 30 without a precise hour. Start at the next
   // full UTC day so matches from that ambiguous release day are not overclaimed.
   supportedSince: "2026-07-31T00:00:00.000Z",
+  supportedBefore: dotaItemPatch.startedAt,
   methodVersion: "draft-context-v1",
   sourceUrls: [abilitySourceUrl, "https://www.dota2.com/patches/7.41e", "https://www.dota2.com/newsentry/678505520073540065"]
 } as const;
+
+/** The 7.41f delta changes magnitudes, talents and omitted upgrades, not
+ * the qualitative capabilities recorded below. Keep the original 7.41e review
+ * intact; a match selects its own dated review, never the newest label blindly.
+ * The release day is ambiguous. Future matches beyond the check date are not
+ * certified in advance; extend this interval only after a source review.
+ */
+export const dotaDraftCurrentProfileSnapshot = {
+  ...dotaDraftProfileSnapshot,
+  patchLabel: "7.41f",
+  checkedAt: "2026-09-18",
+  supportedSince: "2026-09-16T00:00:00.000Z",
+  supportedBefore: "2026-09-19T00:00:00.000Z",
+  sourceUrls: [...dotaDraftProfileSnapshot.sourceUrls,
+    "https://www.dota2.com/patches/7.41f",
+    "https://www.dota2.com/newsentry/677383425371407609"]
+} as const;
+
+// Rechecked against Valve's patch list and published updates on October 6.
+// Retain the September review so earlier match provenance does not change.
+export const dotaDraftOctoberProfileSnapshot = {
+  ...dotaDraftCurrentProfileSnapshot,
+  checkedAt: "2026-10-06",
+  supportedSince: "2026-09-19T00:00:00.000Z",
+  supportedBefore: "2026-10-07T00:00:00.000Z",
+  sourceUrls: [...dotaDraftCurrentProfileSnapshot.sourceUrls,
+    "https://www.dota2.com/datafeed/patchnoteslist?language=english",
+    "https://www.dota2.com/news/updates"]
+} as const;
+
+export const dotaDraftProfileReviews = [dotaDraftProfileSnapshot, dotaDraftCurrentProfileSnapshot, dotaDraftOctoberProfileSnapshot] as const;
+
+export function getDotaDraftProfileReview(patchId: number | null, startTime: number | null) {
+  if (startTime === null || !Number.isFinite(startTime)) return undefined;
+  return dotaDraftProfileReviews.find((review) => patchId === review.patchId
+    && startTime >= Date.parse(review.supportedSince) / 1000
+    && startTime < Date.parse(review.supportedBefore) / 1000);
+}
 
 const evidence = (trait: DotaDraftTrait, ability: string, ru: string, en: string): DotaDraftEvidence => ({
   trait, ability, text: { ru, en }

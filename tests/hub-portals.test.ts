@@ -49,10 +49,10 @@ describe("v1.9 hub portals", () => {
   });
 
   it("keeps current context explicit for all games", () => {
-    expect(hubPortals.dota.version.ru).toContain("7.41e");
-    expect(hubPortals["total-war"].version.ru).toContain("8.1");
-    expect(hubPortals.ck3.version.ru).toContain("1.19");
-    expect(hubPortals.gta.version.ru).toContain("Business Rivalries");
+    expect(hubPortals.dota.version.ru).toContain("7.41f");
+    expect(hubPortals["total-war"].version.ru).toContain("9.0.2");
+    expect(hubPortals.ck3.version.ru).toContain("1.20");
+    expect(hubPortals.gta.version.ru).toContain("Halloween");
     expect(hubPortals.wow.version.ru).toContain("Ula’tek");
   });
 

@@ -1,4 +1,5 @@
 ---
+import { dotaItemPatch } from "../data/dota-item-patch";
 import {
   dotaItems,
   dotaItemsSnapshot,
@@ -27,8 +28,8 @@ const plannerData = JSON.stringify(dotaItems.map((item) => ({ key: item.key, nam
 const copy = lang === "ru" ? {
   back: "← К атласу предметов",
   title: "План сборки предметов Dota 2 | Money Meta",
-  description: "Планировщик от двух до пяти предметов Dota 2: ожидаемые минуты по GPM, сравнение с профессиональной медианой и цена порядка сборки в патче 7.41e.",
-  kicker: "Dota 2 · очередь предметов · 7.41e",
+  description: "Планировщик от двух до пяти предметов Dota 2: ожидаемые минуты по GPM, сравнение с профессиональной медианой и цена порядка сборки. Цены 7.41f; профессиональная выборка 7.41e.",
+  kicker: "Dota 2 · очередь предметов · цены 7.41f",
   heading: "Порядок сборки тратит время так же, как покупка тратит золото.",
   lede: "Задай текущую минуту, доступное золото и устойчивый GPM. План покажет абсолютную минуту каждого завершения, сравнит её с профессиональным окном роли и посчитает, сколько более ранние предметы задерживают следующий.",
   primary: "Собрать план",
@@ -84,8 +85,8 @@ const copy = lang === "ru" ? {
 } : {
   back: "← Back to item atlas",
   title: "Dota 2 item build planner | Money Meta",
-  description: "A two-to-five item Dota 2 planner with GPM-based completion minutes, pro median comparisons and build-order cost for Patch 7.41e.",
-  kicker: "Dota 2 · item queue · 7.41e",
+  description: "A two-to-five item Dota 2 planner with GPM-based completion minutes, pro median comparisons and build-order cost. Prices: 7.41f; pro cohort: 7.41e.",
+  kicker: "Dota 2 · item queue · 7.41f prices",
   heading: "Build order spends time just as every purchase spends gold.",
   lede: "Set the current minute, available gold and sustainable GPM. The planner shows the absolute completion minute, compares it with the role's professional window and calculates how much earlier items delay each next one.",
   primary: "Build the plan",
@@ -156,7 +157,7 @@ const copy = lang === "ru" ? {
     operatingSystem: "Web",
     inLanguage: lang,
     isAccessibleForFree: true,
-    dateModified: dotaItemsSnapshot.fetchedAt,
+    dateModified: dotaItemPatch.checkedAt,
     about: { "@type": "VideoGame", name: "Dota 2", publisher: "Valve" }
   }}
 >

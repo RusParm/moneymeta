@@ -1,3 +1,23 @@
+# 2026-10-06: publish completed work and expose the player task
+
+The owner explicitly requested production. Consolidate the four preview-only September increments, refresh independently verified source context, and lead with the existing task rather than more pages. Preserve historical snapshots, explicit bonus eligibility and unsupported-date gates. A successful deployment is not proof of player value.
+
+# 2026-09-18: Preserve work until a replacement is ready
+
+Loading a match must not destroy a usable analysis before the new read succeeds. Keep the visible previous Match ID and observations on failures or cancellation; guard against late responses. Provider unavailability must not be described as an invalid player input.
+
+# 2026-09-18: Match evidence selects its review; funding comes first
+
+A qualitative mechanic review can be extended independently from professional timing statistics. Keep historical patch/date provenance and reject unreviewed dates. For WoW, an unaffordable or reserve-breaching batch must lead with that constraint even when conditional sold-share profit is positive. Preserve the underlying hypothetical comparison and explicit resize action.
+
+# 2026-09-18: Separate current rules from historical evidence
+
+Patch notes may update current item values but cannot refresh old match statistics or certify player-input margins. Close a reviewed minor-patch interval at the next release day. One-time GTA cash must require explicit eligibility and cannot leak between weekly drafts. Preserve historical results.
+
+# Saved-plan review · 2026-09-18
+
+Make returning to a saved decision actionable: explain which inputs need checking, identify elapsed source-review deadlines even without a deploy, and retain the historical result for comparison. Reuse existing game review policies; business estimates use a 30-day editorial review window, independent of GTA weekly-event expiry. A site-version difference is not proof that a formula changed. No automatic patch-impact inference, formula update or player-input certification is claimed.
+
 # Decision log
 
 ## 2026-09-10: compare complete-run time thresholds in GTA

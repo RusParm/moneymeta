@@ -1,3 +1,4 @@
+import { applyDotaItemPatch } from "./dota-item-patch";
 import rawSnapshot from "./snapshots/dota-items-7.41e.json";
 import { validateDotaItemsSnapshot, type DotaItemRecord, type DotaItemsSnapshot, type DotaItemRole } from "../lib/dota-items";
 
@@ -7,7 +8,7 @@ export type LocalizedText = Record<DotaItemsLocale, string>;
 if (!validateDotaItemsSnapshot(rawSnapshot)) throw new Error("The bundled Dota item snapshot is malformed");
 
 export const dotaItemsSnapshot = rawSnapshot as DotaItemsSnapshot;
-export const dotaItems = dotaItemsSnapshot.items;
+export const dotaItems = dotaItemsSnapshot.items.map(applyDotaItemPatch);
 // Daily collection may miss a run; after two days the saved snapshot needs an update.
 export const DOTA_SNAPSHOT_MAX_AGE_HOURS = 48;
 export const dotaItemsByKey = new Map(dotaItems.map((item) => [item.key, item]));

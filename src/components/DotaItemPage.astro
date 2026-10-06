@@ -1,4 +1,5 @@
 ---
+import { dotaItemPatch } from "../data/dota-item-patch";
 import {
   dotaItems,
   dotaItemsByKey,
@@ -46,9 +47,9 @@ const fetchedAt = new Intl.DateTimeFormat(dateLocale, { day: "numeric", month: "
 
 const copy = lang === "ru" ? {
   back: "← К атласу предметов",
-  title: `${item.name}: цена и тайминги в Dota 2 7.41e | Money Meta`,
-  description: `${item.name} в Dota 2: стоимость, компоненты, прозрачная оценка характеристик и профессиональные тайминги для коров и поддержки в патче 7.41e.`,
-  kicker: `Dota 2 · предмет · ${dotaItemsSnapshot.patch.label}`,
+  title: `${item.name}: цена в Dota 2 ${dotaItemPatch.patch} и исторические тайминги | Money Meta`,
+  description: `${item.name} в Dota 2: стоимость, компоненты, прозрачная оценка характеристик и исторические тайминги 7.41e. Цены проверены для ${dotaItemPatch.patch}.`,
+  kicker: `Dota 2 · предмет · ${dotaItemPatch.patch}`,
   cost: "стоимость",
   build: item.components.length ? "дерево компонентов" : "покупается напрямую",
   benchmark: reliableRoles.length ? `${reliableRoles.length} ролевых ориентира` : "нет надёжного тайминга",
@@ -108,9 +109,9 @@ const copy = lang === "ru" ? {
   directCode: "БЕЗ КОМПОНЕНТОВ"
 } : {
   back: "← Back to item atlas",
-  title: `${item.name}: Dota 2 7.41e cost and timings | Money Meta`,
-  description: `${item.name} in Dota 2: cost, components, transparent stat pricing and professional core and support timings in Patch 7.41e.`,
-  kicker: `Dota 2 · item · ${dotaItemsSnapshot.patch.label}`,
+  title: `${item.name}: Dota 2 ${dotaItemPatch.patch} cost and historical timings | Money Meta`,
+  description: `${item.name} in Dota 2: cost, components, transparent stat pricing and historical 7.41e core and support timings. Prices reviewed for ${dotaItemPatch.patch}.`,
+  kicker: `Dota 2 · item · ${dotaItemPatch.patch}`,
   cost: "cost",
   build: item.components.length ? "component tree" : "direct purchase",
   benchmark: reliableRoles.length ? `${reliableRoles.length} role benchmarks` : "no reliable timing",
@@ -205,7 +206,7 @@ const comparison = (() => {
     name: copy.title,
     description: copy.description,
     inLanguage: lang,
-    dateModified: dotaItemsSnapshot.fetchedAt,
+    dateModified: dotaItemPatch.checkedAt,
     about: [{ "@type": "VideoGame", name: "Dota 2", publisher: "Valve" }, { "@type": "Thing", name: item.name }],
     breadcrumb: { "@type": "BreadcrumbList", itemListElement: [
       { "@type": "ListItem", position: 1, name: "Dota 2", item: new URL(lang === "ru" ? "/dota-2/" : "/en/dota-2/", Astro.site).href },

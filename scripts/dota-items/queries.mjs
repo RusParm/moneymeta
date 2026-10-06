@@ -19,6 +19,7 @@ export function createDotaItemQueries(config) {
       AND m.version IS NOT NULL
       AND mp.patch = '${config.patchFamily}'
       AND m.start_time >= extract(epoch from timestamptz '${config.patchStartedAt}')
+      ${config.patchEndedAt ? `AND m.start_time < extract(epoch from timestamptz '${config.patchEndedAt}')` : ''}
   ), cohort AS (
     SELECT rc.match_id, rc.start_time
     FROM raw_cohort rc

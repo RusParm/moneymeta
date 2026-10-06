@@ -1,5 +1,5 @@
 import { getDotaReplayDecisionCopy } from "../data/dota-replay-decision-copy";
-import { dotaDraftHeroProfiles, dotaDraftProfileSnapshot } from "../data/dota-draft-profiles";
+import { dotaDraftHeroProfiles, dotaDraftProfileReviews } from "../data/dota-draft-profiles";
 import type { DotaDraftPurchaseEvent } from "./dota-draft";
 import { dotaEpisodeLookbackMinutes, type DotaEpisodeContext } from "./dota-episode-context";
 
@@ -89,8 +89,9 @@ function reviewedThreats(event: DotaDraftPurchaseEvent, ownPurchasers: Set<numbe
  * The caller must rebuild on match, hero, episode or language changes.
  */
 export function buildDotaReplayDecision(context: DotaEpisodeContext | null, selectedHeroId: number): DotaReplayDecision | null {
+  const profileReview = dotaDraftProfileReviews.find((review) => context?.patchFamily === review.patchLabel && context.checkedAt === review.checkedAt);
   if (!context || !["ready", "partial"].includes(context.status)
-    || context.patchFamily !== dotaDraftProfileSnapshot.patchLabel
+    || !profileReview
     || !Number.isInteger(selectedHeroId) || selectedHeroId <= 0
     || !Number.isFinite(context.startMinute) || !Number.isFinite(context.endMinute)
     || context.startMinute < 0 || context.endMinute <= context.startMinute) return null;
@@ -119,7 +120,7 @@ export function buildDotaReplayDecision(context: DotaEpisodeContext | null, sele
     phase: event.minute < context.startMinute ? "before" : "during",
     startMinute: context.startMinute, endMinute: context.endMinute, threats,
     patchFamily: context.patchFamily, checkedAt: context.checkedAt,
-    sourceUrls: unique([event.sourceUrl, ...threats.map((threat) => threat.sourceUrl), ...dotaDraftProfileSnapshot.sourceUrls]),
+    sourceUrls: unique([event.sourceUrl, ...threats.map((threat) => threat.sourceUrl), ...profileReview.sourceUrls]),
     partialCoverage: context.status === "partial" || context.uncoveredHeroIds.length > 0,
     purchaseLogHeroCount: context.purchaseLogHeroCount, totalHeroCount: context.totalHeroCount,
   };

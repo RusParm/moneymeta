@@ -1,3 +1,11 @@
+# Immediate follow-up after the September data review
+
+The qualitative Dota 7.41f profile review is complete through September 18, independently of statistical benchmarks. Keep the reviewed interval current after checking Valve notes. Collect a separately labeled, quality-gated professional cohort before restoring current-match timing comparisons. Observe the three existing decisions with actual player inputs; do not treat synthetic acceptance tests as evidence of player value.
+
+# Next product evidence · 2026-09-18
+
+Complete the saved-plan recheck flow, then refresh verified game datasets independently. Validate the existing flagship tasks with observed players before adding more pages: a Dota replay decision, a GTA session choice and a WoW batch size. Record the initial question, time to a useful answer, the decision changed and whether the player returns after play. No retention or demand claim follows from technical tests.
+
 # Money Meta roadmap
 
 ## Current increment: v1.35 time choices inside the GTA session planner

@@ -89,7 +89,7 @@ export function initializeWowBatchPlanner(root: HTMLElement) {
         ? `При выходе ${format.format(input.outputUnits)} ед. без нового остатка помещается до ${format.format(allocation.maxNewCraftsWithoutRemainder)} изготовлений. С учётом бюджета и задуманного размера: ${format.format(plan.salesFitCrafts!)}. Выгодность зависит от цены и затрат.`
         : `At ${format.format(input.outputUnits)} units per craft, up to ${format.format(allocation.maxNewCraftsWithoutRemainder)} whole crafts fit without new stock left over. After cash and requested size: ${format.format(plan.salesFitCrafts!)}. Profitability depends on price and costs.`;
     }
-    q("[data-batch-plan-decision]").textContent = plan.reserveAlreadyShort ? c.noCash : plan.feasibleCrafts === 0 ? c.noCraft : plan.fits ? c.fits : c.tooLarge;
+    q("[data-batch-plan-decision]").textContent = plan.fundingState === "insufficient-cash" ? (ru ? "На материалы и залог этой партии не хватает золота, даже без сохранения резерва." : "Your gold cannot cover this batch’s materials and deposit, even without protecting the reserve.") : plan.reserveAlreadyShort ? c.noCash : plan.feasibleCrafts === 0 ? c.noCraft : plan.fits ? c.fits : c.tooLarge;
     q("[data-batch-max]").textContent = plan.affordableCrafts === null ? c.unlimited
       : plan.affordableLimitReached ? ru
         ? `Доступное число изготовлений: не меньше ${format.format(plan.affordableCrafts)}. Это предел расчёта: до 1 000 000 ед. товара в партии.`

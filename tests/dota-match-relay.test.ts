@@ -112,4 +112,12 @@ describe("Dota match fallback relay", () => {
     expect((await relay.fetch(relayRequest({ matchId: 8_978_544_633 }))).status).toBe(404);
     expect((await relay.fetch(relayRequest({ matchId: 8_978_544_633 }))).status).toBe(429);
   });
+  it("preserves a provider outage as an outage, not an invalid Match ID", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("gateway timeout", { status: 522 })));
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const response = await relay.fetch(relayRequest({ matchId: 8_978_544_633 }));
+    expect(response.status).toBe(502);
+    expect(await response.json()).toEqual({ code: "upstream_failed" });
+  });
+
 });

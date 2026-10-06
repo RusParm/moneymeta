@@ -1,3 +1,23 @@
+# v1.36 production candidate · 2026-10-06
+
+Owner requested production publication. Includes PRs #26–29 and an October primary-source refresh across all six live hubs. Homepage task names, direct tool links and visible freshness clarify the first action. See `RELEASE_2026_10_06.md` for sources and limits. Historical status entries below are retained.
+
+# Dota loading reliability · 2026-09-18
+
+Preview candidate preserves the current review during failed/cancelled new loads, ignores stale responses, and distinguishes provider outages from missing matches. Saved-task and provider links remain explicit user actions. See `DOTA_RESILIENT_LOADING.md` and the release PR for verification. No provider cache or automatic parsing added.
+
+# Decision validation · 2026-09-18
+
+Preview candidate: dated Dota 7.41f qualitative reviews preserve historical 7.41e provenance; future/unreviewed dates remain gated. WoW now leads with funding constraints before hypothetical profit. GTA one-hour flow reviewed without formula changes. See `DECISION_VALIDATION_2026_09_18.md` and release PR for acceptance. Current professional Dota cohort remains uncollected; real player outcome validation is outstanding.
+
+# Game-data candidate · 2026-09-18
+
+Dota 7.41f item deltas, GTA September 17-23 Gunrunning and WoW September hotfix context are prepared in RU/EN. The old Dota cohort stays historical; post-patch draft claims are gated. GTA one-time rewards require eligibility, and drafts are bound to the week. See GAME_DATA_2026_09_18.md. This increment follows PR #26; production is unchanged.
+
+# Saved-plan review candidate · 2026-09-18
+
+Adds a source-review filter and concrete bilingual input checks to saved plans and restored calculators across six games. Overdue bundled data remains overdue after a copy or after-play note. Source expiry is a review deadline, not evidence of a specific patch change; personal-input GTA session and WoW craft models carry no game-news freshness certification. No patch prices, live market feeds or weekly payouts are refreshed by this increment. Local and preview acceptance are tracked in the release PR.
+
 # Current status
 
 ## v1.35 candidate: when session time changes the GTA decision

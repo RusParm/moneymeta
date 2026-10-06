@@ -207,7 +207,7 @@ async function main() {
     },
     methodology: {
       minimumSample: config.minimumSample,
-      cohortRule: `Parsed league matches in OpenDota, patch family ${config.patchFamily}, starting at the official ${config.patch} release timestamp; a match enters role timings only when at least ${config.minimumClassifiedPlayersPerMatch} of 10 players have a current notable-player role.`,
+      cohortRule: `Parsed league matches in OpenDota, patch family ${config.patchFamily}, starting at the official ${config.patch} release timestamp${config.patchEndedAt ? ` and before ${config.patchEndedAt}` : ""}; a match enters role timings only when at least ${config.minimumClassifiedPlayersPerMatch} of 10 players have a current notable-player role.`,
       roleRule: "OpenDota notable-player fantasy_role: 1, 3 and 4 are core; 2 is support; unclassified rows are excluded.",
       timingRule: "First non-recipe purchase per player and item after 0:00; quartiles are match minutes.",
       purchaseRateRule: "Players with a first purchase divided by all classified player appearances in that role.",
