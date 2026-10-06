@@ -1,3 +1,7 @@
+# v1.36 production candidate · 2026-10-06
+
+Owner requested production publication. Includes PRs #26–29 and an October primary-source refresh across all six live hubs. Homepage task names, direct tool links and visible freshness clarify the first action. See `RELEASE_2026_10_06.md` for sources and limits. Historical status entries below are retained.
+
 # Dota loading reliability · 2026-09-18
 
 Preview candidate preserves the current review during failed/cancelled new loads, ignores stale responses, and distinguishes provider outages from missing matches. Saved-task and provider links remain explicit user actions. See `DOTA_RESILIENT_LOADING.md` and the release PR for verification. No provider cache or automatic parsing added.

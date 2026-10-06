@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { dotaItems, dotaItemsSnapshot } from "../src/data/dota-items";
 import { calculateItemPlan, calculateGoldEfficiency } from "../src/lib/dota-items";
-import { weeklyMeta } from "../src/data/gta-businesses";
+import septemberData from "./fixtures/gta-september-weekly.json";
+import type { WeeklyMetaSnapshot } from "../src/data/gta-businesses";
+const weeklyMeta = septemberData as WeeklyMetaSnapshot;
 import { calculateGtaWeeklyPlan } from "../src/lib/gta-weekly";
 import { scenarioContexts } from "../src/data/scenario-context";
 import { createDotaItemQueries } from "../scripts/dota-items/queries.mjs";

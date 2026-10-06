@@ -260,7 +260,7 @@ export const dotaPlayerPaths: DotaPlayerPath[] = [
 ];
 
 export const dotaPulse = {
-  patch: currentPatch, checkedAt: "2026-09-18", staleAfterDays: 14,
+  patch: currentPatch, checkedAt: "2026-10-06", staleAfterDays: 14,
   sourceUrl: `https://www.dota2.com/patches/${currentPatch}`, status: "verified" as const,
   changes: [{"signal": {"ru": "Цены 7.41f", "en": "7.41f prices"}, "title": {"ru": "Пересчитай ближайшую покупку", "en": "Recalculate your next purchase"}, "summary": {"ru": "Dragon Lance стоит 2000, Hurricane Pike 4550, Octarine Core 5100, Daedalus 5200, Heart 5300, Halberd 3300. Hydra’s Breath остаётся по 5900.", "en": "Dragon Lance costs 2000, Hurricane Pike 4550, Octarine Core 5100, Daedalus 5200, Heart 5300 and Halberd 3300. Hydra’s Breath stays at 5900."}, "decision": {"ru": "Обнови оставшуюся стоимость сборки. Профессиональные тайминги на сайте пока относятся к 7.41e.", "en": "Recalculate remaining build cost. The site’s professional timings still describe 7.41e."}, "media": dotaMedia.forceStaff, "sourceUrl": `https://www.dota2.com/patches/${currentPatch}`},
 {"signal": {"ru": "Manta: 28% → 25%", "en": "Manta: 28% → 25%"}, "title": {"ru": "Иллюзии дальнего боя наносят меньше урона", "en": "Ranged illusions deal less damage"}, "summary": {"ru": "Manta ослаблена для дальнего боя; вампиризм Mask of Madness и Satanic также снижен.", "en": "Manta’s ranged illusions are weaker; Mask of Madness and Satanic also lose lifesteal."}, "decision": {"ru": "Повтори замер скорости фарма и выживаемости. Не переноси старый прирост золота в минуту в новую сборку автоматически.", "en": "Remeasure farm speed and sustain before reusing an old GPM gain."}, "media": dotaMedia.battleFury, "sourceUrl": `https://www.dota2.com/patches/${currentPatch}`},

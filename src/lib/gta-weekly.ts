@@ -1,3 +1,4 @@
+import type { WeeklyAccessRequirement } from "../data/gta-businesses";
 import { isExpired } from "./freshness";
 
 export type GtaWeeklyDecisionStatus =
@@ -14,7 +15,7 @@ export interface GtaWeeklyRouteFacts {
   multiplier: number;
   fixedReward?: number;
   requiredRunsForReward?: number;
-  requiredAsset?: "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse" | "bunker" | "enhanced";
+  requiredAsset?: WeeklyAccessRequirement;
 }
 
 export interface GtaWeeklyPlanInput {

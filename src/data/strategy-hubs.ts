@@ -156,18 +156,18 @@ export const totalWarHub: StrategyHubData = {
   name: "Total War: Warhammer III",
   shortName: "Total War",
   publisher: "SEGA / Creative Assembly",
-  worldCode: ruEn("КАПИТАЛ КАМПАНИИ / 8.1.1", "CAMPAIGN CAPITAL / 8.1.1"),
-  checkedAt: "2026-08-19",
+  worldCode: ruEn("КАПИТАЛ КАМПАНИИ / 9.0.2", "CAMPAIGN CAPITAL / 9.0.2"),
+  checkedAt: "2026-10-06",
   staleAfterDays: 45,
-  version: ruEn("Хотфикс 8.1.1 · экономика патча 8.1", "Hotfix 8.1.1 · Patch 8.1 economy"),
+  version: ruEn("Хотфикс 9.0.2 · Lords of the End Times", "Hotfix 9.0.2 · Lords of the End Times"),
   currencyUnit: ruEn("зол.", "gold"),
   periodUnit: ruEn("ход.", "turns"),
   meta: {
     title: ruEn("Экономика Total War: Warhammer III: казна, армии и провинции | Money Meta", "Total War: Warhammer III Economy Hub: treasury, armies and provinces | Money Meta"),
-    description: ruEn("Интерактивный разбор экономики Total War: Warhammer III: текущий хотфикс 8.1.1, экономические изменения патча 8.1 и модели для зданий, военного резерва и захвата.", "An interactive Total War: Warhammer III campaign economy with current Hotfix 8.1.1, Patch 8.1 economic changes and models for buildings, war reserves and conquest choices.")
+    description: ruEn("Интерактивный разбор экономики Total War: Warhammer III: текущий хотфикс 9.0.2, расходы твоей кампании и модели для зданий, военного резерва и захвата.", "An interactive Total War: Warhammer III campaign economy with current Hotfix 9.0.2, your campaign costs and models for buildings, war reserves and conquest choices.")
   },
   hero: {
-    live: ruEn("Хотфикс 8.1.1 · проверено 2026-08-19", "Hotfix 8.1.1 · checked 2026-08-19"),
+    live: ruEn("Хотфикс 9.0.2 · проверено 2026-10-06", "Hotfix 9.0.2 · checked 2026-10-06"),
     eyebrow: ruEn("Total War: Warhammer III · экономика кампании", "Total War: Warhammer III · Campaign Economy"),
     heading: ruEn("Армия выигрывает битву. Казна решает, переживёшь ли войну.", "An army wins the battle. The treasury decides whether you survive the war."),
     lede: ruEn("Свяжи доход провинций, строительство, содержание армий и захват территорий в одну систему. Проверяй решение в горизонте ходов, а не по самой большой цифре на экране.", "Connect provincial income, construction, army upkeep and conquest into one system. Test a decision across a turn horizon instead of chasing the largest number on screen."),
@@ -177,7 +177,7 @@ export const totalWarHub: StrategyHubData = {
       ["7", ruEn("узлов экономики", "economy links")],
       ["3", ruEn("пути кампании", "campaign paths")],
       ["3", ruEn("живые модели", "live models")],
-      ["8.1.1", ruEn("текущий хотфикс", "current hotfix")]
+      ["9.0.2", ruEn("текущий хотфикс", "current hotfix")]
     ],
     loadout: [
       { mark: "¤", label: ruEn("КАЗНА", "TREASURY"), value: ruEn("Военный резерв", "War chest") },
@@ -227,14 +227,89 @@ export const totalWarHub: StrategyHubData = {
     }
   ],
   pulse: {
-    title: ruEn("Хотфикс 8.1.1 актуален, экономический контекст остаётся в патче 8.1", "Hotfix 8.1.1 is live while the economic context remains Patch 8.1"),
-    text: ruEn("Хотфикс исправляет технические проблемы и не задаёт новую универсальную экономику. Подтверждённые изменения патча 8.1 по-прежнему отделены от значений твоей фракции и сохранения.", "The hotfix addresses technical issues without defining a new universal economy. Confirmed Patch 8.1 changes remain separate from editable values in your faction and save."),
-    changes: [
-      { mark: "AI", signal: ruEn("Проверено · патч 8.1", "Verified · Patch 8.1"), title: ruEn("На позднем этапе ИИ активнее расширяется", "Late-game AI looks for expansion"), summary: ruEn("Creative Assembly снизила приоритет оборонительных задач на позднем этапе и немного повысила приоритет атак на силы противника.", "Creative Assembly reduced late-game defensive task priority and slightly raised tasks targeting enemy forces."), decision: ruEn("Держи больший резерв на границе, если план зависит от долгой мирной окупаемости.", "Keep a larger frontier reserve when the plan depends on a long peaceful payback."), sourceLabel: ruEn("Creative Assembly · патч 8.1", "Creative Assembly · Patch 8.1"), sourceUrl: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101" },
-      { mark: "LM", signal: ruEn("Проверено · патч 8.1", "Verified · Patch 8.1"), title: ruEn("Новые особые постройки и технологии требуют пересчёта", "New landmarks and technologies require a rerun"), summary: ruEn("Патч 8.1 добавил особые постройки и технологии, поэтому старые универсальные приоритеты больше нельзя переносить без проверки.", "Patch 8.1 added landmarks and technologies, so old universal building priorities should not be carried over without checking."), decision: ruEn("Введи фактическую стоимость и прирост дохода своей провинции в модель окупаемости здания.", "Enter the actual cost and income delta from your province in Building Payback."), sourceLabel: ruEn("Creative Assembly · патч 8.1", "Creative Assembly · Patch 8.1"), sourceUrl: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101" },
-      { mark: "9.0", signal: ruEn("Анонс · релиз 24 сентября", "Announced · September 24"), title: ruEn("Следующее крупное обновление уже датировано", "The next major update is already dated"), summary: ruEn("Creative Assembly объявила Lords of the End Times и связанное крупное обновление на 24 сентября 2026 года. Оно ещё не является текущим патчем.", "Creative Assembly announced Lords of the End Times and its major update for September 24, 2026. It is not the live patch yet."), decision: ruEn("Не переноси будущие изменения в расчёты патча 8.1. Сохрани снимок кампании и повтори проверку после выхода обновления.", "Do not import future changes into Patch 8.1 models. Save a campaign snapshot and rerun the check after release."), sourceLabel: ruEn("Creative Assembly · дорожная карта", "Creative Assembly · release roadmap"), sourceUrl: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/102" }
-    ]
+  "title": {
+    "ru": "9.0.2: пересчитай запас на оставшуюся кампанию",
+    "en": "9.0.2: recheck the reserve for your campaign"
   },
+  "text": {
+    "ru": "Официальный контекст обновлён. Калькуляторы используют твои доходы и расходы; специальные ресурсы новых фракций в золото не переводятся.",
+    "en": "Official context is updated. Calculators use your income and expenses; new faction resources are not converted into gold."
+  },
+  "changes": [
+    {
+      "mark": "9.0.2",
+      "signal": {
+        "ru": "30 сентября · выпущено",
+        "en": "September 30 · released"
+      },
+      "title": {
+        "ru": "Lords of the End Times уже вышло",
+        "en": "Lords of the End Times is live"
+      },
+      "summary": {
+        "ru": "После обновления 9.0 выпущен хотфикс 9.0.2.",
+        "en": "Hotfix 9.0.2 follows Update 9.0."
+      },
+      "decision": {
+        "ru": "Перенеси доход и содержание из текущего сохранения. Старые цифры фракции могут не соответствовать новой кампании.",
+        "en": "Use income and upkeep from your current save. Old faction values may not fit the new campaign."
+      },
+      "sourceLabel": {
+        "ru": "Creative Assembly · 9.0.2",
+        "en": "Creative Assembly · 9.0.2"
+      },
+      "sourceUrl": "https://community.creative-assembly.com/total-war/total-war-warhammer/forums/7-patch-notes-amp-announcements/threads/15988-total-war-warhammer-iii-hotfix-9-0-2"
+    },
+    {
+      "mark": "END",
+      "signal": {
+        "ru": "Финал кампании",
+        "en": "Endgame"
+      },
+      "title": {
+        "ru": "Усилена живучесть поздних угроз",
+        "en": "Late threats are more resilient"
+      },
+      "summary": {
+        "ru": "Хотфикс усилил устойчивость кризисов Skaven и Nagash.",
+        "en": "The hotfix increased Skaven and Nagash endgame survivability."
+      },
+      "decision": {
+        "ru": "В расчёте резерва проверь более долгую войну. Быстрая победа не должна быть единственным сценарием.",
+        "en": "Test a longer war in the reserve model. Do not rely on a quick victory alone."
+      },
+      "sourceLabel": {
+        "ru": "Creative Assembly · 9.0.2",
+        "en": "Creative Assembly · 9.0.2"
+      },
+      "sourceUrl": "https://community.creative-assembly.com/total-war/total-war-warhammer/forums/7-patch-notes-amp-announcements/threads/15988-total-war-warhammer-iii-hotfix-9-0-2"
+    },
+    {
+      "mark": "MAP",
+      "signal": {
+        "ru": "Условия победы",
+        "en": "Victory conditions"
+      },
+      "title": {
+        "ru": "Цели учитывают смену стартовой позиции",
+        "en": "Objectives account for relocation"
+      },
+      "summary": {
+        "ru": "Исправлены требования к постройкам после возвращения Ostankya и Gelt в родные земли.",
+        "en": "Building requirements were corrected after Ostankya and Gelt return home."
+      },
+      "decision": {
+        "ru": "Сверь цель в журнале кампании до вложения золота в далёкую провинцию.",
+        "en": "Check the campaign objective before investing in a distant province."
+      },
+      "sourceLabel": {
+        "ru": "Creative Assembly · 9.0.2",
+        "en": "Creative Assembly · 9.0.2"
+      },
+      "sourceUrl": "https://community.creative-assembly.com/total-war/total-war-warhammer/forums/7-patch-notes-amp-announcements/threads/15988-total-war-warhammer-iii-hotfix-9-0-2"
+    }
+  ]
+},
   lenses: [
     {
       id: "stability", label: ruEn("Ранняя стабильность", "Early stability"), question: ruEn("Что укрепляет первые 15 ходов?", "What strengthens the first 15 turns?"), criteria: ruEn("Резерв казны, срок окупаемости и защита границ", "Treasury reserve, payback time and frontier defense"), note: ruEn("Сопоставь варианты с состоянием своей кампании. Порядок карточек не означает, что первый вариант всегда лучше.", "Compare the options against your campaign. Card order does not mean the first option is always best."),
@@ -345,11 +420,29 @@ export const totalWarHub: StrategyHubData = {
     disclaimer: ruEn("Total War, Total War: Warhammer и связанные названия являются собственностью их правообладателей. Money Meta является независимым аналитическим продуктом.", "Total War, Total War: Warhammer and related names belong to their respective owners. Money Meta is an independent analytical product."),
     roadmap: ruEn("После пользовательской проверки добавим шаблоны фракций, снимки провинций и заметки по сохранениям.", "Next layer after user validation: faction presets, province snapshots and campaign save notes."),
     sources: [
-      { label: ruEn("Creative Assembly · хотфикс 8.1.1", "Creative Assembly · Hotfix 8.1.1"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/forums/7-patch-notes-amp-announcements/threads/14865", note: ruEn("Текущая версия на дату проверки. Хотфикс исправляет запуск, эффект Shadow Walkers и прокрутку, не вводя новую экономическую модель.", "Current live version on the check date. The hotfix addresses boot, a Shadow Walkers effect and scrolling without introducing a new economic model.") },
-      { label: ruEn("Creative Assembly · патч 8.1", "Creative Assembly · Patch 8.1"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/101", note: ruEn("Поведение ИИ кампании, особые постройки и технологии, на которых основан экономический контекст.", "Campaign AI, landmarks and technologies underpinning the economic context.") },
-      { label: ruEn("Creative Assembly · выпуск 24 сентября", "Creative Assembly · September 24 release"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/102", note: ruEn("Официальная дата Lords of the End Times и следующего крупного обновления. До релиза этот материал остаётся наблюдением, а не текущей моделью.", "Official date for Lords of the End Times and the next major update. Until release, this is a watch item rather than live model context.") },
-      { label: ruEn("Creative Assembly · анонс Free-LC", "Creative Assembly · Free-LC announcement"), url: "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/103", note: ruEn("Дополнительный официальный контекст будущего обновления, опубликованный 17 августа.", "Additional official context for the future update, published August 17.") }
-    ]
+  {
+    "label": {
+      "ru": "Creative Assembly · хотфикс 9.0.2",
+      "en": "Creative Assembly · Hotfix 9.0.2"
+    },
+    "url": "https://community.creative-assembly.com/total-war/total-war-warhammer/forums/7-patch-notes-amp-announcements/threads/15988-total-war-warhammer-iii-hotfix-9-0-2",
+    "note": {
+      "ru": "Версия и изменения конца кампании, проверено 6 октября.",
+      "en": "Version and endgame changes, checked October 6."
+    }
+  },
+  {
+    "label": {
+      "ru": "Creative Assembly · обновление 9.0",
+      "en": "Creative Assembly · Update 9.0"
+    },
+    "url": "https://community.creative-assembly.com/total-war/total-war-warhammer/blogs/110",
+    "note": {
+      "ru": "Выпуск Lords of the End Times 24 сентября. Фракционные формулы требуют отдельных замеров.",
+      "en": "Lords of the End Times release on September 24. Faction formulas require separate measurements."
+    }
+  }
+]
   }
 };
 
@@ -359,18 +452,18 @@ export const crusaderKingsHub: StrategyHubData = {
   name: "Crusader Kings III",
   shortName: "CK3",
   publisher: "Paradox Interactive",
-  worldCode: ruEn("КАЗНА ДИНАСТИИ / 1.19.0.6", "DYNASTY LEDGER / 1.19.0.6"),
-  checkedAt: "2026-08-19",
+  worldCode: ruEn("КАЗНА ДИНАСТИИ / 1.20.0.3", "DYNASTY LEDGER / 1.20.0.3"),
+  checkedAt: "2026-10-06",
   staleAfterDays: 45,
-  version: ruEn("1.19.0.6", "1.19.0.6"),
+  version: ruEn("1.20.0.3", "1.20.0.3"),
   currencyUnit: ruEn("зол.", "gold"),
   periodUnit: ruEn("мес.", "months"),
   meta: {
     title: ruEn("Экономика Crusader Kings III: домен, войны и наследование | Money Meta", "Crusader Kings III Economy Hub: domain, wars and succession | Money Meta"),
-    description: ruEn("Интерактивный разбор экономики Crusader Kings III: путь золота, стили правления, изменения версии 1.19 и модели для зданий, военного резерва и наследования.", "An interactive Crusader Kings III economy with a gold map, ruler paths, Update 1.19 Pulse and models for buildings, war reserves and succession.")
+    description: ruEn("Интерактивный разбор экономики Crusader Kings III: путь золота, стили правления, контекст версии 1.20 и модели для зданий, военного резерва и наследования.", "An interactive Crusader Kings III economy with a gold map, ruler paths, Update 1.20 context and models for buildings, war reserves and succession.")
   },
   hero: {
-    live: ruEn("Версия 1.19.0.6 · проверено 2026-08-19", "Update 1.19.0.6 · checked 2026-08-19"),
+    live: ruEn("Версия 1.20.0.3 · проверено 2026-10-06", "Update 1.20.0.3 · checked 2026-10-06"),
     eyebrow: ruEn("Crusader Kings III · экономика династии", "Crusader Kings III · Dynasty Economy"),
     heading: ruEn("Ты управляешь не золотом. Ты финансируешь выживание династии.", "You do not manage gold. You finance the survival of a dynasty."),
     lede: ruEn("Свяжи доход домена, профессиональные полки, войны, активности и наследование. Проверь, какой резерв сохраняется при выбранных расходах и изменении дохода.", "Connect domain income, men-at-arms, wars, activities and succession. Check the reserve left under your chosen costs and income changes."),
@@ -430,14 +523,89 @@ export const crusaderKingsHub: StrategyHubData = {
     }
   ],
   pulse: {
-    title: ruEn("Версия 1.19 улучшила книгу учёта. В IV квартале 2026 года изменится сама торговля.", "Update 1.19 delivered a stronger Ledger. Q4 2026 will change trade itself."),
-    text: ruEn("Здесь официальные обновления Paradox связаны с тем, что уже можно измерять и с чем нужно дождаться релиза.", "Pulse connects official Paradox updates with what can be measured now and what must wait for release."),
-    changes: [
-      { mark: "1.19", signal: ruEn("Проверено · актуальная версия", "Verified · live"), title: ruEn("Текущая версия 1.19.0.6", "Current version is 1.19.0.6"), summary: ruEn("Последнее исправление для актуальной версии опубликовано 25 мая 2026 года. Экономические модели привязаны к ветке 1.19, но значения в них вводит сам игрок.", "The latest live hotfix was published on May 25, 2026. The economy models are versioned to 1.19 while inputs remain user supplied."), decision: ruEn("Перед продолжением старого сохранения проверь версию игры и набор модификаций.", "Check version and mods before carrying an old save snapshot forward."), sourceLabel: ruEn("Paradox · версия 1.19.0.6", "Paradox · Update 1.19.0.6"), sourceUrl: "https://store.steampowered.com/news/app/1158310/view/677373278422041207" },
-      { mark: "L", signal: ruEn("Проверено · версия 1.19", "Verified · Update 1.19"), title: ruEn("Книга учёта стала удобной точкой входа", "The Ledger became a practical starting point"), summary: ruEn("Версия 1.19 добавила военные потери, новые показатели владений и дополнительные действия в книге учёта.", "Update 1.19 added war losses and more values and actions for holdings in the Ledger."), decision: ruEn("Собери исходные данные из книги учёта до оценки здания или военного резерва.", "Build the baseline from the Ledger before evaluating a building or war reserve."), sourceLabel: ruEn("Paradox · версия 1.19 Scribe", "Paradox · 1.19 Scribe"), sourceUrl: "https://store.steampowered.com/news/app/1158310/view/552395313313219108" },
-      { mark: "T", signal: ruEn("Проверено · релиз в IV квартале 2026", "Verified · coming Q4 2026"), title: ruEn("Silk & Silver добавит торговую экономику", "Silk & Silver will add a trade economy"), summary: ruEn("Paradox заявляет семьи торговцев, торговлю экзотическими товарами, конкуренцию республик и монополии на маршрутах.", "Paradox describes merchant families, exotic-goods trade, republic competition and route monopolies."), decision: ruEn("До релиза не выдумываем точные формулы торговли. Готовим структуру расчётов и обновим раздел после проверки в игре.", "No invented trade formulas before release. Prepare the framework and update the hub after live validation."), sourceLabel: ruEn("Paradox · глава V", "Paradox · Chapter V"), sourceUrl: "https://www.paradoxinteractive.com/games/crusader-kings-iii/add-ons/crusader-kings-iii-chapter-v" }
-    ]
+  "title": {
+    "ru": "Crozier 1.20: проверь казну после обновления",
+    "en": "Crozier 1.20: recheck your treasury"
   },
+  "text": {
+    "ru": "Сведения о версии проверены 6 октября. Расчёты зданий и войны используют цифры твоего сохранения; новые теократические механики отдельно не моделируются.",
+    "en": "Version information was checked October 6. Building and war calculations use your save values; new theocratic mechanics are not separately modeled."
+  },
+  "changes": [
+    {
+      "mark": "1.20",
+      "signal": {
+        "ru": "1 октября · выпущено",
+        "en": "October 1 · released"
+      },
+      "title": {
+        "ru": "Актуальный хотфикс: 1.20.0.3",
+        "en": "Current hotfix: 1.20.0.3"
+      },
+      "summary": {
+        "ru": "Исправления выпущены после By God Alone и обновления Crozier.",
+        "en": "Fixes follow By God Alone and the Crozier update."
+      },
+      "decision": {
+        "ru": "Перед переносом расчёта проверь версию, моды и фактические расходы владений.",
+        "en": "Check the version, mods and actual holding expenses before reusing a calculation."
+      },
+      "sourceLabel": {
+        "ru": "Paradox · официальные обновления",
+        "en": "Paradox · official updates"
+      },
+      "sourceUrl": "https://steamcommunity.com/app/1158310/announcements/"
+    },
+    {
+      "mark": "GOLD",
+      "signal": {
+        "ru": "Расходы паломничества",
+        "en": "Pilgrimage expense"
+      },
+      "title": {
+        "ru": "Исправлен неверный расход казны",
+        "en": "Incorrect treasury spending fixed"
+      },
+      "summary": {
+        "ru": "Паломничества больше не требуют treasury у нехристианских теократов, у которых этого ресурса нет.",
+        "en": "Pilgrimages no longer cost treasury for non-Christian theocrats without that resource."
+      },
+      "decision": {
+        "ru": "Бери стоимость действия из текущего интерфейса. Золото и особую казну нельзя смешивать.",
+        "en": "Read the action cost from the current interface. Keep gold and special treasury resources separate."
+      },
+      "sourceLabel": {
+        "ru": "Paradox · 1.20.0.3",
+        "en": "Paradox · 1.20.0.3"
+      },
+      "sourceUrl": "https://steamcommunity.com/app/1158310/announcements/"
+    },
+    {
+      "mark": "HEIR",
+      "signal": {
+        "ru": "Титулы и наследование",
+        "en": "Titles and succession"
+      },
+      "title": {
+        "ru": "Исправлены ошибки передачи титулов",
+        "en": "Title-granting issues fixed"
+      },
+      "summary": {
+        "ru": "Хотфикс исправляет ограничения выборных кандидатов и потерю наследника при создании главы веры.",
+        "en": "The hotfix addresses elective-candidate restrictions and missing heirs after creating a head of faith."
+      },
+      "decision": {
+        "ru": "Проверь реального наследника и доход после раздела. Калькулятор считает заданный денежный сценарий, а не предсказывает наследование.",
+        "en": "Check your actual heir and income after partition. The calculator models entered cash flows, not succession outcomes."
+      },
+      "sourceLabel": {
+        "ru": "Paradox · 1.20.0.3",
+        "en": "Paradox · 1.20.0.3"
+      },
+      "sourceUrl": "https://steamcommunity.com/app/1158310/announcements/"
+    }
+  ]
+},
   lenses: [
     {
       id: "small-realm", label: ruEn("Малая держава", "Small realm"), question: ruEn("Куда направить первые 600 золота?", "Where should the first 600 gold go?"), criteria: ruEn("Контроль владения, срок окупаемости и денежный резерв", "Holding control, payback time and cash reserve"), note: ruEn("Точная очередь зданий зависит от типа владения, культуры, местности и того, как долго оно останется у твоей линии.", "Exact building order depends on holding, culture, terrain and ownership horizon."),
@@ -547,7 +715,7 @@ export const crusaderKingsHub: StrategyHubData = {
     disclaimer: ruEn("Crusader Kings и связанные названия являются собственностью Paradox Interactive. Money Meta является независимым аналитическим продуктом.", "Crusader Kings and related names are property of Paradox Interactive. Money Meta is an independent analytical product."),
     roadmap: ruEn("После выхода Silk & Silver и проверки в игре добавим окупаемость торговых путей, портфель торговца и модели конкуренции республик.", "After Silk & Silver and live validation, add trade-route ROI, merchant portfolio and republic competition models."),
     sources: [
-      { label: ruEn("Paradox · версия 1.19.0.6", "Paradox · Update 1.19.0.6"), url: "https://store.steampowered.com/news/app/1158310/view/677373278422041207", note: ruEn("Актуальная версия на дату проверки.", "Current live version on the checked date.") },
+      {  "label": {    "ru": "Paradox · версия 1.20.0.3",    "en": "Paradox · Update 1.20.0.3"  },  "url": "https://steamcommunity.com/app/1158310/announcements/",  "note": {    "ru": "Официальный хотфикс от 1 октября. Проверено 6 октября.",    "en": "Official October 1 hotfix. Checked October 6."  }},
       { label: ruEn("Paradox · версия 1.19 Scribe", "Paradox · 1.19 Scribe"), url: "https://store.steampowered.com/news/app/1158310/view/552395313313219108", note: ruEn("Изменения книги учёта, сведения о военных потерях и интерфейсе.", "Ledger, war losses and UI context.") },
       { label: ruEn("Paradox · глава V", "Paradox · Chapter V"), url: "https://www.paradoxinteractive.com/games/crusader-kings-iii/add-ons/crusader-kings-iii-chapter-v", note: ruEn("Официально заявленные возможности Silk & Silver и окно выхода в IV квартале 2026 года.", "Official Silk & Silver scope and Q4 2026 window.") }
     ]

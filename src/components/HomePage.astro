@@ -52,8 +52,8 @@ const copy = lang === "ru" ? {
   title: "Money Meta | следующий ход в экономике игры",
   description: "Выбери ситуацию в одной из шести живых игровых экономик или открой предрелизное досье Fable. Подставь свои цифры и проверь следующий ход.",
   kicker: "MONEY META · ЭКОНОМИКА ИГР",
-  heading: "На что потратить золото и время в игре?",
-  lede: "Разбери свой матч или сравни варианты для следующей игры: сколько денег останется, что поместится в сеанс и когда изменится решение.",
+  heading: "Что сделать в следующей игре?",
+  lede: "Найди эпизод для разбора в Dota, составь план заработка в GTA или проверь партию крафта в WoW. Выбери игру: пример уже посчитан, свои данные можно подставить сразу.",
   chooseGame: "Выбери игру",
   chooseHint: "Начни со своей ситуации",
   openHub: "Открыть весь раздел",
@@ -83,8 +83,8 @@ const copy = lang === "ru" ? {
   title: "Money Meta | your next move in a game economy",
   description: "Choose a situation in one of six live game economies or open the pre-release Fable dossier. Use your own numbers and test the next move.",
   kicker: "MONEY META · GAME ECONOMIES",
-  heading: "Where should your gold and gaming time go?",
-  lede: "Review your match or compare options for your next game: cash left over, what fits into a session and when a decision changes.",
+  heading: "What should you do in your next game?",
+  lede: "Find a Dota replay episode, plan a GTA money session or check a WoW crafting batch. Choose your game: try a worked example or go straight to your own numbers.",
   chooseGame: "Choose your game",
   chooseHint: "Start with your own situation",
   openHub: "Explore the full hub",
@@ -213,6 +213,14 @@ const games: HomeGame[] = [
   }
 ];
 
+const tasks: Record<string, { ru: string; en: string; path: string; actionRu: string; actionEn: string }> = {
+  gta: { ru: "План на сеанс", en: "Plan a session", path: "/gta-online/tools/#session-plan", actionRu: "Спланировать свой сеанс", actionEn: "Plan my session" },
+  dota: { ru: "Разбор матча", en: "Review a match", path: "/dota-2/matches/audit/", actionRu: "Разобрать свой матч", actionEn: "Review my match" },
+  wow: { ru: "Прибыль от крафта", en: "Crafting cash", path: "/wow/tools/#crafting-margin", actionRu: "Рассчитать свою партию", actionEn: "Calculate my batch" },
+  "total-war": { ru: "Бюджет армии", en: "Army budget", path: "/total-war/tools/#war-reserve", actionRu: "Проверить бюджет армии", actionEn: "Check my army budget" },
+  ck3: { ru: "Золото на войну", en: "Fund a war", path: "/crusader-kings-3/tools/#war-chest", actionRu: "Рассчитать запас золота", actionEn: "Calculate my gold reserve" },
+  civ7: { ru: "Выбор постройки", en: "Choose a build", path: "/civilization-7/tools/#building-comparison", actionRu: "Сравнить свои постройки", actionEn: "Compare my builds" }
+};
 const liveGames = games.filter((game) => game.status === "live");
 const activeGameId: HubPortalId = "gta";
 const activeGame = games.find((game) => game.id === activeGameId)!;
@@ -269,7 +277,7 @@ const gameInsights = liveGames.map((game) => ({
                 data-home-game-tab data-game-id={game.id}
                 data-accent={game.accent} data-accent-rgb={game.accentRgb}>
                 <Image src={game.image} alt="" widths={[112, 168]} sizes="44px" loading="eager" decoding="async" />
-                <span>{game.shortName}</span>
+                <span><strong>{game.shortName}</strong><small>{tasks[game.id]?.[lang]}</small></span>
               </a>
             ))}
           </nav>
@@ -284,7 +292,12 @@ const gameInsights = liveGames.map((game) => ({
                 <div class="mm-home-stage-content">
                   <div class="mm-home-stage-meta">
                     <span>{game.name}</span><small>{game.version}</small>
-                    <a href={game.root}>{copy.openHub} →</a>
+                    <a href={game.root}>{copy.openHub}</a>
+                  </div>
+                  <div class="mm-home-task-entry">
+                    <a class="button" href={`${prefix}${tasks[game.id]!.path}`}>{lang === "ru" ? tasks[game.id]!.actionRu : tasks[game.id]!.actionEn}</a>
+                    <FreshnessIndicator policy={game.freshness} current={lang === "ru" ? "Сведения проверены" : "Context reviewed"}
+                      stale={game.id === "gta" ? copy.eventEnded : copy.recheck} dateLabel={copy.checked} lang={lang} />
                   </div>
                   <aside class="mm-home-resume" data-home-resume data-game-id={game.id} hidden
                     aria-label={lang === "ru" ? "Вернуться к своему расчёту" : "Resume your calculation"}>

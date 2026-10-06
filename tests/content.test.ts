@@ -32,16 +32,16 @@ describe("GTA benchmark hub content", () => {
   it("ties the live pulse to a dated primary source", () => {
     expect(weeklyMeta.status).toBe("verified");
     expect(weeklyMeta.sourceUrl).toContain("rockstargames.com/newswire/article/");
-    expect(weeklyMeta.id).toBe("2026-09-17-business-rivalries-gunrunning");
-    expect(weeklyMeta.checkedAt).toBe("2026-09-18");
-    expect(weeklyMeta.validThrough).toBe("2026-09-23");
+    expect(weeklyMeta.id).toBe("2026-10-01-halloween-week-one");
+    expect(weeklyMeta.checkedAt).toBe("2026-10-06");
+    expect(weeklyMeta.validThrough).toBe("2026-10-07");
     expect(weeklyMeta.validThrough).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(weeklyMeta.opportunities).toHaveLength(3);
     expect(weeklyMeta.opportunities.map((item) => item.multiplier)).toEqual([2, 2, 3]);
-    expect(weeklyMeta.items.ru.join(" ")).toContain("GTA$1,000,000");
-    expect(weeklyMeta.opportunities.find((item) => item.id === "bunker-research")?.requiredAsset).toBe("bunker");
-    expect(weeklyMeta.opportunities.find((item) => item.id === "community-mission-series")?.requiredAsset).toBe("enhanced");
-    expect(weeklyMeta.opportunities.find((item) => item.id === "ammu-nation-contract")?.requiredAsset).toBe("bunker");
+    expect(weeklyMeta.items.ru.join(" ")).toContain("GTA$100,000");
+    expect(weeklyMeta.opportunities.find((item) => item.id === "bail-office-bounties")?.requiredAsset).toBe("bail-office");
+    expect(weeklyMeta.opportunities.find((item) => item.id === "halloween-survivals")?.requiredAsset).toBeUndefined();
+    expect(weeklyMeta.opportunities.find((item) => item.id === "dispatch-work")?.requiredAsset).toBe("dispatch-work");
     expect(weeklyMeta.closedWindows).toHaveLength(1);
   });
 });
@@ -107,7 +107,7 @@ describe("WoW living hub content", () => {
     expect(wowPulse.release).toContain("Curse of Ula’tek");
     expect(wowPatchContext.release).toContain("Curse of Ula’tek");
     expect(wowPulse.status).toBe("verified");
-    expect(wowPulse.sourceUrl).toContain("news.blizzard.com");
+    expect(wowPulse.sourceUrl).toContain("worldofwarcraft.blizzard.com");
     expect(wowPulse.checkedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(wowPulse.staleAfterDays).toBeGreaterThan(0);
     expect(wowPulse.changes.length).toBeGreaterThanOrEqual(3);

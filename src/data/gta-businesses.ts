@@ -1,7 +1,7 @@
 export type Locale = "ru" | "en";
 export type VerificationStatus = "verified" | "estimated" | "community-reported";
 export type DecisionPriority = "fast-payback" | "max-income" | "low-friction";
-export type WeeklyAccessRequirement = "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse" | "bunker" | "enhanced";
+export type WeeklyAccessRequirement = "auto-shop" | "special-vehicle-work" | "special-cargo-warehouse" | "bunker" | "enhanced" | "bail-office" | "dispatch-work";
 
 export interface DataProvenance {
   checkedAt: string;
@@ -181,113 +181,112 @@ export interface WeeklyMetaSnapshot {
 }
 
 export const weeklyMeta: WeeklyMetaSnapshot = {
-  "id": "2026-09-17-business-rivalries-gunrunning",
-  "startsAt": "2026-09-17",
-  "checkedAt": "2026-09-18",
-  "validThrough": "2026-09-23",
+  "id": "2026-10-01-halloween-week-one",
+  "startsAt": "2026-10-01",
+  "checkedAt": "2026-10-06",
+  "validThrough": "2026-10-07",
   "status": "verified",
-  "sourceUrl": "https://www.rockstargames.com/newswire/article/ak43aoa18a19o2/compete-across-entrepreneurial-endeavors-in-the-gta-online-business-ri",
-  "sourceLabel": "Rockstar Newswire · Business Rivalries",
+  "sourceUrl": "https://www.rockstargames.com/newswire/article/39a22k25434a53/experience-halloween-thrills-all-throughout-october-in-gta-online",
+  "sourceLabel": "Rockstar Newswire · Halloween 2026",
   "items": {
     "ru": [
-      "17-23 сентября: исследовательские миссии бункера дают 2X GTA$/RP и прогресса исследований. Ammu-Nation Contracts и Safeguard Deliveries также дают 2X GTA$/RP.",
-      "За три Bunker Research Missions положены разовые GTA$1,000,000 и Camo Ammu-Nation Sweatsuit. Не включай уже полученную награду в будущий доход.",
-      "Бесплатен только Grapeseed Bunker до 23 сентября. Улучшения, снабжение и время запуска остаются расходами.",
-      "Одно Weekly Challenge с 3 по 23 сентября открывает получение Penaud La Coureuse 24-30 сентября; бесплатное HSW-улучшение доступно на PS5, Xbox Series X|S и PC Enhanced."
+      "1-7 октября: поймай две цели Bail Office и получи разовые GTA$100,000. Включай награду в план только если ещё не выполнил это задание.",
+      "Bail Office Targets и Dispatch Work дают 2X GTA$/RP в октябре; Halloween Survivals дают 3X. Выплаты за конкретный заход и его длительность нужно замерить в игре.",
+      "Месячные GTA$2,000,000 требуют все пять недельных заданий и поступают в течение 72 часов после выполнения. Этот бонус не входит в доход текущего сеанса.",
+      "Следующее задание начнётся 8 октября. Текущий недельный расчёт перестанет применять бонус задания после 7 октября."
     ],
     "en": [
-      "September 17-23: Bunker Research Missions pay 2X GTA$/RP and Research Progress. Ammu-Nation Contracts and Safeguard Deliveries also pay 2X GTA$/RP.",
-      "Three Bunker Research Missions award a one-time GTA$1,000,000 and Camo Ammu-Nation Sweatsuit. Exclude a reward already earned from future income.",
-      "Only Grapeseed Bunker is free through September 23. Upgrades, supplies and setup time still cost you.",
-      "One Weekly Challenge September 3-23 qualifies for a Penaud La Coureuse claim September 24-30; the free HSW upgrade is available on PS5, Xbox Series X|S and PC Enhanced."
+      "October 1-7: secure two Bail Office Bounties for a one-time GTA$100,000. Include it only if this challenge is not already completed.",
+      "Bail Office Targets and Dispatch Work pay 2X GTA$/RP in October; Halloween Survivals pay 3X. Measure the payout and full duration of your chosen run in-game.",
+      "The monthly GTA$2,000,000 requires all five weekly challenges and arrives within 72 hours of completion. It is excluded from this session’s cash.",
+      "The next challenge begins October 8. This weekly calculation stops applying the challenge bonus after October 7."
     ]
   },
   "opportunities": [
     {
-      "id": "bunker-research",
+      "id": "bail-office-bounties",
       "status": "verified",
       "title": {
-        "ru": "Bunker Research Missions",
-        "en": "Bunker Research Missions"
+        "ru": "Bail Office: две цели",
+        "en": "Bail Office: two bounties"
       },
       "summary": {
-        "ru": "2X выплат и прогресса исследований; за три миссии предусмотрен разовый миллион.",
-        "en": "2X payouts and Research Progress, with a one-time million for three missions."
+        "ru": "Двойные выплаты; разовые GTA$100,000 за две цели 1-7 октября.",
+        "en": "Double payouts; a one-time GTA$100,000 for two bounties October 1-7."
       },
       "decision": {
-        "ru": "Нужен доступ к миссиям Agent 14. Включай миллион только до выполнения недельного задания; расчёт требует все три миссии в новом плане. Замерь полный цикл с ожиданием.",
-        "en": "Requires access to Agent 14 missions. Include the million only before completing the challenge; this model requires all three missions in the new plan. Measure a full cycle including waits."
+        "ru": "Подтверди доступ к заданиям Bail Office. Для бонуса модель требует две цели в новом плане; уже полученную награду отключи.",
+        "en": "Confirm access to Bail Office jobs. The model requires two bounties in the new plan for the bonus; disable any reward already earned."
       },
       "signal": {
-        "ru": "2X · разовый миллион",
-        "en": "2X · one-time million"
+        "ru": "2X · задание на GTA$100,000",
+        "en": "2X · GTA$100,000 challenge"
       },
       "multiplier": 2,
-      "fixedReward": 1000000,
-      "requiredRunsForReward": 3,
-      "requiredAsset": "bunker"
+      "fixedReward": 100000,
+      "requiredRunsForReward": 2,
+      "requiredAsset": "bail-office"
     },
     {
-      "id": "ammu-nation-contract",
+      "id": "dispatch-work",
       "status": "verified",
       "title": {
-        "ru": "Ammu-Nation Contract",
-        "en": "Ammu-Nation Contract"
+        "ru": "Dispatch Work",
+        "en": "Dispatch Work"
       },
       "summary": {
-        "ru": "Доставка излишков оружия из бункера даёт двойную выплату до 23 сентября.",
-        "en": "Surplus weapon deliveries from your bunker pay double through September 23."
+        "ru": "Работа Винсента приносит 2X GTA$/RP в октябре.",
+        "en": "Vincent’s Dispatch Work pays 2X GTA$/RP in October."
       },
       "decision": {
-        "ru": "Нужен доступный Duneloader в бункере. Учитывай ожидание следующей доставки; обычные продажи продукции бункера не получают этот множитель.",
-        "en": "Requires the bunker Duneloader to be available. Include the wait for the next delivery; this multiplier does not apply to regular bunker product sales."
+        "ru": "Проверь доступ к Dispatch Work. Введи обычную выплату без 2X и полный цикл с дорогой и ожиданием.",
+        "en": "Confirm access to Dispatch Work. Enter the normal payout before 2X and the full cycle including travel and waits."
       },
       "signal": {
-        "ru": "2X · нужен бункер",
-        "en": "2X · bunker required"
+        "ru": "2X · нужен доступ",
+        "en": "2X · access required"
       },
       "multiplier": 2,
-      "requiredAsset": "bunker"
+      "requiredAsset": "dispatch-work"
     },
     {
-      "id": "community-mission-series",
+      "id": "halloween-survivals",
       "status": "verified",
       "title": {
-        "ru": "Community Mission Series",
-        "en": "Community Mission Series"
+        "ru": "Halloween Survivals",
+        "en": "Halloween Survivals"
       },
       "summary": {
-        "ru": "Избранные миссии дают 3X GTA$/RP до 23 сентября на PS5, Xbox Series X|S и PC Enhanced.",
-        "en": "Featured missions pay 3X GTA$/RP through September 23 on PS5, Xbox Series X|S and PC Enhanced."
+        "ru": "Хэллоуинские выживания приносят 3X GTA$/RP.",
+        "en": "Halloween Survivals pay 3X GTA$/RP."
       },
       "decision": {
-        "ru": "Проверь платформу и выбранную миссию в меню Community Series. Покупка бизнеса не требуется.",
-        "en": "Check your platform and the featured mission in Community Series. No business purchase is required."
+        "ru": "Используй замер на том числе волн, которое стабильно проходишь. Длительность и награда зависят от результата.",
+        "en": "Use a sample for the number of waves you can reliably finish. Time and rewards depend on your result."
       },
       "signal": {
-        "ru": "3X · Enhanced",
-        "en": "3X · Enhanced"
+        "ru": "3X · выживания",
+        "en": "3X · Survivals"
       },
-      "multiplier": 3,
-      "requiredAsset": "enhanced"
+      "multiplier": 3
     }
   ],
   "closedWindows": [
     {
-      "id": "2026-09-10-business-rivalries-bikers",
-      "startsAt": "2026-09-10",
-      "endedAt": "2026-09-16",
+      "id": "2026-09-17-business-rivalries-gunrunning",
+      "startsAt": "2026-09-17",
+      "endedAt": "2026-09-23",
       "title": {
-        "ru": "Неделя байкеров завершена",
-        "en": "Biker week ended"
+        "ru": "Сентябрьская неделя бункеров завершена",
+        "en": "September Gunrunning week ended"
       },
       "summary": {
-        "ru": "Бонусы MC, Street Dealer Sales, Bike Service и бесплатный Grapeseed Clubhouse завершились 16 сентября. Более раннее окно Executive также закрыто.",
-        "en": "MC, Street Dealer Sales, Bike Service bonuses and the free Grapeseed Clubhouse ended September 16. The earlier Executive window has also closed."
+        "ru": "Множители и разовый миллион Business Rivalries закончились 23 сентября. Они не переносятся в октябрьский расчёт.",
+        "en": "Business Rivalries multipliers and its one-time million ended September 23. They do not carry into October’s calculation."
       },
       "signal": {
-        "ru": "Архив · 10-16 сент.",
-        "en": "Archive · Sep 10-16"
+        "ru": "Архив · 17-23 сентября",
+        "en": "Archive · September 17-23"
       }
     }
   ]

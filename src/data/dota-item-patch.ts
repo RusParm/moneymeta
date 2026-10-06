@@ -4,7 +4,7 @@ import type { DotaItemRecord } from "../lib/dota-items";
 export const dotaItemPatch = {
   patch: "7.41f",
   startedAt: "2026-09-15T00:00:00.000Z",
-  checkedAt: "2026-09-18",
+  checkedAt: "2026-10-06",
   sourceUrl: "https://www.dota2.com/patches/7.41f"
 } as const;
 

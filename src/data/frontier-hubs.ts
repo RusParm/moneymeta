@@ -103,15 +103,15 @@ export const civilizationHub: FrontierHub = {
     "Сравни стоимость производства, момент отдачи и цель эпохи. Все значения берутся из твоей партии, а правила текущей версии подтверждаются официальными материалами.",
     "Compare production cost, the moment value arrives and the objective for this Age. Every number comes from your game while current rules stay tied to official material."
   ),
-  version: t("Обновление 1.4.2 · августовский хотфикс", "Update 1.4.2 · August hotfix"),
-  checkedAt: "2026-09-07",
+  version: t("1.5.0 · хотфикс 30 сентября", "1.5.0 · September 30 hotfix"),
+  checkedAt: "2026-10-06",
   staleAfterDays: 45,
   promise: t(
     "Money Meta не выбирает цивилизацию за тебя. Он показывает, успеет ли решение вернуть вложение, что ты откладываешь ради него и сколько ещё не хватает до цели.",
     "Money Meta does not choose a civilization for you. It shows whether a move can return its cost, what it delays and how much remains before the objective."
   ),
   proof: [
-    { value: "1.4.2", label: t("версия в официальной сводке", "version in the official recap") },
+    { value: "1.5.0", label: t("версия в официальной сводке", "version in the official recap") },
     { value: "3", label: t("редактируемые модели", "editable models") },
     { value: "5", label: t("официальных источников", "official sources") },
     { value: "0", label: t("вымышленных значений", "invented values") }
@@ -214,10 +214,10 @@ export const civilizationHub: FrontierHub = {
     {
       id: "current-version",
       status: "verified",
-      mark: "1.4.2",
-      title: t("Опубликован хотфикс 1.4.2", "Hotfix 1.4.2 is published"),
-      claim: t("Августовская сводка Firaxis подтверждает выпуск хотфикса 1.4.2. Версия 1.4.1 больше не обозначает текущий контекст раздела.", "Firaxis's August recap confirms a 1.4.2 hotfix. Version 1.4.1 no longer represents this hub's current context."),
-      boundary: t("Сводка подтверждает версию. Формулы ниже остаются сценариями с твоими вводными; изменения отдельных механик требуют проверки полных примечаний патча.", "The recap confirms the version. Calculators remain scenarios using your inputs; individual mechanic changes require review of the full patch notes."),
+      mark: "1.5.0",
+      title: t("Исправлена генерация ресурсов", "Resource generation fixed"),
+      claim: t("Хотфикс от 30 сентября исправляет отсутствие Treasure и Factory Resources при генерации. Версия для Switch и Switch 2 ожидает отдельного выпуска.", "The September 30 hotfix fixes missing Treasure and Factory Resources at generation. Switch and Switch 2 await a separate release."),
+      boundary: t("Проверь платформу и ресурсы своей карты. Сравнение построек использует твои значения; будущая эпоха Atomic пока не входит в модель.", "Check your platform and map resources. Build comparisons use your values; the future Atomic Age is not modeled."),
       sourceId: "civ-current"
     },
     {
@@ -234,9 +234,9 @@ export const civilizationHub: FrontierHub = {
     {
       id: "civ-current",
       label: t("Firaxis · официальная сводка", "Firaxis · official recap"),
-      title: t("This Month in Civ · август 2026", "This Month in Civ · August 2026"),
-      url: "https://civilization.2k.com/civ-vii/community/",
-      checkedAt: "2026-09-07"
+      title: t("Update 1.5.0 · 30 сентября 2026", "Update 1.5.0 · September 30, 2026"),
+      url: "https://steamcommunity.com/app/1295660/announcements/",
+      checkedAt: "2026-10-06"
     },
     {
       id: "civ-140",

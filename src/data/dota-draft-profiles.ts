@@ -69,7 +69,19 @@ export const dotaDraftCurrentProfileSnapshot = {
     "https://www.dota2.com/newsentry/677383425371407609"]
 } as const;
 
-export const dotaDraftProfileReviews = [dotaDraftProfileSnapshot, dotaDraftCurrentProfileSnapshot] as const;
+// Rechecked against Valve's patch list and published updates on October 6.
+// Retain the September review so earlier match provenance does not change.
+export const dotaDraftOctoberProfileSnapshot = {
+  ...dotaDraftCurrentProfileSnapshot,
+  checkedAt: "2026-10-06",
+  supportedSince: "2026-09-19T00:00:00.000Z",
+  supportedBefore: "2026-10-07T00:00:00.000Z",
+  sourceUrls: [...dotaDraftCurrentProfileSnapshot.sourceUrls,
+    "https://www.dota2.com/datafeed/patchnoteslist?language=english",
+    "https://www.dota2.com/news/updates"]
+} as const;
+
+export const dotaDraftProfileReviews = [dotaDraftProfileSnapshot, dotaDraftCurrentProfileSnapshot, dotaDraftOctoberProfileSnapshot] as const;
 
 export function getDotaDraftProfileReview(patchId: number | null, startTime: number | null) {
   if (startTime === null || !Number.isFinite(startTime)) return undefined;

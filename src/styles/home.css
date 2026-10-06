@@ -94,3 +94,14 @@
  .mm-home-status-board>a{grid-template-columns:24px minmax(0,1fr)}
  .mm-home-how>div{grid-template-columns:1fr;gap:12px}
 }
+
+/* Tasks stay readable at narrow widths; the existing model remains the focus. */
+.mm-home-pitch>p{font-size:16px}
+.mm-home-game-tabs a{justify-content:flex-start;gap:10px;padding:14px 12px}
+.mm-home-game-tabs a>span{display:grid;gap:5px;min-width:0}
+.mm-home-game-tabs strong{font-size:15px;font-weight:650}
+.mm-home-game-tabs small{font-size:12px;font-weight:400;line-height:1.3;color:#b5bbca}
+.mm-home-task-entry{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 24px;padding-bottom:18px;border-bottom:1px solid #ffffff18}
+.mm-home-task-entry .button{font-size:15px}
+.mm-home-stage-meta>small,.mm-home-stage-meta>a{font-size:13px}
+@media(max-width:560px){.mm-home-game-tabs img{display:none}.mm-home-game-tabs a{padding:12px 10px}.mm-home-game-tabs small{font-size:12px}.mm-home-task-entry{align-items:flex-start;flex-direction:column}.mm-home-task-entry .button{width:100%;justify-content:center}}

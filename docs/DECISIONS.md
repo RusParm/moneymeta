@@ -1,3 +1,7 @@
+# 2026-10-06: publish completed work and expose the player task
+
+The owner explicitly requested production. Consolidate the four preview-only September increments, refresh independently verified source context, and lead with the existing task rather than more pages. Preserve historical snapshots, explicit bonus eligibility and unsupported-date gates. A successful deployment is not proof of player value.
+
 # 2026-09-18: Preserve work until a replacement is ready
 
 Loading a match must not destroy a usable analysis before the new read succeeds. Keep the visible previous Match ID and observations on failures or cancellation; guard against late responses. Provider unavailability must not be described as an invalid player input.
